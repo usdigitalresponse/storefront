@@ -1,0 +1,25 @@
+{
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "editor.renderWhitespace": "all",
+    "editor.formatOnPaste": true,
+    "editor.tabSize": 2,
+    "eslint.enable": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.tslint": false,
+        "source.fixAll.eslint": true
+    },
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "search.exclude": {
+        "build": true,
+        "dist": true
+    },
+    "files.exclude": {
+        "package-lock.json": true,
+    },
+    "prettier.singleQuote": true,
+    "prettier.printWidth": 120,
+    "prettier.tabWidth": 2,
+    "prettier.trailingComma": "all",
+}
