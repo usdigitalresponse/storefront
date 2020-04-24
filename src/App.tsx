@@ -1,17 +1,47 @@
-import { AirtableService } from './services/AirtableService';
-import { Provider } from 'react-redux';
-import { configureStore } from './store/configureStore';
 import React from 'react';
-import styles from './App.module.scss';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from 'react-router-dom';
 
-const store = configureStore();
-AirtableService.init(store);
+import Home from './pages/Home';
+import DriveWithUs from './pages/Driver';
+import BoxesHome from './pages/Boxes';
+
+import styles from './App.module.scss';
 
 function App() {
   return (
-    <Provider store={store}>
-      <div className={styles.app}>USDR Food</div>
-    </Provider>
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/drive">Drivers and Distributors</Link>
+            </li>
+            <li>
+              <Link to="/boxes">Order a Box</Link>
+            </li>
+          </ul>
+        </nav>
+        <Switch>
+          <Route path="/drive">
+            <DriveWithUs />
+          </Route>
+          <Route path="/boxes">
+            <BoxesHome />
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
