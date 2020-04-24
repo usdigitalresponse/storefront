@@ -1,20 +1,26 @@
+import { IAppState } from '../store/app';
+import { cmsValueForKeySelector } from '../store/cms';
+import { useSelector } from 'react-redux';
 import Interweave from 'interweave';
 import React from 'react';
 
 export default function Home() {
+  const heroTitle = useSelector<IAppState, string>(cmsValueForKeySelector('hero_title'));
+  const heroImageUrl = useSelector<IAppState, string>(cmsValueForKeySelector('hero_img'));
+
   return (
     <div>
       <section aria-label="Introduction" id="hero">
         <div
           className="usa-hero"
           style={{
-            backgroundImage: `url('https://dl.airtable.com/.attachments/3f876aa40d6e0dd6fd22edbf71d00232/83133c8b/bg3.jpg')`,
+            backgroundImage: `url(${heroImageUrl})`,
           }}
         >
           <div className="grid-container">
             <div className="usa-hero__callout">
               <h1 className="usa-hero__heading">
-                <span className="usa-hero__heading--alt">Order fresh fruits and vegetables</span>
+                <span className="usa-hero__heading--alt">{heroTitle}</span>
               </h1>
               <p>Supporting our community</p>
               <p>
