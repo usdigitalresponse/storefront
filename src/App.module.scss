@@ -20,38 +20,8 @@
 .clearfix {
   clear: both;
 }
-.product-box {
-  display: inline-block;
-  width: 30%;
-  margin-right: 2%;
-  vertical-align: top;
-  border: 1px solid silver;
-  cursor: pointer;
 
-  .product {
-    height: 250px;
-    background-size: cover;
-    cursor: pointer;
-    border: 2px solid transparent;
-    vertical-align: middle;
-
-    &:hover, &:active, &:focus {
-      border: 2px solid blue;
-    }
-  }
-
-  .product-desc {
-    padding: 10px;
-    font-size: 90%;
-
-    h4 {
-      margin-top: 0;
-      font-weight: 600;
-    }
-  }
-}
-
-.product-desc a, .formbox a, .product-desc .linklike {
+.product-desc a, .formbox a {
   text-decoration: none;
   color: #09f;
 }
@@ -60,11 +30,6 @@
   float: right;
   width: 300px;
   height: 300px;
-}
-
-.out_of_order {
-  color: red;
-  font-weight: bold;
 }
 
 .stores {
@@ -93,40 +58,7 @@ section a, section a:visited, section a:focus {
   visibility: visible;
 }
 
-.col {
-  display: inline-block;
-  width: 45%;
-  margin-right: 3%;
-  vertical-align: top;
-
-  & > img {
-    max-width: 100%;
-  }
-
-  h3 {
-    margin-top: 0;
-  }
-}
-
 .formbox {
-  width: 100%;
-  background: #eee;
-  padding: 10px;
-  font-size: 85%;
-  margin-bottom: 15px;
-
-  .splitter {
-    width: 48%;
-    margin-right: 1%;
-    display: inline-block;
-    vertical-align: middle;
-
-    &.floater {
-      text-align: right;
-      margin-right: 0;
-    }
-  }
-
   input {
     max-width: 40%;
     font-size: 120%;

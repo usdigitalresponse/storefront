@@ -9,8 +9,9 @@ import {
 import Home from './pages/Home';
 import DriveWithUs from './pages/Driver';
 import BoxesHome from './pages/Boxes';
+import BoxPage from './pages/Box';
 
-import styles from './App.module.scss';
+import './App.module.scss';
 
 function App() {
   return (
@@ -35,6 +36,9 @@ function App() {
           </Route>
           <Route path="/boxes">
             <BoxesHome />
+          </Route>
+          <Route path="/box_details">
+            <BoxPage />
           </Route>
           <Route path="/">
             <Home />

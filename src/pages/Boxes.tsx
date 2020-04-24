@@ -4,8 +4,6 @@ import { configureStore } from '../store/configureStore';
 import React from 'react';
 import PromoBox from './PromoBox';
 
-import '../App.module.scss';
-
 const store = configureStore();
 AirtableService.init(store);
 
@@ -30,7 +28,7 @@ box3 = {
 
 export default function Home () {
   return (<Provider store={store}>
-    <section className="grid-container usa-section" id="share">
+    <section className="grid-container usa-section">
       <div className="grid-row grid-gap">
         <div className="tablet:grid-col-12 usa-prose">
           <h2 className="font-heading-xl margin-top-0 tablet:margin-bottom-0">
@@ -40,11 +38,9 @@ export default function Home () {
             need minimum 24 hours lead time of order, one delivery per week, how waitlist work,
             and where are the pickup locations
           </p>
-          <section id="request_form">
+          <section>
             <div className="products">
-              {[box1, box2, box3].map((box, index) => {
-                return <PromoBox box={box} index={index}/>
-              })}
+              {[box1, box2, box3].map((box, index) => <PromoBox box={box} index={index} key={index}/>)}
             </div>
           </section>
         </div>
