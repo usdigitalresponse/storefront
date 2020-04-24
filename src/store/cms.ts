@@ -28,20 +28,21 @@ export const initialCmsState: ICmsState = {
 };
 
 // utils
-export const cmsValueForKeySelector = (key: string) => (state: IAppState) => {
-  const { records, language } = state.cms;
+export function cmsValueForKeySelector(key: string) {
+  return (state: IAppState): string => {
+    const { records, language } = state.cms;
 
-  const record = records
-    .filter(record => record.key === key)
-    .map(record => (record.image ? record.image[0]?.url : getRecordValueForLanguage(record, language)))[0];
+    const value = records
+      .filter(record => record.key === key)
+      .map(record => (record.image ? record.image[0]?.url : getRecordValueForLanguage(record, language)))[0];
 
-  if (!record) {
-    console.error(`Missing ${key} value in CMS`);
-    return {};
-  }
+    if (!value) {
+      console.error(`Missing ${key} value in CMS`);
+    }
 
-  return record;
-};
+    return value;
+  };
+}
 
 export function getRecordValueForLanguage(record: CMSRecord, language: string) {
   return record[language] as string;
