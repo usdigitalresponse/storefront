@@ -1,17 +1,17 @@
-import { INavState, initialNavState, navReducer } from './nav';
+import { ICmsState, cmsReducer, initialCmsState } from './cms';
 import { combineReducers } from 'redux';
 
 // model
 export interface IAppState {
-  nav: INavState;
+  cms: ICmsState;
 }
 
 // reducer
 export const appReducer = combineReducers<IAppState>({
-  nav: navReducer,
+  cms: cmsReducer,
 });
 
 // init
 export const initialAppState = {
-  nav: initialNavState,
+  cms: initialCmsState,
 };

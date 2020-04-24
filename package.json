@@ -16,6 +16,7 @@
     "@typescript-eslint/eslint-plugin": "^2.15.0",
     "@typescript-eslint/parser": "^2.15.0",
     "airtable": "^0.8.1",
+    "airtable-plus": "^1.0.4",
     "eslint-config-prettier": "^6.9.0",
     "eslint-config-react": "^1.1.7",
     "eslint-config-react-app": "^5.1.0",
@@ -40,6 +41,7 @@
     "typescript": "~3.7.2"
   },
   "scripts": {
+    "dev": "react-scripts start --port $PORT",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
