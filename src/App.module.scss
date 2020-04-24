@@ -1,0 +1,89 @@
+@import url('https://rsms.me/inter/inter.css');
+.usa_prose,html,body,div,p,a, button { font-family: 'Inter', sans-serif !important }
+@supports (font-variation-settings: normal) {
+  html,body,div,p,.usa_prose { font-family: 'Inter var', sans-serif; }
+}
+#request_form {
+  width: 100%;
+
+  label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 25px;
+  }
+
+  input, span {
+    display: block;
+    width: 50%;
+  }
+}
+.clearfix {
+  clear: both;
+}
+
+.product-desc a, .formbox a {
+  text-decoration: none;
+  color: #09f;
+}
+
+.mainmap {
+  float: right;
+  width: 300px;
+  height: 300px;
+}
+
+.stores {
+  padding-top: 20px;
+}
+
+section a, section a:visited, section a:focus {
+  text-decoration: none;
+  color: #000;
+}
+
+.store {
+  width: 20%;
+  margin-right: 2%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid silver;
+  display: inline-block;
+  visibility: hidden;
+
+  strong {
+    display: block;
+  }
+}
+.store-home {
+  visibility: visible;
+}
+
+.formbox {
+  input {
+    max-width: 40%;
+    font-size: 120%;
+    padding: 10px;
+    margin-right: 22px;
+  }
+
+  button {
+    background: #444;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+  }
+
+  input, button {
+    display: inline-block;
+    text-align: center;
+  }
+
+  .price {
+    font-weight: bold;
+    font-size: 140%;
+  }
+}
+
+button.floater {
+  float: right;
+}
