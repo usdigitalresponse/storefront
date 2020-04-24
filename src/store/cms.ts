@@ -28,7 +28,7 @@ export const initialCmsState: ICmsState = {
 };
 
 // utils
-export const getCmsValueForKey = (key: string) => (state: IAppState) => {
+export const cmsValueForKeySelector = (key: string) => (state: IAppState) => {
   const { records, language } = state.cms;
 
   const record = records
