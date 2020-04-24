@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@now/node": "^1.5.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -16,7 +17,6 @@
     "@typescript-eslint/eslint-plugin": "^2.15.0",
     "@typescript-eslint/parser": "^2.15.0",
     "airtable": "^0.8.1",
-    "airtable-plus": "^1.0.4",
     "eslint-config-prettier": "^6.9.0",
     "eslint-config-react": "^1.1.7",
     "eslint-config-react-app": "^5.1.0",
@@ -39,8 +39,9 @@
     "reselect": "^4.0.0",
     "typescript": "~3.7.2"
   },
+  "proxy": "http://localhost:4000",
   "scripts": {
-    "dev": "react-scripts start --port $PORT",
+    "dev": "react-scripts start --port 4000",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
