@@ -62,7 +62,10 @@ export default function Home() {
       <section className="grid-container usa-section" id="currently_serving">
         <div className="grid-row grid-gap">
           <div className="tablet:grid-col-4">
-            <img src="https://dl.airtable.com/.attachments/23ef6c531660b8725020ca56d8bab5f3/4bf9260b/local.jpg" />
+            <img
+              src="https://dl.airtable.com/.attachments/23ef6c531660b8725020ca56d8bab5f3/4bf9260b/local.jpg"
+              alt="vegetables"
+            />
           </div>
           <div className="tablet:grid-col-8 usa-prose">
             <h2 className="font-heading-xl margin-top-0 tablet:margin-bottom-0">Launching local</h2>

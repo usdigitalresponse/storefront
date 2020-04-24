@@ -61,7 +61,7 @@ export default function Box() {
   return (
     <section id="product_form">
       <div style={styles.col}>
-        <img style={styles.box_preview} src={box.image} />
+        <img style={styles.box_preview} src={box.image} alt="vegetables" />
       </div>
       <div style={styles.col}>
         <h3>{box.title}</h3>

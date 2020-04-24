@@ -7,7 +7,7 @@ import BoxesHome from './pages/Boxes';
 import DriveWithUs from './pages/Driver';
 import Home from './pages/Home';
 import React from 'react';
-import styles from './App.module.scss';
+// import styles from './App.module.scss';
 
 const store = configureStore();
 CMSService.init(store);
@@ -17,6 +17,7 @@ function App() {
     <Provider store={store}>
       <Router>
         <div>
+          <div />
           <nav>
             <ul>
               <li>

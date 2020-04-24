@@ -1,5 +1,7 @@
+import { CMSRecord } from '../common/types';
+import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { SetRecords } from '../store/cms';
+import { SetLanguages, SetRecords } from '../store/cms';
 import { Store } from 'redux';
 
 export class CMSService {
@@ -15,8 +17,12 @@ export class CMSService {
     fetch('/api/get-cms')
       .then(res => res.json())
       .then(json => json.records)
-      .then(records => {
-        CMSService.store.dispatch(SetRecords.create(records));
+      .then((records: CMSRecord[]) => {
+        if (!records.length) return;
+        const languages = records[0].en.split(',');
+        CMSService.store.dispatch(
+          CompoundAction([SetRecords.create(records.slice(1)), SetLanguages.create(languages)])
+        );
       });
   }
 
