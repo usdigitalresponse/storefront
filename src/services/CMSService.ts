@@ -14,34 +14,35 @@ export class CMSService {
   }
 
   private static fetchRecords() {
-    // fetch('/api/get-cms')
-    //   .then(res => res.json())
-    //   .then(json => json.records)
-    //   .then((records: CMSRecord[]) => {
-    //     if (!records.length) return;
-    //     const languages = records[0].en.split(',');
-    //     CMSService.store.dispatch(
-    //       CompoundAction([SetRecords.create(records.slice(1)), SetLanguages.create(languages)])
-    //     );
-    //   });
+    fetch('/.netlify/functions/get-cms')
+      .then((res) => res.json())
 
-    // TODO: replace fake records with real records from airtable
-    const records = [
-      {
-        key: 'hero_title',
-        en: 'Bexar Food Program',
-        es: 'Bexar Programa de Comida',
-      },
-      {
-        key: 'hero_image',
-        en: 'vegetables',
-        es: 'verduras',
-        image: { url: 'https://dl.airtable.com/.attachments/3f876aa40d6e0dd6fd22edbf71d00232/83133c8b/bg3.jpg' },
-      },
-    ];
-    const languages = ['en', 'es'];
+      .then((records: Record<string, CMSRecord>) => {
+        console.log('fetchRecords PRE', records);
+        if (!records) return;
+        const languages = records.languages.en.split(',');
+        delete records.languages;
+        console.log('fetchRecords', records);
+        CMSService.store.dispatch(CompoundAction([SetRecords.create(records), SetLanguages.create(languages)]));
+      });
 
-    CMSService.store.dispatch(CompoundAction([SetRecords.create(records), SetLanguages.create(languages)]));
+    // // TODO: replace fake records with real records from airtable
+    // const records = [
+    //   {
+    //     key: 'hero_title',
+    //     en: 'Bexar Food Program',
+    //     es: 'Bexar Programa de Comida',
+    //   },
+    //   {
+    //     key: 'hero_image',
+    //     en: 'vegetables',
+    //     es: 'verduras',
+    //     image: { url: 'https://dl.airtable.com/.attachments/3f876aa40d6e0dd6fd22edbf71d00232/83133c8b/bg3.jpg' },
+    //   },
+    // ];
+    // const languages = ['en', 'es'];
+
+    // CMSService.store.dispatch(CompoundAction([SetRecords.create(records), SetLanguages.create(languages)]));
   }
 
   private constructor(store: Store) {

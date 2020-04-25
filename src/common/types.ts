@@ -1,6 +1,6 @@
 export interface CMSRecord extends Record<string, string | AirtableImage[]> {
-  key: string;
   en: string;
+  en_es: string;
   image: AirtableImage[];
 }
 

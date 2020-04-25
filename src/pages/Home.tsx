@@ -6,7 +6,7 @@ import React from 'react';
 
 export default function Home() {
   const heroTitle = useSelector<IAppState, string>(cmsValueForKeySelector('hero_title'));
-  const heroImageUrl = useSelector<IAppState, string>(cmsValueForKeySelector('hero_img'));
+  const heroImageUrl = useSelector<IAppState, string>(cmsValueForKeySelector('hero_image'));
 
   return (
     <div>
