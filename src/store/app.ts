@@ -4,14 +4,16 @@ import { combineReducers } from 'redux';
 // model
 export interface IAppState {
   cms: ICmsState;
+  inventory: Array<any>;
 }
 
 // reducer
 export const appReducer = combineReducers<IAppState>({
-  cms: cmsReducer,
+  cms: cmsReducer
 });
 
 // init
 export const initialAppState = {
   cms: initialCmsState,
+  inventory: []
 };

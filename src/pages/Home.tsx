@@ -5,8 +5,10 @@ import Interweave from 'interweave';
 import React from 'react';
 
 export default function Home() {
-  const heroTitle = useSelector<IAppState, string>(cmsValueForKeySelector('hero_title'));
-  const heroImageUrl = useSelector<IAppState, string>(cmsValueForKeySelector('hero_image'));
+  const heroTitle = useSelector<IAppState, string>(cmsValueForKeySelector('hero_title')),
+        heroImageUrl = useSelector<IAppState, string>(cmsValueForKeySelector('hero_image')),
+        locationImageUrl = useSelector<IAppState, string>(cmsValueForKeySelector('location_image'))
+        ;
 
   return (
     <div>
@@ -69,7 +71,7 @@ export default function Home() {
         <div className="grid-row grid-gap">
           <div className="tablet:grid-col-4">
             <img
-              src="https://dl.airtable.com/.attachments/23ef6c531660b8725020ca56d8bab5f3/4bf9260b/local.jpg"
+              src={locationImageUrl}
               alt="vegetables"
             />
           </div>

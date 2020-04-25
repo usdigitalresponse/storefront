@@ -6,6 +6,7 @@ import { Stripe, loadStripe } from '@stripe/stripe-js';
 // model
 export interface ICmsState {
   records: Record<string, CMSRecord>;
+  inventory: Record<string, CMSRecord>;
   languages: string[];
   language: string;
   stripePromise: Promise<Stripe | null> | null;
@@ -29,6 +30,7 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
 // init
 export const initialCmsState: ICmsState = {
   records: {},
+  inventory: {},
   stripePromise: null,
   languages: ['en'],
   language: 'en',
@@ -50,6 +52,13 @@ export function cmsValueForKeySelector(key: string) {
     }
 
     return getRecordValueForLanguage(value, language);
+  };
+}
+
+export function cmsInventory() {
+  return (state: IAppState): any => {
+    const { inventory } = state;
+    return inventory;
   };
 }
 

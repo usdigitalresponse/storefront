@@ -30,6 +30,10 @@ exports.handler = async (event, context) => {
       .select({ view: 'Grid view' })
       .firstPage();
 
+    const inventoryRecords = await base('Inventory')
+      .select({ view: 'Grid view' })
+      .firstPage();
+
     const configRecords = await base('Config')
       .select({ view: 'Grid view' })
       .firstPage();
@@ -47,6 +51,7 @@ exports.handler = async (event, context) => {
           stripe_public_api_key: valueOrNull(configRecordsByKey, 'stripe_public_api_key'),
         },
         cms: airTableRowsAsKey(cmsRecords),
+        inventory: inventoryRecords.map(row => row.fields),
       }),
     };
   } catch (error) {
