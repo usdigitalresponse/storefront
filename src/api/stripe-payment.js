@@ -4,6 +4,10 @@ exports.handler = async (event, context) => {
     //   return { statusCode: 405, body: 'Method Not Allowed' };
     // }
 
+    if (!event.queryStringParameters) {
+      throw new Error('event.queryStringParameters not set');
+    }
+
     const amountCents = event.queryStringParameters.amountCents;
     if (!amountCents) {
       throw new Error('No amountCents specified');
