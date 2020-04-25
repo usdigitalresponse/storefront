@@ -8,7 +8,7 @@ export default function CheckoutPage() {
   const stripePromise = useSelector(getStripePromise());
 
   if (!stripePromise) {
-    return null;
+    return <div>Loading...</div>;
   }
   return (
     <Elements stripe={stripePromise}>
