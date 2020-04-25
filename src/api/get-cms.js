@@ -15,7 +15,6 @@ const airTableRowsAsKey = function(records) {
 };
 
 const valueOrNull = function(configValues, key) {
-  console.log('config', configValues, key);
   return configValues[key] ? configValues[key].value : null;
 };
 

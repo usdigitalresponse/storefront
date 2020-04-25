@@ -47,7 +47,7 @@
     "dev": "react-scripts start --port 4000",
     "start": "react-scripts start",
     "start:api": "netlify-lambda serve src/api -c src/setupDotEnv.js",
-    "build": "yarn run build:client && yarn run build:api",
+    "build": "yarn run build:client && yarn run build:api && node ./src/setupRedirects.js",
     "build:client": "react-scripts build",
     "build:api": "netlify-lambda build src/api",
     "test": "react-scripts test",
