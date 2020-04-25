@@ -7,13 +7,32 @@ exports.handler = async (event, context) => {
     const records = await base('CMS')
       .select({ view: 'Grid view' })
       .firstPage();
+
+    const rowFields = records.map((row) => {
+      return row.fields;
+    });
+
+    const fieldsByKey = {};
+    rowFields.map((row) => {
+      fieldsByKey[row.key] = {
+        ...row,
+      };
+      delete fieldsByKey[row.key]['key'];
+    });
+
     return {
       statusCode: 200,
-      body: JSON.stringify(records),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(fieldsByKey),
     };
   } catch (error) {
     return {
       statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: {
         status: 'Error',
         error: error.message,
