@@ -7,6 +7,7 @@ import BoxesHome from './pages/Boxes';
 import DriveWithUs from './pages/Driver';
 import Home from './pages/Home';
 import React from 'react';
+import CheckoutPage from './pages/CheckoutPage';
 // import styles from './App.module.scss';
 
 const store = configureStore();
@@ -40,6 +41,9 @@ function App() {
             </Route>
             <Route path="/box_details">
               <BoxPage />
+            </Route>
+            <Route path="/checkout">
+              <CheckoutPage />
             </Route>
             <Route path="/">
               <Home />

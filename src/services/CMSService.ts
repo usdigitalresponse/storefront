@@ -1,7 +1,7 @@
 import { CMSRecord } from '../common/types';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { SetLanguages, SetRecords } from '../store/cms';
+import { SetLanguages, SetRecords, SetStripePromise } from '../store/cms';
 import { Store } from 'redux';
 
 export class CMSService {
@@ -24,9 +24,13 @@ export class CMSService {
           console.error('Config not defined');
           return;
         }
-        const languages = records.config.languages;
-
-        CMSService.store.dispatch(CompoundAction([SetRecords.create(records.cms), SetLanguages.create(languages)]));
+        CMSService.store.dispatch(
+          CompoundAction([
+            SetRecords.create(records.cms),
+            SetLanguages.create(records.config.languages),
+            SetStripePromise.create(records.config.stripe_public_api_key),
+          ]),
+        );
       });
 
     // // TODO: replace fake records with real records from airtable

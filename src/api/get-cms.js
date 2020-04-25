@@ -14,6 +14,11 @@ const airTableRowsAsKey = function(records) {
   return fieldsByKey;
 };
 
+const valueOrNull = function(configValues, key) {
+  console.log('config', configValues, key);
+  return configValues[key] ? configValues[key].value : null;
+};
+
 exports.handler = async (event, context) => {
   try {
     if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY) {
@@ -39,7 +44,8 @@ exports.handler = async (event, context) => {
       },
       body: JSON.stringify({
         config: {
-          languages: configRecordsByKey.languages ? configRecordsByKey.languages.value : null,
+          languages: valueOrNull(configRecordsByKey, 'languages'),
+          stripe_public_api_key: valueOrNull(configRecordsByKey, 'stripe_public_api_key'),
         },
         cms: airTableRowsAsKey(cmsRecords),
       }),
@@ -50,10 +56,10 @@ exports.handler = async (event, context) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: {
+      body: JSON.stringify({
         status: 'Error',
         error: error.message,
-      },
+      }),
     };
   }
 };
