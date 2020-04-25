@@ -18,12 +18,15 @@ export class CMSService {
       .then((res) => res.json())
 
       .then((records: Record<string, CMSRecord>) => {
-        console.log('fetchRecords PRE', records);
         if (!records) return;
-        const languages = records.languages.en.split(',');
-        delete records.languages;
-        console.log('fetchRecords', records);
-        CMSService.store.dispatch(CompoundAction([SetRecords.create(records), SetLanguages.create(languages)]));
+
+        if (!records.config) {
+          console.error('Config not defined');
+          return;
+        }
+        const languages = records.config.languages;
+
+        CMSService.store.dispatch(CompoundAction([SetRecords.create(records.cms), SetLanguages.create(languages)]));
       });
 
     // // TODO: replace fake records with real records from airtable
