@@ -8,6 +8,7 @@ export function configureStore(): Store<IAppState> {
   const reducer = reduceCompoundActions(appReducer);
   const enhancer = applyMiddleware(
     thunk,
+    // TODO: add redux-persist here to persist store key 'cart' to local storage
     loggingMiddleware({
       ignore: [],
     }) as Middleware

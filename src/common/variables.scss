@@ -1,0 +1,3 @@
+@function spacing($multiple) {
+  @return $multiple * 8px;
+}

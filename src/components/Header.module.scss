@@ -1,0 +1,19 @@
+@import '../common/variables';
+
+.title {
+  flex-grow: 1;
+}
+
+.menuButton {
+  margin-right: spacing(1);
+}
+
+.headerLink {
+  margin-right: spacing(1);
+  color: white !important;
+}
+
+.drawerList {
+  min-width: 250px;
+}
+

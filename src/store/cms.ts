@@ -1,7 +1,7 @@
 import { CMSRecord } from '../common/types';
 import { IAppState } from './app';
-import { TypedAction, TypedReducer, setWith } from 'redoodle';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
+import { TypedAction, TypedReducer, setWith } from 'redoodle';
 
 // model
 export interface ICmsState {
@@ -21,9 +21,9 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
   .withHandler(SetRecords.TYPE, (state, records) => setWith(state, { records }))
   .withHandler(SetLanguages.TYPE, (state, languages) => setWith(state, { languages }))
   .withHandler(SetStripePromise.TYPE, (state, stripePublicKey) =>
-    setWith(state, { stripePromise: loadStripe(stripePublicKey) }),
+    setWith(state, { stripePromise: loadStripe(stripePublicKey) })
   )
-  .withDefaultHandler((state) => (state ? state : initialCmsState))
+  .withDefaultHandler(state => (state ? state : initialCmsState))
   .build();
 
 // init
