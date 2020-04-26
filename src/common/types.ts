@@ -23,3 +23,13 @@ export interface AirtableImageThumbnail {
   height: number;
   width: number;
 }
+
+export interface INavItem {
+  name: string;
+  url: string;
+}
+
+export interface ICartItem {
+  id: string;
+  quantity: number;
+}

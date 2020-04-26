@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
     "@now/node": "^1.5.1",
     "@stripe/react-stripe-js": "^1.1.2",
     "@stripe/stripe-js": "^1.4.0",
@@ -44,7 +46,7 @@
     "typescript": "~3.7.2"
   },
   "scripts": {
-    "dev": "react-scripts start --port 4000",
+    "dev": "yarn run start && yarn run start:api",
     "start": "react-scripts start",
     "start:api": "netlify-lambda serve src/api -c src/setupDotEnv.js",
     "build": "yarn run build:client && yarn run build:api && node ./src/setupRedirects.js",
