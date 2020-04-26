@@ -1,1 +1,5 @@
 @import '../common/variables';
+
+.content {
+  min-height: calc(100vh - #{$headerHeight} - #{$footerHeight});
+}

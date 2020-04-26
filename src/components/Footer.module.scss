@@ -1,0 +1,28 @@
+@import '../common/variables';
+
+.footer {
+  min-height: $footerHeight;
+  padding: spacing(6) 0;
+  background-color: #eceff1;
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-bottom: spacing(6);
+
+  .link {
+    margin: 0 spacing(2) !important;
+  }
+
+  &.small {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    .link {
+      margin: spacing(1) 0 !important;
+    }
+  }
+}

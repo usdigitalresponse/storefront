@@ -1,3 +1,7 @@
+
+$headerHeight: 64px;
+$footerHeight: 300px;
+
 @function spacing($multiple) {
   @return $multiple * 8px;
 }
