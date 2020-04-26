@@ -1,3 +1,4 @@
+import Footer from '../components/Footer';
 import Header from '../components/Header';
 import React from 'react';
 import styles from './BaseLayout.module.scss';
@@ -9,6 +10,7 @@ const BaseLayout: React.FC<Props> = ({ children }) => {
     <div className={styles.container}>
       <Header />
       <div className={styles.content}>{children}</div>
+      <Footer />
     </div>
   );
 };

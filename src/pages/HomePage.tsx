@@ -5,7 +5,11 @@ import styles from './HomePage.module.scss';
 interface Props {}
 
 const HomePage: React.FC<Props> = () => {
-  return <BaseLayout>Home Page</BaseLayout>;
+  return (
+    <BaseLayout>
+      <div className={styles.home}>Home</div>
+    </BaseLayout>
+  );
 };
 
 export default HomePage;

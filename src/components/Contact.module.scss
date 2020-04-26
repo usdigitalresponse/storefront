@@ -1,0 +1,31 @@
+@import '../common/variables';
+
+.contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-weight: 500;
+  margin-bottom: spacing(1);
+}
+
+.info {
+  display: flex;
+  flex-direction: row;
+
+
+  .email, .phone {
+    margin: 0 spacing(2);
+    text-align: center;
+  }
+
+  &.small {
+    flex-direction: column;
+
+    .email, .phone {
+      margin: spacing(1) 0;
+    }
+  }
+}

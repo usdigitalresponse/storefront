@@ -31,6 +31,6 @@ export const itemsSelector = Reselect.createSelector(
   }
 );
 
-export const cartItemCountSelector = Reselect.createSelector(itemsSelector, (items: ICartItem[]) => {
+export const ICartItemCountSelector = Reselect.createSelector(itemsSelector, (items: ICartItem[]) => {
   return items.reduce((acc: number, item: ICartItem) => acc + item.quantity, 0);
 });

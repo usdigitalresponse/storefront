@@ -24,6 +24,11 @@ export interface AirtableImageThumbnail {
   width: number;
 }
 
+export interface IRoute {
+  path: string;
+  component: React.FC;
+}
+
 export interface INavItem {
   name: string;
   url: string;
