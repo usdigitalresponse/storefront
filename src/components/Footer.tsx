@@ -1,7 +1,8 @@
 import { INavItem } from '../common/types';
-import { Link, useMediaQuery } from '@material-ui/core';
-import { reverse } from '../common/rotuer';
+import { reverse } from '../common/router';
+import { useMediaQuery } from '@material-ui/core';
 import ContactUs from './Contact';
+import Link from './Link';
 import React from 'react';
 import classNames from 'classnames';
 import styles from './Footer.module.scss';

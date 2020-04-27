@@ -3,9 +3,8 @@ import { Provider } from 'react-redux';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core';
 import { configureStore } from './store/configureStore';
-import BoxPage from './pages/Box';
-import BoxesHome from './pages/Boxes';
-import CheckoutPage from './pages/CheckoutPage';
+import { routePaths } from './common/router';
+import CartPage from './pages/CartPage';
 import HomePage from './pages/HomePage';
 import React from 'react';
 import theme from './common/theme';
@@ -13,22 +12,25 @@ import theme from './common/theme';
 const store = configureStore();
 CMSService.init(store);
 
+// must also update routePaths /src/common/router.ts
+const routeComponents: Record<string, React.FC> = {
+  home: HomePage,
+  about: HomePage,
+  products: HomePage,
+  donate: HomePage,
+  drivers: HomePage,
+  cart: CartPage,
+};
+
 function App() {
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <Router>
           <Switch>
-            <Route path="/boxes">
-              <BoxesHome />
-            </Route>
-            <Route path="/box_details">
-              <BoxPage />
-            </Route>
-            <Route path="/checkout">
-              <CheckoutPage />
-            </Route>
-            <Route path="/" component={HomePage} />
+            {Object.keys(routeComponents).map(routeId => (
+              <Route key={routeId} path={routePaths[routeId]} component={routeComponents[routeId]} exact={true} />
+            ))}
           </Switch>
         </Router>
       </ThemeProvider>

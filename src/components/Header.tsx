@@ -3,21 +3,20 @@ import {
   Badge,
   Drawer,
   IconButton,
-  Link,
   List,
   ListItem,
   ListItemText,
   Toolbar,
-  Typography,
   useMediaQuery,
 } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { ICartItemCountSelector } from '../store/cart';
 import { INavItem } from '../common/types';
 import { cmsValueForKeySelector } from '../store/cms';
-import { reverse } from '../common/rotuer';
+import { reverse } from '../common/router';
 import { useSelector } from 'react-redux';
 import CartIcon from '@material-ui/icons/ShoppingCart';
+import Link from './Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import React, { useState } from 'react';
 import styles from './Header.module.scss';
@@ -54,7 +53,7 @@ const Header: React.FC = () => {
             </IconButton>
             <Drawer anchor="left" open={drawerIsOpen} onClose={() => setDrawerIsOpen(false)}>
               <List className={styles.drawerList}>
-                {headerNavItems.map((item) => (
+                {headerNavItems.map(item => (
                   <ListItem button component={'a'} key={item.name} href={item.url}>
                     <ListItemText primary={item.name} />
                   </ListItem>
@@ -63,19 +62,19 @@ const Header: React.FC = () => {
             </Drawer>
           </>
         )}
-        <Typography variant="h6" className={styles.title}>
+        <Link href={reverse('home')} variant="h6" className={styles.title}>
           {pageTitle}
-        </Typography>
+        </Link>
         {!isSmall && (
           <div>
-            {headerNavItems.map((item) => (
+            {headerNavItems.map(item => (
               <Link key={item.name} href={item.url} className={styles.headerLink}>
                 {item.name}
               </Link>
             ))}
           </div>
         )}
-        <IconButton edge="end" color="inherit" onClick={() => setDrawerIsOpen(true)}>
+        <IconButton edge="end" color="inherit" component={Link} href={reverse('cart')}>
           <Badge badgeContent={ICartItemsCount} color="secondary" invisible={ICartItemsCount === 0}>
             <CartIcon />
           </Badge>

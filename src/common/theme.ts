@@ -28,6 +28,15 @@ const theme = createMuiTheme({
         fontSize: 12,
       },
     },
+    MuiLink: {
+      root: {
+        opacity: 0.8,
+        transition: 'opacity 0.3s',
+        '&:hover': {
+          opacity: 1,
+        },
+      },
+    },
   },
   props: {
     MuiButtonBase: {
@@ -35,6 +44,9 @@ const theme = createMuiTheme({
     },
     MuiCheckbox: {
       disableRipple: true,
+    },
+    MuiLink: {
+      underline: 'none',
     },
   },
 });
