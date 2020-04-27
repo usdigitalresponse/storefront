@@ -2,9 +2,19 @@ import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { StripeCardElement } from '@stripe/stripe-js';
 import React, { useState } from 'react';
 import { createOrder } from '../common/orders';
-import { OrderItem } from '../common/types';
 
 export default function CheckoutForm() {
+  const mockOrderDetails = {
+    deliveryAddress: '25 Test Street',
+    fullName: 'John Johnsonson',
+    items: [
+      {
+        quantity: 1,
+        inventoryId: 'recgndRjkR2NKpD6A',
+      },
+    ],
+  };
+
   const elements = useElements();
   const stripe = useStripe();
   const paymentAmountCents = 100;
@@ -12,6 +22,7 @@ export default function CheckoutForm() {
   const [errorMessage, setErrorMessage] = useState<string | null | undefined>();
   const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
   const [isPaying, setIsPaying] = useState<boolean>(false);
+  const [paidOrder, setpaidOrder] = useState<null | any>(null);
 
   const handleSubmit = async (event: any) => {
     // Block native form submission.
@@ -62,16 +73,12 @@ export default function CheckoutForm() {
         const createdOrder = await createOrder({
           stripePaymentId: result.paymentIntent.id,
           amount: paymentAmountCents / 100,
-          deliveryAddress: 'N/A',
-          fullName: 'N/A',
-          items: [
-            {
-              quantity: 1,
-              inventoryId: 'recgndRjkR2NKpD6A',
-            },
-          ],
+          deliveryAddress: mockOrderDetails.deliveryAddress,
+          fullName: mockOrderDetails.fullName,
+          items: mockOrderDetails.items,
         });
         console.log('createdOrder', createdOrder);
+        setpaidOrder(createdOrder);
         setPaymentSuccess(true);
         setIsPaying(false);
       }
@@ -88,7 +95,22 @@ export default function CheckoutForm() {
         <div className="tablet:grid-col-8 usa-prose">
           <h2 className="font-heading-xl margin-top-0 tablet:margin-bottom-0">Checkout</h2>
           <p>Paying ${(paymentAmountCents / 100).toFixed(2)}</p>
-          {paymentSuccess && <span style={{ color: 'green' }}>Order placed successfully</span>}
+          <table>
+            <tbody>
+              <tr>
+                <th>Name:</th>
+                <td>
+                  <input type="text" disabled value={mockOrderDetails.fullName} />
+                </td>
+              </tr>
+              <tr>
+                <th>Delivery Address:</th>
+                <td>
+                  <input type="text" disabled value={mockOrderDetails.deliveryAddress} />
+                </td>
+              </tr>
+            </tbody>
+          </table>
           {!paymentSuccess && (
             <form onSubmit={handleSubmit}>
               <CardElement />
@@ -97,6 +119,13 @@ export default function CheckoutForm() {
               </button>
               {errorMessage && <span style={{ color: 'red' }}>{errorMessage}</span>}
             </form>
+          )}
+
+          {paymentSuccess && <span style={{ color: 'green' }}>Order placed successfully</span>}
+          {paidOrder && (
+            <pre style={{ width: 800, height: 200, backgroundColor: '#eee', whiteSpace: 'pre-wrap' }}>
+              {JSON.stringify(paidOrder)}
+            </pre>
           )}
         </div>
       </div>
