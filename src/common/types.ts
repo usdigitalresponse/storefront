@@ -45,3 +45,16 @@ export interface ICartItem {
   id: string;
   quantity: number;
 }
+
+export type Order = {
+  fullName: string;
+  deliveryAddress: string;
+  stripePaymentId: string;
+  amount: number;
+  items: OrderItem[];
+};
+
+export type OrderItem = {
+  quantity: number;
+  inventoryId: string;
+};
