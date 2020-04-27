@@ -4,6 +4,13 @@ export interface CMSRecord extends Record<string, string | AirtableImage[]> {
   image: AirtableImage[];
 }
 
+export interface InventoryRecord {
+  id: string;
+  itemName: string;
+  price: number;
+  image: AirtableImage[];
+}
+
 export interface AirtableImage {
   id: string;
   url: string;
