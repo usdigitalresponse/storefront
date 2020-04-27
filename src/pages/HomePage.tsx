@@ -2,8 +2,8 @@ import BaseLayout from '../layouts/BaseLayout';
 import React from 'react';
 import styles from './HomePage.module.scss';
 import { useSelector } from 'react-redux';
-import { ICmsState, getInventoryItems } from '../store/cms';
-import { List, ListItem, ListItemText } from '@material-ui/core';
+import { getInventoryItems } from '../store/cms';
+import { List, ListItem } from '@material-ui/core';
 
 interface Props {}
 

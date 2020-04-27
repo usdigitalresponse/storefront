@@ -21,10 +21,11 @@ const valueOrNull = function(configValues, key) {
 exports.handler = async (event, context) => {
   try {
     if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY) {
-      throw new Error('Airtable API keys not set');
+      // throw new Error('Airtable API keys not set');
     }
 
-    const base = require('airtable').base(process.env.AIRTABLE_BASE_ID);
+    var Airtable = require('airtable');
+    const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
 
     const cmsRecords = await base('CMS')
       .select({ view: 'Grid view' })
