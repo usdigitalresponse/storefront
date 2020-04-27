@@ -11,7 +11,7 @@ import theme from '../common/theme';
 const footerNavItems: INavItem[] = [
   { name: 'About us', url: reverse('about') },
   { name: 'Pickup Locations', url: reverse('drivers') },
-  { name: 'Get Involved', url: reverse('drivers') },
+  { name: 'Drive for us', url: reverse('drivers') },
   // TODO: Create airtable view for wholesalers and update url
   { name: 'Partner Login', url: 'https://airtable.com' },
   // TODO: Create airtable view for drivers and update url

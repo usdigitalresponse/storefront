@@ -26,7 +26,7 @@ import theme from '../common/theme';
 
 export const headerNavItems: INavItem[] = [
   { name: 'Get Started', url: reverse('products') },
-  { name: 'Get Involved', url: reverse('drivers') },
+  { name: 'Drive for us', url: reverse('drivers') },
   // TODO: Create airtable view for wholesalers and update url
   { name: 'Partner Login', url: 'https://airtable.com' },
   // TODO: Create airtable view for drivers and update url

@@ -4,8 +4,8 @@ import styles from './AboutPage.module.scss';
 
 const AboutPage: React.FC = () => {
   return (
-    <BaseLayout>
-      <div className={styles.about}>About</div>
+    <BaseLayout title="About the program">
+      <div className={styles.about}>Details about the program</div>
     </BaseLayout>
   );
 };

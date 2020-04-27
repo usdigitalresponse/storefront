@@ -7,6 +7,8 @@ import { routePaths } from './common/router';
 import AboutPage from './pages/AboutPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
+import DonatePage from './pages/DonatePage';
+import DriversPage from './pages/DriversPage';
 import HomePage from './pages/HomePage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import ProductsPage from './pages/ProductsPage';
@@ -22,8 +24,8 @@ const routeComponents: Record<string, React.FC> = {
   about: AboutPage,
   products: ProductsPage,
   product: ProductDetailPage,
-  donate: HomePage,
-  drivers: HomePage,
+  donate: DonatePage,
+  drivers: DriversPage,
   cart: CartPage,
   checkout: CheckoutPage,
 };
