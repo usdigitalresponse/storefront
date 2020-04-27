@@ -4,9 +4,12 @@ import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core';
 import { configureStore } from './store/configureStore';
 import { routePaths } from './common/router';
+import AboutPage from './pages/AboutPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import HomePage from './pages/HomePage';
+import ProductDetailPage from './pages/ProductDetailPage';
+import ProductsPage from './pages/ProductsPage';
 import React from 'react';
 import theme from './common/theme';
 
@@ -16,8 +19,9 @@ CMSService.init(store);
 // must also update routePaths /src/common/router.ts
 const routeComponents: Record<string, React.FC> = {
   home: HomePage,
-  about: HomePage,
-  products: HomePage,
+  about: AboutPage,
+  products: ProductsPage,
+  product: ProductDetailPage,
   donate: HomePage,
   drivers: HomePage,
   cart: CartPage,

@@ -58,3 +58,7 @@ export type OrderItem = {
   quantity: number;
   inventoryId: string;
 };
+
+export interface IProductRouteParams {
+  id: string;
+}

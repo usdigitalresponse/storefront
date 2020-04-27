@@ -40,13 +40,29 @@ export const initialCmsState: ICmsState = {
 };
 
 // selectors
+export const inventoryItemsSelector = Reselect.createSelector(
+  (state: IAppState) => state.cms.inventoryItems,
+  (inventoryItems: InventoryRecord[]) => {
+    return inventoryItems;
+  }
+);
+
 export const appIsReadySelector = Reselect.createSelector(
   (state: IAppState) => state.cms.cmsRecords,
-  (state: IAppState) => state.cms.inventoryItems,
+  inventoryItemsSelector,
   (records: Record<string, CMSRecord>, inventoryItems: InventoryRecord[]) => {
     return Object.keys(records).length > 0 && inventoryItems.length > 0;
   }
 );
+
+export const makeProductDetailSelector = () =>
+  Reselect.createSelector(
+    inventoryItemsSelector,
+    (_: any, productId: string) => productId,
+    (inventoryItems: InventoryRecord[], productId: string) => {
+      return inventoryItems.find(item => item.id === productId);
+    }
+  );
 
 // utils
 export function cmsValueForKeySelector(key: string) {
@@ -82,10 +98,4 @@ export function getStripePromise() {
 
 export function getRecordValueForLanguage(record: CMSRecord, language: string) {
   return record[language] as string;
-}
-
-export function getInventoryItems() {
-  return (state: IAppState): InventoryRecord[] => {
-    return state.cms.inventoryItems;
-  };
 }

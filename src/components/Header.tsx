@@ -13,7 +13,8 @@ import { IAppState } from '../store/app';
 import { ICartItemCountSelector } from '../store/cart';
 import { INavItem } from '../common/types';
 import { cmsValueForKeySelector } from '../store/cms';
-import { reverse } from '../common/router';
+import { reverse, routePaths } from '../common/router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import CartIcon from '@material-ui/icons/ShoppingCart';
 import Interweave from 'interweave';
@@ -33,6 +34,7 @@ export const headerNavItems: INavItem[] = [
 ];
 
 const Header: React.FC = () => {
+  const isCheckout = useLocation().pathname === routePaths.checkout;
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const pageTitle = useSelector<IAppState, string>(cmsValueForKeySelector('page_title'));
   const ICartItemsCount = useSelector<IAppState, number>(ICartItemCountSelector);
@@ -42,7 +44,7 @@ const Header: React.FC = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        {isSmall && (
+        {isSmall && !isCheckout && (
           <>
             <IconButton
               edge="start"
@@ -66,7 +68,7 @@ const Header: React.FC = () => {
         <Link href={reverse('home')} variant="h6" className={styles.title}>
           <Interweave content={pageTitle} />
         </Link>
-        {!isSmall && (
+        {!isSmall && !isCheckout && (
           <div>
             {headerNavItems.map(item => (
               <Link key={item.name} href={item.url} className={styles.headerLink}>

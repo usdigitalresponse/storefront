@@ -10,9 +10,11 @@ import classNames from 'classnames';
 import styles from './BaseLayout.module.scss';
 import theme from '../common/theme';
 
-interface Props {}
+interface Props {
+  title?: string;
+}
 
-const BaseLayout: React.FC<Props> = ({ children }) => {
+const BaseLayout: React.FC<Props> = ({ children, title }) => {
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const appIsReady = useSelector<IAppState, boolean>(appIsReadySelector);
 
@@ -20,7 +22,14 @@ const BaseLayout: React.FC<Props> = ({ children }) => {
     <div className={styles.container}>
       <Header />
       <div className={classNames(styles.content, { [styles.small]: isSmall })}>
-        {appIsReady ? children : <Loading />}
+        {appIsReady ? (
+          <>
+            {title && <div className={styles.title}>{title}</div>}
+            {children}
+          </>
+        ) : (
+          <Loading />
+        )}
       </div>
       <Footer />
     </div>

@@ -3,6 +3,7 @@ export const routePaths: Record<string, string> = {
   home: '/',
   about: '/about',
   products: '/products',
+  product: '/products/:id',
   donate: '/donate',
   drivers: '/drivers',
   cart: '/cart',
