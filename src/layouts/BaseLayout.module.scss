@@ -1,5 +1,12 @@
 @import '../common/variables';
 
 .content {
+  display: flex;
+  flex-direction: column;
   min-height: calc(100vh - #{$headerHeight} - #{$footerHeight});
+  padding: spacing(4);
+
+  &.small {
+    padding: spacing(2);
+  }
 }

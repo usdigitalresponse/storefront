@@ -1,7 +1,7 @@
 import { Elements } from '@stripe/react-stripe-js';
 import { getStripePromise } from '../store/cms';
 import { useSelector } from 'react-redux';
-import CheckoutForm from './CheckoutForm';
+import CheckoutForm from '../components/CheckoutForm';
 import React from 'react';
 
 export default function CheckoutPage() {

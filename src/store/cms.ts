@@ -1,3 +1,4 @@
+import * as Reselect from 'reselect';
 import { CMSRecord, InventoryRecord } from '../common/types';
 import { IAppState } from './app';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
@@ -24,9 +25,9 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
   .withHandler(SetLanguages.TYPE, (state, languages) => setWith(state, { languages }))
   .withHandler(SetInventory.TYPE, (state, inventoryItems) => setWith(state, { inventoryItems }))
   .withHandler(SetStripePromise.TYPE, (state, stripePublicKey) =>
-    setWith(state, { stripePromise: loadStripe(stripePublicKey) }),
+    setWith(state, { stripePromise: loadStripe(stripePublicKey) })
   )
-  .withDefaultHandler((state) => (state ? state : initialCmsState))
+  .withDefaultHandler(state => (state ? state : initialCmsState))
   .build();
 
 // init
@@ -37,6 +38,15 @@ export const initialCmsState: ICmsState = {
   languages: ['en'],
   language: 'en',
 };
+
+// selectors
+export const appIsReadySelector = Reselect.createSelector(
+  (state: IAppState) => state.cms.cmsRecords,
+  (state: IAppState) => state.cms.inventoryItems,
+  (records: Record<string, CMSRecord>, inventoryItems: InventoryRecord[]) => {
+    return Object.keys(records).length > 0 && inventoryItems.length > 0;
+  }
+);
 
 // utils
 export function cmsValueForKeySelector(key: string) {

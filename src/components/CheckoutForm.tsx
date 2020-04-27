@@ -1,7 +1,7 @@
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { StripeCardElement } from '@stripe/stripe-js';
-import React, { useState } from 'react';
 import { createOrder } from '../common/orders';
+import React, { useState } from 'react';
 
 export default function CheckoutForm() {
   const mockOrderDetails = {
@@ -38,8 +38,8 @@ export default function CheckoutForm() {
 
     try {
       const clientSecretResult = await fetch(
-        '/.netlify/functions/stripe-payment?amountCents=' + paymentAmountCents,
-      ).then((res) => res.json());
+        '/.netlify/functions/stripe-payment?amountCents=' + paymentAmountCents
+      ).then(res => res.json());
 
       if (!clientSecretResult || !clientSecretResult.client_secret) {
         throw new Error('Could not get client secret from API');

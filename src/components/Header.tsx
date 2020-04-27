@@ -16,6 +16,7 @@ import { cmsValueForKeySelector } from '../store/cms';
 import { reverse } from '../common/router';
 import { useSelector } from 'react-redux';
 import CartIcon from '@material-ui/icons/ShoppingCart';
+import Interweave from 'interweave';
 import Link from './Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import React, { useState } from 'react';
@@ -63,7 +64,7 @@ const Header: React.FC = () => {
           </>
         )}
         <Link href={reverse('home')} variant="h6" className={styles.title}>
-          {pageTitle}
+          <Interweave content={pageTitle} />
         </Link>
         {!isSmall && (
           <div>

@@ -5,6 +5,7 @@ import { ThemeProvider } from '@material-ui/core';
 import { configureStore } from './store/configureStore';
 import { routePaths } from './common/router';
 import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
 import HomePage from './pages/HomePage';
 import React from 'react';
 import theme from './common/theme';
@@ -20,6 +21,7 @@ const routeComponents: Record<string, React.FC> = {
   donate: HomePage,
   drivers: HomePage,
   cart: CartPage,
+  checkout: CheckoutPage,
 };
 
 function App() {

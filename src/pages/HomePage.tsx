@@ -10,10 +10,6 @@ interface Props {}
 const HomePage: React.FC<Props> = () => {
   const inventory = useSelector(getInventoryItems());
 
-  if (!inventory.length) {
-    return <BaseLayout>Loading...</BaseLayout>;
-  }
-
   return (
     <BaseLayout>
       <div className={styles.home}>

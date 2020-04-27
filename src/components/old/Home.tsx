@@ -1,5 +1,5 @@
-import { IAppState } from '../store/app';
-import { cmsValueForKeySelector } from '../store/cms';
+import { IAppState } from '../../store/app';
+import { cmsValueForKeySelector } from '../../store/cms';
 import { useSelector } from 'react-redux';
 import Interweave from 'interweave';
 import React from 'react';

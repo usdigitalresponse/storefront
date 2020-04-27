@@ -6,6 +6,7 @@ export const routePaths: Record<string, string> = {
   donate: '/donate',
   drivers: '/drivers',
   cart: '/cart',
+  checkout: '/checkout',
 };
 
 export function reverse(routeId: string): string {
