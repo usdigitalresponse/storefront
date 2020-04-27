@@ -12,16 +12,17 @@ import theme from '../common/theme';
 
 interface Props {
   title?: string;
+  padding?: number;
 }
 
-const BaseLayout: React.FC<Props> = ({ children, title }) => {
+const BaseLayout: React.FC<Props> = ({ children, title, padding }) => {
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const appIsReady = useSelector<IAppState, boolean>(appIsReadySelector);
 
   return (
     <div className={styles.container}>
       <Header />
-      <div className={classNames(styles.content, { [styles.small]: isSmall })}>
+      <div className={classNames(styles.content, { [styles.small]: isSmall })} style={{ padding }}>
         {appIsReady ? (
           <>
             {title && <div className={styles.title}>{title}</div>}

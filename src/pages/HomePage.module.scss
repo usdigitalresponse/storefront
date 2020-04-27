@@ -1,1 +1,64 @@
 @import '../common/variables';
+
+.home {
+  .hero {
+    padding: spacing(15) 0;
+    width: 100vw;
+    background-color: aliceblue;
+  }
+
+  .heroTitle {
+    font-size: 48px;
+    margin-bottom: spacing(3);
+  }
+
+  .heroDesc {
+    font-size: 20px;
+    margin-bottom: spacing(4);
+  }
+
+  .section {
+    padding: spacing(4) 0;
+  }
+
+  .sectionTitle {
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: spacing(2);
+  }
+
+  .cta {
+    display: flex;
+
+    .ctaButton {
+      min-width: 160px;
+        margin: 0 spacing(2);
+
+        &:first-child {
+          margin-left: 0;
+        }
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+  }
+
+  &.small {
+    .hero {
+      padding: spacing(6) 0;
+    }
+
+      .heroDesc {
+        font-size: 18px;
+      }
+
+    .cta {
+      flex-direction: column;
+
+      .ctaButton {
+        margin: spacing(1) 0;
+      }
+    }
+  }
+}
