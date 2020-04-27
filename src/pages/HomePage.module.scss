@@ -18,7 +18,7 @@
   }
 
   .section {
-    padding: spacing(4) 0;
+    padding: spacing(6) 0;
   }
 
   .sectionTitle {
@@ -49,9 +49,9 @@
       padding: spacing(6) 0;
     }
 
-      .heroDesc {
-        font-size: 18px;
-      }
+    .heroDesc {
+      font-size: 18px;
+    }
 
     .cta {
       flex-direction: column;
@@ -59,6 +59,10 @@
       .ctaButton {
         margin: spacing(1) 0;
       }
+    }
+
+    .section {
+      padding: spacing(4) 0;
     }
   }
 }
