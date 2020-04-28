@@ -15,18 +15,17 @@ const Contact: React.FC = () => {
   const phone = useSelector<IAppState, string>(cmsValueForKeySelector('contact_phone'));
 
   return (
-    <div className={styles.contact}>
+    <div className={classNames(styles.contact, { [styles.small]: isSmall })}>
       <span className={styles.title}>
         <Interweave content={title} />
+        {!isSmall && ':'}
       </span>
-      <div className={classNames(styles.info, { [styles.small]: isSmall })}>
-        <Link href={`mailto:${email}`} className={styles.email}>
-          <Interweave content={email} />
-        </Link>
-        <span className={styles.phone}>
-          <Interweave content={phone} />
-        </span>
-      </div>
+      <Link href={`mailto:${email}`} className={styles.email}>
+        <Interweave content={email} />
+      </Link>
+      <span className={styles.phone}>
+        <Interweave content={phone} />
+      </span>
     </div>
   );
 };

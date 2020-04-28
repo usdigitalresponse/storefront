@@ -14,12 +14,11 @@ const theme = createMuiTheme({
         textTransform: 'none',
       },
       contained: {
-        boxShadow: 'none',
+        color: 'white !important',
+        opacity: 0.9,
+        transition: 'opacity 0.3s',
         '&:hover': {
-          boxShadow: 'none',
-        },
-        '&:active': {
-          boxShadow: 'none',
+          opacity: 1,
         },
       },
     },
@@ -30,15 +29,17 @@ const theme = createMuiTheme({
     },
     MuiLink: {
       root: {
-        opacity: 0.8,
-        transition: 'opacity 0.3s',
+        transition: 'color 0.3s, opacity 0.3s',
         '&:hover': {
-          opacity: 1,
+          color: 'rgba(0,0,0,0.87)',
         },
       },
     },
   },
   props: {
+    MuiButton: {
+      disableElevation: true,
+    },
     MuiButtonBase: {
       disableRipple: true,
     },
