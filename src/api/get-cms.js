@@ -42,7 +42,8 @@ exports.handler = async (event, context) => {
     const inventory = inventoryRecords.map((row) => {
       return {
         id: row.id,
-        itemName: row.fields['Item Name'],
+        name: row.fields['Name'],
+        description: row.fields['Description'],
         price: row.fields['Price'],
         image: row.fields['Image'],
       };

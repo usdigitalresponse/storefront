@@ -1,0 +1,13 @@
+@import '../common/variables';
+
+.container {
+  display: flex;
+
+  .image {
+    height: 300px;
+    width: 300px;
+    background-color: aliceblue;
+  }
+
+
+}

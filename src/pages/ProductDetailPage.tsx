@@ -13,7 +13,7 @@ const ProductDetailPage: React.FC = () => {
   const productDetail = useSelector((state: IAppState) => productDetailSelector(state, productId));
 
   return (
-    <BaseLayout title={productDetail?.itemName}>
+    <BaseLayout title={productDetail?.name}>
       <div className={styles.cart}>Product {productId}</div>
     </BaseLayout>
   );

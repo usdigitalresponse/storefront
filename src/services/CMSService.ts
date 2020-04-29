@@ -24,6 +24,7 @@ export class CMSService {
           console.error('Config not defined');
           return;
         }
+
         CMSService.store.dispatch(
           CompoundAction([
             SetRecords.create(records.cms),

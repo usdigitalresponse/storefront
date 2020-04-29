@@ -1,4 +1,5 @@
 // must also update routeComponents in /src/App.tsx
+export type RouteId = 'home' | 'about' | 'products' | 'product' | 'donate' | 'drivers' | 'cart' | 'checkout';
 export const routePaths: Record<string, string> = {
   home: '/',
   about: '/about',
@@ -10,6 +11,6 @@ export const routePaths: Record<string, string> = {
   checkout: '/checkout',
 };
 
-export function reverse(routeId: string): string {
+export function reverse(routeId: RouteId): string {
   return routePaths[routeId];
 }
