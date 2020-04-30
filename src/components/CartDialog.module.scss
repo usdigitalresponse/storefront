@@ -10,28 +10,8 @@
     }
   }
 
-  .details {
-    display: flex;
-  }
-
-  .productName {
-    @include fontSize('lg');
-  }
-
-  .image {
-    width: 150px;
-    height: 150px;
-    flex-shrink: 0;
-    background-position: center center;
-    background-size: cover;
-  }
-
-  .info {
-    padding: spacing(2);
-  }
-
-  .price {
-    @include fontSize('md');
+  .item {
+    min-width: 550px;
   }
 
   .footer {
@@ -39,20 +19,6 @@
   }
 
   &.small {
-    .image {
-      width: 120px;
-      height: 120px;
-    }
-
-    .info {
-      padding: spacing(1) spacing(2);
-    }
-
-    .productName {
-      @include fontSize('md');
-      font-weight: 500;
-    }
-
     .footer {
       flex-direction: column;
     }

@@ -31,7 +31,7 @@ const CartDialog: React.FC = () => {
         <CheckIcon className={styles.titleIcon} /> Added to Cart
       </DialogTitle>
       <DialogContent className={styles.content}>
-        <CartItem item={item} />
+        <CartItem item={item} className={styles.item} />
       </DialogContent>
       <DialogActions className={styles.footer}>
         <Button className={styles.actionButton} size="large" onClick={onClose} color="primary" variant="outlined">

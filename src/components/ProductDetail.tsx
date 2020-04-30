@@ -28,8 +28,12 @@ const ProductDetail: React.FC<Props> = ({ product, className }) => {
   }
 
   return (
-    <Card elevation={2} className={classNames(styles.container, className, { [styles.small]: isSmall })}>
-      <div className={styles.image} style={{ backgroundImage: `url(${getImageUrl(product.image)})` }} />
+    <Card
+      elevation={isSmall ? 2 : 0}
+      raised={isSmall}
+      className={classNames(styles.container, className, { [styles.small]: isSmall, [styles.large]: !isSmall })}
+    >
+      <img className={styles.image} src={getImageUrl(product.image)} />
       <div className={styles.content}>
         <Typography variant="h4" className={styles.title}>
           {name}
@@ -54,7 +58,7 @@ const ProductDetail: React.FC<Props> = ({ product, className }) => {
           <Grid item sm={5} xs={12} className={styles.ctaAction}>
             <Button
               className={styles.ctaButton}
-              variant="contained"
+              variant="outlined"
               color="primary"
               size="large"
               component={Link}

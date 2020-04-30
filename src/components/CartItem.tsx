@@ -13,16 +13,17 @@ import styles from './CartItem.module.scss';
 interface Props {
   item: ICartItem;
   editable?: boolean;
+  className?: string;
 }
 
-const CartItem: React.FC<Props> = ({ item, editable = false }) => {
+const CartItem: React.FC<Props> = ({ item, editable = false, className }) => {
   const productDetailSelector = useMemo(makeProductDetailSelector, []);
   const isSmall = useIsSmall();
   const product = useSelector((state: IAppState) => productDetailSelector(state, item?.id));
 
   return product ? (
-    <Card elevation={2} className={classNames(styles.container, { [styles.small]: isSmall })}>
-      <div className={styles.image} style={{ backgroundImage: `url(${getImageUrl(product.image)})` }} />
+    <Card elevation={2} className={classNames(styles.container, className, { [styles.small]: isSmall })}>
+      <img className={styles.image} src={getImageUrl(product.image)} />
       <div className={styles.info}>
         <Typography variant="h4" className={styles.productName}>
           {product.name}
