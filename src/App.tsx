@@ -5,6 +5,7 @@ import { ThemeProvider } from '@material-ui/core';
 import { configureStore } from './store/configureStore';
 import { routePaths } from './common/router';
 import AboutPage from './pages/AboutPage';
+import CartDialog from './components/CartDialog';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import DonatePage from './pages/DonatePage';
@@ -41,6 +42,7 @@ function App() {
             ))}
           </Switch>
         </Router>
+        <CartDialog />
       </ThemeProvider>
     </Provider>
   );

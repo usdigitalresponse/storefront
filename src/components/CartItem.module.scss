@@ -1,0 +1,42 @@
+@import '../common/variables';
+
+.container {
+  display: flex;
+
+  .productName {
+    @include fontSize('lg');
+  }
+
+  .image {
+    width: 150px;
+    height: 150px;
+    flex-shrink: 0;
+    background-position: center center;
+    background-size: cover;
+  }
+
+  .info {
+    padding: spacing(2);
+  }
+
+  .price {
+    @include fontSize('md')
+  }
+
+  &.small {
+    .image {
+      width: 120px;
+      height: 120px;
+    }
+
+    .info {
+      padding: spacing(1) spacing(2);
+    }
+
+    .productName {
+      @include fontSize('md');
+      font-weight: 500;
+    }
+  }
+}
+

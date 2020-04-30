@@ -16,7 +16,7 @@ const HomePage: React.FC<Props> = () => {
   const pageTitle = useCms('page_title');
 
   return (
-    <BaseLayout padding={0}>
+    <BaseLayout padding={0} maxWidth={0}>
       <div className={classNames(styles.home, { [styles.small]: isSmall })}>
         <Grid container justify="center" className={styles.hero}>
           <Grid item sm={8} xs={10} className={styles.heroContent}>

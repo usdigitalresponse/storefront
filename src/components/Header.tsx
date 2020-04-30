@@ -42,7 +42,7 @@ const Header: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar>
         {isSmall && !isCheckout && (
           <>
