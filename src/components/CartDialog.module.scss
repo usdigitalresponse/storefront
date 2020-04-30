@@ -1,0 +1,70 @@
+@import '../common/variables';
+
+.dialog {
+  .title h2 {
+    display: flex;
+    align-items: center;
+
+    .titleIcon {
+      margin-right: spacing(1);
+    }
+  }
+
+  .details {
+    display: flex;
+  }
+
+  .productName {
+    @include fontSize('lg');
+  }
+
+  .image {
+    width: 150px;
+    height: 150px;
+    flex-shrink: 0;
+    background-position: center center;
+    background-size: cover;
+  }
+
+  .info {
+    padding: spacing(2);
+  }
+
+  .price {
+    @include fontSize('md');
+  }
+
+  .footer {
+    padding: spacing(3) !important;
+  }
+
+  &.small {
+    .image {
+      width: 120px;
+      height: 120px;
+    }
+
+    .info {
+      padding: spacing(1) spacing(2);
+    }
+
+    .productName {
+      @include fontSize('md');
+      font-weight: 500;
+    }
+
+    .footer {
+      flex-direction: column;
+    }
+
+    .actionButton {
+      align-self: stretch;
+      margin: 0;
+
+      &:first-child {
+        margin-bottom: spacing(2);
+      }
+    }
+  }
+}
+

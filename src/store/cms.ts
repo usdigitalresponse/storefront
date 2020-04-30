@@ -3,6 +3,7 @@ import { CMSRecord, InventoryRecord } from '../common/types';
 import { IAppState } from './app';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
+import { useSelector } from 'react-redux';
 
 // model
 export interface ICmsState {
@@ -68,19 +69,19 @@ export const makeProductDetailSelector = () =>
 export function cmsValueForKeySelector(key: string) {
   return (state: IAppState): string => {
     const { cmsRecords, language } = state.cms;
-    if (!cmsRecords) {
-      console.error(`CMS data not loaded`);
+    const value: CMSRecord = cmsRecords[key];
+
+    if (Object.keys(cmsRecords).length === 0) {
       return '';
     }
 
-    const value: CMSRecord = cmsRecords[key];
+    if (value.image) {
+      return value.image[0]?.url;
+    }
 
     if (!value) {
       console.error(`Missing ${key} value in CMS`);
       return '';
-    }
-    if (value.image) {
-      return value.image[0]?.url;
     }
 
     return getRecordValueForLanguage(value, language);
@@ -98,4 +99,9 @@ export function getStripePromise() {
 
 export function getRecordValueForLanguage(record: CMSRecord, language: string) {
   return record[language] as string;
+}
+
+// hooks
+export function useCms(key: string) {
+  return useSelector<IAppState, string>(cmsValueForKeySelector(key));
 }

@@ -1,1 +1,15 @@
 @import '../common/variables';
+
+.container {
+  .productDetail {
+    margin-bottom: spacing(6);
+  }
+
+  &.isSmall {
+    .productDetail {
+      margin-bottom: spacing(4);
+    }
+  }
+}
+
+

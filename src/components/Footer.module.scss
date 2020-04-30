@@ -1,6 +1,7 @@
 @import '../common/variables';
 
 .footer {
+  width: 100vw;
   min-height: $footerHeight;
   padding: spacing(6) 0;
   background-color: #eceff1;
