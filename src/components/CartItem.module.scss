@@ -3,7 +3,7 @@
 .container {
   display: flex;
 
-  .productName {
+  .name, .price {
     @include fontSize('lg');
   }
 
@@ -15,14 +15,47 @@
   }
 
   .info {
+    width: 100%;
     padding: spacing(2);
   }
 
-  .price {
-    @include fontSize('md');
+  .header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: spacing(1);
+  }
+
+  .description {
+    margin-bottom: spacing(2);
+  }
+
+  .quantity {
+    margin-right: spacing(2);
+    height: $buttonHeight;
+
+    > select {
+      height: $buttonHeight !important;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
   }
 
   &.small {
+    .header {
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .name {
+      @include fontSize('md');
+      font-weight: 500;
+    }
+
+    .price {
+      @include fontSize('md');
+    }
+
     .image {
       width: 100px;
       height: 100px;
@@ -30,11 +63,6 @@
 
     .info {
       padding: spacing(1) spacing(2);
-    }
-
-    .productName {
-      @include fontSize('md');
-      font-weight: 500;
     }
   }
 }

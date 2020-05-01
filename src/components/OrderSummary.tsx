@@ -48,7 +48,7 @@ const OrderSummary: React.FC<Props> = ({ className }) => {
           {formatCurrency(tax)}
         </Typography>
       </div>
-      <div className={styles.line}>
+      <div className={classNames(styles.line, styles.total)}>
         <Typography variant="body1" className={styles.label}>
           Total
         </Typography>

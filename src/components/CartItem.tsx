@@ -1,62 +1,82 @@
-import { Card, Select, Typography } from '@material-ui/core';
+import { Button, Select, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { ICartItem } from '../common/types';
+import { RemoveItem, UpdateItem } from '../store/cart';
 import { formatCurrency } from '../common/format';
 import { getImageUrl } from '../common/utils';
 import { makeProductDetailSelector } from '../store/cms';
+import { useDispatch, useSelector } from 'react-redux';
 import { useIsSmall } from '../common/hooks';
-import { useSelector } from 'react-redux';
-import React, { useMemo } from 'react';
+import CollapsibleText from './CollapsibleText';
+import React, { ChangeEvent, useMemo } from 'react';
 import classNames from 'classnames';
 import styles from './CartItem.module.scss';
 
 interface Props {
   item: ICartItem;
+  index?: number;
   editable?: boolean;
   className?: string;
 }
 
-const CartItem: React.FC<Props> = ({ item, editable = false, className }) => {
+const CartItem: React.FC<Props> = ({ item, editable = false, className, index }) => {
   const productDetailSelector = useMemo(makeProductDetailSelector, []);
   const isSmall = useIsSmall();
   const product = useSelector((state: IAppState) => productDetailSelector(state, item?.id));
+  const dispatch = useDispatch();
+
+  function removeItem() {
+    dispatch(RemoveItem.create(index!));
+  }
+
+  function updateItem(e: ChangeEvent<any>) {
+    dispatch(UpdateItem.create({ ...item, quantity: parseInt(e.target.value) }));
+  }
 
   return product ? (
-    <Card elevation={2} className={classNames(styles.container, className, { [styles.small]: isSmall })}>
-      <img className={styles.image} src={getImageUrl(product.image)} />
+    <div className={classNames(styles.container, className, { [styles.small]: isSmall })}>
+      <img className={styles.image} src={getImageUrl(product.image)} alt={product.name} />
       <div className={styles.info}>
-        <Typography variant="h4" className={styles.productName}>
-          {product.name}
-        </Typography>
-        <div className={styles.order}>
+        <div className={styles.header}>
+          <Typography variant="h4" className={styles.name}>
+            {product.name}
+          </Typography>
           <Typography variant="body1" className={styles.price}>
             {formatCurrency(product.price)}
           </Typography>
+        </div>
+        <CollapsibleText alwaysCollapse={true} text={product.description} className={styles.description} />
+        <div className={styles.order}>
           {!editable && (
-            <Typography variant="body1" className={styles.quantity}>
+            <Typography variant="body1" className={styles.quantityLabel}>
               &times; {item.quantity}
             </Typography>
           )}
           {editable && (
-            <Select
-              native
-              className={styles.quantity}
-              color="primary"
-              variant="outlined"
-              value={item.quantity}
-              inputProps={{ name: 'quantity' }}
-              // onChange={(e: ChangeEvent<any>) => setQuantity(e.target.value)}
-            >
-              {[1, 2, 3, 4, 5, 6, 7, 8].map(q => (
-                <option key={q} value={q}>
-                  {q}
-                </option>
-              ))}
-            </Select>
+            <>
+              <Select
+                native
+                className={styles.quantity}
+                color="primary"
+                variant="outlined"
+                value={item.quantity}
+                inputProps={{ name: 'quantity' }}
+                onChange={updateItem}
+              >
+                {[1, 2, 3, 4, 5, 6, 7, 8].map(q => (
+                  <option key={q} value={q}>
+                    {q}
+                  </option>
+                ))}
+              </Select>
+              <Button color="primary" onClick={removeItem}>
+                Remove
+              </Button>
+            </>
           )}
         </div>
       </div>
-    </Card>
+    </div>
   ) : null;
 };
 

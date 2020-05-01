@@ -17,7 +17,7 @@ const OrderTypeSelector: React.FC = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item sm={6} xs={12}>
+      <Grid item md={6} sm={12}>
         <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
           <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.DELIVERY))}>
             <div className={classNames(styles.content, styles.delivery)}>
@@ -29,14 +29,14 @@ const OrderTypeSelector: React.FC = () => {
                   Deliver to Me
                 </Typography>
                 <Typography variant="body1" className={styles.description}>
-                  Credit or debit card payments only
+                  Credit / Debit Card Only
                 </Typography>
               </div>
             </div>
           </CardActionArea>
         </Card>
       </Grid>
-      <Grid item sm={6} xs={12}>
+      <Grid item md={6} sm={12}>
         <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
           <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.PICKUP))}>
             <div className={styles.content}>
@@ -48,7 +48,7 @@ const OrderTypeSelector: React.FC = () => {
                   Pickup
                 </Typography>
                 <Typography variant="body1" className={styles.description}>
-                  Required if paying with cash or EBT
+                  Required for EBT or Cash
                 </Typography>
               </div>
             </div>
