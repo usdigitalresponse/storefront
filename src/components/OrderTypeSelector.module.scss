@@ -1,0 +1,44 @@
+@import '../common/variables';
+
+.option {
+  display: flex;
+  flex-direction: column;
+
+  .content {
+    min-height: 80px;
+    flex-grow: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    &.delivery {
+      min-height: 132px;
+    }
+  }
+
+  .check {
+    padding: spacing(2) spacing(1.5) spacing(2) spacing(2);
+    align-self: flex-start;
+  }
+
+  .label {
+    padding: spacing(1.7) 0 spacing(2);
+  }
+
+  .title {
+    @include fontSize('md');
+    font-weight: 500;
+  }
+
+  .actions {
+    padding-left: spacing(6);
+  }
+
+  &.small {
+    .content {
+      min-height: auto;
+    }
+  }
+}
+
+

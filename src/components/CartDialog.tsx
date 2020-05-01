@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+import { Button, Card, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { ICartItem } from '../common/types';
 import { SetDialogIsOpen } from '../store/cart';
@@ -31,7 +31,9 @@ const CartDialog: React.FC = () => {
         <CheckIcon className={styles.titleIcon} /> Added to Cart
       </DialogTitle>
       <DialogContent className={styles.content}>
-        <CartItem item={item} className={styles.item} />
+        <Card elevation={2}>
+          <CartItem item={item} className={styles.item} />
+        </Card>
       </DialogContent>
       <DialogActions className={styles.footer}>
         <Button className={styles.actionButton} size="large" onClick={onClose} color="primary" variant="outlined">

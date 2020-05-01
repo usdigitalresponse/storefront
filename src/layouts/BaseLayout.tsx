@@ -1,6 +1,7 @@
 import { Grid, Typography, useMediaQuery } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { appIsReadySelector } from '../store/cms';
+import { useScrollToTop } from '../common/hooks';
 import { useSelector } from 'react-redux';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -20,6 +21,7 @@ interface Props {
 const BaseLayout: React.FC<Props> = ({ children, title, description, padding, maxWidth }) => {
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const appIsReady = useSelector<IAppState, boolean>(appIsReadySelector);
+  useScrollToTop();
 
   return (
     <div className={styles.container}>

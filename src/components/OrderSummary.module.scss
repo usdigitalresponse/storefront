@@ -1,0 +1,33 @@
+@import '../common/variables';
+
+.container {
+  height: fit-content;
+  padding: spacing(2);
+
+  .title {
+    @include fontSize('lg');
+    margin-bottom: spacing(3);
+  }
+
+  .line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: spacing(1);
+
+    .label, .value {
+      @include fontSize('smd');
+    }
+
+    &.total {
+      margin-top: spacing(2);
+      padding-top: spacing(2);
+      box-shadow: inset 0 1px 0 0 rgba(0,0,0,0.15);
+
+      .label, .value {
+        @include fontSize('md');
+        font-weight: 500;
+      }
+    }
+  }
+
+}
