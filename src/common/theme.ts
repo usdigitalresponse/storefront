@@ -39,9 +39,10 @@ const theme = createMuiTheme({
   props: {
     MuiButton: {
       disableElevation: true,
+      disableRipple: true,
     },
     MuiButtonBase: {
-      disableRipple: true,
+      // disableRipple: true,
     },
     MuiCheckbox: {
       disableRipple: true,

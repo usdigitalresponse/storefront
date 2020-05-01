@@ -1,6 +1,6 @@
 import * as Reselect from 'reselect';
 import { IAppState } from './app';
-import { ICartItem } from '../common/types';
+import { ICartItem, InventoryRecord, OrderType } from '../common/types';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 import update from 'immutability-helper';
 
@@ -8,18 +8,22 @@ import update from 'immutability-helper';
 export interface ICartState {
   items: ICartItem[];
   dialogIsOpen: boolean;
+  orderType: OrderType;
+  taxRate: number;
 }
 
 // actions
 export const SetItems = TypedAction.define('APP/CART/SET_ITEMS')<ICartItem[]>();
 export const AddItem = TypedAction.define('APP/CART/ADD_ITEM')<ICartItem>();
 export const SetDialogIsOpen = TypedAction.define('APP/CART/SET_DIALOG_IS_OPEN')<boolean>();
+export const SetOrderType = TypedAction.define('APP/CART/SET_ORDER_TYPE')<OrderType>();
 
 // reducer
 export const cartReducer: any = TypedReducer.builder<ICartState>()
   .withHandler(SetItems.TYPE, (state, items) => setWith(state, { items }))
   .withHandler(AddItem.TYPE, (state, item) => update(state, { items: { $push: [item] }, dialogIsOpen: { $set: true } }))
   .withHandler(SetDialogIsOpen.TYPE, (state, dialogIsOpen) => setWith(state, { dialogIsOpen }))
+  .withHandler(SetOrderType.TYPE, (state, orderType) => setWith(state, { orderType }))
   .withDefaultHandler(state => (state ? state : initialCartState))
   .build();
 
@@ -28,6 +32,8 @@ export const initialCartState: ICartState = {
   // TODO: For illustration only, default to empty cart
   items: [],
   dialogIsOpen: false,
+  orderType: OrderType.DELIVERY,
+  taxRate: 0.085,
 };
 
 // selectors
@@ -41,3 +47,14 @@ export const itemsSelector = Reselect.createSelector(
 export const ICartItemCountSelector = Reselect.createSelector(itemsSelector, (items: ICartItem[]) => {
   return items.reduce((acc: number, item: ICartItem) => acc + item.quantity, 0);
 });
+
+export const subtotalSelector = Reselect.createSelector(
+  (state: IAppState) => state.cart.items,
+  (state: IAppState) => state.cms.inventoryItems,
+  (state: IAppState) => state.cart.taxRate,
+  (cartItems: ICartItem[], inventoryItems: InventoryRecord[], taxRate: number) => {
+    return cartItems.reduce((acc: number, cartItem: ICartItem) => {
+      return acc + cartItem.quantity * (inventoryItems.find(product => product.id === cartItem.id)?.price || 0);
+    }, 0);
+  }
+);

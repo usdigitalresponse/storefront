@@ -1,1 +1,15 @@
 @import '../common/variables';
+
+.summary {
+  margin-top: spacing(2);
+}
+
+.cartItems {
+  display: flex;
+  flex-direction: column;
+}
+
+.cartItem {
+  justify-self: stretch;
+  margin-bottom: spacing(2);
+}

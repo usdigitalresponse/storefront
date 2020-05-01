@@ -12,12 +12,14 @@ export interface ICmsState {
   languages: string[];
   language: string;
   stripePromise: Promise<Stripe | null> | null;
+  taxRate: number;
 }
 
 // actions
 export const SetRecords = TypedAction.define('APP/CMS/SET_RECORDS')<any>();
 export const SetInventory = TypedAction.define('APP/CMS/SET_INVENTORY')<any>();
 export const SetLanguages = TypedAction.define('APP/CMS/SET_LANGUAGES')<any>();
+export const SetTaxRate = TypedAction.define('APP/CMS/SET_TAX_RATE')<any>();
 export const SetStripePromise = TypedAction.define('APP/CMS/SET_STRIPE_PROMISE')<any>();
 
 // reducer
@@ -38,6 +40,7 @@ export const initialCmsState: ICmsState = {
   stripePromise: null,
   languages: ['en'],
   language: 'en',
+  taxRate: 0.085,
 };
 
 // selectors

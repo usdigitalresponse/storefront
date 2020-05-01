@@ -1,7 +1,7 @@
 import { CMSRecord } from '../common/types';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { SetInventory, SetLanguages, SetRecords, SetStripePromise } from '../store/cms';
+import { SetInventory, SetLanguages, SetRecords, SetStripePromise, SetTaxRate } from '../store/cms';
 import { Store } from 'redux';
 
 export class CMSService {
@@ -31,6 +31,7 @@ export class CMSService {
             SetLanguages.create(records.config.languages),
             SetStripePromise.create(records.config.stripe_public_api_key),
             SetInventory.create(records.inventory),
+            SetTaxRate.create(records.config.tax_rate),
           ])
         );
       });

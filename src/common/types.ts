@@ -63,3 +63,8 @@ export type OrderItem = {
 export interface IProductRouteParams {
   id: string;
 }
+
+export enum OrderType {
+  DELIVERY = 'devliery',
+  PICKUP = 'pickup',
+}

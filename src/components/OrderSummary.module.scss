@@ -1,0 +1,18 @@
+@import '../common/variables';
+
+.container {
+  width: 100%;
+  padding: spacing(2);
+
+  .title {
+    @include fontSize('lg');
+    margin-bottom: spacing(2);
+  }
+
+  .line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: spacing(1);
+  }
+
+}
