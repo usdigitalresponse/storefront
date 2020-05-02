@@ -12,12 +12,11 @@ import {
 import { IAppState } from '../store/app';
 import { ICartItemCountSelector } from '../store/cart';
 import { INavItem } from '../common/types';
-import { cmsValueForKeySelector } from '../store/cms';
 import { reverse, routePaths } from '../common/router';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import CartIcon from '@material-ui/icons/ShoppingCart';
-import Interweave from 'interweave';
+import Content from './Content';
 import Link from './Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import React, { useState } from 'react';
@@ -36,7 +35,6 @@ export const headerNavItems: INavItem[] = [
 const Header: React.FC = () => {
   const isCheckout = useLocation().pathname === routePaths.checkout;
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
-  const pageTitle = useSelector<IAppState, string>(cmsValueForKeySelector('page_title'));
   const ICartItemsCount = useSelector<IAppState, number>(ICartItemCountSelector);
 
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
@@ -66,7 +64,7 @@ const Header: React.FC = () => {
           </>
         )}
         <Link href={reverse('home')} variant="h6" className={styles.title}>
-          <Interweave content={pageTitle} />
+          <Content id="page_title" />
         </Link>
         {!isSmall && !isCheckout && (
           <div>

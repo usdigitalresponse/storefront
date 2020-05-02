@@ -1,4 +1,4 @@
-export interface CMSRecord extends Record<string, string | AirtableImage[]> {
+export interface IContentRecord extends Record<string, string | AirtableImage[]> {
   en: string;
   en_es: string;
   image: AirtableImage[];

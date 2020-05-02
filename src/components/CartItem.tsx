@@ -21,9 +21,9 @@ interface Props {
 
 const CartItem: React.FC<Props> = ({ item, editable = false, className, index }) => {
   const productDetailSelector = useMemo(makeProductDetailSelector, []);
-  const isSmall = useIsSmall();
   const product = useSelector((state: IAppState) => productDetailSelector(state, item?.id));
   const dispatch = useDispatch();
+  const isSmall = useIsSmall();
 
   function removeItem() {
     dispatch(RemoveItem.create(index!));

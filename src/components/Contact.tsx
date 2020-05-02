@@ -1,8 +1,6 @@
-import { IAppState } from '../store/app';
 import { Link, useMediaQuery } from '@material-ui/core';
-import { cmsValueForKeySelector } from '../store/cms';
-import { useSelector } from 'react-redux';
-import Interweave from 'interweave';
+import { useContent } from '../store/cms';
+import Content from './Content';
 import React from 'react';
 import classNames from 'classnames';
 import styles from './Contact.module.scss';
@@ -10,21 +8,19 @@ import theme from '../common/theme';
 
 const Contact: React.FC = () => {
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
-  const title = useSelector<IAppState, string>(cmsValueForKeySelector('contact_title'));
-  const email = useSelector<IAppState, string>(cmsValueForKeySelector('contact_email'));
-  const phone = useSelector<IAppState, string>(cmsValueForKeySelector('contact_phone'));
+  const email = useContent('contact_email');
 
   return (
     <div className={classNames(styles.contact, { [styles.small]: isSmall })}>
       <span className={styles.title}>
-        <Interweave content={title} />
+        <Content id="contact_title" />
         {!isSmall && ':'}
       </span>
       <Link href={`mailto:${email}`} className={styles.email}>
-        <Interweave content={email} />
+        <Content id="contact_email" />
       </Link>
       <span className={styles.phone}>
-        <Interweave content={phone} />
+        <Content id="contact_phone" />
       </span>
     </div>
   );

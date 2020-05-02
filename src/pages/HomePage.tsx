@@ -1,8 +1,7 @@
 import { Button, Grid, Typography, useMediaQuery } from '@material-ui/core';
 import { reverse } from '../common/router';
-import { useCms } from '../store/cms';
 import BaseLayout from '../layouts/BaseLayout';
-import Interweave from 'interweave';
+import Content from '../components/Content';
 import Link from '../components/Link';
 import React from 'react';
 import classNames from 'classnames';
@@ -13,7 +12,6 @@ interface Props {}
 
 const HomePage: React.FC<Props> = () => {
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
-  const pageTitle = useCms('page_title');
 
   return (
     <BaseLayout padding={0} maxWidth={0}>
@@ -21,7 +19,7 @@ const HomePage: React.FC<Props> = () => {
         <Grid container justify="center" className={styles.hero}>
           <Grid item md={8} sm={10} className={styles.heroContent}>
             <Typography variant="h1" className={styles.heroTitle}>
-              <Interweave content={pageTitle} />
+              <Content id="page_title" />
             </Typography>
             <Typography variant="body1" className={styles.heroDesc}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida

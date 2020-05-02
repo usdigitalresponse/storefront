@@ -60,11 +60,11 @@ export const ICartItemCountSelector = Reselect.createSelector(itemsSelector, (it
 
 export const subtotalSelector = Reselect.createSelector(
   (state: IAppState) => state.cart.items,
-  (state: IAppState) => state.cms.inventoryItems,
+  (state: IAppState) => state.cms.inventory,
   (state: IAppState) => state.cart.taxRate,
-  (cartItems: ICartItem[], inventoryItems: InventoryRecord[], taxRate: number) => {
+  (cartItems: ICartItem[], inventory: InventoryRecord[], taxRate: number) => {
     return cartItems.reduce((acc: number, cartItem: ICartItem) => {
-      return acc + cartItem.quantity * (inventoryItems.find(product => product.id === cartItem.id)?.price || 0);
+      return acc + cartItem.quantity * (inventory.find(product => product.id === cartItem.id)?.price || 0);
     }, 0);
   }
 );

@@ -1,4 +1,4 @@
-import { inventoryItemsSelector } from '../store/cms';
+import { inventorySelector } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
 import BaseLayout from '../layouts/BaseLayout';
@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import styles from './ProductsPage.module.scss';
 
 const ProductsPage: React.FC = () => {
-  const inventory = useSelector(inventoryItemsSelector);
+  const inventory = useSelector(inventorySelector);
   const isSmall = useIsSmall();
 
   return (

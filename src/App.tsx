@@ -1,4 +1,4 @@
-import { CMSService } from './services/CMSService';
+import { AirtableService } from './services/AirtableService';
 import { Provider } from 'react-redux';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core';
@@ -17,7 +17,7 @@ import React from 'react';
 import theme from './common/theme';
 
 const store = configureStore();
-CMSService.init(store);
+AirtableService.init(store);
 
 // must also update routePaths /src/common/router.ts
 const routeComponents: Record<string, React.FC> = {
