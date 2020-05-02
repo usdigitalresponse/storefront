@@ -41,8 +41,8 @@ function App() {
               <Route key={routeId} path={routePaths[routeId]} component={routeComponents[routeId]} exact={true} />
             ))}
           </Switch>
+          <CartDialog />
         </Router>
-        <CartDialog />
       </ThemeProvider>
     </Provider>
   );

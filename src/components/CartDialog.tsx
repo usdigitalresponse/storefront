@@ -2,10 +2,12 @@ import { Button, Card, Dialog, DialogActions, DialogContent, DialogTitle } from 
 import { IAppState } from '../store/app';
 import { ICartItem } from '../common/types';
 import { SetDialogIsOpen } from '../store/cart';
+import { reverse } from '../common/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsSmall } from '../common/hooks';
 import CartItem from './CartItem';
 import CheckIcon from '@material-ui/icons/Check';
+import Link from './Link';
 import React from 'react';
 import classNames from 'classnames';
 import styles from './CartDialog.module.scss';
@@ -46,6 +48,8 @@ const CartDialog: React.FC = () => {
           color="primary"
           variant="contained"
           autoFocus
+          component={Link}
+          href={reverse('cart')}
         >
           View Cart &amp; Checkout
         </Button>
