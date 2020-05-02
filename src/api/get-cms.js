@@ -53,7 +53,14 @@ exports.handler = async (event, context) => {
       .select({ view: DEFAULT_VIEW })
       .firstPage();
 
-    const inventory = inventoryRecords.map((row) => {
+    const inventory = inventoryRecords
+    .filter(row =>
+      row.fields['Name'] &&
+      row.fields['Description'] &&
+      row.fields['Price'] &&
+      row.fields['Image']
+    )
+    .map((row) => {
       return {
         id: row.id,
         name: row.fields['Name'],
