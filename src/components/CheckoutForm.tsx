@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 
 export default function CheckoutForm() {
   const mockOrderDetails = {
+    email: 'jordan@fergus.com',
     deliveryAddress: '25 Test Street',
     fullName: 'John Johnsonson',
     items: [
@@ -38,8 +39,8 @@ export default function CheckoutForm() {
 
     try {
       const clientSecretResult = await fetch(
-        '/.netlify/functions/stripe-payment?amountCents=' + paymentAmountCents
-      ).then(res => res.json());
+        '/.netlify/functions/stripe-payment?amountCents=' + paymentAmountCents,
+      ).then((res) => res.json());
 
       if (!clientSecretResult || !clientSecretResult.client_secret) {
         throw new Error('Could not get client secret from API');
@@ -71,6 +72,7 @@ export default function CheckoutForm() {
         setErrorMessage(null);
 
         const createdOrder = await createOrder({
+          email: mockOrderDetails.email,
           stripePaymentId: result.paymentIntent.id,
           amount: paymentAmountCents / 100,
           deliveryAddress: mockOrderDetails.deliveryAddress,

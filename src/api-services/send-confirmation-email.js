@@ -14,7 +14,13 @@ export const sendConfirmationEmail = (orderId) => {
 
       const formattedAmount = numeral(order['Amount']).format('$0,0.00');
 
-      const emailResult = await sendEmail({
+      let orderItemText = '<ul>';
+      order.items.map((item) => {
+        orderItemText += '<li>' + item['Quantity'] + ' x ' + item['inventoryName'] + '</li>';
+      });
+      orderItemText += '</ul>';
+
+      const emailOptions = {
         to: {
           email: order['Email'],
           name: order['Contact Name'],
@@ -25,10 +31,15 @@ export const sendConfirmationEmail = (orderId) => {
         <p>
           <b>Name:</b> ${order['Contact Name']}<br/>
           <b>Address:</b> ${order['Delivery Address']}<br/>
+            ${orderItemText}
+
+          <br/>
           <b>Total:</b> ${formattedAmount}<br/>
         </p>
         `,
-      });
+      };
+
+      const emailResult = await sendEmail(emailOptions);
 
       return resolve(emailResult[0].statusCode === 202);
     } catch (error) {
