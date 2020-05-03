@@ -49,6 +49,7 @@ export interface ICartItem {
 
 export type Order = {
   fullName: string;
+  email: string;
   deliveryAddress: string;
   amount: number;
   items: OrderItem[];

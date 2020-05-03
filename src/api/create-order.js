@@ -1,3 +1,5 @@
+const { sendConfirmationEmail } = require('../api-services/send-confirmation-email');
+
 exports.handler = async (event, context) => {
   try {
     if (event.httpMethod !== 'POST') {
@@ -18,9 +20,7 @@ exports.handler = async (event, context) => {
       throw new Error('Invalid Order Intent');
     }
 
-    console.log('orderIntent', orderIntent);
-
-    const requiredFields = ['fullName', 'deliveryAddress', 'amount', 'items'];
+    const requiredFields = ['fullName', 'deliveryAddress', 'amount', 'items', 'email'];
 
     requiredFields.map((field) => {
       if (!orderIntent[field]) {
@@ -40,7 +40,9 @@ exports.handler = async (event, context) => {
     const orders = await base('Orders').create([
       {
         fields: {
+          'Order Status': 'Paid & Waiting Fulfillment',
           'Contact Name': orderIntent.fullName,
+          Email: orderIntent.email,
           'Delivery Address': orderIntent.deliveryAddress,
           'Stripe Payment ID': orderIntent.stripePaymentId,
           Amount: orderIntent.amount,
@@ -59,6 +61,12 @@ exports.handler = async (event, context) => {
         };
       }),
     );
+
+    try {
+      const emailResult = await sendConfirmationEmail(orders[0].fields['Order ID']);
+    } catch (error) {
+      console.log('Error sending confirmation email', error);
+    }
 
     return {
       statusCode: 200,

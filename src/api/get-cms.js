@@ -1,45 +1,17 @@
 const DEFAULT_VIEW = 'Grid view';
 
-const airTableRowsAsKey = function(records) {
-  const rowFields = records.map((row) => {
-    return row.fields;
-  });
-
-  const fieldsByKey = {};
-  rowFields.map((row) => {
-    fieldsByKey[row.key] = {
-      ...row,
-    };
-    delete fieldsByKey[row.key]['key'];
-  });
-
-  return fieldsByKey;
-};
-
-const valueOrNull = function(configValues, key) {
-  return configValues[key] ? configValues[key].value : null;
-};
+const { airTableRowsAsKey, valueOrNull, fetchTable } = require('../api-services/airtableHelper');
+const { successResponse, errorResponse } = require('../api-services/response');
 
 exports.handler = async (event, context) => {
   try {
-    if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY) {
-      // throw new Error('Airtable API keys not set');
-    }
-
-    var Airtable = require('airtable');
-    const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
-
     // Site Content
-    const contentList = await base('Content')
-      .select({ view: DEFAULT_VIEW })
-      .firstPage();
+    const contentList = await fetchTable('Content', { view: DEFAULT_VIEW });
 
     const content = airTableRowsAsKey(contentList);
 
     // Config
-    const configRecords = await base('Config')
-      .select({ view: DEFAULT_VIEW })
-      .firstPage();
+    const configRecords = await fetchTable('Config', { view: DEFAULT_VIEW });
 
     const configRecordsByKey = airTableRowsAsKey(configRecords);
 
@@ -49,31 +21,22 @@ exports.handler = async (event, context) => {
     };
 
     // Inventory
-    const inventoryRecords = await base('Inventory')
-      .select({ view: DEFAULT_VIEW })
-      .firstPage();
+    const inventoryRecords = await fetchTable('Inventory', { view: DEFAULT_VIEW });
 
     const inventory = inventoryRecords
-    .filter(row =>
-      row.fields['Name'] &&
-      row.fields['Description'] &&
-      row.fields['Price'] &&
-      row.fields['Image']
-    )
-    .map((row) => {
-      return {
-        id: row.id,
-        name: row.fields['Name'],
-        description: row.fields['Description'],
-        price: row.fields['Price'],
-        image: row.fields['Image'],
-      };
-    });
+      .filter((row) => row.fields['Name'] && row.fields['Description'] && row.fields['Price'] && row.fields['Image'])
+      .map((row) => {
+        return {
+          id: row.id,
+          name: row.fields['Name'],
+          description: row.fields['Description'],
+          price: row.fields['Price'],
+          image: row.fields['Image'],
+        };
+      });
 
     // Pickup Locations
-    const pickupLocationRecords = await base('Pickup Locations')
-      .select({ view: DEFAULT_VIEW })
-      .firstPage();
+    const pickupLocationRecords = await fetchTable('Pickup Locations', { view: DEFAULT_VIEW });
 
     const pickupLocations = pickupLocationRecords.map((row) => {
       return {
@@ -90,9 +53,7 @@ exports.handler = async (event, context) => {
     });
 
     // Schedules
-    const schedulesRecords = await base('Schedules')
-      .select({ view: DEFAULT_VIEW })
-      .firstPage();
+    const schedulesRecords = await fetchTable('Schedules', { view: DEFAULT_VIEW });
 
     const schedules = schedulesRecords.map((row) => {
       return {
@@ -105,43 +66,28 @@ exports.handler = async (event, context) => {
     });
 
     // Discount Codes
-    const discountCodesRecords = await base('Discount Codes')
-      .select({ view: DEFAULT_VIEW })
-      .firstPage();
+    const discountCodesRecords = await fetchTable('Discount Codes', { view: DEFAULT_VIEW });
 
-    const discountCodes = discountCodesRecords.filter(row => row.fields['Active']).map((row) => {
-      return {
-        id: row.id,
-        code: row.fields['Code'],
-        amount: row.fields['End Time'],
-        type: row.fields['Type'],
-      };
+    const discountCodes = discountCodesRecords
+      .filter((row) => row.fields['Active'])
+      .map((row) => {
+        return {
+          id: row.id,
+          code: row.fields['Code'],
+          amount: row.fields['End Time'],
+          type: row.fields['Type'],
+        };
+      });
+
+    return successResponse({
+      config,
+      content,
+      inventory,
+      pickupLocations,
+      schedules,
+      discountCodes,
     });
-
-    return {
-      statusCode: 200,
-      headers: {
-        'contentListt-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        config,
-        content,
-        inventory,
-        pickupLocations,
-        schedules,
-        discountCodes
-      }),
-    };
   } catch (error) {
-    return {
-      statusCode: 500,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        status: 'Error',
-        error: error.message,
-      }),
-    };
+    return errorResponse(error.message);
   }
 };
