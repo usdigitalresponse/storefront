@@ -1,3 +1,10 @@
+if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY) {
+  throw new Error('Airtable API keys not set');
+}
+
+var Airtable = require('airtable');
+const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
+
 export const airTableRowsAsKey = function(records) {
   const rowFields = records.map((row) => {
     return row.fields;
@@ -19,8 +26,6 @@ export const valueOrNull = function(configValues, key) {
 };
 
 export const fetchTable = function(tableName, selectOptions) {
-  var Airtable = require('airtable');
-  const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
   return base(tableName)
     .select(selectOptions)
     .firstPage();
