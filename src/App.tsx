@@ -11,7 +11,6 @@ import CheckoutPage from './pages/CheckoutPage';
 import DonatePage from './pages/DonatePage';
 import DriversPage from './pages/DriversPage';
 import HomePage from './pages/HomePage';
-import ProductDetailPage from './pages/ProductDetailPage';
 import ProductsPage from './pages/ProductsPage';
 import React from 'react';
 import theme from './common/theme';
@@ -24,7 +23,6 @@ const routeComponents: Record<string, React.FC> = {
   home: HomePage,
   about: AboutPage,
   products: ProductsPage,
-  product: ProductDetailPage,
   donate: DonatePage,
   drivers: DriversPage,
   cart: CartPage,

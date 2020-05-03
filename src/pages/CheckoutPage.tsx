@@ -3,7 +3,6 @@ import { getStripePromise } from '../store/cms';
 import { useSelector } from 'react-redux';
 import BaseLayout from '../layouts/BaseLayout';
 import CheckoutForm from '../components/CheckoutForm';
-import Loading from '../components/Loading';
 import React from 'react';
 
 export default function CheckoutPage() {
@@ -11,13 +10,9 @@ export default function CheckoutPage() {
 
   return (
     <BaseLayout>
-      {stripePromise ? (
-        <Elements stripe={stripePromise}>
-          <CheckoutForm />
-        </Elements>
-      ) : (
-        <Loading />
-      )}
+      <Elements stripe={stripePromise}>
+        <CheckoutForm />
+      </Elements>
     </BaseLayout>
   );
 }

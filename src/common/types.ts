@@ -50,15 +50,50 @@ export interface ICartItem {
 export type Order = {
   fullName: string;
   deliveryAddress: string;
-  stripePaymentId: string;
   amount: number;
   items: OrderItem[];
+  stripePaymentId: string;
 };
 
-export type OrderItem = {
-  quantity: number;
-  inventoryId: string;
-};
+export interface IAddress {
+  street1: string;
+  street2: string;
+  city: string;
+  state: string;
+  zip: string;
+}
+
+export interface ICheckoutFormBase {
+  fullName: string;
+  phone: string;
+  email: string;
+  type: OrderType;
+}
+
+export interface ICheckoutFormDataDelivery extends ICheckoutFormBase {
+  scheduleId: string;
+  street1?: string;
+  street2?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+}
+
+export interface ICheckoutFormDataPickup {
+  scheduleId: string;
+  pickupLocationId: string;
+}
+
+export interface ICheckoutFormData extends ICheckoutFormDataDelivery, ICheckoutFormDataPickup {}
+
+export interface IOrderDetails extends ICheckoutFormData {
+  amount: number;
+  items: OrderItem[];
+  stripePaymentId: string;
+}
+
+export type StateMap = Record<string, string>;
+export type OrderItem = ICartItem;
 
 export interface IProductRouteParams {
   id: string;
@@ -67,4 +102,5 @@ export interface IProductRouteParams {
 export enum OrderType {
   DELIVERY = 'devliery',
   PICKUP = 'pickup',
+  DONATION = 'donation',
 }

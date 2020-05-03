@@ -1,6 +1,6 @@
+import { AirtableService } from '../services/AirtableService';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { StripeCardElement } from '@stripe/stripe-js';
-import { createOrder } from '../common/orders';
 import React, { useState } from 'react';
 
 export default function CheckoutForm() {
@@ -9,8 +9,8 @@ export default function CheckoutForm() {
     fullName: 'John Johnsonson',
     items: [
       {
+        id: 'recgndRjkR2NKpD6A',
         quantity: 1,
-        inventoryId: 'recgndRjkR2NKpD6A',
       },
     ],
   };
@@ -21,8 +21,6 @@ export default function CheckoutForm() {
 
   const [errorMessage, setErrorMessage] = useState<string | null | undefined>();
   const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
-  const [isPaying, setIsPaying] = useState<boolean>(false);
-  const [paidOrder, setpaidOrder] = useState<null | any>(null);
 
   const handleSubmit = async (event: any) => {
     // Block native form submission.
@@ -70,7 +68,7 @@ export default function CheckoutForm() {
       if (result.paymentIntent.status === 'succeeded') {
         setErrorMessage(null);
 
-        const createdOrder = await createOrder({
+        const createdOrder = await AirtableService.createOrder({
           stripePaymentId: result.paymentIntent.id,
           amount: paymentAmountCents / 100,
           deliveryAddress: mockOrderDetails.deliveryAddress,

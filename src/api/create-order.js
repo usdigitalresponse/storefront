@@ -28,7 +28,7 @@ exports.handler = async (event, context) => {
       }
     });
 
-    const requiredItemFields = ['quantity', 'inventoryId'];
+    const requiredItemFields = ['id', 'quantity'];
     orderIntent.items.map((item) => {
       requiredItemFields.map((field) => {
         if (!item[field]) {
@@ -48,15 +48,13 @@ exports.handler = async (event, context) => {
       },
     ]);
 
-    console.log('order', orders[0].fields);
-
     const items = await base('Order Items').create(
       orderIntent.items.map((item) => {
         return {
           fields: {
             Order: [orders[0].id],
             Quantity: item.quantity,
-            Inventory: [item.inventoryId],
+            Inventory: [item.id],
           },
         };
       }),
