@@ -20,7 +20,7 @@ const CartPage: React.FC = () => {
   return (
     <BaseLayout title="Shopping Cart">
       <Grid container spacing={2} className={classNames(styles.container, { [styles.small]: isSmall })}>
-        <Grid item md={8} sm={12} container>
+        <Grid item md={8}xs={12} container>
           <OrderTypeSelector />
           <Card elevation={2} className={styles.cartItems}>
             <Typography variant="h3" className={styles.cartItemsTitle}>
@@ -31,7 +31,7 @@ const CartPage: React.FC = () => {
             ))}
           </Card>
         </Grid>
-        <Grid item md={4} sm={12} container className={styles.right}>
+        <Grid item md={4}xs={12} container className={styles.right}>
           <OrderSummary className={styles.summary} />
           <Button
             fullWidth

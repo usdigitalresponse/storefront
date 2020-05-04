@@ -1,0 +1,22 @@
+@import '../common/variables';
+
+
+.container {
+  .readOnly {
+    pointer-events: none;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &.small {
+    .column:first-child {
+      margin-bottom: spacing(2);
+    }
+  }
+}
+
+
+

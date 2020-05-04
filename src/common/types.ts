@@ -72,16 +72,19 @@ export interface ICheckoutFormBase {
 }
 
 export interface ICheckoutFormDataDelivery extends ICheckoutFormBase {
-  scheduleId: string;
   street1?: string;
   street2?: string;
   city?: string;
   state?: string;
   zip?: string;
+  deliveryPref_weekends: boolean;
+  deliveryPref_weekdays: boolean;
+  deliveryPref_mornings: boolean;
+  deliveryPref_afternoons: boolean;
+  deliveryPref_evenings: boolean;
 }
 
 export interface ICheckoutFormDataPickup {
-  scheduleId: string;
   pickupLocationId: string;
 }
 
@@ -89,12 +92,16 @@ export type CheckoutFormField =
   | 'fullName'
   | 'phone'
   | 'email'
-  | 'scheduleId'
   | 'street1'
   | 'street2'
   | 'city'
   | 'state'
   | 'zip'
+  | 'deliveryPref_weekends'
+  | 'deliveryPref_weekdays'
+  | 'deliveryPref_mornings'
+  | 'deliveryPref_afternoons'
+  | 'deliveryPref_evenings'
   | 'pickupLocationId';
 export interface ICheckoutFormData extends ICheckoutFormDataDelivery, ICheckoutFormDataPickup {}
 
