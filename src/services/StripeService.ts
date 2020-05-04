@@ -6,6 +6,7 @@ import { ICheckoutFormData } from '../common/types';
 import { SetError, SetIsPaying, SetOrderSummary } from '../store/checkout';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
+import { makeContentValueSelector } from '../store/cms';
 import { totalSelector } from '../store/cart';
 
 export class StripeService {
@@ -19,8 +20,10 @@ export class StripeService {
   public static async pay(formData: ICheckoutFormData, stripe: Stripe | null, elements: StripeElements | null) {
     if (!stripe || !elements) return;
 
-    const amount = totalSelector(StripeService.store.getState());
-    const items = StripeService.store.getState().cart.items;
+    const state = StripeService.store.getState();
+    const errorMessage = makeContentValueSelector()(state, 'error_payment');
+    const amount = totalSelector(state);
+    const items = state.cart.items;
 
     StripeService.store.dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
 
@@ -40,10 +43,7 @@ export class StripeService {
       });
 
       if (result.error || !result.paymentIntent || result.paymentIntent.status !== 'succeeded') {
-        CompoundAction([
-          SetError.create(result.error?.message || 'We were unable to process your payment at this time'),
-          SetIsPaying.create(false),
-        ]);
+        CompoundAction([SetError.create(result.error?.message || errorMessage), SetIsPaying.create(false)]);
         return;
       }
 
@@ -60,12 +60,8 @@ export class StripeService {
       }
     } catch (error) {
       console.log('Stripe payment error', error);
-      StripeService.store.dispatch(
-        CompoundAction([
-          SetError.create(error || 'We were unable to process your payment at this time'),
-          SetIsPaying.create(false),
-        ])
-      );
+
+      StripeService.store.dispatch(CompoundAction([SetError.create(errorMessage), SetIsPaying.create(false)]));
     }
   }
 

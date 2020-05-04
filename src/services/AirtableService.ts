@@ -1,7 +1,16 @@
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { IContentRecord, IOrderDetails } from '../common/types';
-import { SetContent, SetInventory, SetLanguages, SetStripePromise, SetTaxRate } from '../store/cms';
+import { IOrderSummary } from '../common/types';
+import {
+  SetContent,
+  SetDiscountCodes,
+  SetInventory,
+  SetLanguages,
+  SetPickupLocations,
+  SetSchedules,
+  SetStripePromise,
+  SetTaxRate,
+} from '../store/cms';
 import { Store } from 'redux';
 
 export class AirtableService {
@@ -16,7 +25,7 @@ export class AirtableService {
   private static fetchRecords() {
     fetch('/.netlify/functions/get-cms')
       .then(res => res.json())
-      .then((records: Record<string, IContentRecord>) => {
+      .then((records: Record<string, any>) => {
         if (!records) return;
 
         if (!records.config) {
@@ -27,8 +36,12 @@ export class AirtableService {
         AirtableService.store.dispatch(
           CompoundAction([
             SetContent.create(records.content),
-            SetLanguages.create(records.config.languages),
             SetInventory.create(records.inventory),
+            SetSchedules.create(records.schedules),
+            SetPickupLocations.create(records.pickupLocations),
+            SetDiscountCodes.create(records.discountCodes),
+            // config
+            SetLanguages.create(records.config.languages),
             SetTaxRate.create(records.config.tax_rate),
             SetStripePromise.create(records.config.stripe_public_api_key),
           ])
@@ -36,7 +49,7 @@ export class AirtableService {
       });
   }
 
-  public static async createOrder(order: IOrderDetails) {
+  public static async createOrder(order: IOrderSummary) {
     return fetch('/.netlify/functions/create-order', {
       method: 'POST', // or 'PUT'
       headers: { 'Content-Type': 'application/json' },

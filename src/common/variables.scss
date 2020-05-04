@@ -52,4 +52,9 @@ $footerHeight: 300px;
     // line-height: 48px;
     letter-spacing: -1.3px;
   }
+  @else {
+    font-size: 16px;
+    // line-height: 18px;
+    letter-spacing: -0.032em;
+  }
 }

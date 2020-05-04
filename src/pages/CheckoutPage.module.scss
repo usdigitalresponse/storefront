@@ -1,1 +1,64 @@
 @import '../common/variables';
+
+.container {
+  .form {
+    padding: spacing(3) spacing(4);
+  }
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: spacing(4);
+    margin-bottom: spacing(3);
+
+    &:not(:last-child) {
+      box-shadow: inset 0 -1px 0 0 rgba(0,0,0,0.15);
+    }
+  }
+
+  .title {
+    @include fontSize('lg');
+    margin-bottom: spacing(3);
+  }
+
+  .field {
+    &:not(:last-child) {
+      margin-bottom: spacing(3);
+    }
+  }
+
+  .right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .summary {
+    margin-bottom: spacing(2);
+  }
+
+  .sidebar {
+    position: sticky;
+    top: spacing(12);
+  }
+
+  &.small {
+    .form {
+      padding: spacing(2) spacing(2);
+    }
+
+    .section {
+      padding-bottom: spacing(3);
+      margin-bottom: spacing(2);
+    }
+
+    .title {
+      margin-bottom: spacing(2);
+    }
+
+    .field {
+      &:not(:last-child) {
+        margin-bottom: spacing(2);
+      }
+    }
+  }
+}

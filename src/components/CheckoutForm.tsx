@@ -19,7 +19,7 @@ export default function CheckoutForm() {
 
   return (
     <section className="grid-container usa-section">
-      <div className="grid-row grid-gap">
+      {/* <div className="grid-row grid-gap">
         <div className="tablet:grid-col-8 usa-prose">
           <h2 className="font-heading-xl margin-top-0 tablet:margin-bottom-0">Checkout</h2>
           <p>Paying ${(paymentAmountCents / 100).toFixed(2)}</p>
@@ -56,7 +56,7 @@ export default function CheckoutForm() {
             </pre>
           )}
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }

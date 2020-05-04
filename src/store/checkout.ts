@@ -1,19 +1,19 @@
 import * as Reselect from 'reselect';
 import { IAppState } from './app';
-import { IOrderDetails } from '../common/types';
+import { IOrderSummary, PaymentStatus } from '../common/types';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 
 // model
 export interface ICheckoutState {
   isPaying: boolean;
   error?: string;
-  orderSummary?: IOrderDetails;
+  orderSummary?: IOrderSummary;
 }
 
 // actions
 export const SetIsPaying = TypedAction.define('APP/CHECKOUT/SET_IS_PAYING')<boolean>();
 export const SetError = TypedAction.define('APP/CHECKOUT/SET_ERROR')<string | undefined>();
-export const SetOrderSummary = TypedAction.define('APP/CHECKOUT/SET_ORDER_SUMMARY')<IOrderDetails>();
+export const SetOrderSummary = TypedAction.define('APP/CHECKOUT/SET_ORDER_SUMMARY')<IOrderSummary>();
 
 // reducer
 export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
@@ -35,5 +35,20 @@ export const isPayingSelector = Reselect.createSelector(
   (state: IAppState) => state.checkout.isPaying,
   (isPaying: boolean) => {
     return isPaying;
+  }
+);
+
+export const paymentStatusSelector = Reselect.createSelector(
+  (state: IAppState) => state.checkout.isPaying,
+  (state: IAppState) => state.checkout.orderSummary,
+  (state: IAppState) => state.checkout.error,
+  (isPaying: boolean, orderSummary?: IOrderSummary, error?: string) => {
+    return isPaying
+      ? PaymentStatus.IN_PROGRESS
+      : orderSummary
+      ? PaymentStatus.SUCCEEDED
+      : error
+      ? PaymentStatus.FAILED
+      : PaymentStatus.NONE;
   }
 );

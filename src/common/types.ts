@@ -85,9 +85,20 @@ export interface ICheckoutFormDataPickup {
   pickupLocationId: string;
 }
 
+export type CheckoutFormField =
+  | 'fullName'
+  | 'phone'
+  | 'email'
+  | 'scheduleId'
+  | 'street1'
+  | 'street2'
+  | 'city'
+  | 'state'
+  | 'zip'
+  | 'pickupLocationId';
 export interface ICheckoutFormData extends ICheckoutFormDataDelivery, ICheckoutFormDataPickup {}
 
-export interface IOrderDetails extends ICheckoutFormData {
+export interface IOrderSummary extends ICheckoutFormData {
   amount: number;
   items: OrderItem[];
   stripePaymentId: string;
@@ -101,7 +112,48 @@ export interface IProductRouteParams {
 }
 
 export enum OrderType {
-  DELIVERY = 'devliery',
-  PICKUP = 'pickup',
-  DONATION = 'donation',
+  DELIVERY = 'Delivery',
+  PICKUP = 'Pickup',
+  DONATION = 'Donation',
+}
+
+export enum PaymentStatus {
+  NONE = 'none',
+  SUCCEEDED = 'succeeded',
+  FAILED = 'failed',
+  IN_PROGRESS = 'inProgress',
+}
+
+export interface IPickupLocation {
+  id: string;
+  name: string;
+  address: IAddress;
+  schedules: string[];
+}
+
+export type Day = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
+
+export enum ScheduleType {
+  PICKUP = 'Pickup',
+  DELIVERY = 'Delivery',
+}
+
+export interface ISchedule {
+  id: string;
+  type: ScheduleType;
+  start: string;
+  end: string;
+  day: Day;
+}
+
+export enum DiscountCodeType {
+  PERCENT = 'Percent off',
+  DOLLARS = 'Dollars off',
+}
+
+export interface IDiscountCode {
+  id: string;
+  code: string;
+  amount: number;
+  type: DiscountCodeType;
 }
