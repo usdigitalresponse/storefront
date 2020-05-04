@@ -14,7 +14,7 @@ export interface ICmsState {
   language: string;
   stripePromise: Promise<Stripe | null> | null;
   taxRate: number;
-  defaultState: string;
+  defaultState?: string;
   pickupLocations: IPickupLocation[];
   schedules: ISchedule[];
   discountCodes: IDiscountCode[];
@@ -52,7 +52,7 @@ export const initialCmsState: ICmsState = {
   languages: ['en'],
   language: 'en',
   taxRate: 0.085,
-  defaultState: 'TX',
+  defaultState: undefined,
   pickupLocations: [],
   schedules: [],
   discountCodes: [],

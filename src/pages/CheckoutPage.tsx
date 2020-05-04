@@ -1,15 +1,4 @@
-import {
-  Button,
-  Card,
-  FormControl,
-  FormHelperText,
-  Grid,
-  InputLabel,
-  Select,
-  TextField,
-  TextFieldProps,
-  Typography,
-} from '@material-ui/core';
+import { Button, Card, Grid, TextField, TextFieldProps, Typography } from '@material-ui/core';
 import { CheckoutFormField, ICheckoutFormData, OrderType } from '../common/types';
 import { Elements } from '@stripe/react-stripe-js';
 import { IAppState } from '../store/app';
@@ -22,7 +11,9 @@ import OrderSummary from '../components/OrderSummary';
 import OrderTypeView from '../components/OrderTypeView';
 import PhoneField from '../components/PhoneField';
 import React from 'react';
-import StripeCardElement from '../components/StripeCardElement';
+import StateField from '../components/StateField';
+import StripeCardField from '../components/StripeCardField';
+import ZipCodeField from '../components/ZipCodeField';
 import classNames from 'classnames';
 import styles from './CheckoutPage.module.scss';
 
@@ -30,7 +21,7 @@ export default function CheckoutPage() {
   const { register, handleSubmit, errors } = useForm<ICheckoutFormData>();
   const stripePromise = useSelector(getStripePromise());
   const orderType = useSelector<IAppState, OrderType>(state => state.cart.orderType);
-  const defaultState = useSelector<IAppState, string>(state => state.cms.defaultState);
+  const defaultState = useSelector<IAppState, string | undefined>(state => state.cms.defaultState);
   const isSmall = useIsSmall();
   const hasErrors = Object.keys(errors).length > 0;
 
@@ -102,30 +93,16 @@ export default function CheckoutPage() {
                         {...textFieldProps('City', 'city', 'San Antonio')}
                         inputRef={register({ required: 'City is required' })}
                       />
-                      <TextField
+                      <StateField
                         {...textFieldProps('State', 'state', 'CA')}
                         value={defaultState}
                         inputProps={{ readOnly: !!defaultState }}
-                        inputRef={register({ required: 'City is required' })}
+                        inputRef={register({ required: 'State is required', maxLength: 2 })}
                       />
-                      <FormControl variant="outlined" fullWidth error={!!errors.zip}>
-                        <InputLabel>Zip Code</InputLabel>
-                        <Select
-                          native
-                          label="Zip Code"
-                          inputProps={{ name: 'zip' }}
-                          inputRef={register({ required: 'Zip Code is required' })}
-                          className={styles.field}
-                        >
-                          <option aria-label="None" value="" />
-                          {['12345', '35566', '23425', '23423'].map(q => (
-                            <option key={q} value={q}>
-                              {q}
-                            </option>
-                          ))}
-                        </Select>
-                        {!!errors.zip?.message && <FormHelperText>{errors.zip.message}</FormHelperText>}
-                      </FormControl>
+                      <ZipCodeField
+                        {...textFieldProps('Zip Code', 'zip')}
+                        inputRef={register({ required: 'Zip code is required', maxLength: 5 })}
+                      />
                     </Grid>
                   </Grid>
                 )}
@@ -134,7 +111,7 @@ export default function CheckoutPage() {
                     Payment Details
                   </Typography>
                   <Grid item md={8} sm={12}>
-                    <StripeCardElement className={styles.field} />
+                    <StripeCardField className={styles.field} />
                     <Button
                       fullWidth
                       variant="contained"

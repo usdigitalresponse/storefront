@@ -2,7 +2,7 @@ import { CardElement } from '@stripe/react-stripe-js';
 import { StripeCardElementOptions } from '@stripe/stripe-js';
 import React from 'react';
 import classNames from 'classnames';
-import styles from './StripeCardElement.module.scss';
+import styles from './StripeCardField.module.scss';
 
 const cardOptions: StripeCardElementOptions = {
   style: {
@@ -29,7 +29,7 @@ interface Props {
   className?: string;
 }
 
-const StripeCardElement: React.FC<Props> = ({ className }) => {
+const StripeCardField: React.FC<Props> = ({ className }) => {
   return (
     <div className={classNames(styles.container, className)}>
       <CardElement options={cardOptions} />
@@ -37,4 +37,4 @@ const StripeCardElement: React.FC<Props> = ({ className }) => {
   );
 };
 
-export default StripeCardElement;
+export default StripeCardField;
