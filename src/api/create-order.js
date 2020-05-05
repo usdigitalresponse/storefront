@@ -20,7 +20,7 @@ exports.handler = async (event, context) => {
       throw new Error('Invalid Order Intent');
     }
 
-    const requiredFields = ['type', 'fullName', 'phone', 'email', , 'amount', 'items'];
+    const requiredFields = ['type', 'fullName', 'phone', 'email', 'amount', 'items'];
     const requiredDeliveryFields = requiredFields.concat(['street1', 'city', 'state', 'zip']);
     const requiredPickupFields = requiredFields.concat(['pickupLocationId']);
 
@@ -60,33 +60,28 @@ exports.handler = async (event, context) => {
     if (orderIntent.deliveryPref_afternoons) deliveryPreferences.push('Afternoons')
     if (orderIntent.deliveryPref_evenings) deliveryPreferences.push('Evenings')
 
-    const orders = await base('Orders').create([
-      {
-        fields: {
-          'Order Status': 'Paid',
-          'Type': orderIntent.type,
-          'Name': orderIntent.fullName,
-          'Email': orderIntent.email,
-          'Phone Number': orderIntent.phone,
-          'address_street1': orderIntent.street1,
-          'address_street2': orderIntent.street2,
-          'address_city': orderIntent.city,
-          'address_state': orderIntent.state,
-          'address_zip': orderIntent.zip,
-          'Pickup Location': [orderIntent.pickupLocationId],
-          'Stripe Payment ID': orderIntent.stripePaymentId,
-          'Delivery Preferences': deliveryPreferences,
-          Amount: orderIntent.amount,
-        },
-        typecase: true
-      },
-    ]);
+    const order = await base('Orders').create({
+      'Order Status': 'Paid',
+      'Type': orderIntent.type,
+      'Name': orderIntent.fullName,
+      'Email': orderIntent.email,
+      'Phone Number': orderIntent.phone,
+      'address_street1': orderIntent.street1,
+      'address_street2': orderIntent.street2,
+      'address_city': orderIntent.city,
+      'address_state': orderIntent.state,
+      'address_zip': orderIntent.zip,
+      'Pickup Location': orderIntent.type === 'Pickup' ? [orderIntent.pickupLocationId] : undefined,
+      'Stripe Payment ID': orderIntent.stripePaymentId,
+      'Delivery Preferences': deliveryPreferences,
+      Amount: orderIntent.amount,
+    }, { typecast: true });
 
     const items = await base('Order Items').create(
       orderIntent.items.map((item) => {
         return {
           fields: {
-            Order: [orders[0].id],
+            Order: [order.id],
             Quantity: item.quantity,
             Inventory: [item.id],
           },
@@ -95,9 +90,9 @@ exports.handler = async (event, context) => {
     );
 
     try {
-      const emailResult = await sendConfirmationEmail(orders[0].fields['Order ID']);
-    } catch (error) {
-      console.log('Error sending confirmation email', error);
+      const emailResult = await sendConfirmationEmail(order.fields['Order ID']);
+    } catch (err) {
+      console.log('Error sending confirmation email', err);
     }
 
     return {
@@ -107,12 +102,12 @@ exports.handler = async (event, context) => {
       },
       body: JSON.stringify({
         Order: {
-          ...orders[0].fields,
+          ...order.fields,
           items: items.map((item) => item.fields),
         },
       }),
     };
-  } catch (error) {
+  } catch (err) {
     return {
       statusCode: 500,
       headers: {
@@ -120,7 +115,7 @@ exports.handler = async (event, context) => {
       },
       body: JSON.stringify({
         status: 'Error',
-        error: error.message,
+        error: err.message,
       }),
     };
   }

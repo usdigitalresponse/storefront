@@ -23,6 +23,7 @@ export class StripeService {
     const state = StripeService.store.getState();
     const errorMessage = makeContentValueSelector()(state, 'error_payment');
     const amount = totalSelector(state);
+    const type = state.cart.orderType;
     const items = state.cart.items;
 
     StripeService.store.dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
@@ -42,8 +43,12 @@ export class StripeService {
         },
       });
 
+      console.log('result error!', result.error?.message);
+
       if (result.error || !result.paymentIntent || result.paymentIntent.status !== 'succeeded') {
-        CompoundAction([SetError.create(result.error?.message || errorMessage), SetIsPaying.create(false)]);
+        StripeService.store.dispatch(
+          CompoundAction([SetError.create(result.error?.message || errorMessage), SetIsPaying.create(false)])
+        );
         return;
       }
 
@@ -51,6 +56,7 @@ export class StripeService {
         const stripePaymentId = result.paymentIntent.id;
         const orderSummary = await AirtableService.createOrder({
           ...formData,
+          type,
           amount,
           items,
           stripePaymentId,

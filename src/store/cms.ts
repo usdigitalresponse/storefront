@@ -74,6 +74,13 @@ export const appIsReadySelector = Reselect.createSelector(
   }
 );
 
+export const stripePromiseSelector = Reselect.createSelector(
+  (state: IAppState) => state.cms.stripePromise,
+  (stripePromise: Promise<Stripe | null> | null) => {
+    return stripePromise;
+  }
+);
+
 export const makeProductDetailSelector = () =>
   Reselect.createSelector(
     inventorySelector,

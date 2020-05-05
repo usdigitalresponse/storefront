@@ -24,7 +24,7 @@ const OrderTypeView: React.FC<Props> = ({ className }) => {
       </Typography>
       {orderType === OrderType.DELIVERY && (
         <Typography variant="body1" className={styles.label}>
-          Credit / Debit cards only. For EBT or Cash,{' '}
+          Credit / Debit cards only. To pay with EBT or Cash,{' '}
           <Link onClick={() => dispatch(SetOrderType.create(OrderType.PICKUP))} className={styles.link}>
             switch to pickup
           </Link>
@@ -32,7 +32,7 @@ const OrderTypeView: React.FC<Props> = ({ className }) => {
       )}
       {orderType === OrderType.PICKUP && (
         <Typography variant="body1" className={styles.label}>
-          To have your order delivered to you,{' '}
+          To have your order delivered,{' '}
           <Link onClick={() => dispatch(SetOrderType.create(OrderType.DELIVERY))} className={styles.link}>
             switch to delivery
           </Link>

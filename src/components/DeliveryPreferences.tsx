@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, Grid } from '@material-ui/core';
+import { Checkbox, FormControlLabel, Grid, Typography } from '@material-ui/core';
 import { ICheckoutFormDataDelivery } from '../common/types';
 import { useIsSmall } from '../common/hooks';
 import React, { useEffect, useState } from 'react';
@@ -7,13 +7,21 @@ import styles from './DeliveryPreferences.module.scss';
 
 interface Props {
   inputRef: any;
-  values: Partial<ICheckoutFormDataDelivery>;
+  watch: any;
   setValue: (update: Array<Partial<ICheckoutFormDataDelivery>>) => void;
 }
 
-const DeliveryPreferences: React.FC<Props> = ({ inputRef, values, setValue }) => {
+const DeliveryPreferences: React.FC<Props> = ({ inputRef, watch, setValue }) => {
   const isSmall = useIsSmall();
   const [anytime, setAnytime] = useState<boolean>(true);
+  const values = watch([
+    'deliveryPref_weekends',
+    'deliveryPref_weekdays',
+    'deliveryPref_mornings',
+    'deliveryPref_afternoons',
+    'deliveryPref_evenings',
+  ]);
+
   const allFalse =
     !values.deliveryPref_afternoons &&
     !values.deliveryPref_evenings &&
@@ -63,6 +71,10 @@ const DeliveryPreferences: React.FC<Props> = ({ inputRef, values, setValue }) =>
           label="Weekdays"
         />
       </Grid>
+      <Typography variant="body2" className={styles.note}>
+        Delivery preferences are not guaranteed - we will make our best effort. Final delivery date and time will be
+        confirmed by email.
+      </Typography>
     </Grid>
   );
 };

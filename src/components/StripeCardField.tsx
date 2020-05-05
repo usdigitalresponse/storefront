@@ -1,8 +1,10 @@
 import { CardElement } from '@stripe/react-stripe-js';
 import { StripeCardElementOptions } from '@stripe/stripe-js';
+import { Typography } from '@material-ui/core';
 import React from 'react';
 import classNames from 'classnames';
 import styles from './StripeCardField.module.scss';
+import theme from '../common/theme';
 
 const cardOptions: StripeCardElementOptions = {
   style: {
@@ -26,14 +28,25 @@ const cardOptions: StripeCardElementOptions = {
 };
 
 interface Props {
+  errorMessage?: string;
   className?: string;
 }
 
-const StripeCardField: React.FC<Props> = ({ className }) => {
+const StripeCardField: React.FC<Props> = ({ errorMessage, className }) => {
   return (
-    <div className={classNames(styles.container, className)}>
-      <CardElement options={cardOptions} />
-    </div>
+    <>
+      <div
+        className={classNames(styles.container, className)}
+        style={{ borderColor: errorMessage ? theme.palette.error.main : undefined }}
+      >
+        <CardElement options={cardOptions} />
+      </div>
+      {errorMessage && (
+        <Typography variant="body2" color="error" className={styles.errorMessage}>
+          {errorMessage}
+        </Typography>
+      )}
+    </>
   );
 };
 

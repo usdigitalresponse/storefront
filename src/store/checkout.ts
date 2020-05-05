@@ -43,12 +43,9 @@ export const paymentStatusSelector = Reselect.createSelector(
   (state: IAppState) => state.checkout.orderSummary,
   (state: IAppState) => state.checkout.error,
   (isPaying: boolean, orderSummary?: IOrderSummary, error?: string) => {
-    return isPaying
-      ? PaymentStatus.IN_PROGRESS
-      : orderSummary
-      ? PaymentStatus.SUCCEEDED
-      : error
-      ? PaymentStatus.FAILED
-      : PaymentStatus.NONE;
+    if (isPaying) return PaymentStatus.IN_PROGRESS;
+    else if (orderSummary) return PaymentStatus.SUCCEEDED;
+    else if (error) return PaymentStatus.FAILED;
+    else return PaymentStatus.NONE;
   }
 );

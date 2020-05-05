@@ -1,21 +1,24 @@
 @import '../common/variables';
 
-.title {
-  flex-grow: 1;
-  color: white !important;
-  opacity: 1 !important;
-}
+.header {
+  background-color: white !important;
+  @include shadowBorder('bottom', true);
 
-.menuButton {
-  margin-right: spacing(1);
-}
+  .title {
+    flex-grow: 1;
+    opacity: 1 !important;
+  }
 
-.headerLink {
-  margin: 0 spacing(2) !important;
-  color: white !important;
-}
+  .menuButton {
+    margin-right: spacing(1);
+  }
 
-.drawerList {
-  min-width: 250px;
+  .headerLink {
+    margin: 0 spacing(2) !important;
+  }
+
+  .drawerList {
+    min-width: 250px;
+  }
 }
 
