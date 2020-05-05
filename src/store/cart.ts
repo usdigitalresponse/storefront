@@ -61,10 +61,17 @@ export const ICartItemCountSelector = Reselect.createSelector(itemsSelector, (it
 export const subtotalSelector = Reselect.createSelector(
   (state: IAppState) => state.cart.items,
   (state: IAppState) => state.cms.inventory,
-  (state: IAppState) => state.cart.taxRate,
-  (cartItems: ICartItem[], inventory: InventoryRecord[], taxRate: number) => {
+  (cartItems: ICartItem[], inventory: InventoryRecord[]) => {
     return cartItems.reduce((acc: number, cartItem: ICartItem) => {
       return acc + cartItem.quantity * (inventory.find(product => product.id === cartItem.id)?.price || 0);
     }, 0);
+  }
+);
+
+export const totalSelector = Reselect.createSelector(
+  subtotalSelector,
+  (state: IAppState) => state.cart.taxRate,
+  (subtotal: number, taxRate: number) => {
+    return subtotal + subtotal * taxRate;
   }
 );

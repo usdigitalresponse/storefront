@@ -1,0 +1,30 @@
+@import '../common/variables';
+
+.container {
+  display: flex;
+  align-items: center;
+  padding: spacing(2);
+  margin-bottom: spacing(2);
+
+  .icon {
+    margin-right: spacing(1);
+    align-self: stretch;
+  }
+
+  .title {
+    @include fontSize();
+    font-weight: 500;
+    padding-right: spacing(2);
+    margin-right: spacing(2);
+    box-shadow: inset -1px 0 0 rgba(0,0,0,0.15);
+    align-self: stretch;
+  }
+
+  .label {
+    @include fontSize();
+  }
+
+  .link {
+    cursor: pointer;
+  }
+}

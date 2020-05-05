@@ -1,0 +1,27 @@
+@import '../common/variables';
+
+
+.container {
+  .readOnly {
+    pointer-events: none;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .note {
+    opacity: 0.5;
+    margin-top: spacing(2);
+  }
+
+  &.small {
+    .column:first-child {
+      margin-bottom: spacing(2);
+    }
+  }
+}
+
+
+

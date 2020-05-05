@@ -17,7 +17,7 @@ const OrderTypeSelector: React.FC = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item md={6} sm={12}>
+      <Grid item md={6} xs={12}>
         <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
           <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.DELIVERY))}>
             <div className={classNames(styles.content, styles.delivery)}>
@@ -36,7 +36,7 @@ const OrderTypeSelector: React.FC = () => {
           </CardActionArea>
         </Card>
       </Grid>
-      <Grid item md={6} sm={12}>
+      <Grid item md={6} xs={12}>
         <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
           <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.PICKUP))}>
             <div className={styles.content}>

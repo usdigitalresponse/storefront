@@ -40,14 +40,14 @@ const Header: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
 
   return (
-    <AppBar position="sticky">
+    <AppBar position="sticky" elevation={0} className={styles.header}>
       <Toolbar>
         {isSmall && !isCheckout && (
           <>
             <IconButton
               edge="start"
               className={styles.menuButton}
-              color="inherit"
+              color="primary"
               onClick={() => setDrawerIsOpen(true)}
             >
               <MenuIcon />
@@ -75,7 +75,7 @@ const Header: React.FC = () => {
             ))}
           </div>
         )}
-        <IconButton edge="end" color="inherit" component={Link} href={reverse('cart')}>
+        <IconButton edge="end" color="primary" component={Link} href={reverse('cart')}>
           <Badge badgeContent={ICartItemsCount} color="secondary" invisible={ICartItemsCount === 0}>
             <CartIcon />
           </Badge>

@@ -3,6 +3,7 @@ $buttonHeight: 36px;
 $buttonLargeHeight: 42px;
 
 $colorPrimary: #3f51b5;
+$colorShadow: rgba(0, 0, 0, 0.15);
 
 $headerHeight: 64px;
 $footerHeight: 300px;
@@ -52,4 +53,42 @@ $footerHeight: 300px;
     // line-height: 48px;
     letter-spacing: -1.3px;
   }
+  @else {
+    font-size: 16px;
+    // line-height: 18px;
+    letter-spacing: -0.032em;
+  }
+}
+
+@mixin shadowBorder($position, $important: false) {
+  @if $important {
+    @if $position == 'bottom' {
+      box-shadow: inset 0 -1px 0 0 $colorShadow !important;
+    }
+    @else if $position == 'top' {
+      box-shadow: inset 0 1px 0 0 $colorShadow !important;
+    }
+    @else if $position == 'left' {
+      box-shadow: inset 1px 0 0 $colorShadow !important;
+    }
+    @else if $position == 'right' {
+      box-shadow: inset -1px 0 0 $colorShadow !important;
+    }
+  }
+  @else {
+    @if $position == 'bottom' {
+      box-shadow: inset 0 -1px 0 0 $colorShadow;
+    }
+    @else if $position == 'top' {
+      box-shadow: inset 0 1px 0 0 $colorShadow;
+    }
+    @else if $position == 'left' {
+      box-shadow: inset 1px 0 0 $colorShadow;
+    }
+    @else if $position == 'right' {
+      box-shadow: inset -1px 0 0 $colorShadow;
+    }
+  }
+
+
 }

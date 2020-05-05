@@ -17,7 +17,7 @@ const HomePage: React.FC<Props> = () => {
     <BaseLayout padding={0} maxWidth={0}>
       <div className={classNames(styles.home, { [styles.small]: isSmall })}>
         <Grid container justify="center" className={styles.hero}>
-          <Grid item md={8} sm={10} className={styles.heroContent}>
+          <Grid item md={8} xs={10} className={styles.heroContent}>
             <Typography variant="h1" className={styles.heroTitle}>
               <Content id="page_title" />
             </Typography>
@@ -60,7 +60,7 @@ const HomePage: React.FC<Props> = () => {
           </Grid>
         </Grid>
         <Grid container justify="center" className={styles.section}>
-          <Grid item md={8} sm={10}>
+          <Grid item md={8} xs={10}>
             <Typography variant="h2" className={styles.sectionTitle}>
               How does this work?
             </Typography>
@@ -73,7 +73,7 @@ const HomePage: React.FC<Props> = () => {
           </Grid>
         </Grid>
         <Grid container justify="center" className={classNames(styles.section, styles.sectionImage)}>
-          <Grid item md={8} sm={10}>
+          <Grid item md={8} xs={10}>
             <Typography variant="h2" className={styles.sectionTitle}>
               Buy or Request Your Box Now
             </Typography>
@@ -95,7 +95,7 @@ const HomePage: React.FC<Props> = () => {
           </Grid>
         </Grid>
         <Grid container justify="center" className={styles.section}>
-          <Grid item md={4} sm={10}>
+          <Grid item md={4} xs={10}>
             <Typography variant="h2" className={styles.sectionTitle}>
               Make a donation
             </Typography>
@@ -113,7 +113,7 @@ const HomePage: React.FC<Props> = () => {
               Donate
             </Button>
           </Grid>
-          <Grid item md={4} sm={10}>
+          <Grid item md={4} xs={10}>
             <Typography variant="h2" className={styles.sectionTitle}>
               Volunteer your time
             </Typography>
