@@ -14,7 +14,7 @@ const HomePage: React.FC<Props> = () => {
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <BaseLayout padding={0} maxWidth={0}>
+    <BaseLayout padding={0} maxWidth="unset">
       <div className={classNames(styles.home, { [styles.small]: isSmall })}>
         <Grid container justify="center" className={styles.hero}>
           <Grid item md={8} xs={10} className={styles.heroContent}>

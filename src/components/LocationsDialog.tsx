@@ -17,7 +17,7 @@ import { useIsSmall } from '../common/hooks';
 import AddressView from './AddressView';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
-import SearchIcon from '@material-ui/icons/Search';
+// import SearchIcon from '@material-ui/icons/Search';
 import classNames from 'classnames';
 import styles from './LocationsDialog.module.scss';
 

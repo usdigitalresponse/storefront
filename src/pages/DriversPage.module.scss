@@ -1,1 +1,18 @@
 @import '../common/variables';
+
+.container {
+  position: relative;
+
+  .brandCover {
+    height: 100px;
+    width: 100%;
+    background-color: hsl(0,0%,98%);
+    position: absolute;
+    z-index: 100;
+    margin-top:-100px;
+  }
+
+  &.small {
+
+  }
+}

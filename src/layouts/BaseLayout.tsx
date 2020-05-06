@@ -15,7 +15,7 @@ interface Props {
   title?: string;
   description?: string;
   padding?: number;
-  maxWidth?: number;
+  maxWidth?: number | 'unset';
 }
 
 const BaseLayout: React.FC<Props> = ({ children, title, description, padding, maxWidth }) => {
@@ -29,7 +29,11 @@ const BaseLayout: React.FC<Props> = ({ children, title, description, padding, ma
       <Grid
         container
         className={classNames(styles.content, { [styles.small]: isSmall })}
-        style={{ padding, maxWidth, alignSelf: maxWidth !== 0 ? 'center' : undefined }}
+        style={{
+          padding,
+          maxWidth: 'unset',
+          alignSelf: maxWidth !== 'unset' ? 'center' : undefined,
+        }}
       >
         {appIsReady ? (
           <>
