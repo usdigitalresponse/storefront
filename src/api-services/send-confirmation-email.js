@@ -23,13 +23,13 @@ export const sendConfirmationEmail = (orderId) => {
       const emailOptions = {
         to: {
           email: order['Email'],
-          name: order['Contact Name'],
+          name: order['Name'],
         },
         subject: 'Order Confirmation',
         htmlBody: `
         <p>Thank you for your order.</p>
         <p>
-          <b>Name:</b> ${order['Contact Name']}<br/>
+          <b>Name:</b> ${order['Name']}<br/>
           <b>Address:</b> ${order['Delivery Address']}<br/>
             ${orderItemText}
 

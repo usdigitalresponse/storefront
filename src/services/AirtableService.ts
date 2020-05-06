@@ -3,7 +3,6 @@ import { IAppState } from '../store/app';
 import { IOrderSummary } from '../common/types';
 import {
   SetContent,
-  SetDiscountCodes,
   SetInventory,
   SetLanguages,
   SetPickupLocations,
@@ -39,7 +38,6 @@ export class AirtableService {
             SetInventory.create(records.inventory),
             SetSchedules.create(records.schedules),
             SetPickupLocations.create(records.pickupLocations),
-            SetDiscountCodes.create(records.discountCodes),
             // config
             SetLanguages.create(records.config.languages),
             SetTaxRate.create(records.config.tax_rate),

@@ -1,6 +1,6 @@
 import * as Reselect from 'reselect';
 import { IAppState } from './app';
-import { IContentRecord, IDiscountCode, IPickupLocation, ISchedule, InventoryRecord } from '../common/types';
+import { IContentRecord, IPickupLocation, ISchedule, InventoryRecord } from '../common/types';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 import { useMemo } from 'react';
@@ -20,7 +20,6 @@ export interface ICmsState {
   defaultState?: string;
   pickupLocations: IPickupLocation[];
   schedules: ISchedule[];
-  discountCodes: IDiscountCode[];
 }
 
 // actions
@@ -30,7 +29,6 @@ export const SetLanguages = TypedAction.define('APP/CMS/SET_LANGUAGES')<any>();
 export const SetTaxRate = TypedAction.define('APP/CMS/SET_TAX_RATE')<any>();
 export const SetSchedules = TypedAction.define('APP/CMS/SET_SCHEDULES')<any>();
 export const SetPickupLocations = TypedAction.define('APP/CMS/SET_PICKUP_LOCATIONS')<any>();
-export const SetDiscountCodes = TypedAction.define('APP/CMS/SET_DISCOUNT_CODES')<any>();
 export const SetStripePromise = TypedAction.define('APP/CMS/SET_STRIPE_PROMISE')<any>();
 
 // reducer
@@ -40,7 +38,6 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
   .withHandler(SetInventory.TYPE, (state, inventory) => setWith(state, { inventory }))
   .withHandler(SetSchedules.TYPE, (state, schedules) => setWith(state, { schedules }))
   .withHandler(SetPickupLocations.TYPE, (state, pickupLocations) => setWith(state, { pickupLocations }))
-  .withHandler(SetDiscountCodes.TYPE, (state, discountCodes) => setWith(state, { discountCodes }))
   .withHandler(SetStripePromise.TYPE, (state, keys) =>
     setWith(state, {
       stripeObjects: { main: loadStripe(keys.main), donation: loadStripe(keys.donation) },
@@ -63,7 +60,6 @@ export const initialCmsState: ICmsState = {
   defaultState: undefined,
   pickupLocations: [],
   schedules: [],
-  discountCodes: [],
 };
 
 // selectors
