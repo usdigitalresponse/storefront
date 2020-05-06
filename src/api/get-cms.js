@@ -67,27 +67,12 @@ exports.handler = async (event, context) => {
       };
     });
 
-    // Discount Codes
-    const discountCodesRecords = await fetchTable('Discount Codes', { view: DEFAULT_VIEW });
-
-    const discountCodes = discountCodesRecords
-      .filter((row) => row.fields['Active'])
-      .map((row) => {
-        return {
-          id: row.id,
-          code: row.fields['Code'],
-          amount: row.fields['End Time'],
-          type: row.fields['Type'],
-        };
-      });
-
     return successResponse({
       config,
       content,
       inventory,
       pickupLocations,
       schedules,
-      discountCodes,
     });
   } catch (error) {
     return errorResponse(error.message);
