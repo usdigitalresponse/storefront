@@ -11,7 +11,7 @@ export function configureStore(): Store<IAppState> {
     // TODO: add redux-persist here to persist store key 'cart' to local storage
     loggingMiddleware({
       ignore: [],
-    }) as Middleware
+    }) as Middleware,
   );
   const createStoreWithMiddleware = enhancer(createStore);
 

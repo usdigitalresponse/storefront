@@ -68,7 +68,7 @@ export function byAbbreviation() {
 
 export function byName() {
   const results: Record<string, string> = {};
-  Object.keys(states).forEach(k => {
+  Object.keys(states).forEach((k) => {
     results[states[k]] = k;
   });
   return results;

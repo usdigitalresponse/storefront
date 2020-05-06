@@ -63,7 +63,7 @@ const CartItem: React.FC<Props> = ({ item, editable = false, className, index })
                 inputProps={{ name: 'quantity' }}
                 onChange={updateItem}
               >
-                {[1, 2, 3, 4, 5, 6, 7, 8].map(q => (
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
                   <option key={q} value={q}>
                     {q}
                   </option>

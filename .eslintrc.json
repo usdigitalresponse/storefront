@@ -25,7 +25,8 @@
                 "singleQuote": true,
                 "printWidth": 120,
                 "tabWidth": 2,
-                "trailingComma": "es5"
+                "trailingComma": "all",
+                "arrowParens": "always"
             }
         ],
         "no-duplicate-imports": "error",

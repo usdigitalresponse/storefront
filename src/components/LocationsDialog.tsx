@@ -25,13 +25,20 @@ interface Props {}
 
 const LocationsDialog: React.FC<Props> = () => {
   const isSmall = useIsSmall();
-  const isOpen = useSelector<IAppState, boolean>(state => state.cart.locationsDialogIsOpen);
+  const isOpen = useSelector<IAppState, boolean>((state) => state.cart.locationsDialogIsOpen);
   const dispatch = useDispatch();
   const pickupLocations = useSelector<IAppState, IPickupLocation[]>(pickupLocationsSelector);
-  const selectedLocation = useSelector<IAppState, string | undefined>(state => state.cart.selectedLocation);
+  const selectedLocation = useSelector<IAppState, string | undefined>((state) => state.cart.selectedLocation);
 
   function onClose() {
     dispatch(SetLocationsDialogIsOpen.create(false));
+  }
+
+  function onSelection(id: string) {
+    return () => {
+      dispatch(SetSelectedLocation.create(id));
+      onClose();
+    };
   }
 
   return (
@@ -43,16 +50,14 @@ const LocationsDialog: React.FC<Props> = () => {
       className={classNames(styles.dialog, { [styles.small]: isSmall })}
     >
       <DialogTitle className={styles.title} disableTypography>
-        <Typography variant="h2" className={styles.titleText}>
-          Select a location
-        </Typography>
-        {onClose ? (
+        <div className={styles.titleTop}>
+          <Typography variant="h2" className={styles.titleText}>
+            Select a location
+          </Typography>
           <IconButton aria-label="close" onClick={onClose}>
             <CloseIcon className={styles.closeIcon} />
           </IconButton>
-        ) : null}
-      </DialogTitle>
-      <DialogContent dividers className={styles.content}>
+        </div>
         <div className={styles.search}>
           <TextField
             fullWidth
@@ -61,14 +66,16 @@ const LocationsDialog: React.FC<Props> = () => {
             placeholder="e.g. address or zip code"
           />
         </div>
+      </DialogTitle>
+      <DialogContent dividers className={styles.content}>
         <List className={styles.list}>
-          {pickupLocations.map(location => (
+          {pickupLocations.map((location) => (
             <ListItem
               key={location.id}
               className={styles.item}
               selected={location.id === selectedLocation}
               button
-              onClick={() => dispatch(SetSelectedLocation.create(location.id))}
+              onClick={onSelection(location.id)}
             >
               <Typography variant="body1" className={styles.itemName}>
                 {location.name}

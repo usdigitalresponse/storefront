@@ -92,7 +92,7 @@ const ProductDetail: React.FC<Props> = ({ product, className }) => {
                 inputProps={{ name: 'quantity' }}
                 onChange={(e: ChangeEvent<any>) => setQuantity(parseInt(e.target.value))}
               >
-                {[1, 2, 3, 4, 5, 6, 7, 8].map(q => (
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
                   <option key={q} value={q}>
                     {q}
                   </option>

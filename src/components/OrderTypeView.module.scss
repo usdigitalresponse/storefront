@@ -13,10 +13,10 @@
 
   .title {
     @include fontSize();
+    @include shadowBorder('right');
     font-weight: 500;
     padding-right: spacing(2);
     margin-right: spacing(2);
-    box-shadow: inset -1px 0 0 rgba(0,0,0,0.15);
     align-self: stretch;
   }
 

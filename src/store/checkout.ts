@@ -20,7 +20,7 @@ export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
   .withHandler(SetIsPaying.TYPE, (state, isPaying) => setWith(state, { isPaying }))
   .withHandler(SetError.TYPE, (state, error) => setWith(state, { error }))
   .withHandler(SetOrderSummary.TYPE, (state, orderSummary) => setWith(state, { orderSummary }))
-  .withDefaultHandler(state => (state ? state : initialCheckoutState))
+  .withDefaultHandler((state) => (state ? state : initialCheckoutState))
   .build();
 
 // init
@@ -35,7 +35,7 @@ export const isPayingSelector = Reselect.createSelector(
   (state: IAppState) => state.checkout.isPaying,
   (isPaying: boolean) => {
     return isPaying;
-  }
+  },
 );
 
 export const paymentStatusSelector = Reselect.createSelector(
@@ -47,5 +47,5 @@ export const paymentStatusSelector = Reselect.createSelector(
     else if (orderSummary) return PaymentStatus.SUCCEEDED;
     else if (error) return PaymentStatus.FAILED;
     else return PaymentStatus.NONE;
-  }
+  },
 );

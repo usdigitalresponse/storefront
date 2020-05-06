@@ -1,9 +1,10 @@
 import { Button, Card, CardActionArea, CardActions, Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { OrderType } from '../common/types';
-import { SetLocationsDialogIsOpen, SetOrderType } from '../store/cart';
+import { IPickupLocation, OrderType } from '../common/types';
+import { SetLocationsDialogIsOpen, SetOrderType, selectedLocationSelector } from '../store/cart';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsSmall } from '../common/hooks';
+import AddressView from './AddressView';
 import CheckedIcon from '@material-ui/icons/CheckBox';
 import React from 'react';
 import UncheckedIcon from '@material-ui/icons/CheckBoxOutlineBlank';
@@ -13,11 +14,12 @@ import styles from './OrderTypeSelector.module.scss';
 const OrderTypeSelector: React.FC = () => {
   const isSmall = useIsSmall();
   const dispatch = useDispatch();
-  const orderType = useSelector<IAppState, OrderType>(state => state.cart.orderType);
+  const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
+  const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
 
   return (
-    <Grid container spacing={2}>
-      <Grid item md={6} xs={12}>
+    <Grid container spacing={2} alignItems={isSmall ? undefined : 'stretch'}>
+      <Grid item md={6} xs={12} className={styles.column}>
         <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
           <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.DELIVERY))}>
             <div className={classNames(styles.content, styles.delivery)}>
@@ -43,23 +45,35 @@ const OrderTypeSelector: React.FC = () => {
               <div className={styles.check}>
                 {orderType === OrderType.PICKUP ? <CheckedIcon color="primary" /> : <UncheckedIcon color="primary" />}
               </div>
-              <div className={styles.label}>
+              <div className={classNames(styles.label, styles.pickupLabel)}>
                 <Typography variant="h4" className={styles.title}>
                   Pickup
                 </Typography>
                 <Typography variant="body1" className={styles.description}>
                   Required for EBT or Cash
                 </Typography>
+                {selectedLocation && (
+                  <div className={styles.selectedLocation}>
+                    <Typography variant="body2" className={styles.locationName}>
+                      {selectedLocation.name}
+                    </Typography>
+                    <AddressView
+                      address={selectedLocation.address}
+                      variant="body2"
+                      textClassName={styles.locationAddress}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </CardActionArea>
           <CardActions className={styles.actions}>
             <Button
               color="primary"
-              disabled={orderType === OrderType.DELIVERY}
               onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
+              disabled={orderType === OrderType.DELIVERY}
             >
-              Choose location...
+              {selectedLocation ? 'Change' : 'Choose'} location...
             </Button>
           </CardActions>
         </Card>
