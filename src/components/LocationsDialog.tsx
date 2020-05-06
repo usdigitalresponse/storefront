@@ -58,14 +58,15 @@ const LocationsDialog: React.FC<Props> = () => {
             <CloseIcon className={styles.closeIcon} />
           </IconButton>
         </div>
-        <div className={styles.search}>
+        {/* TODO: Implement LBS search */}
+        {/* <div className={styles.search}>
           <TextField
             fullWidth
             variant="outlined"
             InputProps={{ startAdornment: <SearchIcon className={styles.searchIcon} /> }}
             placeholder="e.g. address or zip code"
           />
-        </div>
+        </div> */}
       </DialogTitle>
       <DialogContent dividers className={styles.content}>
         <List className={styles.list}>

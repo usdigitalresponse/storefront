@@ -15,6 +15,7 @@ const OrderTypeSelector: React.FC = () => {
   const isSmall = useIsSmall();
   const dispatch = useDispatch();
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
+  const pickupLocationCount = useSelector<IAppState, number>((state) => state.cms.pickupLocations.length);
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
 
   return (
@@ -45,7 +46,7 @@ const OrderTypeSelector: React.FC = () => {
               <div className={styles.check}>
                 {orderType === OrderType.PICKUP ? <CheckedIcon color="primary" /> : <UncheckedIcon color="primary" />}
               </div>
-              <div className={classNames(styles.label, styles.pickupLabel)}>
+              <div className={classNames(styles.label, { [styles.pickupLabel]: pickupLocationCount > 1 })}>
                 <Typography variant="h4" className={styles.title}>
                   Pickup
                 </Typography>
@@ -67,15 +68,17 @@ const OrderTypeSelector: React.FC = () => {
               </div>
             </div>
           </CardActionArea>
-          <CardActions className={styles.actions}>
-            <Button
-              color="primary"
-              onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
-              disabled={orderType === OrderType.DELIVERY}
-            >
-              {selectedLocation ? 'Change' : 'Choose'} location...
-            </Button>
-          </CardActions>
+          {pickupLocationCount > 1 && (
+            <CardActions className={styles.actions}>
+              <Button
+                color="primary"
+                onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
+                disabled={orderType === OrderType.DELIVERY}
+              >
+                {selectedLocation ? 'Change' : 'Choose'} location...
+              </Button>
+            </CardActions>
+          )}
         </Card>
       </Grid>
     </Grid>

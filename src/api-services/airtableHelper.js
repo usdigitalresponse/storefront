@@ -6,12 +6,12 @@ let Airtable = require('airtable');
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
 
 export const airTableRowsAsKey = function(records) {
-  const rowFields = records.map(row => {
+  const rowFields = records.map((row) => {
     return row.fields;
   });
 
   const fieldsByKey = {};
-  rowFields.map(row => {
+  rowFields.map((row) => {
     fieldsByKey[row.key] = {
       ...row,
     };

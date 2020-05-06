@@ -10,6 +10,7 @@ import {
   SetStripePromise,
   SetTaxRate,
 } from '../store/cms';
+import { SetSelectedLocation } from '../store/cart';
 import { Store } from 'redux';
 
 export class AirtableService {
@@ -32,21 +33,25 @@ export class AirtableService {
           return;
         }
 
-        AirtableService.store.dispatch(
-          CompoundAction([
-            SetContent.create(records.content),
-            SetInventory.create(records.inventory),
-            SetSchedules.create(records.schedules),
-            SetPickupLocations.create(records.pickupLocations),
-            // config
-            SetLanguages.create(records.config.languages),
-            SetTaxRate.create(records.config.tax_rate),
-            SetStripePromise.create({
-              main: records.config.stripe_main_public_api_key,
-              donation: records.config.stripe_donation_public_api_key,
-            }),
-          ]),
-        );
+        const actions: any = [
+          SetContent.create(records.content),
+          SetInventory.create(records.inventory),
+          SetSchedules.create(records.schedules),
+          SetPickupLocations.create(records.pickupLocations),
+          // config
+          SetLanguages.create(records.config.languages),
+          SetTaxRate.create(records.config.tax_rate),
+          SetStripePromise.create({
+            main: records.config.stripe_main_public_api_key,
+            donation: records.config.stripe_donation_public_api_key,
+          }),
+        ];
+
+        if (records.pickupLocations.length === 1) {
+          actions.push(SetSelectedLocation.create(records.pickupLocations[0].id));
+        }
+
+        AirtableService.store.dispatch(CompoundAction(actions));
       });
   }
 
