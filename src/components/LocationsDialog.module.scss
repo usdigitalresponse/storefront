@@ -1,0 +1,50 @@
+@import '../common/variables';
+
+.dialog {
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: spacing(1) spacing(1) spacing(1) spacing(2);
+  }
+
+  .titleText {
+    @include fontSize('lg');
+  }
+
+  .list {
+    padding: 0;
+    max-height: 300px
+  }
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 550px;
+    @include shadowBorder('bottom');
+  }
+
+  .itemName {
+    font-weight: 500;
+  }
+
+  .content {
+    padding: 0;
+  }
+
+  .search {
+    padding: spacing(2);
+
+    .searchIcon {
+      margin-right: spacing(1);
+    }
+  }
+
+  &.small {
+    .item {
+      min-width: auto;
+      max-height: auto;
+    }
+  }
+}

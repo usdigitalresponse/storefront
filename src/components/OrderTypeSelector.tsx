@@ -1,7 +1,7 @@
 import { Button, Card, CardActionArea, CardActions, Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { OrderType } from '../common/types';
-import { SetOrderType } from '../store/cart';
+import { SetLocationsDialogIsOpen, SetOrderType } from '../store/cart';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsSmall } from '../common/hooks';
 import CheckedIcon from '@material-ui/icons/CheckBox';
@@ -54,7 +54,11 @@ const OrderTypeSelector: React.FC = () => {
             </div>
           </CardActionArea>
           <CardActions className={styles.actions}>
-            <Button color="primary" disabled={orderType === OrderType.DELIVERY}>
+            <Button
+              color="primary"
+              disabled={orderType === OrderType.DELIVERY}
+              onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
+            >
               Choose location...
             </Button>
           </CardActions>

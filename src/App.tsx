@@ -13,6 +13,7 @@ import ConfirmationPage from './pages/ConfirmationPage';
 import DonatePage from './pages/DonatePage';
 import DriversPage from './pages/DriversPage';
 import HomePage from './pages/HomePage';
+import LocationsDialog from './components/LocationsDialog';
 import ProductsPage from './pages/ProductsPage';
 import React from 'react';
 import theme from './common/theme';
@@ -39,11 +40,12 @@ function App() {
       <ThemeProvider theme={theme}>
         <Router>
           <Switch>
-            {Object.keys(routeComponents).map((routeId) => (
+            {Object.keys(routeComponents).map(routeId => (
               <Route key={routeId} path={routePaths[routeId]} component={routeComponents[routeId]} exact={true} />
             ))}
           </Switch>
           <CartDialog />
+          <LocationsDialog />
         </Router>
       </ThemeProvider>
     </Provider>

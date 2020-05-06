@@ -17,21 +17,21 @@ import PhoneField from '../components/PhoneField';
 import React, { useEffect } from 'react';
 import StateField from '../components/StateField';
 import StripeCardField from '../components/StripeCardField';
+import StripeElementsWrapper from '../components/StripeElementsWrapper';
 import ZipCodeField from '../components/ZipCodeField';
 import classNames from 'classnames';
 import styles from './CheckoutPage.module.scss';
-import StripeElementsWrapper from '../components/StripeElementsWrapper';
 
 function CheckoutPageMain() {
   const { register, setValue, watch, handleSubmit, errors } = useForm<ICheckoutFormData>();
-  const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
-  const defaultState = useSelector<IAppState, string | undefined>((state) => state.cms.defaultState);
+  const orderType = useSelector<IAppState, OrderType>(state => state.cart.orderType);
+  const defaultState = useSelector<IAppState, string | undefined>(state => state.cms.defaultState);
   const isSmall = useIsSmall();
   const hasErrors = Object.keys(errors).length > 0;
   const stripe = useStripe();
   const elements = useElements();
   const paymentStatus = useSelector<IAppState, PaymentStatus>(paymentStatusSelector);
-  const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
+  const paymentError = useSelector<IAppState, string | undefined>(state => state.checkout.error);
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
   const history = useHistory();
 

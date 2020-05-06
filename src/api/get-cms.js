@@ -44,9 +44,10 @@ exports.handler = async (event, context) => {
         id: row.id,
         name: row.fields['Name'],
         address: {
-          street1: row.fields['Address Street 1'],
+          street1: row.fields['Address Street'],
           street2: row.fields['Address Street 2'],
           city: row.fields['Address City'],
+          state: row.fields['Address State'],
           zip: row.fields['Address Zip'],
         },
         schedules: row.fields['Schedules'],
