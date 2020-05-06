@@ -42,7 +42,7 @@ const DeliveryPreferences: React.FC<Props> = ({ inputRef, watch, setValue }) => 
       <Grid item md={4} xs={12} className={styles.column}>
         <FormControlLabel
           className={styles.readOnly}
-          control={<Checkbox color="primary" checked={anytime} onChange={e => setAnytime(e.target.checked)} />}
+          control={<Checkbox color="primary" checked={anytime} onChange={(e) => setAnytime(e.target.checked)} />}
           label="Anytime"
           disabled={!allFalse}
         />

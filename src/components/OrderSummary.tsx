@@ -20,10 +20,10 @@ interface Props {
 const OrderSummary: React.FC<Props> = ({ className, showLineItems }) => {
   const isSmall = useIsSmall();
   const subtotal = useSelector<IAppState, number>(subtotalSelector);
-  const taxRate = useSelector<IAppState, number>(state => state.cms.taxRate);
-  const inventory = useSelector<IAppState, InventoryRecord[]>(state => state.cms.inventory);
-  const cartItems = useSelector<IAppState, ICartItem[]>(state => state.cart.items);
-  const isDelivery = useSelector<IAppState, OrderType>(state => state.cart.orderType) === OrderType.DELIVERY;
+  const taxRate = useSelector<IAppState, number>((state) => state.cms.taxRate);
+  const inventory = useSelector<IAppState, InventoryRecord[]>((state) => state.cms.inventory);
+  const cartItems = useSelector<IAppState, ICartItem[]>((state) => state.cart.items);
+  const isDelivery = useSelector<IAppState, OrderType>((state) => state.cart.orderType) === OrderType.DELIVERY;
   const tax = subtotal * taxRate;
   const total = subtotal + tax;
 
@@ -34,7 +34,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems }) => {
       </Typography>
       {showLineItems && (
         <div className={styles.section}>
-          {cartItems.map(cartItem => {
+          {cartItems.map((cartItem) => {
             const product = getProduct(cartItem.id, inventory);
             return product ? (
               <div key={cartItem.id} className={styles.lineItem}>

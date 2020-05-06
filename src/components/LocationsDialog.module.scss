@@ -2,10 +2,16 @@
 
 .dialog {
   .title {
+    padding: 0;
+    box-shadow: 0;
+  }
+
+  .titleTop {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: spacing(1) spacing(1) spacing(1) spacing(2);
+    @include shadowBorder('bottom');
   }
 
   .titleText {

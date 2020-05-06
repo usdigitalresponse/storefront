@@ -18,7 +18,7 @@ const ProductsPage: React.FC = () => {
         work, and where is the pickup locations. This can be wrap in multiple lines."
     >
       <div className={classNames(styles.container, { [styles.small]: isSmall })}>
-        {inventory.map(item => (
+        {inventory.map((item) => (
           <ProductDetail key={item.id} product={item} className={styles.productDetail} />
         ))}
       </div>

@@ -40,7 +40,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Router>
           <Switch>
-            {Object.keys(routeComponents).map(routeId => (
+            {Object.keys(routeComponents).map((routeId) => (
               <Route key={routeId} path={routePaths[routeId]} component={routeComponents[routeId]} exact={true} />
             ))}
           </Switch>

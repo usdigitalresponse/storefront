@@ -1,7 +1,8 @@
 import * as Reselect from 'reselect';
 import { IAppState } from './app';
-import { ICartItem, InventoryRecord, OrderType } from '../common/types';
+import { ICartItem, IPickupLocation, InventoryRecord, OrderType } from '../common/types';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
+import { pickupLocationsSelector } from './cms';
 import update from 'immutability-helper';
 
 // model
@@ -30,16 +31,16 @@ export const cartReducer: any = TypedReducer.builder<ICartState>()
   .withHandler(SetSelectedLocation.TYPE, (state, selectedLocation) => setWith(state, { selectedLocation }))
   .withHandler(AddItem.TYPE, (state, item) => update(state, { items: { $push: [item] }, dialogIsOpen: { $set: true } }))
   .withHandler(UpdateItem.TYPE, (state, item) => {
-    const index = state.items.findIndex(cartItem => cartItem.id === item.id);
+    const index = state.items.findIndex((cartItem) => cartItem.id === item.id);
     return update(state, { items: { $splice: [[index, 1, item]] } });
   })
   .withHandler(RemoveItem.TYPE, (state, index) => update(state, { items: { $splice: [[index, 1]] } }))
   .withHandler(SetDialogIsOpen.TYPE, (state, dialogIsOpen) => setWith(state, { dialogIsOpen }))
   .withHandler(SetLocationsDialogIsOpen.TYPE, (state, locationsDialogIsOpen) =>
-    setWith(state, { locationsDialogIsOpen })
+    setWith(state, { locationsDialogIsOpen }),
   )
   .withHandler(SetOrderType.TYPE, (state, orderType) => setWith(state, { orderType }))
-  .withDefaultHandler(state => (state ? state : initialCartState))
+  .withDefaultHandler((state) => (state ? state : initialCartState))
   .build();
 
 // init
@@ -51,7 +52,7 @@ export const initialCartState: ICartState = {
   ],
   selectedLocation: undefined,
   dialogIsOpen: false,
-  locationsDialogIsOpen: true,
+  locationsDialogIsOpen: false,
   orderType: OrderType.DELIVERY,
   taxRate: 0.085,
 };
@@ -61,7 +62,7 @@ export const itemsSelector = Reselect.createSelector(
   (state: IAppState) => state.cart.items,
   (items: ICartItem[]) => {
     return items;
-  }
+  },
 );
 
 export const ICartItemCountSelector = Reselect.createSelector(itemsSelector, (items: ICartItem[]) => {
@@ -73,9 +74,9 @@ export const subtotalSelector = Reselect.createSelector(
   (state: IAppState) => state.cms.inventory,
   (cartItems: ICartItem[], inventory: InventoryRecord[]) => {
     return cartItems.reduce((acc: number, cartItem: ICartItem) => {
-      return acc + cartItem.quantity * (inventory.find(product => product.id === cartItem.id)?.price || 0);
+      return acc + cartItem.quantity * (inventory.find((product) => product.id === cartItem.id)?.price || 0);
     }, 0);
-  }
+  },
 );
 
 export const totalSelector = Reselect.createSelector(
@@ -83,5 +84,13 @@ export const totalSelector = Reselect.createSelector(
   (state: IAppState) => state.cart.taxRate,
   (subtotal: number, taxRate: number) => {
     return subtotal + subtotal * taxRate;
-  }
+  },
+);
+
+export const selectedLocationSelector = Reselect.createSelector(
+  pickupLocationsSelector,
+  (state: IAppState) => state.cart.selectedLocation,
+  (pickupLocations: IPickupLocation[], selectedLocation?: string) => {
+    return pickupLocations.find((location) => selectedLocation === location.id);
+  },
 );

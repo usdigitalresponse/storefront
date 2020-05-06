@@ -5,5 +5,5 @@ export function getImageUrl(image?: AirtableImage[]): string {
 }
 
 export function getProduct(id: string, inventory: InventoryRecord[]): InventoryRecord | undefined {
-  return inventory.find(item => item.id === id);
+  return inventory.find((item) => item.id === id);
 }

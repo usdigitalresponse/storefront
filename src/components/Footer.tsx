@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
   return (
     <div className={styles.footer}>
       <div className={classNames(styles.links, { [styles.small]: isSmall })}>
-        {footerNavItems.map(item => (
+        {footerNavItems.map((item) => (
           <Link key={item.name} href={item.url} className={styles.link}>
             {item.name}
           </Link>

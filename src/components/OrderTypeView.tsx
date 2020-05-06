@@ -13,7 +13,7 @@ interface Props {
 }
 
 const OrderTypeView: React.FC<Props> = ({ className }) => {
-  const orderType = useSelector<IAppState, OrderType>(state => state.cart.orderType);
+  const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const dispatch = useDispatch();
 
   return (
