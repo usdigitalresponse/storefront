@@ -17,11 +17,12 @@ import PhoneField from '../components/PhoneField';
 import React, { useEffect } from 'react';
 import StateField from '../components/StateField';
 import StripeCardField from '../components/StripeCardField';
+import StripeElementsWrapper from '../components/StripeElementsWrapper';
 import ZipCodeField from '../components/ZipCodeField';
 import classNames from 'classnames';
 import styles from './CheckoutPage.module.scss';
 
-export default function CheckoutPage() {
+function CheckoutPageMain() {
   const { register, setValue, watch, handleSubmit, errors } = useForm<ICheckoutFormData>();
   const orderType = useSelector<IAppState, OrderType>(state => state.cart.orderType);
   const defaultState = useSelector<IAppState, string | undefined>(state => state.cms.defaultState);
@@ -160,5 +161,13 @@ export default function CheckoutPage() {
         </Grid>
       </form>
     </BaseLayout>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <StripeElementsWrapper type="main">
+      <CheckoutPageMain />
+    </StripeElementsWrapper>
   );
 }

@@ -13,16 +13,30 @@ exports.handler = async (event, context) => {
       throw new Error('No amountCents specified');
     }
 
+    const paymentType = event.queryStringParameters.paymentType;
+    if (!paymentType) {
+      throw new Error('No paymentType specified');
+    }
+
+    if (paymentType !== 'donation' && paymentType !== 'main') {
+      throw new Error('Invalid paymentType: ' + paymentType);
+    }
+
     if (isNaN(amountCents)) {
       throw new Error('Invalid amountCents');
     }
 
-    if (!process.env.STRIPE_PRIVATE_API_KEY) {
+    const apiKey =
+      paymentType === 'donation'
+        ? process.env.STRIPE_DONATION_PRIVATE_API_KEY
+        : process.env.STRIPE_MAIN_PRIVATE_API_KEY;
+
+    if (!apiKey) {
       throw new Error('Stripe api key not set');
     }
     // Set your secret key. Remember to switch to your live secret key in production!
     // See your keys here: https://dashboard.stripe.com/account/apikeys
-    const stripe = require('stripe')(process.env.STRIPE_PRIVATE_API_KEY);
+    const stripe = require('stripe')(apiKey);
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountCents,

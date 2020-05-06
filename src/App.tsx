@@ -16,7 +16,6 @@ import HomePage from './pages/HomePage';
 import LocationsDialog from './components/LocationsDialog';
 import ProductsPage from './pages/ProductsPage';
 import React from 'react';
-import StripeElementsWrapper from './components/StripeElementsWrapper';
 import theme from './common/theme';
 
 const store = configureStore();
@@ -39,17 +38,15 @@ function App() {
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <StripeElementsWrapper>
-          <Router>
-            <Switch>
-              {Object.keys(routeComponents).map(routeId => (
-                <Route key={routeId} path={routePaths[routeId]} component={routeComponents[routeId]} exact={true} />
-              ))}
-            </Switch>
-            <CartDialog />
-            <LocationsDialog />
-          </Router>
-        </StripeElementsWrapper>
+        <Router>
+          <Switch>
+            {Object.keys(routeComponents).map(routeId => (
+              <Route key={routeId} path={routePaths[routeId]} component={routeComponents[routeId]} exact={true} />
+            ))}
+          </Switch>
+          <CartDialog />
+          <LocationsDialog />
+        </Router>
       </ThemeProvider>
     </Provider>
   );

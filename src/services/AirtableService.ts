@@ -24,7 +24,7 @@ export class AirtableService {
 
   private static fetchRecords() {
     fetch('/.netlify/functions/get-cms')
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((records: Record<string, any>) => {
         if (!records) return;
 
@@ -43,8 +43,11 @@ export class AirtableService {
             // config
             SetLanguages.create(records.config.languages),
             SetTaxRate.create(records.config.tax_rate),
-            SetStripePromise.create(records.config.stripe_public_api_key),
-          ])
+            SetStripePromise.create({
+              main: records.config.stripe_main_public_api_key,
+              donation: records.config.stripe_donation_public_api_key,
+            }),
+          ]),
         );
       });
   }
@@ -54,7 +57,7 @@ export class AirtableService {
       method: 'POST', // or 'PUT'
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
-    }).then(res => res.json());
+    }).then((res) => res.json());
   }
 
   private constructor(store: Store) {

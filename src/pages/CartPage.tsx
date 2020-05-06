@@ -15,7 +15,7 @@ import styles from './CartPage.module.scss';
 
 const CartPage: React.FC = () => {
   const isSmall = useIsSmall();
-  const cartItems = useSelector<IAppState, ICartItem[]>(state => state.cart.items);
+  const cartItems = useSelector<IAppState, ICartItem[]>((state) => state.cart.items);
 
   return (
     <BaseLayout title="Shopping Cart">
@@ -27,7 +27,7 @@ const CartPage: React.FC = () => {
               Items
             </Typography>
             {cartItems.map((item, index) => (
-              <CartItem key={item.id} item={item} index={index} editable className={styles.cartItem} />
+              <CartItem key={index} item={item} index={index} editable className={styles.cartItem} />
             ))}
           </Card>
         </Grid>

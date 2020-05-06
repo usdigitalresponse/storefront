@@ -17,7 +17,8 @@ exports.handler = async (event, context) => {
 
     const config = {
       languages: valueOrNull(configRecordsByKey, 'languages'),
-      stripe_public_api_key: valueOrNull(configRecordsByKey, 'stripe_main_public_api_key'),
+      stripe_main_public_api_key: valueOrNull(configRecordsByKey, 'stripe_main_public_api_key'),
+      stripe_donation_public_api_key: valueOrNull(configRecordsByKey, 'stripe_donation_public_api_key'),
     };
 
     // Inventory
