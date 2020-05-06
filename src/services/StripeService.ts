@@ -2,7 +2,7 @@ import { AirtableService } from './AirtableService';
 import { CardElement } from '@stripe/react-stripe-js';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { ICheckoutFormData } from '../common/types';
+import { ICheckoutFormData, OrderType } from '../common/types';
 import { SetError, SetIsPaying, SetOrderSummary } from '../store/checkout';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
@@ -29,25 +29,27 @@ export class StripeService {
     StripeService.store.dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
 
     try {
+      const paymentType = type === OrderType.DONATION ? 'donation' : 'main';
       const clientSecretResult = await fetch(
-        `/.netlify/functions/stripe-payment?amountCents=${amount * 100}`
-      ).then(res => res.json());
+        `/.netlify/functions/stripe-payment?amountCents=${amount * 100}&paymentType=${paymentType}`,
+      ).then((res) => res.json());
 
       if (!clientSecretResult || !clientSecretResult.client_secret) {
         throw new Error('Could not get client secret. Stripe public key must be added to config table in Airtable');
       }
+
+      const cardElement = elements.getElement(CardElement) as StripeCardElement;
+      console.log('cardElement', cardElement);
 
       const result = await stripe.confirmCardPayment(clientSecretResult.client_secret, {
         payment_method: {
           card: elements.getElement(CardElement) as StripeCardElement,
         },
       });
-
-      console.log('result error!', result.error?.message);
-
       if (result.error || !result.paymentIntent || result.paymentIntent.status !== 'succeeded') {
+        console.log('result error', result.error?.message);
         StripeService.store.dispatch(
-          CompoundAction([SetError.create(result.error?.message || errorMessage), SetIsPaying.create(false)])
+          CompoundAction([SetError.create(result.error?.message || errorMessage), SetIsPaying.create(false)]),
         );
         return;
       }

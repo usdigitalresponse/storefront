@@ -5,8 +5,13 @@ import { stripePromiseSelector } from '../store/cms';
 import { useSelector } from 'react-redux';
 import React from 'react';
 
-const StripeElementsWrapper: React.FC = ({ children }) => {
-  const stripePromise = useSelector<IAppState, Promise<Stripe | null> | null>(stripePromiseSelector);
+interface Props {
+  type: 'donation' | 'main';
+}
+
+const StripeElementsWrapper: React.FC<Props> = ({ children, type }) => {
+  const stripePromise = useSelector<IAppState, Promise<Stripe | null> | null>(stripePromiseSelector(type));
+
   return <Elements stripe={stripePromise}>{children}</Elements>;
 };
 

@@ -11,10 +11,13 @@ import styles from './ConfirmationPage.module.scss';
 interface Props {}
 
 const ConfirmationPage: React.FC<Props> = () => {
-  const orderSummary = useSelector<IAppState, IOrderSummary>(state => state.checkout.orderSummary!);
+  const orderSummary = useSelector<IAppState, IOrderSummary>((state) => state.checkout.orderSummary!);
   const contact_phone = useContent('contact_phone');
   const isSmall = useIsSmall();
 
+  if (!orderSummary) {
+    return <BaseLayout title="Order not found" description={`Error finding order. Please try again`}></BaseLayout>;
+  }
   return (
     <BaseLayout
       title="Order Placed!"

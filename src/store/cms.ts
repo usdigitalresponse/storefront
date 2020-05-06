@@ -12,7 +12,10 @@ export interface ICmsState {
   inventory: InventoryRecord[];
   languages: string[];
   language: string;
-  stripePromise: Promise<Stripe | null> | null;
+  stripeObjects: {
+    main: Promise<Stripe | null> | null;
+    donation: Promise<Stripe | null> | null;
+  };
   taxRate: number;
   defaultState?: string;
   pickupLocations: IPickupLocation[];
@@ -38,17 +41,22 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
   .withHandler(SetSchedules.TYPE, (state, schedules) => setWith(state, { schedules }))
   .withHandler(SetPickupLocations.TYPE, (state, pickupLocations) => setWith(state, { pickupLocations }))
   .withHandler(SetDiscountCodes.TYPE, (state, discountCodes) => setWith(state, { discountCodes }))
-  .withHandler(SetStripePromise.TYPE, (state, stripePublicKey) =>
-    setWith(state, { stripePromise: loadStripe(stripePublicKey) })
+  .withHandler(SetStripePromise.TYPE, (state, keys) =>
+    setWith(state, {
+      stripeObjects: { main: loadStripe(keys.main), donation: loadStripe(keys.donation) },
+    }),
   )
-  .withDefaultHandler(state => (state ? state : initialCmsState))
+  .withDefaultHandler((state) => (state ? state : initialCmsState))
   .build();
 
 // init
 export const initialCmsState: ICmsState = {
   content: {},
   inventory: [],
-  stripePromise: null,
+  stripeObjects: {
+    main: null,
+    donation: null,
+  },
   languages: ['en'],
   language: 'en',
   taxRate: 0.085,
@@ -63,7 +71,7 @@ export const inventorySelector = Reselect.createSelector(
   (state: IAppState) => state.cms.inventory,
   (inventory: InventoryRecord[]) => {
     return inventory;
-  }
+  },
 );
 
 export const appIsReadySelector = Reselect.createSelector(
@@ -71,23 +79,24 @@ export const appIsReadySelector = Reselect.createSelector(
   inventorySelector,
   (records: Record<string, IContentRecord>, inventory: InventoryRecord[]) => {
     return Object.keys(records).length > 0 && inventory.length > 0;
-  }
+  },
 );
 
-export const stripePromiseSelector = Reselect.createSelector(
-  (state: IAppState) => state.cms.stripePromise,
-  (stripePromise: Promise<Stripe | null> | null) => {
-    return stripePromise;
-  }
-);
+export const stripePromiseSelector = (type: 'donation' | 'main') =>
+  Reselect.createSelector(
+    (state: IAppState) => state.cms.stripeObjects[type],
+    (stripePromise: Promise<Stripe | null> | null) => {
+      return stripePromise;
+    },
+  );
 
 export const makeProductDetailSelector = () =>
   Reselect.createSelector(
     inventorySelector,
     (_: any, productId: string) => productId,
     (inventory: InventoryRecord[], productId: string) => {
-      return inventory.find(item => item.id === productId);
-    }
+      return inventory.find((item) => item.id === productId);
+    },
   );
 
 export const makeContentValueSelector = () =>
@@ -112,18 +121,8 @@ export const makeContentValueSelector = () =>
       }
 
       return getRecordValueForLanguage(value, language);
-    }
+    },
   );
-
-//
-export function getStripePromise() {
-  return (state: IAppState): PromiseLike<Stripe | null> | null => {
-    if (!state.cms.stripePromise) {
-      return null;
-    }
-    return state.cms.stripePromise;
-  };
-}
 
 export function getRecordValueForLanguage(record: IContentRecord, language: string) {
   return record[language] as string;
