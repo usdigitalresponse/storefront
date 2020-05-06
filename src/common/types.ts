@@ -135,7 +135,11 @@ export interface IPickupLocation {
   id: string;
   name: string;
   address: IAddress;
-  schedules: string[];
+  schedules: Array<string | ISchedule>;
+}
+
+export function isSchedule(schedule?: string | ISchedule): schedule is ISchedule {
+  return !!schedule && (schedule as ISchedule).id !== undefined;
 }
 
 export type Day = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';

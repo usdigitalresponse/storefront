@@ -13,6 +13,7 @@ import ConfirmationPage from './pages/ConfirmationPage';
 import DonatePage from './pages/DonatePage';
 import DriversPage from './pages/DriversPage';
 import HomePage from './pages/HomePage';
+import LocationsDialog from './components/LocationsDialog';
 import ProductsPage from './pages/ProductsPage';
 import React from 'react';
 import StripeElementsWrapper from './components/StripeElementsWrapper';
@@ -46,6 +47,7 @@ function App() {
               ))}
             </Switch>
             <CartDialog />
+            <LocationsDialog />
           </Router>
         </StripeElementsWrapper>
       </ThemeProvider>

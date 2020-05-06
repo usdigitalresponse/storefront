@@ -81,6 +81,20 @@ export const stripePromiseSelector = Reselect.createSelector(
   }
 );
 
+export const pickupLocationsSelector = Reselect.createSelector(
+  (state: IAppState) => state.cms.pickupLocations,
+  (state: IAppState) => state.cms.schedules,
+  (pickupLocations: IPickupLocation[], schedules: ISchedule[]) => {
+    return pickupLocations.map(pickupLocation => {
+      const resolvedSchedules = pickupLocation.schedules.map(
+        (scheduleId: any) => schedules.find(s => s.id === scheduleId)!
+      );
+      pickupLocation.schedules = resolvedSchedules;
+      return pickupLocation;
+    });
+  }
+);
+
 export const makeProductDetailSelector = () =>
   Reselect.createSelector(
     inventorySelector,

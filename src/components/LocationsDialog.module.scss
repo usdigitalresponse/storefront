@@ -1,0 +1,31 @@
+@import '../common/variables';
+
+.dialog {
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .titleText {
+    @include fontSize('lg');
+  }
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .itemName {
+    font-weight: 500;
+  }
+
+  .footer {
+    padding: spacing(3) !important;
+  }
+
+  &.small {
+
+  }
+}
