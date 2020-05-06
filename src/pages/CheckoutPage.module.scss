@@ -27,6 +27,18 @@
     }
   }
 
+  .locationName {
+    font-weight: 500;
+  }
+
+  .selectedLocation {
+    margin-bottom: spacing(2);
+  }
+
+  .locationButton {
+    margin-left: -(spacing(1))
+  }
+
   .right {
     display: flex;
     flex-direction: column;

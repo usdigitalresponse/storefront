@@ -1,14 +1,16 @@
 import { Button, Card, CircularProgress, Grid, TextField, TextFieldProps, Typography } from '@material-ui/core';
-import { CheckoutFormField, ICheckoutFormData, OrderType, PaymentStatus } from '../common/types';
+import { CheckoutFormField, ICheckoutFormData, IPickupLocation, OrderType, PaymentStatus } from '../common/types';
 import { IAppState } from '../store/app';
+import { SetLocationsDialogIsOpen, selectedLocationSelector } from '../store/cart';
 import { StripeService } from '../services/StripeService';
 import { paymentStatusSelector } from '../store/checkout';
 import { reverse } from '../common/router';
+import { useDispatch, useSelector } from 'react-redux';
 import { useElements, useStripe } from '@stripe/react-stripe-js';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
-import { useSelector } from 'react-redux';
+import AddressView from '../components/AddressView';
 import BaseLayout from '../layouts/BaseLayout';
 import DeliveryPreferences from '../components/DeliveryPreferences';
 import OrderSummary from '../components/OrderSummary';
@@ -33,7 +35,9 @@ function CheckoutPageMain() {
   const paymentStatus = useSelector<IAppState, PaymentStatus>(paymentStatusSelector);
   const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
+  const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
   const history = useHistory();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (paymentStatus === PaymentStatus.SUCCEEDED) {
@@ -90,6 +94,34 @@ function CheckoutPageMain() {
                   />
                 </Grid>
               </Grid>
+              {orderType === OrderType.PICKUP && (
+                <Grid container className={styles.section}>
+                  <Typography variant="h3" className={styles.title}>
+                    Pickup Location
+                  </Typography>
+                  <Grid item md={8} xs={12}>
+                    {selectedLocation && (
+                      <div className={styles.selectedLocation}>
+                        <Typography variant="body1" className={styles.locationName}>
+                          {selectedLocation.name}
+                        </Typography>
+                        <AddressView
+                          address={selectedLocation.address}
+                          variant="body2"
+                          textClassName={styles.locationAddress}
+                        />
+                      </div>
+                    )}
+                    <Button
+                      className={styles.locationButton}
+                      color="primary"
+                      onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
+                    >
+                      {selectedLocation ? 'Change' : 'Choose'} location...
+                    </Button>
+                  </Grid>
+                </Grid>
+              )}
               {orderType === OrderType.DELIVERY && (
                 <>
                   <Grid container className={styles.section}>
