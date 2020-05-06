@@ -1,4 +1,13 @@
-import { Dialog, DialogContent, DialogTitle, IconButton, List, ListItem, Typography } from '@material-ui/core';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  List,
+  ListItem,
+  TextField,
+  Typography,
+} from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { IPickupLocation } from '../common/types';
 import { SetLocationsDialogIsOpen, SetSelectedLocation } from '../store/cart';
@@ -8,6 +17,7 @@ import { useIsSmall } from '../common/hooks';
 import AddressView from './AddressView';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
+import SearchIcon from '@material-ui/icons/Search';
 import classNames from 'classnames';
 import styles from './LocationsDialog.module.scss';
 
@@ -43,7 +53,15 @@ const LocationsDialog: React.FC<Props> = () => {
         ) : null}
       </DialogTitle>
       <DialogContent dividers className={styles.content}>
-        <List>
+        <div className={styles.search}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            InputProps={{ startAdornment: <SearchIcon className={styles.searchIcon} /> }}
+            placeholder="e.g. address or zip code"
+          />
+        </div>
+        <List className={styles.list}>
           {pickupLocations.map(location => (
             <ListItem
               key={location.id}
