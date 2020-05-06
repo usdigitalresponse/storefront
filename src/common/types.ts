@@ -108,6 +108,18 @@ export interface ICheckoutFormData extends ICheckoutFormDataDelivery, ICheckoutF
 export interface IOrderSummary extends ICheckoutFormData {
   amount: number;
   items: OrderItem[];
+  stripePaymentId?: string;
+}
+
+export type DonationFormField = 'fullName' | 'phone' | 'email';
+export interface IDonationFormData {
+  fullName: string;
+  phone: string;
+  email: string;
+}
+
+export interface IDonationSummary extends IDonationFormData {
+  amount: number;
   stripePaymentId: string;
 }
 
@@ -168,3 +180,5 @@ export interface IDiscountCode {
   amount: number;
   type: DiscountCodeType;
 }
+
+export type PaymentType = 'main' | 'donation';

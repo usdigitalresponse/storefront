@@ -1,1 +1,76 @@
 @import '../common/variables';
+
+.container {
+  .form {
+    padding: spacing(3) spacing(4);
+  }
+
+  .payment {
+    padding: spacing(2);
+  }
+
+  .section {
+    display: flex;
+    flex-direction: column;
+
+    &:not(:last-child) {
+      @include shadowBorder('bottom');
+      padding-bottom: spacing(4);
+      margin-bottom: spacing(3);
+    }
+  }
+
+  .title {
+    @include fontSize('lg');
+    margin-bottom: spacing(3);
+  }
+
+  .field {
+    &:not(:last-child) {
+      margin-bottom: spacing(3);
+    }
+  }
+
+  .right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .summary {
+    margin-bottom: spacing(2);
+  }
+
+  .sidebar {
+    position: sticky;
+    top: spacing(12);
+  }
+
+  .readOnly {
+    pointer-events: none;
+  }
+
+  .spinner {
+    color: white;
+  }
+
+  &.small {
+    .form {
+      padding: spacing(3) spacing(2);
+    }
+
+    .section:not(:last-child){
+      padding-bottom: spacing(3);
+      margin-bottom: spacing(2);
+    }
+
+    .title {
+      margin-bottom: spacing(2);
+    }
+
+    .field {
+      &:not(:last-child) {
+        margin-bottom: spacing(2);
+      }
+    }
+  }
+}

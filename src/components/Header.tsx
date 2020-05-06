@@ -25,11 +25,8 @@ import theme from '../common/theme';
 
 export const headerNavItems: INavItem[] = [
   { name: 'Get Started', url: reverse('products') },
+  { name: 'Donate Now', url: reverse('donate') },
   { name: 'Drive for us', url: reverse('drivers') },
-  // TODO: Create airtable view for wholesalers and update url
-  { name: 'Partner Login', url: 'https://airtable.com' },
-  // TODO: Create airtable view for drivers and update url
-  { name: 'Driver Login', url: 'https://airtable.com' },
 ];
 
 const Header: React.FC = () => {

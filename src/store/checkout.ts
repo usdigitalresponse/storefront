@@ -8,6 +8,7 @@ export interface ICheckoutState {
   isPaying: boolean;
   error?: string;
   orderSummary?: IOrderSummary;
+  donationAmount: number;
 }
 
 // actions
@@ -28,6 +29,7 @@ export const initialCheckoutState: ICheckoutState = {
   isPaying: false,
   error: undefined,
   orderSummary: undefined,
+  donationAmount: 50,
 };
 
 // selectors

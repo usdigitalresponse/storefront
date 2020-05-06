@@ -31,7 +31,7 @@ const BaseLayout: React.FC<Props> = ({ children, title, description, padding, ma
         className={classNames(styles.content, { [styles.small]: isSmall })}
         style={{
           padding,
-          maxWidth: 'unset',
+          maxWidth,
           alignSelf: maxWidth !== 'unset' ? 'center' : undefined,
         }}
       >

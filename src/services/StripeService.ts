@@ -2,7 +2,7 @@ import { AirtableService } from './AirtableService';
 import { CardElement } from '@stripe/react-stripe-js';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { ICheckoutFormData, OrderType } from '../common/types';
+import { ICheckoutFormData, IDonationFormData, PaymentType } from '../common/types';
 import { SetError, SetIsPaying, SetOrderSummary } from '../store/checkout';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
@@ -17,19 +17,15 @@ export class StripeService {
     this.instance = new StripeService(store);
   }
 
-  public static async pay(formData: ICheckoutFormData, stripe: Stripe | null, elements: StripeElements | null) {
-    if (!stripe || !elements) return;
-
-    const state = StripeService.store.getState();
-    const errorMessage = makeContentValueSelector()(state, 'error_payment');
-    const amount = totalSelector(state);
-    const type = state.cart.orderType;
-    const items = state.cart.items;
-
+  private static async processPayment(
+    paymentType: PaymentType,
+    amount: number,
+    stripe: Stripe,
+    elements: StripeElements,
+  ) {
+    const errorMessage = makeContentValueSelector()(StripeService.store.getState(), 'error_payment');
     StripeService.store.dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
-
     try {
-      const paymentType = type === OrderType.DONATION ? 'donation' : 'main';
       const clientSecretResult = await fetch(
         `/.netlify/functions/stripe-payment?amountCents=${amount * 100}&paymentType=${paymentType}`,
       ).then((res) => res.json());
@@ -55,21 +51,50 @@ export class StripeService {
       }
 
       if (result.paymentIntent.status === 'succeeded') {
-        const stripePaymentId = result.paymentIntent.id;
-        const orderSummary = await AirtableService.createOrder({
-          ...formData,
-          type,
-          amount,
-          items,
-          stripePaymentId,
-        });
-
-        StripeService.store.dispatch(CompoundAction([SetIsPaying.create(false), SetOrderSummary.create(orderSummary)]));
+        StripeService.store.dispatch(SetIsPaying.create(false));
+        return result.paymentIntent.id;
       }
     } catch (error) {
       console.log('Stripe payment error', error);
-
       StripeService.store.dispatch(CompoundAction([SetError.create(errorMessage), SetIsPaying.create(false)]));
+    }
+  }
+
+  public static async pay(formData: ICheckoutFormData, stripe: Stripe | null, elements: StripeElements | null) {
+    if (!stripe || !elements) return;
+
+    const state = StripeService.store.getState();
+    const amount = totalSelector(state);
+    const stripePaymentId = await StripeService.processPayment('main', amount, stripe, elements);
+
+    if (stripePaymentId) {
+      const type = state.cart.orderType;
+      const items = state.cart.items;
+      const orderSummary = await AirtableService.createOrder({
+        ...formData,
+        type,
+        amount,
+        items,
+        stripePaymentId,
+      });
+      StripeService.store.dispatch(SetOrderSummary.create(orderSummary));
+    }
+  }
+
+  public static async donate(formData: IDonationFormData, stripe: Stripe | null, elements: StripeElements | null) {
+    if (!stripe || !elements) return;
+
+    const state = StripeService.store.getState();
+    const amount = state.checkout.donationAmount!;
+    const stripePaymentId = await StripeService.processPayment('donation', amount, stripe, elements);
+
+    if (stripePaymentId) {
+      const orderSummary = await AirtableService.createDonation({
+        ...formData,
+        amount,
+        stripePaymentId,
+      });
+      StripeService.store.dispatch(SetOrderSummary.create(orderSummary));
     }
   }
 

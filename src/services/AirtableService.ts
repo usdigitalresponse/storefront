@@ -1,6 +1,6 @@
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { IOrderSummary } from '../common/types';
+import { IDonationSummary, IOrderSummary } from '../common/types';
 import {
   SetContent,
   SetInventory,
@@ -57,6 +57,14 @@ export class AirtableService {
 
   public static async createOrder(order: IOrderSummary) {
     return fetch('/.netlify/functions/create-order', {
+      method: 'POST', // or 'PUT'
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(order),
+    }).then((res) => res.json());
+  }
+
+  public static async createDonation(order: IDonationSummary) {
+    return fetch('/.netlify/functions/create-donation', {
       method: 'POST', // or 'PUT'
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
