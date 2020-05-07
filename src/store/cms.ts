@@ -20,6 +20,7 @@ export interface ICmsState {
   defaultState?: string;
   pickupLocations: IPickupLocation[];
   schedules: ISchedule[];
+  donationPresets: number[];
 }
 
 // actions
@@ -60,6 +61,7 @@ export const initialCmsState: ICmsState = {
   defaultState: undefined,
   pickupLocations: [],
   schedules: [],
+  donationPresets: [25, 50, 100, 250],
 };
 
 // selectors

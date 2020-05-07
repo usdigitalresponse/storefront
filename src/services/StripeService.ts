@@ -34,9 +34,6 @@ export class StripeService {
         throw new Error('Could not get client secret. Stripe public key must be added to config table in Airtable');
       }
 
-      const cardElement = elements.getElement(CardElement) as StripeCardElement;
-      console.log('cardElement', cardElement);
-
       const result = await stripe.confirmCardPayment(clientSecretResult.client_secret, {
         payment_method: {
           card: elements.getElement(CardElement) as StripeCardElement,
@@ -85,7 +82,7 @@ export class StripeService {
     if (!stripe || !elements) return;
 
     const state = StripeService.store.getState();
-    const amount = state.checkout.donationAmount!;
+    const amount = formData.otherAmount ? parseInt(formData.otherAmount) : state.checkout.donationAmount;
     const stripePaymentId = await StripeService.processPayment('donation', amount, stripe, elements);
 
     if (stripePaymentId) {

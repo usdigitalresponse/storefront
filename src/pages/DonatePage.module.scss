@@ -20,6 +20,18 @@
     }
   }
 
+  .amounts {
+    display: flex;
+  }
+
+  .amountButton {
+    height: $textFieldHeight;
+  }
+
+  .otherAmount {
+    margin-left: spacing(1);
+  }
+
   .title {
     @include fontSize('lg');
     margin-bottom: spacing(3);
@@ -65,6 +77,15 @@
 
     .title {
       margin-bottom: spacing(2);
+    }
+
+    .amounts {
+      flex-direction: column;
+    }
+
+    .otherAmount {
+      margin-left: 0;
+      margin-top: spacing(2);
     }
 
     .field {

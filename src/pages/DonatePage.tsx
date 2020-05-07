@@ -1,14 +1,24 @@
-import { Button, Card, CircularProgress, Grid, TextField, TextFieldProps, Typography } from '@material-ui/core';
+import {
+  Button,
+  ButtonGroup,
+  Card,
+  CircularProgress,
+  Grid,
+  InputAdornment,
+  TextField,
+  TextFieldProps,
+  Typography,
+} from '@material-ui/core';
 import { DonationFormField, IDonationFormData, PaymentStatus } from '../common/types';
 import { IAppState } from '../store/app';
+import { SetDonationAmount, paymentStatusSelector } from '../store/checkout';
 import { StripeService } from '../services/StripeService';
-import { paymentStatusSelector } from '../store/checkout';
 import { reverse } from '../common/router';
+import { useDispatch, useSelector } from 'react-redux';
 import { useElements, useStripe } from '@stripe/react-stripe-js';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
-import { useSelector } from 'react-redux';
 import BaseLayout from '../layouts/BaseLayout';
 import OrderSummary from '../components/OrderSummary';
 import PhoneField from '../components/PhoneField';
@@ -17,9 +27,10 @@ import StripeCardField from '../components/StripeCardField';
 import StripeElementsWrapper from '../components/StripeElementsWrapper';
 import classNames from 'classnames';
 import styles from './DonatePage.module.scss';
+import theme from '../common/theme';
 
 const DonatePageMain: React.FC = () => {
-  const { register, handleSubmit, errors } = useForm<IDonationFormData>();
+  const { register, handleSubmit, watch, setValue, errors } = useForm<IDonationFormData>();
   const isSmall = useIsSmall();
   const hasErrors = Object.keys(errors).length > 0;
   const stripe = useStripe();
@@ -27,7 +38,11 @@ const DonatePageMain: React.FC = () => {
   const paymentStatus = useSelector<IAppState, PaymentStatus>(paymentStatusSelector);
   const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
+  const donationAmount = useSelector<IAppState, number>((state) => state.checkout.donationAmount);
+  const donationPresets = useSelector<IAppState, number[]>((state) => state.cms.donationPresets);
   const history = useHistory();
+  const dispatch = useDispatch();
+  const otherAmount = watch('otherAmount');
 
   useEffect(() => {
     if (paymentStatus === PaymentStatus.SUCCEEDED) {
@@ -54,6 +69,11 @@ const DonatePageMain: React.FC = () => {
     };
   }
 
+  function updateAmount(amount: number) {
+    setValue('otherAmount', '');
+    dispatch(SetDonationAmount.create(amount));
+  }
+
   return (
     <BaseLayout
       title="Donate"
@@ -63,6 +83,45 @@ const DonatePageMain: React.FC = () => {
         <Grid container spacing={2}>
           <Grid item md={8} xs={12}>
             <Card elevation={2} className={styles.form}>
+              <Grid container className={styles.section}>
+                <Typography variant="h3" className={styles.title}>
+                  Amount
+                </Typography>
+                <Grid item md={8} xs={12} className={styles.amounts}>
+                  <ButtonGroup fullWidth={isSmall}>
+                    {donationPresets.map((amount: number, index: number) => {
+                      const isSelected = amount === donationAmount && !otherAmount;
+                      return (
+                        <Button
+                          key={`${amount}-${index}`}
+                          className={styles.amountButton}
+                          variant="outlined"
+                          size="large"
+                          color="primary"
+                          style={{
+                            backgroundColor: isSelected ? theme.palette.primary.main : undefined,
+                            color: isSelected ? 'white' : undefined,
+                          }}
+                          onClick={() => updateAmount(amount)}
+                        >
+                          ${amount}
+                        </Button>
+                      );
+                    })}
+                  </ButtonGroup>
+                  <TextField
+                    fullWidth
+                    className={styles.otherAmount}
+                    variant="outlined"
+                    label="Other Amount"
+                    name="otherAmount"
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    }}
+                    inputRef={register}
+                  />
+                </Grid>
+              </Grid>
               <Grid container className={styles.section}>
                 <Typography variant="h3" className={styles.title}>
                   Contact Information
@@ -99,11 +158,6 @@ const DonatePageMain: React.FC = () => {
           <Grid item md={4} xs={12} container className={styles.right}>
             <div className={!isSmall ? styles.sidebar : undefined}>
               <OrderSummary className={styles.summary} showLineItems />
-              {/* <Card className={styles.payment}>
-                <Typography variant="h3" className={styles.title}>
-                  Payment
-                </Typography>
-                <StripeCardField errorMessage={paymentError} className={styles.field} /> */}
               <Button
                 className={classNames({ [styles.readOnly]: isPaying })}
                 fullWidth
@@ -116,7 +170,6 @@ const DonatePageMain: React.FC = () => {
                 {isPaying && <CircularProgress size={26} className={styles.spinner} />}
                 {!isPaying && 'Place Order'}
               </Button>
-              {/* </Card> */}
             </div>
           </Grid>
         </Grid>

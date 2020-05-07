@@ -15,12 +15,14 @@ export interface ICheckoutState {
 export const SetIsPaying = TypedAction.define('APP/CHECKOUT/SET_IS_PAYING')<boolean>();
 export const SetError = TypedAction.define('APP/CHECKOUT/SET_ERROR')<string | undefined>();
 export const SetOrderSummary = TypedAction.define('APP/CHECKOUT/SET_ORDER_SUMMARY')<IOrderSummary>();
+export const SetDonationAmount = TypedAction.define('APP/CHECKOUT/SET_DONATION_AMOUNT')<number>();
 
 // reducer
 export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
   .withHandler(SetIsPaying.TYPE, (state, isPaying) => setWith(state, { isPaying }))
   .withHandler(SetError.TYPE, (state, error) => setWith(state, { error }))
   .withHandler(SetOrderSummary.TYPE, (state, orderSummary) => setWith(state, { orderSummary }))
+  .withHandler(SetDonationAmount.TYPE, (state, donationAmount) => setWith(state, { donationAmount }))
   .withDefaultHandler((state) => (state ? state : initialCheckoutState))
   .build();
 

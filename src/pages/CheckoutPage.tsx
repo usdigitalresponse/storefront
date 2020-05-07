@@ -33,7 +33,6 @@ import StripeElementsWrapper from '../components/StripeElementsWrapper';
 import ZipCodeField from '../components/ZipCodeField';
 import classNames from 'classnames';
 import styles from './CheckoutPage.module.scss';
-import theme from '../common/theme';
 
 function CheckoutPageMain() {
   const { register, setValue, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();

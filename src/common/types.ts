@@ -117,6 +117,7 @@ export interface IDonationFormData {
   fullName: string;
   phone: string;
   email: string;
+  otherAmount: string;
 }
 
 export interface IDonationSummary extends IDonationFormData {
