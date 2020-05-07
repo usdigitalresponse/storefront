@@ -20,7 +20,7 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
 import BaseLayout from '../layouts/BaseLayout';
-import OrderSummary from '../components/OrderSummary';
+import DonationSummary from '../components/DonationSummary';
 import PhoneField from '../components/PhoneField';
 import React, { useEffect } from 'react';
 import StripeCardField from '../components/StripeCardField';
@@ -157,7 +157,10 @@ const DonatePageMain: React.FC = () => {
           </Grid>
           <Grid item md={4} xs={12} container className={styles.right}>
             <div className={!isSmall ? styles.sidebar : undefined}>
-              <OrderSummary className={styles.summary} showLineItems />
+              <DonationSummary
+                className={styles.summary}
+                amount={otherAmount ? parseInt(otherAmount) : donationAmount}
+              />
               <Button
                 className={classNames({ [styles.readOnly]: isPaying })}
                 fullWidth

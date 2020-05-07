@@ -1,0 +1,58 @@
+@import '../common/variables';
+
+.container {
+  height: fit-content;
+  padding: spacing(2) spacing(3);
+
+  .title {
+    @include fontSize('lg');
+    margin-bottom: spacing(3);
+  }
+
+  .section {
+    &:not(:last-child) {
+      margin-bottom: spacing(2);
+      padding-bottom: spacing(2);
+      @include shadowBorder('bottom');
+    }
+  }
+
+  .lineItem {
+    display: flex;
+    margin-bottom: spacing(1);
+
+    .label {
+      margin-right: spacing(2);
+    }
+
+    .qty {
+      flex-grow: 1;
+    }
+
+    .label, .qty, .value {
+      @include fontSize('smd');
+    }
+  }
+
+  .line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: spacing(1);
+
+    .label, .value {
+      @include fontSize('smd');
+    }
+
+    &.total {
+      .label, .value {
+        @include fontSize('md');
+        font-weight: 500;
+      }
+    }
+  }
+
+  &.small {
+    padding: spacing(3) spacing(2);
+  }
+}
+
