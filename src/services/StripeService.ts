@@ -70,13 +70,11 @@ export class StripeService {
     if (stripePaymentId) {
       const type = state.cart.orderType;
       const items = state.cart.items;
-      const pickupLocationId = state.cart.selectedLocation;
       const orderSummary = await AirtableService.createOrder({
         ...formData,
         type,
         amount,
         items,
-        pickupLocationId,
         stripePaymentId,
       });
       StripeService.store.dispatch(SetOrderSummary.create(orderSummary));

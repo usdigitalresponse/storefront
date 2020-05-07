@@ -36,7 +36,11 @@
   }
 
   .locationButton {
-    margin-left: -(spacing(1))
+    margin-left: -(spacing(1));
+
+    &.error span {
+      color: $colorError !important;
+    }
   }
 
   .right {

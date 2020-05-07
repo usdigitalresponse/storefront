@@ -23,12 +23,19 @@ const CartPage: React.FC = () => {
         <Grid item md={8} xs={12} container>
           <OrderTypeSelector />
           <Card elevation={2} className={styles.cartItems}>
-            <Typography variant="h3" className={styles.cartItemsTitle}>
-              Items
-            </Typography>
+            {cartItems.length > 0 && (
+              <Typography variant="h3" className={styles.cartItemsTitle}>
+                Items
+              </Typography>
+            )}
             {cartItems.map((item, index) => (
               <CartItem key={index} item={item} index={index} editable className={styles.cartItem} />
             ))}
+            {cartItems.length === 0 && (
+              <Typography variant="h4" className={styles.empty}>
+                Your cart is empty
+              </Typography>
+            )}
           </Card>
         </Grid>
         <Grid item md={4} xs={12} container className={styles.right}>

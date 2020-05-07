@@ -13,7 +13,7 @@ import classNames from 'classnames';
 import styles from './CartDialog.module.scss';
 
 const CartDialog: React.FC = () => {
-  const item = useSelector<IAppState, ICartItem>((state) => state.cart.items[state.cart.items.length - 1]);
+  const item = useSelector<IAppState, ICartItem | undefined>((state) => state.cart.lastAdded);
   const isOpen = useSelector<IAppState, boolean>((state) => state.cart.dialogIsOpen);
   const isSmall = useIsSmall();
   const dispatch = useDispatch();

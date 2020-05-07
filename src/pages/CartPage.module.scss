@@ -21,6 +21,15 @@
     @include shadowBorder('top');
   }
 
+  .empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: spacing(10) 0 spacing(10);
+    @include fontSize('lg');
+    color: $colorTextDisabled;
+  }
+
   .right {
     display: flex;
     flex-direction: column;
@@ -28,6 +37,12 @@
 
   .summary {
     margin-bottom: spacing(2);
+  }
+
+  &.small {
+    .empty {
+      padding: spacing(4) 0 spacing(4);
+    }
   }
 }
 

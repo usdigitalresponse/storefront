@@ -84,6 +84,10 @@ export interface ICheckoutFormDataDelivery extends ICheckoutFormBase {
   deliveryPref_evenings: boolean;
 }
 
+export interface ICheckoutFormDataPickup extends ICheckoutFormBase {
+  pickupLocationId?: string;
+}
+
 export type CheckoutFormField =
   | 'fullName'
   | 'phone'
@@ -97,8 +101,9 @@ export type CheckoutFormField =
   | 'deliveryPref_weekdays'
   | 'deliveryPref_mornings'
   | 'deliveryPref_afternoons'
-  | 'deliveryPref_evenings';
-export interface ICheckoutFormData extends ICheckoutFormDataDelivery {}
+  | 'deliveryPref_evenings'
+  | 'pickupLocationId';
+export interface ICheckoutFormData extends ICheckoutFormDataDelivery, ICheckoutFormDataPickup {}
 
 export interface IOrderSummary extends ICheckoutFormData {
   amount: number;

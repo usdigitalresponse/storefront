@@ -23,6 +23,10 @@
       flex-direction: column;
     }
 
+    .item {
+      min-width: unset;
+    }
+
     .actionButton {
       align-self: stretch;
       margin: 0;

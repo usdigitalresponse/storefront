@@ -1,4 +1,14 @@
-import { Button, Card, CircularProgress, Grid, TextField, TextFieldProps, Typography } from '@material-ui/core';
+import {
+  Button,
+  Card,
+  CircularProgress,
+  FormHelperText,
+  Grid,
+  Input,
+  TextField,
+  TextFieldProps,
+  Typography,
+} from '@material-ui/core';
 import { CheckoutFormField, ICheckoutFormData, IPickupLocation, OrderType, PaymentStatus } from '../common/types';
 import { IAppState } from '../store/app';
 import { SetLocationsDialogIsOpen, selectedLocationSelector } from '../store/cart';
@@ -23,9 +33,10 @@ import StripeElementsWrapper from '../components/StripeElementsWrapper';
 import ZipCodeField from '../components/ZipCodeField';
 import classNames from 'classnames';
 import styles from './CheckoutPage.module.scss';
+import theme from '../common/theme';
 
 function CheckoutPageMain() {
-  const { register, setValue, watch, handleSubmit, errors } = useForm<ICheckoutFormData>();
+  const { register, setValue, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const defaultState = useSelector<IAppState, string | undefined>((state) => state.cms.defaultState);
   const isSmall = useIsSmall();
@@ -36,6 +47,7 @@ function CheckoutPageMain() {
   const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
+  const selectedLocationId = useSelector<IAppState, string | undefined>((state) => state.cart.selectedLocation);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -44,6 +56,12 @@ function CheckoutPageMain() {
       history.push(reverse('confirmation'));
     }
   }, [paymentStatus, history]);
+
+  useEffect(() => {
+    if (selectedLocationId) {
+      clearError('pickupLocationId');
+    }
+  }, [clearError, selectedLocationId]);
 
   function onSubmit(data: ICheckoutFormData) {
     StripeService.pay(data, stripe, elements);
@@ -113,12 +131,19 @@ function CheckoutPageMain() {
                       </div>
                     )}
                     <Button
-                      className={styles.locationButton}
+                      className={classNames(styles.locationButton, { [styles.error]: !!errors.pickupLocationId })}
                       color="primary"
                       onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
                     >
                       {selectedLocation ? 'Change' : 'Choose'} location...
                     </Button>
+                    <Input
+                      type="hidden"
+                      name="pickupLocationId"
+                      value={selectedLocationId || ''}
+                      inputRef={register({ required: orderType === OrderType.PICKUP })}
+                    />
+                    {errors.pickupLocationId && <FormHelperText error>Please select a pickup location</FormHelperText>}
                   </Grid>
                 </Grid>
               )}

@@ -7,6 +7,12 @@ const theme = createMuiTheme({
   },
   typography: {
     fontFamily: '"Inter", sans-serif',
+    h1: { fontWeight: 'normal' },
+    h2: { fontWeight: 'normal' },
+    h3: { fontWeight: 'normal' },
+    h4: { fontWeight: 'normal' },
+    h5: { fontWeight: 'normal' },
+    h6: { fontWeight: 'normal' },
   },
   overrides: {
     MuiButton: {

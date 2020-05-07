@@ -12,6 +12,7 @@ export interface ICartState {
   locationsDialogIsOpen: boolean;
   selectedLocation?: string;
   orderType: OrderType;
+  lastAdded?: ICartItem;
   taxRate: number;
 }
 
@@ -29,13 +30,25 @@ export const SetOrderType = TypedAction.define('APP/CART/SET_ORDER_TYPE')<OrderT
 export const cartReducer: any = TypedReducer.builder<ICartState>()
   .withHandler(SetItems.TYPE, (state, items) => setWith(state, { items }))
   .withHandler(SetSelectedLocation.TYPE, (state, selectedLocation) => setWith(state, { selectedLocation }))
-  .withHandler(AddItem.TYPE, (state, item) => update(state, { items: { $push: [item] }, dialogIsOpen: { $set: true } }))
+  .withHandler(AddItem.TYPE, (state, item) => {
+    const existingItemIndex = state.items.findIndex((i) => item.id === i.id);
+    if (existingItemIndex !== -1) {
+      return update(state, {
+        items: { [existingItemIndex]: { quantity: { $set: state.items[existingItemIndex].quantity + item.quantity } } },
+        lastAdded: { $set: item },
+      });
+    } else {
+      return update(state, { items: { $push: [item] }, lastAdded: { $set: item } });
+    }
+  })
   .withHandler(UpdateItem.TYPE, (state, item) => {
     const index = state.items.findIndex((cartItem) => cartItem.id === item.id);
     return update(state, { items: { $splice: [[index, 1, item]] } });
   })
   .withHandler(RemoveItem.TYPE, (state, index) => update(state, { items: { $splice: [[index, 1]] } }))
-  .withHandler(SetDialogIsOpen.TYPE, (state, dialogIsOpen) => setWith(state, { dialogIsOpen }))
+  .withHandler(SetDialogIsOpen.TYPE, (state, dialogIsOpen) => {
+    return setWith(state, { dialogIsOpen, lastAdded: dialogIsOpen ? state.lastAdded : undefined });
+  })
   .withHandler(SetLocationsDialogIsOpen.TYPE, (state, locationsDialogIsOpen) =>
     setWith(state, { locationsDialogIsOpen }),
   )

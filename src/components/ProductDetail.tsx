@@ -1,5 +1,6 @@
-import { AddItem } from '../store/cart';
+import { AddItem, SetDialogIsOpen } from '../store/cart';
 import { Button, Card, Grid, Select, Typography } from '@material-ui/core';
+import { CompoundAction } from 'redoodle';
 import { InventoryRecord } from '../common/types';
 import { formatCurrency } from '../common/format';
 import { getImageUrl } from '../common/utils';
@@ -24,7 +25,7 @@ const ProductDetail: React.FC<Props> = ({ product, className }) => {
   const { id, name, description, price } = product;
 
   function addToCart() {
-    dispatch(AddItem.create({ id: product.id, quantity }));
+    dispatch(CompoundAction([AddItem.create({ id: product.id, quantity }), SetDialogIsOpen.create(true)]));
   }
 
   return (
