@@ -1,6 +1,6 @@
 import { Card, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { ICartItem, InventoryRecord, OrderType } from '../common/types';
+import { IOrderItem, IOrderSummary, InventoryRecord, OrderType } from '../common/types';
 import { formatCurrency, formatPercentage } from '../common/format';
 import { getProduct } from '../common/utils';
 import { reverse } from '../common/router';
@@ -14,16 +14,20 @@ import styles from './OrderSummary.module.scss';
 
 interface Props {
   showLineItems?: boolean;
+  editable?: boolean;
   className?: string;
+  orderSummary?: IOrderSummary;
 }
 
-const OrderSummary: React.FC<Props> = ({ className, showLineItems }) => {
+const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, orderSummary }) => {
   const isSmall = useIsSmall();
   const subtotal = useSelector<IAppState, number>(subtotalSelector);
   const taxRate = useSelector<IAppState, number>((state) => state.cms.taxRate);
   const inventory = useSelector<IAppState, InventoryRecord[]>((state) => state.cms.inventory);
-  const cartItems = useSelector<IAppState, ICartItem[]>((state) => state.cart.items);
-  const isDelivery = useSelector<IAppState, OrderType>((state) => state.cart.orderType) === OrderType.DELIVERY;
+  const items = useSelector<IAppState, IOrderItem[]>((state) => state.cart.items);
+  const isDelivery =
+    useSelector<IAppState, OrderType>((state) => state.cart.orderType) === OrderType.DELIVERY ||
+    !!orderSummary?.deliveryAddress;
   const tax = subtotal * taxRate;
   const total = subtotal + tax;
 
@@ -34,7 +38,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems }) => {
       </Typography>
       {showLineItems && (
         <div className={styles.section}>
-          {cartItems.map((cartItem) => {
+          {(orderSummary?.items || items).map((cartItem) => {
             const product = getProduct(cartItem.id, inventory);
             return product ? (
               <div key={cartItem.id} className={styles.lineItem}>
@@ -50,9 +54,11 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems }) => {
               </div>
             ) : null;
           })}
-          <Link className={styles.edit} href={reverse('cart')}>
-            Edit order
-          </Link>
+          {editable && (
+            <Link className={styles.edit} href={reverse('cart')}>
+              Edit order
+            </Link>
+          )}
         </div>
       )}
       <div className={styles.section}>

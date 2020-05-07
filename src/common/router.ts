@@ -1,3 +1,5 @@
+import qs from 'qs';
+
 // must also update routeComponents in /src/App.tsx
 export type RouteId = 'home' | 'about' | 'products' | 'donate' | 'drivers' | 'cart' | 'checkout' | 'confirmation';
 export const routePaths: Record<string, string> = {
@@ -11,6 +13,7 @@ export const routePaths: Record<string, string> = {
   confirmation: '/confirmation',
 };
 
-export function reverse(routeId: RouteId): string {
-  return routePaths[routeId];
+export function reverse(routeId: RouteId, params?: Record<string, string>): string {
+  const query = params ? `?${qs.stringify(params)}` : '';
+  return `${routePaths[routeId]}${query}`;
 }

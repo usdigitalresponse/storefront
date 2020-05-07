@@ -2,12 +2,12 @@ import { AirtableService } from './AirtableService';
 import { CardElement } from '@stripe/react-stripe-js';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { ICheckoutFormData, IDonationFormData, PaymentType } from '../common/types';
-import { SetError, SetIsPaying, SetOrderSummary } from '../store/checkout';
+import { ICheckoutFormData, IDonationFormData, IDonationSummary, IOrderSummary, PaymentType } from '../common/types';
+import { SetConfirmation, SetError, SetIsPaying } from '../store/checkout';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
 import { makeContentValueSelector } from '../store/cms';
-import { totalSelector } from '../store/cart';
+import { subtotalSelector, totalSelector } from '../store/cart';
 
 export class StripeService {
   public static store: Store<IAppState>;
@@ -48,7 +48,6 @@ export class StripeService {
       }
 
       if (result.paymentIntent.status === 'succeeded') {
-        StripeService.store.dispatch(SetIsPaying.create(false));
         return result.paymentIntent.id;
       }
     } catch (error) {
@@ -61,20 +60,24 @@ export class StripeService {
     if (!stripe || !elements) return;
 
     const state = StripeService.store.getState();
-    const amount = totalSelector(state);
-    const stripePaymentId = await StripeService.processPayment('main', amount, stripe, elements);
+    const subtotal = subtotalSelector(state);
+    const tax = subtotal * state.cms.taxRate;
+    const total = totalSelector(state);
+    const stripePaymentId = await StripeService.processPayment('main', total, stripe, elements);
 
     if (stripePaymentId) {
       const type = state.cart.orderType;
       const items = state.cart.items;
-      const orderSummary = await AirtableService.createOrder({
+      const confirmation: IOrderSummary = await AirtableService.createOrder({
         ...formData,
         type,
-        amount,
+        subtotal,
+        tax,
+        total,
         items,
         stripePaymentId,
       });
-      StripeService.store.dispatch(SetOrderSummary.create(orderSummary));
+      StripeService.store.dispatch(CompoundAction([SetConfirmation.create(confirmation), SetIsPaying.create(false)]));
     }
   }
 
@@ -82,16 +85,16 @@ export class StripeService {
     if (!stripe || !elements) return;
 
     const state = StripeService.store.getState();
-    const amount = formData.otherAmount ? parseInt(formData.otherAmount) : state.checkout.donationAmount;
-    const stripePaymentId = await StripeService.processPayment('donation', amount, stripe, elements);
+    const total = formData.otherAmount ? parseInt(formData.otherAmount) : state.checkout.donationAmount;
+    const stripePaymentId = await StripeService.processPayment('donation', total, stripe, elements);
 
     if (stripePaymentId) {
-      const orderSummary = await AirtableService.createDonation({
+      const confirmation: IDonationSummary = await AirtableService.createDonation({
         ...formData,
-        amount,
+        total,
         stripePaymentId,
       });
-      StripeService.store.dispatch(SetOrderSummary.create(orderSummary));
+      StripeService.store.dispatch(SetConfirmation.create(confirmation));
     }
   }
 

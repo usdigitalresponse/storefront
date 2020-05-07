@@ -1,1 +1,28 @@
 @import '../common/variables';
+
+.container {
+  .details {
+    padding: spacing(4) spacing(3);
+    margin-bottom: spacing(2);
+  }
+
+  .title {
+    @include fontSize('lg');
+    margin-bottom: spacing(3);
+  }
+
+  .content {
+    display: flex;
+  }
+
+  &.small {
+    .content {
+      flex-direction: column;
+    }
+
+    .details {
+      padding: spacing(3) spacing(2);
+      margin-bottom: spacing(2);
+    }
+  }
+}

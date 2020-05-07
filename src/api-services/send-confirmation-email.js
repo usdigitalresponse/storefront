@@ -12,7 +12,7 @@ export const sendConfirmationEmail = (orderId) => {
 
       const order = await getFormattedOrder(orderId);
 
-      const formattedAmount = numeral(order['Amount']).format('$0,0.00');
+      const formattedAmount = numeral(order['Total']).format('$0,0.00');
 
       let orderItemText = '<ul>';
       order.items.map((item) => {

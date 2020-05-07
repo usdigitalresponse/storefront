@@ -1,6 +1,6 @@
 import { Button, Select, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { ICartItem } from '../common/types';
+import { IOrderItem } from '../common/types';
 import { RemoveItem, UpdateItem } from '../store/cart';
 import { formatCurrency } from '../common/format';
 import { getImageUrl } from '../common/utils';
@@ -13,7 +13,7 @@ import classNames from 'classnames';
 import styles from './CartItem.module.scss';
 
 interface Props {
-  item: ICartItem;
+  item: IOrderItem;
   index?: number;
   editable?: boolean;
   className?: string;

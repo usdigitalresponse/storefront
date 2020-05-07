@@ -28,3 +28,7 @@ export function useScrollToTop() {
     }
   }, [location, prevLocation]);
 }
+
+export function useQueryStringParam(param: string) {
+  return new URLSearchParams(useLocation().search).get(param) || '';
+}

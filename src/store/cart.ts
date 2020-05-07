@@ -1,26 +1,26 @@
 import * as Reselect from 'reselect';
 import { IAppState } from './app';
-import { ICartItem, IPickupLocation, InventoryRecord, OrderType } from '../common/types';
+import { IOrderItem, IPickupLocation, InventoryRecord, OrderType } from '../common/types';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 import { pickupLocationsSelector } from './cms';
 import update from 'immutability-helper';
 
 // model
 export interface ICartState {
-  items: ICartItem[];
+  items: IOrderItem[];
   dialogIsOpen: boolean;
   locationsDialogIsOpen: boolean;
   selectedLocation?: string;
   orderType: OrderType;
-  lastAdded?: ICartItem;
+  lastAdded?: IOrderItem;
   taxRate: number;
 }
 
 // actions
-export const SetItems = TypedAction.define('APP/CART/SET_ITEMS')<ICartItem[]>();
-export const AddItem = TypedAction.define('APP/CART/ADD_ITEM')<ICartItem>();
+export const SetItems = TypedAction.define('APP/CART/SET_ITEMS')<IOrderItem[]>();
+export const AddItem = TypedAction.define('APP/CART/ADD_ITEM')<IOrderItem>();
 export const RemoveItem = TypedAction.define('APP/CART/REMOVE_ITEM')<number>();
-export const UpdateItem = TypedAction.define('APP/CART/UPDATE_ITEM')<ICartItem>();
+export const UpdateItem = TypedAction.define('APP/CART/UPDATE_ITEM')<IOrderItem>();
 export const SetDialogIsOpen = TypedAction.define('APP/CART/SET_DIALOG_IS_OPEN')<boolean>();
 export const SetSelectedLocation = TypedAction.define('APP/CART/SET_SELECTED_LOCATION')<string>();
 export const SetLocationsDialogIsOpen = TypedAction.define('APP/CART/SET_LOCATIONS_DIALOG_IS_OPEN')<boolean>();
@@ -73,20 +73,20 @@ export const initialCartState: ICartState = {
 // selectors
 export const itemsSelector = Reselect.createSelector(
   (state: IAppState) => state.cart.items,
-  (items: ICartItem[]) => {
+  (items: IOrderItem[]) => {
     return items;
   },
 );
 
-export const ICartItemCountSelector = Reselect.createSelector(itemsSelector, (items: ICartItem[]) => {
-  return items.reduce((acc: number, item: ICartItem) => acc + item.quantity, 0);
+export const IOrderItemCountSelector = Reselect.createSelector(itemsSelector, (items: IOrderItem[]) => {
+  return items.reduce((acc: number, item: IOrderItem) => acc + item.quantity, 0);
 });
 
 export const subtotalSelector = Reselect.createSelector(
   (state: IAppState) => state.cart.items,
   (state: IAppState) => state.cms.inventory,
-  (cartItems: ICartItem[], inventory: InventoryRecord[]) => {
-    return cartItems.reduce((acc: number, cartItem: ICartItem) => {
+  (cartItems: IOrderItem[], inventory: InventoryRecord[]) => {
+    return cartItems.reduce((acc: number, cartItem: IOrderItem) => {
       return acc + cartItem.quantity * (inventory.find((product) => product.id === cartItem.id)?.price || 0);
     }, 0);
   },

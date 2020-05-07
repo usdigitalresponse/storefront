@@ -1,6 +1,6 @@
 import { Button, Card, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { ICartItem } from '../common/types';
+import { IOrderItem } from '../common/types';
 import { SetDialogIsOpen } from '../store/cart';
 import { reverse } from '../common/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,7 +13,7 @@ import classNames from 'classnames';
 import styles from './CartDialog.module.scss';
 
 const CartDialog: React.FC = () => {
-  const item = useSelector<IAppState, ICartItem | undefined>((state) => state.cart.lastAdded);
+  const item = useSelector<IAppState, IOrderItem | undefined>((state) => state.cart.lastAdded);
   const isOpen = useSelector<IAppState, boolean>((state) => state.cart.dialogIsOpen);
   const isSmall = useIsSmall();
   const dispatch = useDispatch();

@@ -10,8 +10,8 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { ICartItemCountSelector } from '../store/cart';
 import { INavItem } from '../common/types';
+import { IOrderItemCountSelector } from '../store/cart';
 import { reverse, routePaths } from '../common/router';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -32,7 +32,7 @@ export const headerNavItems: INavItem[] = [
 const Header: React.FC = () => {
   const isCheckout = useLocation().pathname === routePaths.checkout;
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
-  const ICartItemsCount = useSelector<IAppState, number>(ICartItemCountSelector);
+  const IOrderItemsCount = useSelector<IAppState, number>(IOrderItemCountSelector);
 
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
 
@@ -73,7 +73,7 @@ const Header: React.FC = () => {
           </div>
         )}
         <IconButton edge="end" color="primary" component={Link} href={reverse('cart')}>
-          <Badge badgeContent={ICartItemsCount} color="secondary" invisible={ICartItemsCount === 0}>
+          <Badge badgeContent={IOrderItemsCount} color="secondary" invisible={IOrderItemsCount === 0}>
             <CartIcon />
           </Badge>
         </IconButton>

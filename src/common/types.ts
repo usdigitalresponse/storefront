@@ -42,19 +42,10 @@ export interface INavItem {
   url: string;
 }
 
-export interface ICartItem {
+export interface IOrderItem {
   id: string;
   quantity: number;
 }
-
-export type Order = {
-  fullName: string;
-  email: string;
-  deliveryAddress: string;
-  amount: number;
-  items: OrderItem[];
-  stripePaymentId: string;
-};
 
 export interface IAddress {
   street1: string;
@@ -105,14 +96,34 @@ export type CheckoutFormField =
   | 'pickupLocationId';
 export interface ICheckoutFormData extends ICheckoutFormDataDelivery, ICheckoutFormDataPickup {}
 
-export interface IOrderSummary extends ICheckoutFormData {
-  amount: number;
-  items: OrderItem[];
-  pickupLocationId?: string;
+export interface IOrderIntent extends ICheckoutFormData {
+  subtotal: number;
+  tax: number;
+  total: number;
+  items: IOrderItem[];
   stripePaymentId?: string;
 }
 
+export interface IOrderSummary extends ICheckoutFormBase {
+  id: string;
+  createdAt: string;
+  status: OrderStatus;
+  total: number;
+  items: IOrderItem[];
+  stripePaymentId?: string;
+  deliveryAddress?: IAddress;
+  pickupLocationId?: string;
+  deliveryPreferences?: string[];
+}
+
+export function isOrderSummary(confirmation?: IOrderSummary | IDonationSummary): confirmation is IOrderSummary {
+  return !!confirmation && (confirmation as IOrderSummary).items !== undefined;
+}
+
+export type OrderStatus = 'Donation Requested' | 'Paid';
+
 export type DonationFormField = 'fullName' | 'phone' | 'email';
+
 export interface IDonationFormData {
   fullName: string;
   phone: string;
@@ -120,13 +131,21 @@ export interface IDonationFormData {
   otherAmount: string;
 }
 
-export interface IDonationSummary extends IDonationFormData {
-  amount: number;
+export interface IDonationIntent extends IDonationFormData {
+  total: number;
   stripePaymentId: string;
 }
 
+export interface IDonationSummary extends IDonationIntent {
+  id: string;
+  createdAt: string;
+}
+
+export function isDonationSummary(confirmation?: IOrderSummary | IDonationSummary): confirmation is IDonationSummary {
+  return !!confirmation && (confirmation as IOrderSummary).items === undefined;
+}
+
 export type StateMap = Record<string, string>;
-export type OrderItem = ICartItem;
 
 export interface IProductRouteParams {
   id: string;

@@ -1,8 +1,9 @@
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { IDonationSummary, IOrderSummary } from '../common/types';
+import { IDonationIntent, IOrderIntent } from '../common/types';
 import {
   SetContent,
+  SetDefaultState,
   SetInventory,
   SetLanguages,
   SetPickupLocations,
@@ -41,6 +42,7 @@ export class AirtableService {
           // config
           SetLanguages.create(records.config.languages),
           SetTaxRate.create(records.config.tax_rate),
+          SetDefaultState.create(records.config.default_state),
           SetStripePromise.create({
             main: records.config.stripe_main_public_api_key,
             donation: records.config.stripe_donation_public_api_key,
@@ -55,7 +57,7 @@ export class AirtableService {
       });
   }
 
-  public static async createOrder(order: IOrderSummary) {
+  public static async createOrder(order: IOrderIntent) {
     return fetch('/.netlify/functions/create-order', {
       method: 'POST', // or 'PUT'
       headers: { 'Content-Type': 'application/json' },
@@ -63,7 +65,7 @@ export class AirtableService {
     }).then((res) => res.json());
   }
 
-  public static async createDonation(order: IDonationSummary) {
+  public static async createDonation(order: IDonationIntent) {
     return fetch('/.netlify/functions/create-donation', {
       method: 'POST', // or 'PUT'
       headers: { 'Content-Type': 'application/json' },
