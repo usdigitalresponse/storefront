@@ -1,17 +1,20 @@
 import { useIsSmall } from '../common/hooks';
 import BaseLayout from '../layouts/BaseLayout';
-import React from 'react';
+import Loading from '../components/Loading';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import styles from './DriversPage.module.scss';
 
 const DriversPage: React.FC = () => {
   const isSmall = useIsSmall();
+  const [loading, setLoading] = useState<boolean>(true);
 
   return (
     <BaseLayout padding={0} maxWidth="unset">
-      <div className={classNames(styles.container, { [styles.small]: isSmall })}>
+      <div className={classNames(styles.container, { [styles.small]: isSmall, [styles.loading]: loading })}>
         <script src="https://static.airtable.com/js/embed/embed_snippet_v1.js"></script>
         <iframe
+          onLoad={() => setLoading(false)}
           title="Driver Application"
           className="airtable-embed airtable-dynamic-height"
           src="https://airtable.com/embed/shr0xQUXEgS0pgmTz?backgroundColor=white"
@@ -22,6 +25,7 @@ const DriversPage: React.FC = () => {
         />
         <div className={styles.brandCover} />
       </div>
+      {loading && <Loading />}
     </BaseLayout>
   );
 };

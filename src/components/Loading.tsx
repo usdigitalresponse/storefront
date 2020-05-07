@@ -1,9 +1,7 @@
 import './Loading.scss';
 import React from 'react';
 
-interface Props {}
-
-const Loading: React.FC<Props> = () => {
+const Loading: React.FC = () => {
   return (
     <div className="sk-loading">
       <div className="sk-circle">
