@@ -52,7 +52,7 @@ const Header: React.FC = () => {
             <Drawer anchor="left" open={drawerIsOpen} onClose={() => setDrawerIsOpen(false)}>
               <List className={styles.drawerList}>
                 {headerNavItems.map((item) => (
-                  <ListItem button component={'a'} key={item.name} href={item.url}>
+                  <ListItem button component={Link} key={item.name} href={item.url}>
                     <ListItemText primary={item.name} />
                   </ListItem>
                 ))}
