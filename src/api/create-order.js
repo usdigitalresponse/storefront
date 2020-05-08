@@ -62,7 +62,7 @@ exports.handler = async (event, context) => {
 
     const order = await base('Orders').create(
       {
-        'Order Status': 'Paid',
+        'Order Status': orderIntent.status,
         'Type': orderIntent.type,
         'Name': orderIntent.fullName,
         'Email': orderIntent.email,

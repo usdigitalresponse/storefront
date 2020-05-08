@@ -1,11 +1,13 @@
-import { Card, Grid, Typography } from '@material-ui/core';
+import { Card, Chip, Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { IDonationSummary, IOrderSummary, IPickupLocation, isDonationSummary, isOrderSummary } from '../common/types';
-import { pickupLocationsSelector, useContent } from '../store/cms';
+import { formatDate } from '../common/format';
+import { pickupLocationsSelector } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
 import AddressView from '../components/AddressView';
 import BaseLayout from '../layouts/BaseLayout';
+import Content from '../components/Content';
 import DonationSummary from '../components/DonationSummary';
 import OrderSummary from '../components/OrderSummary';
 import React from 'react';
@@ -18,7 +20,6 @@ const ConfirmationPage: React.FC<Props> = () => {
   const confirmation = useSelector<IAppState, IOrderSummary | IDonationSummary>(
     (state) => state.checkout.confirmation!,
   );
-  const contact_phone = useContent('contact_phone');
   const isSmall = useIsSmall();
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
   const pickupLocation =
@@ -34,25 +35,53 @@ const ConfirmationPage: React.FC<Props> = () => {
   return (
     <BaseLayout
       title={type === 'order' ? 'Order Placed!' : 'Thank you!'}
-      description={`We've sent an email confirmation to ${confirmation.email}. If you have any questions, we're here to help. Call ${contact_phone}`}
+      description={
+        <Typography variant="body1" className={styles.description}>
+          We've sent an email confirmation to <span className={styles.em}>{confirmation.email}</span>.{' '}
+          {isSmall && (
+            <>
+              <br />
+              <br />
+            </>
+          )}
+          If you have any questions, please email{' '}
+          <span className={styles.em}>
+            <Content id="contact_email" />
+          </span>{' '}
+          or call{' '}
+          <span className={styles.em}>
+            <Content id="contact_phone" />
+          </span>
+          .
+        </Typography>
+      }
     >
-      <Grid container className={classNames(styles.container, { [styles.small]: isSmall })}>
-        <Grid item md={8} sm={12}>
-          <Card elevation={2} className={styles.details}>
+      <Grid
+        container
+        spacing={2}
+        alignItems={isSmall ? undefined : 'stretch'}
+        className={classNames(styles.container, { [styles.small]: isSmall })}
+      >
+        <Grid item md={8} xs={12} className={styles.column}>
+          <Card elevation={2} className={classNames(styles.details, styles.card)}>
             <Typography variant="h3" className={styles.title}>
-              Details
+              Order Information
             </Typography>
-            <div className={styles.content}>
-              <div className={styles.info}>
-                <Typography variant="body1" className={styles.label}>
-                  Order Number
+            <Grid container spacing={2} className={styles.content}>
+              <Grid item md={4} xs={12} className={styles.info}>
+                <Typography variant="overline" className={styles.label}>
+                  Details
                 </Typography>
                 <Typography variant="body1" className={styles.value}>
-                  {confirmation.id}
+                  Order #<span className={styles.em}>{confirmation.id}</span>
                 </Typography>
-              </div>
-              <div className={styles.info}>
-                <Typography variant="body1" className={styles.label}>
+                <Typography variant="body1" className={styles.value}></Typography>
+                <Typography variant="body1" className={styles.value}>
+                  {formatDate(confirmation.createdAt)}
+                </Typography>
+              </Grid>
+              <Grid item md={4} xs={12} className={styles.info}>
+                <Typography variant="overline" className={styles.label}>
                   Contact Information
                 </Typography>
                 <Typography variant="body1" className={styles.value}>
@@ -64,28 +93,37 @@ const ConfirmationPage: React.FC<Props> = () => {
                 <Typography variant="body1" className={styles.value}>
                   {confirmation.email}
                 </Typography>
-              </div>
+              </Grid>
               {isOrderSummary(confirmation) && confirmation.deliveryAddress && (
-                <div className={styles.info}>
-                  <Typography variant="body1" className={styles.label}>
+                <Grid item md={4} xs={12} className={styles.info}>
+                  <Typography variant="overline" className={styles.label}>
                     Delivery Address
                   </Typography>
                   <AddressView address={confirmation.deliveryAddress} />
-                </div>
+                  {confirmation.deliveryPreferences && (
+                    <div className={styles.preferences}>
+                      {confirmation.deliveryPreferences.map((pref) => (
+                        <Chip key={pref} size="small" variant="outlined" label={pref} className={styles.preference} />
+                      ))}
+                    </div>
+                  )}
+                </Grid>
               )}
               {pickupLocation && (
-                <div className={styles.info}>
-                  <Typography variant="body1" className={styles.label}>
+                <Grid item md={4} xs={12} className={styles.info}>
+                  <Typography variant="overline" className={styles.label}>
                     Pickup Location
                   </Typography>
                   <Typography variant="body1">{pickupLocation.name}</Typography>
                   <AddressView address={pickupLocation.address} />
-                </div>
+                </Grid>
               )}
-            </div>
+            </Grid>
           </Card>
-          {isOrderSummary(confirmation) && <OrderSummary orderSummary={confirmation} />}
-          {isDonationSummary(confirmation) && <DonationSummary amount={confirmation.total} />}
+        </Grid>
+        <Grid item md={4} xs={12} className={styles.column}>
+          {isOrderSummary(confirmation) && <OrderSummary orderSummary={confirmation} className={styles.card} />}
+          {isDonationSummary(confirmation) && <DonationSummary amount={confirmation.total} className={styles.card} />}
         </Grid>
       </Grid>
     </BaseLayout>

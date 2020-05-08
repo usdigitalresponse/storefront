@@ -6,20 +6,25 @@ import classNames from 'classnames';
 import styles from './Contact.module.scss';
 import theme from '../common/theme';
 
-const Contact: React.FC = () => {
+interface Props {
+  className?: string;
+  textClassName?: string;
+}
+
+const Contact: React.FC<Props> = ({ className, textClassName }) => {
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const email = useContent('contact_email');
 
   return (
-    <div className={classNames(styles.contact, { [styles.small]: isSmall })}>
-      <span className={styles.title}>
+    <div className={classNames(styles.contact, className, { [styles.small]: isSmall })}>
+      <span className={classNames(styles.title, textClassName)}>
         <Content id="contact_title" />
         {!isSmall && ':'}
       </span>
-      <Link href={`mailto:${email}`} className={styles.email}>
+      <Link href={`mailto:${email}`} className={classNames(styles.email, textClassName)}>
         <Content id="contact_email" />
       </Link>
-      <span className={styles.phone}>
+      <span className={classNames(styles.phone, textClassName)}>
         <Content id="contact_phone" />
       </span>
     </div>

@@ -21,6 +21,7 @@ interface Props {
 
 const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, orderSummary }) => {
   const isSmall = useIsSmall();
+  const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const subtotal = useSelector<IAppState, number>(subtotalSelector);
   const taxRate = useSelector<IAppState, number>((state) => state.cms.taxRate);
   const inventory = useSelector<IAppState, InventoryRecord[]>((state) => state.cms.inventory);
@@ -54,7 +55,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
               </div>
             ) : null;
           })}
-          {editable && (
+          {editable && !isDonationRequest && (
             <Link className={styles.edit} href={reverse('cart')}>
               Edit order
             </Link>
@@ -70,6 +71,16 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
             {formatCurrency(subtotal)}
           </Typography>
         </div>
+        {isDonationRequest && (
+          <div className={styles.line}>
+            <Typography variant="body1" className={styles.label}>
+              Donation Adjustment
+            </Typography>
+            <Typography variant="body1" className={styles.value}>
+              -{formatCurrency(subtotal)}
+            </Typography>
+          </div>
+        )}
         {isDelivery && (
           <div className={styles.line}>
             <Typography variant="body1" className={styles.label}>
@@ -94,7 +105,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
           Total
         </Typography>
         <Typography variant="body1" className={styles.value}>
-          {formatCurrency(total)}
+          {formatCurrency(isDonationRequest ? 0 : total)}
         </Typography>
       </div>
     </Card>

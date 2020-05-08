@@ -57,6 +57,18 @@
     top: spacing(12);
   }
 
+  .payMessage {
+    @include fontSize();
+
+    &:first-child {
+      margin-bottom: spacing(2);
+    }
+  }
+
+  .payLink {
+    cursor: pointer;
+  }
+
   .readOnly {
     pointer-events: none;
   }

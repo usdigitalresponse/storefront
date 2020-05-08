@@ -12,6 +12,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import ConfirmationPage from './pages/ConfirmationPage';
 import DonatePage from './pages/DonatePage';
 import DriversPage from './pages/DriversPage';
+import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import LocationsDialog from './components/LocationsDialog';
 import ProductsPage from './pages/ProductsPage';
@@ -39,6 +40,7 @@ function App() {
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <Router>
+          <Header />
           <Switch>
             {Object.keys(routeComponents).map((routeId) => (
               <Route key={routeId} path={routePaths[routeId]} component={routeComponents[routeId]} exact={true} />

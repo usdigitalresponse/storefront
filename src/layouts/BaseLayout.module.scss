@@ -18,18 +18,22 @@
 
   .title {
     @include fontSize('xxl');
+
+    &.hasDescription {
+      margin-bottom: spacing(1);
+    }
   }
 
   .description {
     @include fontSize('m');
-    margin-top: spacing(1);
   }
 
   &.small {
-    padding: spacing(2) spacing(2) spacing(6);
+    padding: spacing(4) spacing(2) spacing(6);
 
     .header {
       margin-bottom: spacing(4);
+      padding: 0 spacing(0.5);
     }
 
     .title {

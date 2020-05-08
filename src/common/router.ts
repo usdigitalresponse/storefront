@@ -13,7 +13,7 @@ export const routePaths: Record<string, string> = {
   confirmation: '/confirmation',
 };
 
-export function reverse(routeId: RouteId, params?: Record<string, string>): string {
+export function reverse(routeId: RouteId, params?: Record<string, any>): string {
   const query = params ? `?${qs.stringify(params)}` : '';
   return `${routePaths[routeId]}${query}`;
 }

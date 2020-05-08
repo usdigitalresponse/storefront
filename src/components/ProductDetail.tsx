@@ -1,13 +1,14 @@
-import { AddItem, SetDialogIsOpen } from '../store/cart';
+import { AddItem, SetDialogIsOpen, SetItems } from '../store/cart';
 import { Button, Card, Grid, Select, Typography } from '@material-ui/core';
 import { CompoundAction } from 'redoodle';
 import { InventoryRecord } from '../common/types';
+import { SetIsDonationRequest } from '../store/checkout';
 import { formatCurrency } from '../common/format';
 import { getImageUrl } from '../common/utils';
 import { reverse } from '../common/router';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
-import Link from './Link';
 import React, { ChangeEvent, useState } from 'react';
 import classNames from 'classnames';
 import styles from './ProductDetail.module.scss';
@@ -23,9 +24,21 @@ const ProductDetail: React.FC<Props> = ({ product, className }) => {
   const [quantity, setQuantity] = useState<number>(1);
   const dispatch = useDispatch();
   const { id, name, description, price } = product;
+  const history = useHistory();
 
   function addToCart() {
-    dispatch(CompoundAction([AddItem.create({ id: product.id, quantity }), SetDialogIsOpen.create(true)]));
+    dispatch(
+      CompoundAction([
+        AddItem.create({ id, quantity }),
+        SetDialogIsOpen.create(true),
+        SetIsDonationRequest.create(false),
+      ]),
+    );
+  }
+
+  function addToWaitlist() {
+    dispatch(CompoundAction([SetItems.create([{ id, quantity: 1 }]), SetIsDonationRequest.create(true)]));
+    history.push(reverse('checkout'));
   }
 
   return (
@@ -62,8 +75,7 @@ const ProductDetail: React.FC<Props> = ({ product, className }) => {
               variant="outlined"
               color="primary"
               size="large"
-              component={Link}
-              href={`${reverse('checkout')}?waitlist=true&item=${id}`}
+              onClick={addToWaitlist}
             >
               Join Waitlist
             </Button>

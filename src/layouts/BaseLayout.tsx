@@ -4,16 +4,15 @@ import { appIsReadySelector } from '../store/cms';
 import { useScrollToTop } from '../common/hooks';
 import { useSelector } from 'react-redux';
 import Footer from '../components/Footer';
-import Header from '../components/Header';
 import Loading from '../components/Loading';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import classNames from 'classnames';
 import styles from './BaseLayout.module.scss';
 import theme from '../common/theme';
 
 interface Props {
   title?: string;
-  description?: string;
+  description?: string | ReactNode;
   padding?: number;
   maxWidth?: number | 'unset';
 }
@@ -25,7 +24,6 @@ const BaseLayout: React.FC<Props> = ({ children, title, description, padding, ma
 
   return (
     <div className={styles.container}>
-      <Header />
       <Grid
         container
         className={classNames(styles.content, { [styles.small]: isSmall })}
@@ -39,14 +37,15 @@ const BaseLayout: React.FC<Props> = ({ children, title, description, padding, ma
           <>
             {title && (
               <Grid item xs={12} className={styles.header}>
-                <Typography className={styles.title} variant="h3">
+                <Typography className={classNames(styles.title, { [styles.hasDescription]: description })} variant="h3">
                   {title}
                 </Typography>
-                {description && (
+                {description && typeof description === 'string' && (
                   <Typography className={styles.description} variant="body1">
                     {description}
                   </Typography>
                 )}
+                {description && typeof description !== 'string' && description}
               </Grid>
             )}
             {children}
