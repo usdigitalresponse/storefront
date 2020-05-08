@@ -21,7 +21,7 @@ const HomePage: React.FC<Props> = () => {
             <Typography variant="h1" className={styles.heroTitle}>
               <Content id="page_title" />
             </Typography>
-            <Typography variant="body1" className={styles.heroDesc}>
+            <Typography variant="body1" className={styles.heroDescription}>
               Buy fresh produce and get it delivered directly to your home
             </Typography>
             <div className={styles.cta}>
@@ -33,7 +33,7 @@ const HomePage: React.FC<Props> = () => {
                 component={Link}
                 href={reverse('products')}
               >
-                Get Started
+                Purchase Food
               </Button>
               <Button
                 className={styles.ctaButton}
@@ -43,7 +43,7 @@ const HomePage: React.FC<Props> = () => {
                 component={Link}
                 href={reverse('donate')}
               >
-                Donate
+                Donate now
               </Button>
               <Button
                 className={styles.ctaButton}
@@ -89,13 +89,13 @@ const HomePage: React.FC<Props> = () => {
               component={Link}
               href={reverse('products')}
             >
-              Get Started
+              Purchase Food
             </Button>
           </Grid>
         </Grid>
         <Grid container justify="center" className={styles.section}>
           <Grid item container spacing={2} justify="center" className={styles.content}>
-            <Grid item md={6} sm={12}>
+            <Grid item md={6} xs={12} className={styles.sectionHalf}>
               <Typography variant="h2" className={styles.sectionTitle}>
                 Make a donation
               </Typography>
@@ -110,12 +110,12 @@ const HomePage: React.FC<Props> = () => {
                 component={Link}
                 href={reverse('donate')}
               >
-                Donate
+                Donate Now
               </Button>
             </Grid>
-            <Grid item md={6} sm={12}>
+            <Grid item md={6} xs={12} className={styles.sectionHalf}>
               <Typography variant="h2" className={styles.sectionTitle}>
-                Volunteer your time
+                Drive with us
               </Typography>
               <Typography variant="body1" className={styles.sectionBody}>
                 Short description goes here about the deliver program. Lorem ipsum dolor sit amet, consectetur
@@ -129,7 +129,7 @@ const HomePage: React.FC<Props> = () => {
                 component={Link}
                 href={reverse('drivers')}
               >
-                Drive with us
+                Sign up now
               </Button>
             </Grid>
           </Grid>

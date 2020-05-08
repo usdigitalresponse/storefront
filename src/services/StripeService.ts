@@ -63,13 +63,19 @@ export class StripeService {
     const subtotal = subtotalSelector(state);
     const tax = subtotal * state.cms.taxRate;
     const total = totalSelector(state);
-    const stripePaymentId = await StripeService.processPayment('main', total, stripe, elements);
+    const isDonationRequest = state.checkout.isDonationRequest;
 
-    if (stripePaymentId) {
+    let stripePaymentId: string | undefined;
+    if (!isDonationRequest) {
+      stripePaymentId = await StripeService.processPayment('main', total, stripe, elements);
+    }
+
+    if (isDonationRequest || stripePaymentId) {
       const type = state.cart.orderType;
       const items = state.cart.items;
       const confirmation: IOrderSummary = await AirtableService.createOrder({
         ...formData,
+        status: isDonationRequest ? 'Donation Requested' : 'Paid',
         type,
         subtotal,
         tax,

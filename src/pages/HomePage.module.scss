@@ -18,14 +18,14 @@
     // margin-bottom: spacing(2);
   }
 
-  .heroDesc {
+  .heroDescription {
     @include fontSize('xxl');
     font-weight: 300;
     margin-bottom: spacing(4);
   }
 
   .section {
-    padding: spacing(8) 0;
+    padding: spacing(12) 0;
 
     &.sectionImage {
       background-color: aliceblue;
@@ -33,8 +33,7 @@
   }
 
   .sectionTitle {
-    font-size: 32px;
-    font-weight: 400;
+    @include fontSize('xl');
     margin-bottom: spacing(2);
   }
 
@@ -61,15 +60,33 @@
 
   &.small {
     .hero {
-      padding: spacing(6) 0;
+      padding: spacing(8) 0;
     }
 
-    .heroDesc {
-      font-size: 18px;
+    .heroTitle {
+      @include fontSize('md');
+      margin-bottom: spacing(1);
     }
+
+    .heroDescription {
+      @include fontSize('xl');
+      font-weight: normal;
+      line-height: 36px;
+    }
+
+
 
     .content {
       padding: 0 spacing(4);
+    }
+
+    .sectionTitle {
+      @include fontSize('llg');
+      margin-bottom: spacing(1);
+    }
+
+    .sectionHalf {
+      margin-bottom: spacing(6);
     }
 
     .cta {

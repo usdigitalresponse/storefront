@@ -5,15 +5,16 @@ import {
   FormHelperText,
   Grid,
   Input,
+  Link,
   TextField,
   TextFieldProps,
   Typography,
 } from '@material-ui/core';
 import { CheckoutFormField, ICheckoutFormData, IPickupLocation, OrderType, PaymentStatus } from '../common/types';
 import { IAppState } from '../store/app';
+import { SetIsDonationRequest, paymentStatusSelector } from '../store/checkout';
 import { SetLocationsDialogIsOpen, selectedLocationSelector } from '../store/cart';
 import { StripeService } from '../services/StripeService';
-import { paymentStatusSelector } from '../store/checkout';
 import { reverse } from '../common/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { useElements, useStripe } from '@stripe/react-stripe-js';
@@ -49,6 +50,7 @@ function CheckoutPageMain() {
   const selectedLocationId = useSelector<IAppState, string | undefined>((state) => state.cart.selectedLocation);
   const history = useHistory();
   const dispatch = useDispatch();
+  const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
 
   useEffect(() => {
     if (paymentStatus === PaymentStatus.SUCCEEDED) {
@@ -86,7 +88,7 @@ function CheckoutPageMain() {
       <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.container, { [styles.small]: isSmall })}>
         <Grid container spacing={2}>
           <Grid item md={8} xs={12}>
-            {orderType !== OrderType.DONATION && <OrderTypeView />}
+            <OrderTypeView />
             <Card elevation={2} className={styles.form}>
               <Grid container className={styles.section}>
                 <Typography variant="h3" className={styles.title}>
@@ -191,9 +193,25 @@ function CheckoutPageMain() {
                 <Typography variant="h3" className={styles.title}>
                   Payment Details
                 </Typography>
-                <Grid item md={8} xs={12}>
-                  <StripeCardField errorMessage={paymentError} />
-                </Grid>
+                {!isDonationRequest && (
+                  <Grid item md={8} xs={12}>
+                    <StripeCardField errorMessage={paymentError} />
+                  </Grid>
+                )}
+                {isDonationRequest && (
+                  <Grid item md={8} xs={12}>
+                    <Typography variant="body1" className={styles.payMessage}>
+                      You are requesting this item to be donated to you free of charge. When we get to your place on the
+                      waitlist, we will reach out via email to confirm the order details.
+                    </Typography>
+                    <Typography variant="body1" className={styles.payMessage}>
+                      <Link onClick={() => dispatch(SetIsDonationRequest.create(false))} className={styles.payLink}>
+                        Click here
+                      </Link>{' '}
+                      if you'd rather pay for these items yourself.
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             </Card>
           </Grid>

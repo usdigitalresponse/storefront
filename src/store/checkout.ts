@@ -8,13 +8,15 @@ export interface ICheckoutState {
   isPaying: boolean;
   error?: string;
   confirmation?: IOrderSummary | IDonationSummary;
+  isDonationRequest: boolean;
   donationAmount: number;
 }
 
 // actions
 export const SetIsPaying = TypedAction.define('APP/CHECKOUT/SET_IS_PAYING')<boolean>();
 export const SetError = TypedAction.define('APP/CHECKOUT/SET_ERROR')<string | undefined>();
-export const SetConfirmation = TypedAction.define('APP/CHECKOUT/SET_ORDER_SUMMARY')<IOrderSummary | IDonationSummary>();
+export const SetConfirmation = TypedAction.define('APP/CHECKOUT/SET_CONFIRMATION')<IOrderSummary | IDonationSummary>();
+export const SetIsDonationRequest = TypedAction.define('APP/CHECKOUT/SET_IS_DONATION_REQUEST')<boolean>();
 export const SetDonationAmount = TypedAction.define('APP/CHECKOUT/SET_DONATION_AMOUNT')<number>();
 
 // reducer
@@ -22,6 +24,7 @@ export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
   .withHandler(SetIsPaying.TYPE, (state, isPaying) => setWith(state, { isPaying }))
   .withHandler(SetError.TYPE, (state, error) => setWith(state, { error }))
   .withHandler(SetConfirmation.TYPE, (state, confirmation) => setWith(state, { confirmation }))
+  .withHandler(SetIsDonationRequest.TYPE, (state, isDonationRequest) => setWith(state, { isDonationRequest }))
   .withHandler(SetDonationAmount.TYPE, (state, donationAmount) => setWith(state, { donationAmount }))
   .withDefaultHandler((state) => (state ? state : initialCheckoutState))
   .build();
@@ -30,6 +33,7 @@ export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
 export const initialCheckoutState: ICheckoutState = {
   isPaying: false,
   error: undefined,
+  isDonationRequest: false,
   confirmation: undefined,
   donationAmount: 50,
 };

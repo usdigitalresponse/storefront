@@ -49,7 +49,7 @@ export interface IOrderItem {
 
 export interface IAddress {
   street1: string;
-  street2: string;
+  street2?: string;
   city: string;
   state: string;
   zip: string;
@@ -97,6 +97,7 @@ export type CheckoutFormField =
 export interface ICheckoutFormData extends ICheckoutFormDataDelivery, ICheckoutFormDataPickup {}
 
 export interface IOrderIntent extends ICheckoutFormData {
+  status: OrderStatus;
   subtotal: number;
   tax: number;
   total: number;
@@ -108,6 +109,8 @@ export interface IOrderSummary extends ICheckoutFormBase {
   id: string;
   createdAt: string;
   status: OrderStatus;
+  subtotal: number;
+  tax: number;
   total: number;
   items: IOrderItem[];
   stripePaymentId?: string;
@@ -122,7 +125,7 @@ export function isOrderSummary(confirmation?: IOrderSummary | IDonationSummary):
 
 export type OrderStatus = 'Donation Requested' | 'Paid';
 
-export type DonationFormField = 'fullName' | 'phone' | 'email';
+export type DonationFormField = 'fullName' | 'phone' | 'email' | 'otherAmount';
 
 export interface IDonationFormData {
   fullName: string;
@@ -136,9 +139,14 @@ export interface IDonationIntent extends IDonationFormData {
   stripePaymentId: string;
 }
 
-export interface IDonationSummary extends IDonationIntent {
+export interface IDonationSummary {
   id: string;
   createdAt: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  total: number;
+  stripePaymentId: string;
 }
 
 export function isDonationSummary(confirmation?: IOrderSummary | IDonationSummary): confirmation is IDonationSummary {
@@ -154,7 +162,6 @@ export interface IProductRouteParams {
 export enum OrderType {
   DELIVERY = 'Delivery',
   PICKUP = 'Pickup',
-  DONATION = 'Donation',
 }
 
 export enum PaymentStatus {

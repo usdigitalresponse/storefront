@@ -21,52 +21,46 @@ $footerHeight: 300px;
 @mixin fontSize($size: 's') {
   @if $size == 'xxs' {
     font-size: 10px;
-    // line-height: 12px;
     letter-spacing: -0.025em;
   }
   @else if $size == 'xs' {
     font-size: 12px;
-    // line-height: 16px;
     letter-spacing: -0.025em;
   }
   @else if $size == 'sm' {
     font-size: 14px;
-    // line-height: 18px;
     letter-spacing: -0.025em;
   }
   @else if $size == 'smd' {
     font-size: 16px;
-    // line-height: 18px;
     letter-spacing: -0.032em;
   }
   @else if $size == 'md' {
     font-size: 18px;
-    // line-height: 28px;
     letter-spacing: -0.40px;
   }
   @else if $size == 'lg' {
     font-size: 24px;
-    // line-height: 32px;
+    letter-spacing: -0.46px;
+  }
+  @else if $size == 'llg' {
+    font-size: 28px;
     letter-spacing: -0.46px;
   }
   @else if $size == 'xl' {
     font-size: 32px;
-    // line-height: 36px;
     letter-spacing: -0.57px;
   }
   @else if $size == 'xxl' {
     font-size: 36px;
-    // line-height: 48px;
     letter-spacing: -1.3px;
   }
   @else if $size == 'xxxl' {
     font-size: 48px;
-    // line-height: 48px;
     letter-spacing: -1.7px;
   }
   @else {
     font-size: 16px;
-    // line-height: 18px;
     letter-spacing: -0.032em;
   }
 }
