@@ -2,18 +2,25 @@
 
 .home {
   .hero {
-    padding: spacing(15) 0;
+    padding: spacing(20) 0;
     width: 100vw;
     background-color: aliceblue;
   }
 
+  .content {
+    width: 100%;
+    max-width: $maxWidth;
+    padding: 0 spacing(8);
+  }
+
   .heroTitle {
-    font-size: 48px;
-    margin-bottom: spacing(3);
+    @include fontSize('lg');
+    // margin-bottom: spacing(2);
   }
 
   .heroDesc {
-    font-size: 20px;
+    @include fontSize('xxl');
+    font-weight: 300;
     margin-bottom: spacing(4);
   }
 
@@ -59,6 +66,10 @@
 
     .heroDesc {
       font-size: 18px;
+    }
+
+    .content {
+      padding: 0 spacing(4);
     }
 
     .cta {

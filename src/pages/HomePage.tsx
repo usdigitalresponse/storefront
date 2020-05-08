@@ -17,13 +17,12 @@ const HomePage: React.FC<Props> = () => {
     <BaseLayout padding={0} maxWidth="unset">
       <div className={classNames(styles.home, { [styles.small]: isSmall })}>
         <Grid container justify="center" className={styles.hero}>
-          <Grid item md={8} xs={10} className={styles.heroContent}>
+          <Grid item className={styles.content}>
             <Typography variant="h1" className={styles.heroTitle}>
               <Content id="page_title" />
             </Typography>
             <Typography variant="body1" className={styles.heroDesc}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida
-              dolor sit amet lacus accumsan et viverra justo commodo.
+              Buy fresh produce and get it delivered directly to your home
             </Typography>
             <div className={styles.cta}>
               <Button
@@ -60,7 +59,7 @@ const HomePage: React.FC<Props> = () => {
           </Grid>
         </Grid>
         <Grid container justify="center" className={styles.section}>
-          <Grid item md={8} xs={10}>
+          <Grid item className={styles.content}>
             <Typography variant="h2" className={styles.sectionTitle}>
               How does this work?
             </Typography>
@@ -73,7 +72,7 @@ const HomePage: React.FC<Props> = () => {
           </Grid>
         </Grid>
         <Grid container justify="center" className={classNames(styles.section, styles.sectionImage)}>
-          <Grid item md={8} xs={10}>
+          <Grid item className={styles.content}>
             <Typography variant="h2" className={styles.sectionTitle}>
               Buy or Request Your Box Now
             </Typography>
@@ -95,42 +94,44 @@ const HomePage: React.FC<Props> = () => {
           </Grid>
         </Grid>
         <Grid container justify="center" className={styles.section}>
-          <Grid item md={4} xs={10}>
-            <Typography variant="h2" className={styles.sectionTitle}>
-              Make a donation
-            </Typography>
-            <Typography variant="body1" className={styles.sectionBody}>
-              Short description goes here consider to show how to Waitlist in the description here.
-            </Typography>
-            <Button
-              className={styles.ctaButton}
-              size="large"
-              color="primary"
-              variant="contained"
-              component={Link}
-              href={reverse('donate')}
-            >
-              Donate
-            </Button>
-          </Grid>
-          <Grid item md={4} xs={10}>
-            <Typography variant="h2" className={styles.sectionTitle}>
-              Volunteer your time
-            </Typography>
-            <Typography variant="body1" className={styles.sectionBody}>
-              Short description goes here about the deliver program. Lorem ipsum dolor sit amet, consectetur adipiscing
-              elit.
-            </Typography>
-            <Button
-              className={styles.ctaButton}
-              size="large"
-              color="primary"
-              variant="contained"
-              component={Link}
-              href={reverse('drivers')}
-            >
-              Drive with us
-            </Button>
+          <Grid item container spacing={2} justify="center" className={styles.content}>
+            <Grid item md={6} sm={12}>
+              <Typography variant="h2" className={styles.sectionTitle}>
+                Make a donation
+              </Typography>
+              <Typography variant="body1" className={styles.sectionBody}>
+                Short description goes here consider to show how to Waitlist in the description here.
+              </Typography>
+              <Button
+                className={styles.ctaButton}
+                size="large"
+                color="primary"
+                variant="contained"
+                component={Link}
+                href={reverse('donate')}
+              >
+                Donate
+              </Button>
+            </Grid>
+            <Grid item md={6} sm={12}>
+              <Typography variant="h2" className={styles.sectionTitle}>
+                Volunteer your time
+              </Typography>
+              <Typography variant="body1" className={styles.sectionBody}>
+                Short description goes here about the deliver program. Lorem ipsum dolor sit amet, consectetur
+                adipiscing elit.
+              </Typography>
+              <Button
+                className={styles.ctaButton}
+                size="large"
+                color="primary"
+                variant="contained"
+                component={Link}
+                href={reverse('drivers')}
+              >
+                Drive with us
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </div>
