@@ -184,14 +184,9 @@ export function isSchedule(schedule?: string | ISchedule): schedule is ISchedule
 
 export type Day = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
 
-export enum ScheduleType {
-  PICKUP = 'Pickup',
-  DELIVERY = 'Delivery',
-}
-
 export interface ISchedule {
   id: string;
-  type: ScheduleType;
+  type: OrderType;
   start: string;
   end: string;
   day: Day;

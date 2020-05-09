@@ -2,6 +2,7 @@ import * as Reselect from 'reselect';
 import { IAppState } from './app';
 import { IDonationSummary, IOrderSummary, PaymentStatus } from '../common/types';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
+import { pickupOrderConfirmation } from './test';
 
 // model
 export interface ICheckoutState {
@@ -34,7 +35,7 @@ export const initialCheckoutState: ICheckoutState = {
   isPaying: false,
   error: undefined,
   isDonationRequest: false,
-  confirmation: undefined,
+  confirmation: pickupOrderConfirmation,
   donationAmount: 50,
 };
 

@@ -4,9 +4,11 @@ import {
   IDonationSummary,
   IOrderSummary,
   IPickupLocation,
+  ISchedule,
   OrderType,
   isDonationSummary,
   isOrderSummary,
+  isSchedule,
 } from '../common/types';
 import { formatDate } from '../common/format';
 import { pickupLocationsSelector } from '../store/cms';
@@ -18,6 +20,7 @@ import Content from '../components/Content';
 import DonationSummary from '../components/DonationSummary';
 import OrderSummary from '../components/OrderSummary';
 import React from 'react';
+import ScheduleView from '../components/ScheduleView';
 import classNames from 'classnames';
 import styles from './ConfirmationPage.module.scss';
 
@@ -46,14 +49,14 @@ const ConfirmationPage: React.FC<Props> = () => {
         <Typography variant="body1" className={styles.description}>
           We've sent an email confirmation to <span className={styles.em}>{confirmation.email}</span>.{' '}
           {isOrderSummary(confirmation) &&
-            `You'll receive another email confirming the date and time of your ${
-              confirmation.type === OrderType.DELIVERY ? 'delivery' : 'pickup'
-            } once your order is fulfilled.`}
-          {isSmall && (
+            `You'll receive another email confirming the date and time of your ${confirmation.type.toLowerCase()} once your order is fulfilled.`}
+          {isSmall ? (
             <>
               <br />
               <br />
             </>
+          ) : (
+            ' '
           )}
           If you have any questions, please email{' '}
           <span className={styles.em}>
@@ -127,6 +130,11 @@ const ConfirmationPage: React.FC<Props> = () => {
                   </Typography>
                   <Typography variant="body1">{pickupLocation.name}</Typography>
                   <AddressView address={pickupLocation.address} />
+                  <ScheduleView
+                    variant="body1"
+                    schedules={pickupLocation.schedules as ISchedule[]}
+                    className={styles.schedules}
+                  />
                 </Grid>
               )}
             </Grid>

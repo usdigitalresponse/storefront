@@ -41,6 +41,10 @@
     }
   }
 
+  .schedules {
+    margin-top: spacing(1);
+  }
+
   &.small {
     .content {
       flex-direction: column;
