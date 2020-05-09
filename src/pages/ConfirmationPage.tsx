@@ -5,10 +5,8 @@ import {
   IOrderSummary,
   IPickupLocation,
   ISchedule,
-  OrderType,
   isDonationSummary,
   isOrderSummary,
-  isSchedule,
 } from '../common/types';
 import { formatDate } from '../common/format';
 import { pickupLocationsSelector } from '../store/cms';

@@ -5,6 +5,9 @@
     padding: spacing(20) 0;
     width: 100vw;
     background-color: aliceblue;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: left top;
   }
 
   .content {
@@ -15,11 +18,12 @@
 
   .heroTitle {
     @include fontSize('lg');
-    // margin-bottom: spacing(2);
+    margin-bottom: spacing(1);
   }
 
   .heroDescription {
-    @include fontSize('xxl');
+    @include fontSize('xxxl');
+    line-height: 56px;
     font-weight: 300;
     margin-bottom: spacing(4);
   }
@@ -60,7 +64,7 @@
 
   &.small {
     .hero {
-      padding: spacing(8) 0;
+      padding: spacing(10) 0 spacing(6);
     }
 
     .heroTitle {
@@ -70,8 +74,8 @@
 
     .heroDescription {
       @include fontSize('xl');
-      font-weight: normal;
       line-height: 36px;
+      font-weight: 300;
     }
 
 
@@ -82,7 +86,7 @@
 
     .sectionTitle {
       @include fontSize('llg');
-      margin-bottom: spacing(1);
+      margin-bottom: spacing(2);
     }
 
     .sectionHalf {

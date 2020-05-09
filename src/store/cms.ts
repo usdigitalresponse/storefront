@@ -130,11 +130,40 @@ export const makeContentValueSelector = () =>
       }
 
       if (!value) {
-        console.error(`Missing ${key} value in CMS`);
+        console.log(`Missing ${key} value in CMS`);
         return '';
       }
 
       return getRecordValueForLanguage(value, language);
+    },
+  );
+
+export const makeContentImageSelector = () =>
+  Reselect.createSelector(
+    (state: IAppState) => state.cms.content,
+    (state: IAppState) => state.cms.language,
+    (_: any, key: string) => key,
+    (content: Record<string, IContentRecord>, language: string, key: string) => {
+      const value: IContentRecord = content[key];
+
+      if (Object.keys(content).length === 0) {
+        return { url: '', alt: '' };
+      }
+
+      if (!value) {
+        console.log(`Missing ${key} value in CMS`);
+        return { url: '', alt: '' };
+      }
+
+      if (value.image) {
+        return {
+          url: value.image[0]?.url,
+          alt: getRecordValueForLanguage(value, language),
+        };
+      } else {
+        console.log(`${key} is not an image value in CMS`);
+        return { url: '', alt: '' };
+      }
     },
   );
 
@@ -146,4 +175,9 @@ export function getRecordValueForLanguage(record: IContentRecord, language: stri
 export function useContent(key: string) {
   const contentValueSelector = useMemo(makeContentValueSelector, []);
   return useSelector((state: IAppState) => contentValueSelector(state, key));
+}
+
+export function useContentImage(key: string) {
+  const contentImageValueSelector = useMemo(makeContentImageSelector, []);
+  return useSelector((state: IAppState) => contentImageValueSelector(state, key));
 }

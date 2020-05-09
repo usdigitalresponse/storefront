@@ -19,7 +19,6 @@ const Contact: React.FC<Props> = ({ className, textClassName }) => {
     <div className={classNames(styles.contact, className, { [styles.small]: isSmall })}>
       <span className={classNames(styles.title, textClassName)}>
         <Content id="contact_title" />
-        {!isSmall && ':'}
       </span>
       <Link href={`mailto:${email}`} className={classNames(styles.email, textClassName)}>
         <Content id="contact_email" />

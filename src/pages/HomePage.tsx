@@ -1,5 +1,6 @@
 import { Button, Grid, Typography, useMediaQuery } from '@material-ui/core';
 import { reverse } from '../common/router';
+import { useContentImage } from '../store/cms';
 import BaseLayout from '../layouts/BaseLayout';
 import Content from '../components/Content';
 import Link from '../components/Link';
@@ -12,74 +13,72 @@ interface Props {}
 
 const HomePage: React.FC<Props> = () => {
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
+  const bannerImage = useContentImage('banner_image');
 
   return (
     <BaseLayout padding={0} maxWidth="unset">
       <div className={classNames(styles.home, { [styles.small]: isSmall })}>
-        <Grid container justify="center" className={styles.hero}>
-          <Grid item className={styles.content}>
-            <Typography variant="h1" className={styles.heroTitle}>
-              <Content id="page_title" />
-            </Typography>
-            <Typography variant="body1" className={styles.heroDescription}>
-              Buy fresh produce and get it delivered directly to your home
-            </Typography>
-            <div className={styles.cta}>
-              <Button
-                className={styles.ctaButton}
-                size="large"
-                color="primary"
-                variant="contained"
-                component={Link}
-                href={reverse('products')}
-              >
-                Purchase Food
-              </Button>
-              <Button
-                className={styles.ctaButton}
-                size="large"
-                color="primary"
-                variant="contained"
-                component={Link}
-                href={reverse('donate')}
-              >
-                Donate now
-              </Button>
-              <Button
-                className={styles.ctaButton}
-                size="large"
-                color="primary"
-                variant="contained"
-                component={Link}
-                href={reverse('drivers')}
-              >
-                Drive with us
-              </Button>
-            </div>
+        <Grid container justify="center" className={styles.hero} style={{ backgroundImage: `url(${bannerImage.url})` }}>
+          <Grid item container justify="flex-start" className={styles.content}>
+            <Grid item md={6} xs={12}>
+              <Typography variant="h1" className={styles.heroTitle}>
+                <Content id="page_title" />
+              </Typography>
+              <Typography variant="body1" className={styles.heroDescription}>
+                <Content id="banner_copy" />
+              </Typography>
+              <div className={styles.cta}>
+                <Button
+                  className={styles.ctaButton}
+                  size="large"
+                  color="primary"
+                  variant="contained"
+                  component={Link}
+                  href={reverse('products')}
+                >
+                  <Content id="purchase_button_label" />
+                </Button>
+                <Button
+                  className={styles.ctaButton}
+                  size="large"
+                  color="primary"
+                  variant="contained"
+                  component={Link}
+                  href={reverse('donate')}
+                >
+                  <Content id="donate_button_label" />
+                </Button>
+                <Button
+                  className={styles.ctaButton}
+                  size="large"
+                  color="primary"
+                  variant="contained"
+                  component={Link}
+                  href={reverse('drivers')}
+                >
+                  <Content id="drive_button_label" />
+                </Button>
+              </div>
+            </Grid>
           </Grid>
         </Grid>
         <Grid container justify="center" className={styles.section}>
           <Grid item className={styles.content}>
             <Typography variant="h2" className={styles.sectionTitle}>
-              How does this work?
+              <Content id="introduction_title" />
             </Typography>
             <Typography variant="body1">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida
-              dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque
-              penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra
-              vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc accuan eget.
+              <Content id="introduction_copy" markdown={true} />
             </Typography>
           </Grid>
         </Grid>
         <Grid container justify="center" className={classNames(styles.section, styles.sectionImage)}>
           <Grid item className={styles.content}>
             <Typography variant="h2" className={styles.sectionTitle}>
-              Buy or Request Your Box Now
+              <Content id="purchase_title" />
             </Typography>
             <Typography variant="body1" className={styles.sectionBody}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida
-              dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque
-              penatibus et magnis dis parturient montes,
+              <Content id="purchase_copy" markdown={true} />
             </Typography>
             <Button
               className={styles.ctaButton}
@@ -89,7 +88,7 @@ const HomePage: React.FC<Props> = () => {
               component={Link}
               href={reverse('products')}
             >
-              Purchase Food
+              <Content id="purchase_button_label" />
             </Button>
           </Grid>
         </Grid>
@@ -97,10 +96,10 @@ const HomePage: React.FC<Props> = () => {
           <Grid item container spacing={2} justify="center" className={styles.content}>
             <Grid item md={6} xs={12} className={styles.sectionHalf}>
               <Typography variant="h2" className={styles.sectionTitle}>
-                Make a donation
+                <Content id="donate_title" />
               </Typography>
               <Typography variant="body1" className={styles.sectionBody}>
-                Short description goes here consider to show how to Waitlist in the description here.
+                <Content id="donate_copy" markdown={true} />
               </Typography>
               <Button
                 className={styles.ctaButton}
@@ -110,16 +109,15 @@ const HomePage: React.FC<Props> = () => {
                 component={Link}
                 href={reverse('donate')}
               >
-                Donate Now
+                <Content id="donate_button_label" />
               </Button>
             </Grid>
             <Grid item md={6} xs={12} className={styles.sectionHalf}>
               <Typography variant="h2" className={styles.sectionTitle}>
-                Drive with us
+                <Content id="drive_title" />
               </Typography>
               <Typography variant="body1" className={styles.sectionBody}>
-                Short description goes here about the deliver program. Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit.
+                <Content id="drive_copy" markdown={true} />
               </Typography>
               <Button
                 className={styles.ctaButton}
@@ -129,7 +127,7 @@ const HomePage: React.FC<Props> = () => {
                 component={Link}
                 href={reverse('drivers')}
               >
-                Sign up now
+                <Content id="drive_button_label" />
               </Button>
             </Grid>
           </Grid>
