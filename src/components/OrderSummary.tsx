@@ -29,8 +29,8 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
   const isDelivery =
     useSelector<IAppState, OrderType>((state) => state.cart.orderType) === OrderType.DELIVERY ||
     !!orderSummary?.deliveryAddress;
-  const tax = subtotal * taxRate;
-  const total = subtotal + tax;
+  const tax = orderSummary ? orderSummary.subtotal * taxRate : subtotal * taxRate;
+  const total = orderSummary?.total || subtotal + tax;
 
   return (
     <Card elevation={2} className={classNames(styles.container, className, { [styles.small]: isSmall })}>

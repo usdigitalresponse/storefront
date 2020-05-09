@@ -4,10 +4,10 @@ import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
 import { ICheckoutFormData, IDonationFormData, IDonationSummary, IOrderSummary, PaymentType } from '../common/types';
 import { SetConfirmation, SetError, SetIsPaying } from '../store/checkout';
+import { SetItems, subtotalSelector, totalSelector } from '../store/cart';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
 import { makeContentValueSelector } from '../store/cms';
-import { subtotalSelector, totalSelector } from '../store/cart';
 
 export class StripeService {
   public static store: Store<IAppState>;
@@ -68,6 +68,8 @@ export class StripeService {
     let stripePaymentId: string | undefined;
     if (!isDonationRequest) {
       stripePaymentId = await StripeService.processPayment('main', total, stripe, elements);
+    } else {
+      StripeService.store.dispatch(SetIsPaying.create(true));
     }
 
     if (isDonationRequest || stripePaymentId) {
@@ -83,7 +85,9 @@ export class StripeService {
         items,
         stripePaymentId,
       });
-      StripeService.store.dispatch(CompoundAction([SetConfirmation.create(confirmation), SetIsPaying.create(false)]));
+      StripeService.store.dispatch(
+        CompoundAction([SetConfirmation.create(confirmation), SetIsPaying.create(false), SetItems.create([])]),
+      );
     }
   }
 
@@ -100,7 +104,7 @@ export class StripeService {
         total,
         stripePaymentId,
       });
-      StripeService.store.dispatch(SetConfirmation.create(confirmation));
+      StripeService.store.dispatch(CompoundAction([SetConfirmation.create(confirmation), SetIsPaying.create(false)]));
     }
   }
 

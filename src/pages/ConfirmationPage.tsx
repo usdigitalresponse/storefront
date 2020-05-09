@@ -1,6 +1,13 @@
 import { Card, Chip, Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { IDonationSummary, IOrderSummary, IPickupLocation, isDonationSummary, isOrderSummary } from '../common/types';
+import {
+  IDonationSummary,
+  IOrderSummary,
+  IPickupLocation,
+  OrderType,
+  isDonationSummary,
+  isOrderSummary,
+} from '../common/types';
 import { formatDate } from '../common/format';
 import { pickupLocationsSelector } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
@@ -38,6 +45,10 @@ const ConfirmationPage: React.FC<Props> = () => {
       description={
         <Typography variant="body1" className={styles.description}>
           We've sent an email confirmation to <span className={styles.em}>{confirmation.email}</span>.{' '}
+          {isOrderSummary(confirmation) &&
+            `You'll receive another email confirming the date and time of your ${
+              confirmation.type === OrderType.DELIVERY ? 'delivery' : 'pickup'
+            } once your order is fulfilled.`}
           {isSmall && (
             <>
               <br />
@@ -122,7 +133,9 @@ const ConfirmationPage: React.FC<Props> = () => {
           </Card>
         </Grid>
         <Grid item md={4} xs={12} className={styles.column}>
-          {isOrderSummary(confirmation) && <OrderSummary orderSummary={confirmation} className={styles.card} />}
+          {isOrderSummary(confirmation) && (
+            <OrderSummary showLineItems orderSummary={confirmation} className={styles.card} />
+          )}
           {isDonationSummary(confirmation) && <DonationSummary amount={confirmation.total} className={styles.card} />}
         </Grid>
       </Grid>

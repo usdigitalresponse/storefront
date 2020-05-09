@@ -104,13 +104,13 @@ exports.handler = async (event, context) => {
       phone: order.fields['Phone Number'],
       email: order.fields['Email'],
       type: order.fields['Type'],
-      deliveryAddress: {
+      deliveryAddress: order.fields['address_street1'] ? {
         street1: order.fields['address_street1'],
         street2: order.fields['address_street2'],
         city: order.fields['address_city'],
         state: order.fields['address_state'],
         zip: order.fields['address_zip'],
-      },
+      } : undefined,
       deliveryPreferences: order.fields['Delivery Preferences'],
       pickupLocationId: order.fields['Pickup Location'] ? order.fields['Pickup Location'][0] : undefined,
       subtotal: order.fields['Subtotal'],
