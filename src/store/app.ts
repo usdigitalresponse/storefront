@@ -8,6 +8,7 @@ export interface IAppState {
   cms: ICmsState;
   cart: ICartState;
   checkout: ICheckoutState;
+  _persist?: any;
 }
 
 // reducer
