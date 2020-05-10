@@ -9,7 +9,7 @@ import {
   isOrderSummary,
 } from '../common/types';
 import { formatDate } from '../common/format';
-import { pickupLocationsSelector } from '../store/cms';
+import { pickupLocationsSelector, useContent } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
 import AddressView from '../components/AddressView';
@@ -29,6 +29,11 @@ const ConfirmationPage: React.FC<Props> = () => {
     (state) => state.checkout.confirmation!,
   );
   const isSmall = useIsSmall();
+  const confirmationCopyAll =
+    useContent('confirmation_copy_all') || `We've sent an email confirmation to {customer-email}`;
+  const confirmationCopyOrder =
+    useContent('confirmation_copy_order') ||
+    `You'll receive another email confirming the date and time of your {delivery|pickup} once your order is fulfilled.`;
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
   const pickupLocation =
     isOrderSummary(confirmation) && confirmation.pickupLocationId && pickupLocations
@@ -40,14 +45,21 @@ const ConfirmationPage: React.FC<Props> = () => {
   if (!confirmation) {
     return <BaseLayout title="Order not found" description={`Error finding order. Please try again`}></BaseLayout>;
   }
+
+  const confirmationCopy = confirmationCopyAll
+    .replace('{customer-email}', `**${confirmation.email}**`)
+    .concat(
+      isOrderSummary(confirmation)
+        ? ` ${confirmationCopyOrder.replace('{delivery|pickup}', confirmation.type.toLowerCase())}`
+        : '',
+    );
+
   return (
     <BaseLayout
       title={type === 'order' ? 'Order Placed!' : 'Thank you!'}
       description={
         <Typography variant="body1" className={styles.description}>
-          We've sent an email confirmation to <span className={styles.em}>{confirmation.email}</span>.{' '}
-          {isOrderSummary(confirmation) &&
-            `You'll receive another email confirming the date and time of your ${confirmation.type.toLowerCase()} once your order is fulfilled.`}
+          <Content text={confirmationCopy} markdown />
           {isSmall ? (
             <>
               <br />
@@ -56,15 +68,7 @@ const ConfirmationPage: React.FC<Props> = () => {
           ) : (
             ' '
           )}
-          If you have any questions, please email{' '}
-          <span className={styles.em}>
-            <Content id="contact_email" />
-          </span>{' '}
-          or call{' '}
-          <span className={styles.em}>
-            <Content id="contact_phone" />
-          </span>
-          .
+          If you have any questions, please email <Content id="contact_email" /> or call <Content id="contact_phone" />.
         </Typography>
       }
     >

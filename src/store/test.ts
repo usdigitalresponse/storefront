@@ -1,4 +1,9 @@
-import { IDonationSummary, IOrderSummary, OrderType } from '../common/types';
+import { IDonationSummary, IOrderItem, IOrderSummary, OrderType } from '../common/types';
+
+export const cartItems: IOrderItem[] = [
+  { id: 'recwKKxpcBBFteKdG', quantity: 1 },
+  { id: 'recSmc0lCgRXWKe3J', quantity: 2 },
+];
 
 export const deliveryOrderConfirmation: IOrderSummary = {
   id: '85',

@@ -125,13 +125,13 @@ export const makeContentValueSelector = () =>
         return '';
       }
 
-      if (value.image) {
-        return value.image[0]?.url;
-      }
-
       if (!value) {
         console.log(`Missing ${key} value in CMS`);
         return '';
+      }
+
+      if (value.image) {
+        return value.image[0]?.url;
       }
 
       return getRecordValueForLanguage(value, language);
@@ -172,12 +172,12 @@ export function getRecordValueForLanguage(record: IContentRecord, language: stri
 }
 
 // hooks
-export function useContent(key: string) {
+export function useContent(key?: string) {
   const contentValueSelector = useMemo(makeContentValueSelector, []);
-  return useSelector((state: IAppState) => contentValueSelector(state, key));
+  return useSelector(key ? (state: IAppState) => contentValueSelector(state, key) : () => '');
 }
 
-export function useContentImage(key: string) {
+export function useContentImage(key?: string) {
   const contentImageValueSelector = useMemo(makeContentImageSelector, []);
-  return useSelector((state: IAppState) => contentImageValueSelector(state, key));
+  return useSelector(key ? (state: IAppState) => contentImageValueSelector(state, key) : () => ({ url: '', alt: '' }));
 }

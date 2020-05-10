@@ -23,6 +23,7 @@ import { useHistory } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
 import AddressView from '../components/AddressView';
 import BaseLayout from '../layouts/BaseLayout';
+import Content from '../components/Content';
 import DeliveryPreferences from '../components/DeliveryPreferences';
 import OrderSummary from '../components/OrderSummary';
 import OrderTypeView from '../components/OrderTypeView';
@@ -201,8 +202,7 @@ function CheckoutPageMain() {
                 {isDonationRequest && (
                   <Grid item md={8} xs={12}>
                     <Typography variant="body1" className={styles.payMessage}>
-                      You are requesting this item to be donated to you free of charge. When we get to your place on the
-                      waitlist, we will reach out via email to confirm the order details.
+                      <Content id="checkout_waitlist_copy" />
                     </Typography>
                     <Typography variant="body1" className={styles.payMessage}>
                       <Link onClick={() => dispatch(SetIsDonationRequest.create(false))} className={styles.payLink}>

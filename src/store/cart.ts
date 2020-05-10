@@ -58,11 +58,7 @@ export const cartReducer: any = TypedReducer.builder<ICartState>()
 
 // init
 export const initialCartState: ICartState = {
-  // TODO: For illustration only, default to empty cart
-  items: [
-    { id: 'recwKKxpcBBFteKdG', quantity: 1 },
-    { id: 'recSmc0lCgRXWKe3J', quantity: 2 },
-  ],
+  items: [],
   selectedLocation: undefined,
   dialogIsOpen: false,
   locationsDialogIsOpen: false,

@@ -7,6 +7,8 @@ const theme = createMuiTheme({
   },
   typography: {
     fontFamily: '"Inter", sans-serif',
+    body1: { letterSpacing: '-0.032em' },
+    body2: { letterSpacing: '-0.025em' },
     h1: { fontWeight: 'normal' },
     h2: { fontWeight: 'normal' },
     h3: { fontWeight: 'normal' },

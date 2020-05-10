@@ -1,6 +1,7 @@
 import { Checkbox, FormControlLabel, Grid, Typography } from '@material-ui/core';
 import { ICheckoutFormDataDelivery } from '../common/types';
 import { useIsSmall } from '../common/hooks';
+import Content from './Content';
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import styles from './DeliveryPreferences.module.scss';
@@ -72,8 +73,7 @@ const DeliveryPreferences: React.FC<Props> = ({ inputRef, watch, setValue }) => 
         />
       </Grid>
       <Typography variant="body2" className={styles.note}>
-        Delivery preferences are not guaranteed - we will make our best effort. Final delivery date and time will be
-        confirmed by email.
+        <Content id="checkout_delivery_preferences_copy" />
       </Typography>
     </Grid>
   );

@@ -9,6 +9,7 @@ import { reverse } from '../common/router';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
+import Content from './Content';
 import React, { ChangeEvent, useState } from 'react';
 import classNames from 'classnames';
 import styles from './ProductDetail.module.scss';
@@ -62,11 +63,10 @@ const ProductDetail: React.FC<Props> = ({ product, className }) => {
         <Grid container alignItems="center" className={styles.cta}>
           <Grid item md={7} xs={12} className={styles.ctaInfo}>
             <Typography variant="subtitle1" className={styles.ctaTitle}>
-              Join donation waitlist
+              <Content id="products_waitlist_title" />
             </Typography>
             <Typography variant="body2" className={styles.ctaDescription}>
-              Can't pay for this yourself? Once we recieve enough donations, we'll arrange for the box to be delivered
-              to you, free of charge.
+              <Content id="products_waitlist_copy" markdown />
             </Typography>
           </Grid>
           <Grid item md={5} xs={12} className={styles.ctaAction}>
@@ -77,18 +77,17 @@ const ProductDetail: React.FC<Props> = ({ product, className }) => {
               size="large"
               onClick={addToWaitlist}
             >
-              Join Waitlist
+              <Content id="products_waitlist_button_label" />
             </Button>
           </Grid>
         </Grid>
         <Grid container alignItems="center" className={styles.cta}>
           <Grid item md={7} xs={12} className={styles.ctaInfo}>
             <Typography variant="subtitle1" className={styles.ctaTitle}>
-              Purchase
+              <Content id="products_purchase_title" />
             </Typography>
             <Typography variant="body2" className={styles.ctaDescription}>
-              Pay online with a credit/debit card to have the box delivered or visit a pickup location if you intend to
-              pay with EBT or cash.
+              <Content id="products_purchase_copy" markdown />
             </Typography>
           </Grid>
           <Grid item md={5} xs={12} className={styles.ctaAction}>
@@ -113,7 +112,7 @@ const ProductDetail: React.FC<Props> = ({ product, className }) => {
               </Select>
             </div>
             <Button className={styles.ctaButton} variant="contained" color="primary" size="large" onClick={addToCart}>
-              Add to cart
+              <Content id="products_purchase_button_label" />
             </Button>
           </Grid>
         </Grid>

@@ -14,6 +14,7 @@ import { IAppState } from '../store/app';
 import { SetDonationAmount, paymentStatusSelector } from '../store/checkout';
 import { StripeService } from '../services/StripeService';
 import { reverse } from '../common/router';
+import { useContent } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
 import { useElements, useStripe } from '@stripe/react-stripe-js';
 import { useForm } from 'react-hook-form';
@@ -43,6 +44,8 @@ const DonatePageMain: React.FC = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const otherAmount = watch('otherAmount');
+  const title = useContent('donate_page_title');
+  const description = useContent('donate_page_subtitle');
 
   useEffect(() => {
     if (paymentStatus === PaymentStatus.SUCCEEDED) {
@@ -75,10 +78,7 @@ const DonatePageMain: React.FC = () => {
   }
 
   return (
-    <BaseLayout
-      title="Donate"
-      description="Donate to community members who could use some help getting convenient access to the nutrition they need."
-    >
+    <BaseLayout title={title} description={description}>
       <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.container, { [styles.small]: isSmall })}>
         <Grid container spacing={2}>
           <Grid item md={8} xs={12}>

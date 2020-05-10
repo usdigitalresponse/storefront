@@ -68,7 +68,7 @@ const HomePage: React.FC<Props> = () => {
               <Content id="introduction_title" />
             </Typography>
             <Typography variant="body1">
-              <Content id="introduction_copy" markdown={true} />
+              <Content id="introduction_copy" markdown />
             </Typography>
           </Grid>
         </Grid>
@@ -78,7 +78,7 @@ const HomePage: React.FC<Props> = () => {
               <Content id="purchase_title" />
             </Typography>
             <Typography variant="body1" className={styles.sectionBody}>
-              <Content id="purchase_copy" markdown={true} />
+              <Content id="purchase_copy" markdown />
             </Typography>
             <Button
               className={styles.ctaButton}
@@ -99,7 +99,7 @@ const HomePage: React.FC<Props> = () => {
                 <Content id="donate_title" />
               </Typography>
               <Typography variant="body1" className={styles.sectionBody}>
-                <Content id="donate_copy" markdown={true} />
+                <Content id="donate_copy" markdown />
               </Typography>
               <Button
                 className={styles.ctaButton}
@@ -117,7 +117,7 @@ const HomePage: React.FC<Props> = () => {
                 <Content id="drive_title" />
               </Typography>
               <Typography variant="body1" className={styles.sectionBody}>
-                <Content id="drive_copy" markdown={true} />
+                <Content id="drive_copy" markdown />
               </Typography>
               <Button
                 className={styles.ctaButton}

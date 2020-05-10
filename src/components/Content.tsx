@@ -1,17 +1,23 @@
 import { useContent } from '../store/cms';
-import Interweave from 'interweave';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 
 interface Props {
-  id: string;
+  id?: string;
+  text?: string;
   markdown?: boolean;
   className?: string;
 }
 
-const Content: React.FC<Props> = ({ id, markdown = false, className }) => {
-  const text = useContent(id);
-  return markdown ? <ReactMarkdown source={text} /> : <Interweave className={className} content={text} />;
+const Content: React.FC<Props> = ({ id, markdown = false, className, text }) => {
+  const cmsContent = useContent(id);
+  const content = text || cmsContent;
+
+  return markdown ? (
+    <ReactMarkdown unwrapDisallowed disallowedTypes={['paragraph']} source={content} />
+  ) : (
+    <span className={className}>{content}</span>
+  );
 };
 
 export default Content;

@@ -18,9 +18,9 @@ interface Props {
 }
 
 const BaseLayout: React.FC<Props> = ({ children, title, description, padding, maxWidth }) => {
+  useScrollToTop();
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const appIsReady = useSelector<IAppState, boolean>(appIsReadySelector);
-  useScrollToTop();
 
   return (
     <div className={styles.container}>
