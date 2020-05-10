@@ -13,6 +13,7 @@ import { IAppState } from '../store/app';
 import { INavItem } from '../common/types';
 import { IOrderItemCountSelector } from '../store/cart';
 import { reverse, routePaths } from '../common/router';
+import { useContent } from '../store/cms';
 import { useLocation } from 'react-router-dom';
 import { usePrevious } from '../common/hooks';
 import { useSelector } from 'react-redux';
@@ -25,19 +26,22 @@ import React, { useEffect, useState } from 'react';
 import styles from './Header.module.scss';
 import theme from '../common/theme';
 
-export const headerNavItems: INavItem[] = [
-  { name: 'Home', url: reverse('home') },
-  { name: 'Purchase Food', url: reverse('products') },
-  { name: 'Donate Now', url: reverse('donate') },
-  { name: 'Drive for us', url: reverse('drivers') },
-];
-
 const Header: React.FC = () => {
   const isCheckout = useLocation().pathname === routePaths.checkout;
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const IOrderItemsCount = useSelector<IAppState, number>(IOrderItemCountSelector);
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
+
+  const navPurchase = useContent('nav_purchase');
+  const navDonate = useContent('nav_donate');
+  const navDrive = useContent('nav_drive');
+  const headerNavItems: INavItem[] = [
+    { name: 'Home', url: reverse('home') },
+    { name: navPurchase, url: reverse('products') },
+    { name: navDonate, url: reverse('donate') },
+    { name: navDrive, url: reverse('drivers') },
+  ];
 
   const location = useLocation();
   const prevLocation = usePrevious(location);
