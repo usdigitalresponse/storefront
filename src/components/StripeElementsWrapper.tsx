@@ -14,7 +14,7 @@ const StripeElementsWrapper: React.FC<Props> = ({ children, type }) => {
 
   console.log('type', type);
   // do not render if stripe object is not a promise yet.
-  if (Promise.resolve(stripePromise) != stripePromise) {
+  if (Promise.resolve(stripePromise) !== stripePromise) {
     return null;
   }
 

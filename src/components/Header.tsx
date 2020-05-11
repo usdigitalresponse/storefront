@@ -1,21 +1,11 @@
-import {
-  AppBar,
-  Badge,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Toolbar,
-  useMediaQuery,
-} from '@material-ui/core';
+import { AppBar, Badge, Drawer, IconButton, List, ListItem, ListItemText, Toolbar } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { INavItem } from '../common/types';
 import { IOrderItemCountSelector } from '../store/cart';
 import { reverse, routePaths } from '../common/router';
 import { useContent } from '../store/cms';
+import { useIsSmall, usePrevious } from '../common/hooks';
 import { useLocation } from 'react-router-dom';
-import { usePrevious } from '../common/hooks';
 import { useSelector } from 'react-redux';
 import CartIcon from '@material-ui/icons/ShoppingCart';
 import Contact from './Contact';
@@ -24,15 +14,13 @@ import Link from './Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import React, { useEffect, useState } from 'react';
 import styles from './Header.module.scss';
-import theme from '../common/theme';
 
 const Header: React.FC = () => {
   const isCheckout = useLocation().pathname === routePaths.checkout;
-  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmall = useIsSmall();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const IOrderItemsCount = useSelector<IAppState, number>(IOrderItemCountSelector);
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
-
   const navPurchase = useContent('nav_purchase');
   const navDonate = useContent('nav_donate');
   const navDrive = useContent('nav_drive');

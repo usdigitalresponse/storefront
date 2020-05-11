@@ -1,10 +1,9 @@
 import { CardElement } from '@stripe/react-stripe-js';
 import { StripeCardElementOptions } from '@stripe/stripe-js';
-import { Typography } from '@material-ui/core';
+import { Typography, useTheme } from '@material-ui/core';
 import React from 'react';
 import classNames from 'classnames';
 import styles from './StripeCardField.module.scss';
-import theme from '../common/theme';
 
 const cardOptions: StripeCardElementOptions = {
   style: {
@@ -33,6 +32,7 @@ interface Props {
 }
 
 const StripeCardField: React.FC<Props> = ({ errorMessage, className }) => {
+  const theme = useTheme();
   return (
     <>
       <div

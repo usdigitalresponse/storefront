@@ -20,6 +20,8 @@ exports.handler = async (event, context) => {
       stripe_main_public_api_key: valueOrNull(configRecordsByKey, 'stripe_main_public_api_key'),
       stripe_donation_public_api_key: valueOrNull(configRecordsByKey, 'stripe_donation_public_api_key'),
       default_state: valueOrNull(configRecordsByKey, 'default_state'),
+      tax_rate: valueOrNull(configRecordsByKey, 'tax_rate'),
+      theme_color: valueOrNull(configRecordsByKey, 'theme_color'),
     };
 
     // Inventory

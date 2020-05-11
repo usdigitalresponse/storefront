@@ -1,10 +1,10 @@
-import { Link, useMediaQuery } from '@material-ui/core';
+import { Link } from '@material-ui/core';
 import { useContent } from '../store/cms';
+import { useIsSmall } from '../common/hooks';
 import Content from './Content';
 import React from 'react';
 import classNames from 'classnames';
 import styles from './Contact.module.scss';
-import theme from '../common/theme';
 
 interface Props {
   className?: string;
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const Contact: React.FC<Props> = ({ className, textClassName }) => {
-  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmall = useIsSmall();
   const email = useContent('contact_email');
 
   return (

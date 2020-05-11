@@ -8,6 +8,7 @@ import {
   TextField,
   TextFieldProps,
   Typography,
+  useTheme,
 } from '@material-ui/core';
 import { DonationFormField, IDonationFormData, PaymentStatus } from '../common/types';
 import { IAppState } from '../store/app';
@@ -28,11 +29,11 @@ import StripeCardField from '../components/StripeCardField';
 import StripeElementsWrapper from '../components/StripeElementsWrapper';
 import classNames from 'classnames';
 import styles from './DonatePage.module.scss';
-import theme from '../common/theme';
 
 const DonatePageMain: React.FC = () => {
   const { register, handleSubmit, watch, setValue, errors } = useForm<IDonationFormData>();
   const isSmall = useIsSmall();
+  const theme = useTheme();
   const hasErrors = Object.keys(errors).length > 0;
   const stripe = useStripe();
   const elements = useElements();

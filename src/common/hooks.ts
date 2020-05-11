@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useMediaQuery } from '@material-ui/core';
-import theme from './theme';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 
 export function useIsSmall() {
+  const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   return isSmall;
 }

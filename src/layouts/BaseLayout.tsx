@@ -1,14 +1,13 @@
-import { Grid, Typography, useMediaQuery } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { appIsReadySelector } from '../store/cms';
-import { useScrollToTop } from '../common/hooks';
+import { useIsSmall, useScrollToTop } from '../common/hooks';
 import { useSelector } from 'react-redux';
 import Footer from '../components/Footer';
 import Loading from '../components/Loading';
 import React, { ReactNode } from 'react';
 import classNames from 'classnames';
 import styles from './BaseLayout.module.scss';
-import theme from '../common/theme';
 
 interface Props {
   title?: string;
@@ -19,7 +18,7 @@ interface Props {
 
 const BaseLayout: React.FC<Props> = ({ children, title, description, padding, maxWidth }) => {
   useScrollToTop();
-  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmall = useIsSmall();
   const appIsReady = useSelector<IAppState, boolean>(appIsReadySelector);
 
   return (

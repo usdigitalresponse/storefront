@@ -1,18 +1,20 @@
-import { Button, Grid, Typography, useMediaQuery } from '@material-ui/core';
+import { Button, Grid, Typography, useTheme } from '@material-ui/core';
 import { reverse } from '../common/router';
 import { useContentImage } from '../store/cms';
+import { useIsSmall } from '../common/hooks';
 import BaseLayout from '../layouts/BaseLayout';
 import Content from '../components/Content';
 import Link from '../components/Link';
 import React from 'react';
 import classNames from 'classnames';
 import styles from './HomePage.module.scss';
-import theme from '../common/theme';
 
 interface Props {}
 
 const HomePage: React.FC<Props> = () => {
-  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmall = useIsSmall();
+  const theme = useTheme();
+  const primaryColor: any = theme.palette.primary;
   const bannerImage = useContentImage('banner_image');
 
   return (
@@ -72,7 +74,12 @@ const HomePage: React.FC<Props> = () => {
             </Typography>
           </Grid>
         </Grid>
-        <Grid container justify="center" className={classNames(styles.section, styles.sectionImage)}>
+        <Grid
+          container
+          justify="center"
+          className={classNames(styles.section, styles.sectionImage)}
+          style={{ backgroundColor: `${primaryColor[50]}80` }}
+        >
           <Grid item className={styles.content}>
             <Typography variant="h2" className={styles.sectionTitle}>
               <Content id="purchase_title" />

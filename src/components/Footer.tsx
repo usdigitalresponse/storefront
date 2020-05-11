@@ -1,17 +1,18 @@
 import { INavItem } from '../common/types';
 import { reverse } from '../common/router';
 import { useContent } from '../store/cms';
-import { useMediaQuery } from '@material-ui/core';
+import { useIsSmall } from '../common/hooks';
+import { useTheme } from '@material-ui/core';
 import ContactUs from './Contact';
 import Link from './Link';
 import React from 'react';
 import classNames from 'classnames';
 import styles from './Footer.module.scss';
-import theme from '../common/theme';
 
 const Footer: React.FC = () => {
-  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
-
+  const isSmall = useIsSmall();
+  const theme = useTheme();
+  const primaryColor: any = theme.palette.primary;
   const navPurchase = useContent('nav_purchase');
   const navDonate = useContent('nav_donate');
   const navDrive = useContent('nav_drive');
@@ -23,7 +24,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <div className={styles.footer}>
+    <div className={styles.footer} style={{ backgroundColor: `${primaryColor[50]}80` }}>
       <div className={classNames(styles.links, { [styles.small]: isSmall })}>
         {footerNavItems.map((item, index) => (
           <Link key={`${item.name}${index}`} href={item.url} className={styles.link}>

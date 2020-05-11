@@ -2,7 +2,6 @@ import { AirtableService } from './services/AirtableService';
 import { Provider } from 'react-redux';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { StripeService } from './services/StripeService';
-import { ThemeProvider } from '@material-ui/core';
 import { configureStore } from './store/configureStore';
 import { routePaths } from './common/router';
 import AboutPage from './pages/AboutPage';
@@ -15,9 +14,9 @@ import DriversPage from './pages/DriversPage';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import LocationsDialog from './components/LocationsDialog';
+import MuiThemeWrapper from './components/MuiThemeWrapper';
 import ProductsPage from './pages/ProductsPage';
 import React from 'react';
-import theme from './common/theme';
 
 const store = configureStore();
 AirtableService.init(store);
@@ -38,7 +37,7 @@ const routeComponents: Record<string, React.FC> = {
 function App() {
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
+      <MuiThemeWrapper>
         <Router>
           <Header />
           <Switch>
@@ -49,7 +48,7 @@ function App() {
           <CartDialog />
           <LocationsDialog />
         </Router>
-      </ThemeProvider>
+      </MuiThemeWrapper>
     </Provider>
   );
 }

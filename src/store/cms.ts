@@ -17,6 +17,7 @@ export interface ICmsState {
     donation: Promise<Stripe | null> | null;
   };
   taxRate: number;
+  themeColor: string;
   defaultState?: string;
   pickupLocations: IPickupLocation[];
   schedules: ISchedule[];
@@ -28,6 +29,7 @@ export const SetContent = TypedAction.define('APP/CMS/SET_RECORDS')<any>();
 export const SetInventory = TypedAction.define('APP/CMS/SET_INVENTORY')<any>();
 export const SetLanguages = TypedAction.define('APP/CMS/SET_LANGUAGES')<any>();
 export const SetTaxRate = TypedAction.define('APP/CMS/SET_TAX_RATE')<any>();
+export const SetThemeColor = TypedAction.define('APP/CMS/SET_THEME_COLOR')<any>();
 export const SetDefaultState = TypedAction.define('APP/CMS/SET_DEFAULT_STATE')<any>();
 export const SetSchedules = TypedAction.define('APP/CMS/SET_SCHEDULES')<any>();
 export const SetPickupLocations = TypedAction.define('APP/CMS/SET_PICKUP_LOCATIONS')<any>();
@@ -39,6 +41,8 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
   .withHandler(SetLanguages.TYPE, (state, languages) => setWith(state, { languages }))
   .withHandler(SetInventory.TYPE, (state, inventory) => setWith(state, { inventory }))
   .withHandler(SetSchedules.TYPE, (state, schedules) => setWith(state, { schedules }))
+  .withHandler(SetTaxRate.TYPE, (state, taxRate) => setWith(state, { taxRate }))
+  .withHandler(SetThemeColor.TYPE, (state, themeColor) => setWith(state, { themeColor }))
   .withHandler(SetDefaultState.TYPE, (state, defaultState) => setWith(state, { defaultState }))
   .withHandler(SetPickupLocations.TYPE, (state, pickupLocations) => setWith(state, { pickupLocations }))
   .withHandler(SetStripePromise.TYPE, (state, keys) =>
@@ -59,11 +63,12 @@ export const initialCmsState: ICmsState = {
   },
   languages: ['en'],
   language: 'en',
-  taxRate: 0.085,
+  taxRate: 0,
   defaultState: undefined,
   pickupLocations: [],
   schedules: [],
   donationPresets: [25, 50, 100, 250],
+  themeColor: 'green',
 };
 
 // selectors

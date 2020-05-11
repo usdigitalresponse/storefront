@@ -8,7 +8,7 @@ export function formatCurrency(n: number): string {
 
 export function formatPercentage(n: number): string {
   if (n == null) return '';
-  return numeral(n).format('0,0.0%');
+  return numeral(n).format('0,0.00%');
 }
 
 export function formatDate(timestamp: string): string {
