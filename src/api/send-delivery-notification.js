@@ -2,6 +2,18 @@ const { sendOrderDeliveryNotification } = require('../api-services/send-confirma
 
 exports.handler = async (event, context) => {
   try {
+    // allow options
+    if (event.httpMethod === 'OPTIONS') {
+      return {
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+        },
+        body: JSON.stringify({ message: 'You can use CORS' }),
+      };
+    }
+
     if (!event.queryStringParameters) {
       throw new Error('event.queryStringParameters not set');
     }
@@ -22,6 +34,8 @@ exports.handler = async (event, context) => {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
       },
       body: JSON.stringify({ status: 'success' }),
     };
