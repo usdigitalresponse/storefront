@@ -81,7 +81,8 @@ const ConfirmationPage: React.FC<Props> = () => {
         <Grid item md={8} xs={12} className={styles.column}>
           <Card elevation={2} className={classNames(styles.details, styles.card)}>
             <Typography variant="h3" className={styles.title}>
-              Order Information
+              {isDonationSummary(confirmation) && 'Donation Information'}
+              {!isDonationSummary(confirmation) && 'Order Information'}
             </Typography>
             <Grid container spacing={2} className={styles.content}>
               <Grid item md={4} xs={12} className={styles.info}>

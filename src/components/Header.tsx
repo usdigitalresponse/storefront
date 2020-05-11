@@ -68,8 +68,8 @@ const Header: React.FC = () => {
             <Drawer anchor="left" open={drawerIsOpen} onClose={() => setDrawerIsOpen(false)}>
               <div className={styles.drawerContent}>
                 <List>
-                  {headerNavItems.map((item) => (
-                    <ListItem key={item.name} button component={Link} href={item.url}>
+                  {headerNavItems.map((item, i) => (
+                    <ListItem key={i} button component={Link} href={item.url}>
                       <ListItemText primary={item.name} />
                     </ListItem>
                   ))}
@@ -84,8 +84,8 @@ const Header: React.FC = () => {
         </Link>
         {!isSmall && !isCheckout && (
           <div>
-            {headerNavItems.slice(1).map((item) => (
-              <Link key={item.name} href={item.url} className={styles.headerLink}>
+            {headerNavItems.slice(1).map((item, i) => (
+              <Link key={i} href={item.url} className={styles.headerLink}>
                 {item.name}
               </Link>
             ))}

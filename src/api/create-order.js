@@ -1,4 +1,4 @@
-const { sendConfirmationEmail } = require('../api-services/send-confirmation-email');
+const { sendOrderConfirmationEmail } = require('../api-services/send-confirmation-email');
 
 exports.handler = async (event, context) => {
   try {
@@ -63,21 +63,21 @@ exports.handler = async (event, context) => {
     const order = await base('Orders').create(
       {
         'Order Status': orderIntent.status,
-        'Type': orderIntent.type,
-        'Name': orderIntent.fullName,
-        'Email': orderIntent.email,
+        Type: orderIntent.type,
+        Name: orderIntent.fullName,
+        Email: orderIntent.email,
         'Phone Number': orderIntent.phone,
-        'address_street1': orderIntent.street1,
-        'address_street2': orderIntent.street2,
-        'address_city': orderIntent.city,
-        'address_state': orderIntent.state,
-        'address_zip': orderIntent.zip,
+        address_street1: orderIntent.street1,
+        address_street2: orderIntent.street2,
+        address_city: orderIntent.city,
+        address_state: orderIntent.state,
+        address_zip: orderIntent.zip,
         'Pickup Location': orderIntent.type === 'Pickup' ? [orderIntent.pickupLocationId] : undefined,
         'Stripe Payment ID': orderIntent.stripePaymentId,
         'Delivery Preferences': deliveryPreferences,
-        'Subtotal': orderIntent.subtotal,
-        'Tax': orderIntent.tax,
-        'Total': orderIntent.total,
+        Subtotal: orderIntent.subtotal,
+        Tax: orderIntent.tax,
+        Total: orderIntent.total,
       },
       { typecast: true },
     );
@@ -94,7 +94,7 @@ exports.handler = async (event, context) => {
       }),
     );
 
-    sendConfirmationEmail(order.fields['Order ID']);
+    sendOrderConfirmationEmail(order.fields['Order ID']);
 
     const orderSummary = {
       id: order.fields['Order ID'],
@@ -104,28 +104,30 @@ exports.handler = async (event, context) => {
       phone: order.fields['Phone Number'],
       email: order.fields['Email'],
       type: order.fields['Type'],
-      deliveryAddress: order.fields['address_street1'] ? {
-        street1: order.fields['address_street1'],
-        street2: order.fields['address_street2'],
-        city: order.fields['address_city'],
-        state: order.fields['address_state'],
-        zip: order.fields['address_zip'],
-      } : undefined,
+      deliveryAddress: order.fields['address_street1']
+        ? {
+            street1: order.fields['address_street1'],
+            street2: order.fields['address_street2'],
+            city: order.fields['address_city'],
+            state: order.fields['address_state'],
+            zip: order.fields['address_zip'],
+          }
+        : undefined,
       deliveryPreferences: order.fields['Delivery Preferences'],
       pickupLocationId: order.fields['Pickup Location'] ? order.fields['Pickup Location'][0] : undefined,
       subtotal: order.fields['Subtotal'],
       tax: order.fields['Tax'],
       total: order.fields['Total'],
-      items: items.map((item) => ({ id: item.fields.Inventory[0], quantity: item.fields.Quantity})),
+      items: items.map((item) => ({ id: item.fields.Inventory[0], quantity: item.fields.Quantity })),
       stripePaymentId: order.fields['Stripe Payment ID'],
-    }
+    };
 
     return {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ ...orderSummary}),
+      body: JSON.stringify({ ...orderSummary }),
     };
   } catch (err) {
     return {

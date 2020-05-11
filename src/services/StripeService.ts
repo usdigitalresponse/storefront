@@ -27,7 +27,7 @@ export class StripeService {
     StripeService.store.dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
     try {
       const clientSecretResult = await fetch(
-        `/.netlify/functions/stripe-payment?amountCents=${amount * 100}&paymentType=${paymentType}`,
+        `/.netlify/functions/stripe-payment?amountCents=${Math.round(amount * 100)}&paymentType=${paymentType}`,
       ).then((res) => res.json());
 
       if (!clientSecretResult || !clientSecretResult.client_secret) {
@@ -95,13 +95,13 @@ export class StripeService {
     if (!stripe || !elements) return;
 
     const state = StripeService.store.getState();
-    const total = formData.otherAmount ? parseInt(formData.otherAmount) : state.checkout.donationAmount;
-    const stripePaymentId = await StripeService.processPayment('donation', total, stripe, elements);
+    const amount = formData.otherAmount ? parseInt(formData.otherAmount) : state.checkout.donationAmount;
+    const stripePaymentId = await StripeService.processPayment('donation', amount, stripe, elements);
 
     if (stripePaymentId) {
       const confirmation: IDonationSummary = await AirtableService.createDonation({
         ...formData,
-        total,
+        amount,
         stripePaymentId,
       });
       StripeService.store.dispatch(CompoundAction([SetConfirmation.create(confirmation), SetIsPaying.create(false)]));

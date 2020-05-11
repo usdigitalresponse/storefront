@@ -135,7 +135,7 @@ export interface IDonationFormData {
 }
 
 export interface IDonationIntent extends IDonationFormData {
-  total: number;
+  amount: number;
   stripePaymentId: string;
 }
 

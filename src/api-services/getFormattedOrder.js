@@ -1,10 +1,10 @@
 const { fetchTable } = require('../api-services/airtableHelper');
 
-export function getFormattedOrder(orderId) {
+export function getFormattedOrder(orderId, view) {
   return new Promise(async (resolve, reject) => {
     try {
       const orderResult = await fetchTable('Orders', {
-        view: 'Orders to Fulfill',
+        view: view,
         filterByFormula: `{Order ID} = ${orderId}`,
       });
 
