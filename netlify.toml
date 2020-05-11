@@ -1,3 +1,7 @@
 [build]
   command = "yarn build"
   functions = "build/server"
+[[headers]]
+  for = "/*"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
