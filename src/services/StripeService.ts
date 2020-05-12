@@ -2,7 +2,14 @@ import { AirtableService } from './AirtableService';
 import { CardElement } from '@stripe/react-stripe-js';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { ICheckoutFormData, IDonationFormData, IDonationSummary, IOrderSummary, PaymentType } from '../common/types';
+import {
+  ICheckoutFormData,
+  IDonationFormData,
+  IDonationSummary,
+  IOrderSummary,
+  PaymentStatus,
+  PaymentType,
+} from '../common/types';
 import { SetConfirmation, SetDiscountCode, SetError, SetIsPaying } from '../store/checkout';
 import { SetItems, discountSelector, subtotalSelector, taxSelector, totalSelector } from '../store/cart';
 import { Store } from 'redux';
@@ -89,6 +96,7 @@ export class StripeService {
         items,
         stripePaymentId,
       });
+
       StripeService.store.dispatch(
         CompoundAction([
           SetConfirmation.create(confirmation),
@@ -97,6 +105,8 @@ export class StripeService {
           SetDiscountCode.create(undefined),
         ]),
       );
+
+      return PaymentStatus.SUCCEEDED;
     }
   }
 
@@ -113,7 +123,10 @@ export class StripeService {
         amount,
         stripePaymentId,
       });
+
       StripeService.store.dispatch(CompoundAction([SetConfirmation.create(confirmation), SetIsPaying.create(false)]));
+
+      return PaymentStatus.SUCCEEDED;
     }
   }
 

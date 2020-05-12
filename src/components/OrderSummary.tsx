@@ -84,7 +84,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
             </Typography>
           </div>
         )}
-        {(orderSummary?.discount || discount) && (
+        {(!!orderSummary?.discount || !!discount) && (
           <div className={styles.line}>
             <Typography variant="body1" className={styles.label}>
               Discount {discountCode && `(${formatDiscountCode(discountCode)})`}

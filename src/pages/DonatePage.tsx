@@ -54,8 +54,12 @@ const DonatePageMain: React.FC = () => {
     }
   }, [paymentStatus, history]);
 
-  function onSubmit(data: IDonationFormData) {
-    StripeService.donate(data, stripe, elements);
+  async function onSubmit(data: IDonationFormData) {
+    const status = await StripeService.donate(data, stripe, elements);
+
+    if (status === PaymentStatus.SUCCEEDED) {
+      history.push(reverse('confirmation'));
+    }
   }
 
   function textFieldProps(label: string, name: DonationFormField, placeholder?: string): TextFieldProps {

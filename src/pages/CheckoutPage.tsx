@@ -54,19 +54,17 @@ function CheckoutPageMain() {
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
 
   useEffect(() => {
-    if (paymentStatus === PaymentStatus.SUCCEEDED) {
-      history.push(reverse('confirmation'));
-    }
-  }, [paymentStatus, history]);
-
-  useEffect(() => {
     if (selectedLocationId) {
       clearError('pickupLocationId');
     }
   }, [clearError, selectedLocationId]);
 
-  function onSubmit(data: ICheckoutFormData) {
-    StripeService.pay(data, stripe, elements);
+  async function onSubmit(data: ICheckoutFormData) {
+    const status = await StripeService.pay(data, stripe, elements);
+
+    if (status === PaymentStatus.SUCCEEDED) {
+      history.push(reverse('confirmation'));
+    }
   }
 
   function textFieldProps(label: string, name: CheckoutFormField, placeholder?: string): TextFieldProps {
