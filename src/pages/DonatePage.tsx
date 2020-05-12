@@ -48,12 +48,6 @@ const DonatePageMain: React.FC = () => {
   const title = useContent('donate_page_title');
   const description = useContent('donate_page_subtitle');
 
-  useEffect(() => {
-    if (paymentStatus === PaymentStatus.SUCCEEDED) {
-      history.push(reverse('confirmation'));
-    }
-  }, [paymentStatus, history]);
-
   async function onSubmit(data: IDonationFormData) {
     const status = await StripeService.donate(data, stripe, elements);
 
