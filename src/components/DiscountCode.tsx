@@ -1,7 +1,9 @@
 import { AirtableService } from '../services/AirtableService';
 import { CircularProgress, IconButton, InputAdornment, Link, TextField, useTheme } from '@material-ui/core';
+import { IAppState } from '../store/app';
+import { IDiscountCode } from '../common/types';
 import { SetDiscountCode } from '../store/checkout';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ArrowIcon from '@material-ui/icons/ArrowForward';
 import React, { useState } from 'react';
 import classNames from 'classnames';
@@ -18,6 +20,7 @@ const DiscountCode: React.FC<Props> = ({ className }) => {
   const [code, setCode] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const discountCode = useSelector<IAppState, IDiscountCode | undefined>((state) => state.checkout.discountCode);
 
   async function onSubmit() {
     setLoading(true);
@@ -25,6 +28,7 @@ const DiscountCode: React.FC<Props> = ({ className }) => {
 
     if (discountCode) {
       dispatch(SetDiscountCode.create(discountCode));
+      setCode('');
     } else {
       setError('Invalid code, please try again.');
     }
@@ -56,7 +60,7 @@ const DiscountCode: React.FC<Props> = ({ className }) => {
               return false;
             }
           }}
-          helperText={error}
+          helperText={error || (discountCode ? `Discount code ${discountCode.code} applied!` : undefined)}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
