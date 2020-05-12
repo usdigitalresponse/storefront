@@ -4,6 +4,7 @@ import { IDonationIntent, IOrderIntent } from '../common/types';
 import {
   SetContent,
   SetDefaultState,
+  SetDonationUnits,
   SetInventory,
   SetLanguages,
   SetPickupLocations,
@@ -45,6 +46,7 @@ export class AirtableService {
           SetThemeColor.create(records.config.theme_color),
           SetTaxRate.create(records.config.tax_rate),
           SetDefaultState.create(records.config.default_state),
+          SetDonationUnits.create(records.config.donation_units),
           SetStripePromise.create({
             main: records.config.stripe_main_public_api_key,
             donation: records.config.stripe_donation_public_api_key,

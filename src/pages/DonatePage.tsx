@@ -12,8 +12,9 @@ import {
 } from '@material-ui/core';
 import { DonationFormField, IDonationFormData, PaymentStatus } from '../common/types';
 import { IAppState } from '../store/app';
-import { SetDonationAmount, paymentStatusSelector } from '../store/checkout';
+import { SetDonationAmount, makeDonationUnitCountSelector, paymentStatusSelector } from '../store/checkout';
 import { StripeService } from '../services/StripeService';
+import { formatCurrency } from '../common/format';
 import { reverse } from '../common/router';
 import { useContent } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,10 +25,11 @@ import { useIsSmall } from '../common/hooks';
 import BaseLayout from '../layouts/BaseLayout';
 import DonationSummary from '../components/DonationSummary';
 import PhoneField from '../components/PhoneField';
-import React, { useEffect } from 'react';
+import React, { useMemo } from 'react';
 import StripeCardField from '../components/StripeCardField';
 import StripeElementsWrapper from '../components/StripeElementsWrapper';
 import classNames from 'classnames';
+import pluralize from 'pluralize';
 import styles from './DonatePage.module.scss';
 
 const DonatePageMain: React.FC = () => {
@@ -42,9 +44,12 @@ const DonatePageMain: React.FC = () => {
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
   const donationAmount = useSelector<IAppState, number>((state) => state.checkout.donationAmount);
   const donationPresets = useSelector<IAppState, number[]>((state) => state.cms.donationPresets);
+  const donationUnits = useSelector<IAppState, string | undefined>((state) => state.cms.donationUnits);
+  const otherAmount = watch('otherAmount');
+  const donationUnitCountSelector = useMemo(makeDonationUnitCountSelector, []);
+  const donationUnitCount = useSelector((state: IAppState) => donationUnitCountSelector(state, otherAmount));
   const history = useHistory();
   const dispatch = useDispatch();
-  const otherAmount = watch('otherAmount');
   const title = useContent('donate_page_title');
   const description = useContent('donate_page_subtitle');
 
@@ -120,6 +125,13 @@ const DonatePageMain: React.FC = () => {
                     inputRef={register}
                   />
                 </Grid>
+                {donationUnits && (
+                  <Typography variant="body1" className={styles.donationUnits}>
+                    {formatCurrency(otherAmount ? parseInt(otherAmount) : donationAmount)} = ~
+                    {pluralize(donationUnits, donationUnitCount, true)} for {donationUnitCount === 1 && 'a '}
+                    {pluralize('family', donationUnitCount)} in need
+                  </Typography>
+                )}
               </Grid>
               <Grid container className={styles.section}>
                 <Typography variant="h3" className={styles.title}>

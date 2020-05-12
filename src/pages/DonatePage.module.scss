@@ -61,6 +61,11 @@
     pointer-events: none;
   }
 
+  .donationUnits {
+    margin-top: spacing(2);
+    @include fontSize();
+  }
+
   .spinner {
     color: white;
   }
@@ -81,6 +86,10 @@
 
     .amounts {
       flex-direction: column;
+    }
+
+    .donationUnits {
+      @include fontSize('sm');
     }
 
     .otherAmount {

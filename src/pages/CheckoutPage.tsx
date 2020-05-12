@@ -10,7 +10,14 @@ import {
   TextFieldProps,
   Typography,
 } from '@material-ui/core';
-import { CheckoutFormField, ICheckoutFormData, IPickupLocation, OrderType, PaymentStatus } from '../common/types';
+import {
+  CheckoutFormField,
+  ICheckoutFormData,
+  IOrderItem,
+  IPickupLocation,
+  OrderType,
+  PaymentStatus,
+} from '../common/types';
 import { IAppState } from '../store/app';
 import { SetIsDonationRequest, paymentStatusSelector } from '../store/checkout';
 import { SetLocationsDialogIsOpen, selectedLocationSelector } from '../store/cart';
@@ -44,6 +51,7 @@ function CheckoutPageMain() {
   const hasErrors = Object.keys(errors).length > 0;
   const stripe = useStripe();
   const elements = useElements();
+  const items = useSelector<IAppState, IOrderItem[]>((state) => state.cart.items);
   const paymentStatus = useSelector<IAppState, PaymentStatus>(paymentStatusSelector);
   const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
@@ -223,7 +231,7 @@ function CheckoutPageMain() {
                 color="primary"
                 size="large"
                 type="submit"
-                disabled={hasErrors}
+                disabled={hasErrors || !items.length}
               >
                 {isPaying && <CircularProgress size={26} className={styles.spinner} />}
                 {!isPaying && 'Place Order'}

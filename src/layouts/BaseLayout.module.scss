@@ -10,7 +10,7 @@
   flex-direction: column;
   min-height: calc(100vh - #{$headerHeight} - #{$footerHeight});
   max-width: $maxWidth;
-  padding: spacing(4) spacing(6);
+  padding: spacing(4) spacing(6) spacing(8);
 
   .header {
     margin-bottom: spacing(6);

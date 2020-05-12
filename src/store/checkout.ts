@@ -1,6 +1,6 @@
 import * as Reselect from 'reselect';
 import { IAppState } from './app';
-import { IDiscountCode, IDonationSummary, IOrderSummary, PaymentStatus } from '../common/types';
+import { IDiscountCode, IDonationSummary, IOrderSummary, InventoryRecord, PaymentStatus } from '../common/types';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 
 // model
@@ -51,6 +51,21 @@ export const isPayingSelector = Reselect.createSelector(
     return isPaying;
   },
 );
+
+export const makeDonationUnitCountSelector = () =>
+  Reselect.createSelector(
+    (state: IAppState) => state.cms.inventory,
+    (state: IAppState) => state.checkout.donationAmount,
+    (_: any, otherAmount: string) => otherAmount,
+    (inventory: InventoryRecord[], donationAmount: number, otherAmount: string) => {
+      const avgPrice =
+        inventory.reduce((acc, item) => {
+          return acc + item.price;
+        }, 0) / inventory.length;
+
+      return Math.round((otherAmount ? parseInt(otherAmount) : donationAmount) / avgPrice);
+    },
+  );
 
 export const paymentStatusSelector = Reselect.createSelector(
   (state: IAppState) => state.checkout.isPaying,

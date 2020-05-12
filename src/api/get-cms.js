@@ -22,6 +22,7 @@ exports.handler = async (event, context) => {
       default_state: valueOrNull(configRecordsByKey, 'default_state'),
       tax_rate: valueOrNull(configRecordsByKey, 'tax_rate'),
       theme_color: valueOrNull(configRecordsByKey, 'theme_color'),
+      donation_units: valueOrNull(configRecordsByKey, 'donation_units'),
     };
 
     // Inventory
