@@ -3,8 +3,8 @@ import { CardElement } from '@stripe/react-stripe-js';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
 import { ICheckoutFormData, IDonationFormData, IDonationSummary, IOrderSummary, PaymentType } from '../common/types';
-import { SetConfirmation, SetError, SetIsPaying } from '../store/checkout';
-import { SetItems, subtotalSelector, totalSelector } from '../store/cart';
+import { SetConfirmation, SetDiscountCode, SetError, SetIsPaying } from '../store/checkout';
+import { SetItems, discountSelector, subtotalSelector, taxSelector, totalSelector } from '../store/cart';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
 import { makeContentValueSelector } from '../store/cms';
@@ -61,8 +61,10 @@ export class StripeService {
 
     const state = StripeService.store.getState();
     const subtotal = subtotalSelector(state);
-    const tax = subtotal * state.cms.taxRate;
+    const discount = discountSelector(state);
+    const tax = taxSelector(state);
     const total = totalSelector(state);
+    const discountCode = state.checkout.discountCode?.code;
     const isDonationRequest = state.checkout.isDonationRequest;
 
     let stripePaymentId: string | undefined;
@@ -80,13 +82,20 @@ export class StripeService {
         status: isDonationRequest ? 'Donation Requested' : 'Paid',
         type,
         subtotal,
+        discount,
         tax,
         total,
+        discountCode,
         items,
         stripePaymentId,
       });
       StripeService.store.dispatch(
-        CompoundAction([SetConfirmation.create(confirmation), SetIsPaying.create(false), SetItems.create([])]),
+        CompoundAction([
+          SetConfirmation.create(confirmation),
+          SetIsPaying.create(false),
+          SetItems.create([]),
+          SetDiscountCode.create(undefined),
+        ]),
       );
     }
   }

@@ -23,8 +23,4 @@
   .label {
     @include fontSize();
   }
-
-  .link {
-    cursor: pointer;
-  }
 }

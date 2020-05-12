@@ -1,6 +1,13 @@
 import * as Reselect from 'reselect';
+import {
+  DiscountCodeType,
+  IDiscountCode,
+  IOrderItem,
+  IPickupLocation,
+  InventoryRecord,
+  OrderType,
+} from '../common/types';
 import { IAppState } from './app';
-import { IOrderItem, IPickupLocation, InventoryRecord, OrderType } from '../common/types';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 import { pickupLocationsSelector } from './cms';
 import update from 'immutability-helper';
@@ -88,11 +95,33 @@ export const subtotalSelector = Reselect.createSelector(
   },
 );
 
+export const discountSelector = Reselect.createSelector(
+  subtotalSelector,
+  (state: IAppState) => state.checkout.discountCode,
+  (subtotal: number, discountCode?: IDiscountCode) => {
+    return !discountCode
+      ? 0
+      : discountCode.type === DiscountCodeType.DOLLARS
+      ? discountCode.amount
+      : subtotal * (discountCode.amount / 100);
+  },
+);
+
+export const taxSelector = Reselect.createSelector(
+  subtotalSelector,
+  discountSelector,
+  (state: IAppState) => state.cms.taxRate,
+  (subtotal: number, discount: number, taxRate: number) => {
+    return Math.max(subtotal - discount, 0) * taxRate;
+  },
+);
+
 export const totalSelector = Reselect.createSelector(
   subtotalSelector,
-  (state: IAppState) => state.cart.taxRate,
-  (subtotal: number, taxRate: number) => {
-    return subtotal + subtotal * taxRate;
+  discountSelector,
+  taxSelector,
+  (subtotal: number, discount: number, tax: number) => {
+    return Math.max(subtotal - discount, 0) + tax;
   },
 );
 

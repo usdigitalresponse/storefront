@@ -217,7 +217,7 @@ function CheckoutPageMain() {
           </Grid>
           <Grid item md={4} xs={12} container className={styles.right}>
             <div className={!isSmall ? styles.sidebar : undefined}>
-              <OrderSummary className={styles.summary} showLineItems editable />
+              <OrderSummary className={styles.summary} showLineItems editable={!isDonationRequest} />
               <Button
                 className={classNames({ [styles.readOnly]: isPaying })}
                 fullWidth

@@ -90,7 +90,8 @@ const ConfirmationPage: React.FC<Props> = () => {
                   Details
                 </Typography>
                 <Typography variant="body1" className={styles.value}>
-                  Order #<span className={styles.em}>{confirmation.id}</span>
+                  {isDonationSummary(confirmation) ? 'Donation' : 'Order'} #
+                  <span className={styles.em}>{confirmation.id}</span>
                 </Typography>
                 <Typography variant="body1" className={styles.value}></Typography>
                 <Typography variant="body1" className={styles.value}>

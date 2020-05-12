@@ -19,6 +19,27 @@
   position: absolute;
   left: 0;
   top: 0;
+  background-color: transparent !important;
+
+  &.red:before { background-color: #f44336; }
+  &.pink:before { background-color: #e91e63; }
+  &.purple:before { background-color: #9c27b0; }
+  &.deepPurple:before { background-color: #673ab7; }
+  &.indigo:before { background-color: #3f51b5; }
+  &.blue:before { background-color: #2196f3; }
+  &.lightBlue:before { background-color: #03a9f4; }
+  &.cyan:before { background-color: #00bcd4; }
+  &.teal:before { background-color: #009688; }
+  &.green:before { background-color: #4caf50; }
+  &.lightGreen:before { background-color: #8bc34a; }
+  &.lime:before { background-color: #cddc39; }
+  &.yellow:before { background-color: #ffeb3b; }
+  &.amber:before { background-color: #ffc107; }
+  &.orange:before { background-color: #ff9800; }
+  &.deepOrange:before { background-color: #ff5722; }
+  &.brown:before { background-color: #795548; }
+  &.grey:before { background-color: #9e9e9e; }
+  &.blueGrey:before { background-color: #607d8b; }
 }
 .sk-circle .sk-child:before {
   content: '';
@@ -26,7 +47,6 @@
   margin: 0 auto;
   width: 15%;
   height: 15%;
-  background-color: $colorPrimary;
   border-radius: 100%;
   -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
           animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;

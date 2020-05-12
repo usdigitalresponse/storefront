@@ -76,8 +76,10 @@ exports.handler = async (event, context) => {
         'Stripe Payment ID': orderIntent.stripePaymentId,
         'Delivery Preferences': deliveryPreferences,
         Subtotal: orderIntent.subtotal,
+        Discount: orderIntent.discount !== 0 ? orderIntent.discount : undefined,
         Tax: orderIntent.tax,
         Total: orderIntent.total,
+        'Discount Code': orderIntent.discountCode,
       },
       { typecast: true },
     );
@@ -99,7 +101,7 @@ exports.handler = async (event, context) => {
     const orderSummary = {
       id: order.fields['Order ID'],
       status: order.fields['Order Status'],
-      createdAt: order.fields['Order Created'],
+      createdAt: order.fields['Created'],
       fullName: order.fields['Name'],
       phone: order.fields['Phone Number'],
       email: order.fields['Email'],
@@ -116,6 +118,7 @@ exports.handler = async (event, context) => {
       deliveryPreferences: order.fields['Delivery Preferences'],
       pickupLocationId: order.fields['Pickup Location'] ? order.fields['Pickup Location'][0] : undefined,
       subtotal: order.fields['Subtotal'],
+      discount: order.fields['Discount'],
       tax: order.fields['Tax'],
       total: order.fields['Total'],
       items: items.map((item) => ({ id: item.fields.Inventory[0], quantity: item.fields.Quantity })),

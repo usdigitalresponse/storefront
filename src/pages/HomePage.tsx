@@ -100,7 +100,7 @@ const HomePage: React.FC<Props> = () => {
           </Grid>
         </Grid>
         <Grid container justify="center" className={styles.section}>
-          <Grid item container spacing={2} justify="center" className={styles.content}>
+          <Grid item container spacing={4} justify="center" className={styles.content}>
             <Grid item md={6} xs={12} className={styles.sectionHalf}>
               <Typography variant="h2" className={styles.sectionTitle}>
                 <Content id="donate_title" />

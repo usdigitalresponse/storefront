@@ -12,6 +12,7 @@ interface Props {
 
 const DonationSummary: React.FC<Props> = ({ amount, className }) => {
   const isSmall = useIsSmall();
+
   return (
     <Card elevation={2} className={classNames(styles.container, className, { [styles.small]: isSmall })}>
       <Typography variant="h4" className={styles.title}>

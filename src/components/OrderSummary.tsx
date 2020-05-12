@@ -1,12 +1,13 @@
 import { Card, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { IOrderItem, IOrderSummary, InventoryRecord, OrderType } from '../common/types';
-import { formatCurrency, formatPercentage } from '../common/format';
+import { IDiscountCode, IOrderItem, IOrderSummary, InventoryRecord, OrderType } from '../common/types';
+import { discountSelector, subtotalSelector, taxSelector, totalSelector } from '../store/cart';
+import { formatCurrency, formatDiscountCode, formatPercentage } from '../common/format';
 import { getProduct } from '../common/utils';
 import { reverse } from '../common/router';
-import { subtotalSelector } from '../store/cart';
 import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
+import DiscountCode from './DiscountCode';
 import Link from './Link';
 import React from 'react';
 import classNames from 'classnames';
@@ -23,14 +24,16 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
   const isSmall = useIsSmall();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const subtotal = useSelector<IAppState, number>(subtotalSelector);
+  const discount = useSelector<IAppState, number>(discountSelector);
+  const discountCode = useSelector<IAppState, IDiscountCode | undefined>((state) => state.checkout.discountCode);
   const taxRate = useSelector<IAppState, number>((state) => state.cms.taxRate);
+  const tax = useSelector<IAppState, number>(taxSelector);
+  const total = useSelector<IAppState, number>(totalSelector);
   const inventory = useSelector<IAppState, InventoryRecord[]>((state) => state.cms.inventory);
   const items = useSelector<IAppState, IOrderItem[]>((state) => state.cart.items);
   const isDelivery =
     useSelector<IAppState, OrderType>((state) => state.cart.orderType) === OrderType.DELIVERY ||
     !!orderSummary?.deliveryAddress;
-  const tax = orderSummary ? orderSummary.subtotal * taxRate : subtotal * taxRate;
-  const total = orderSummary?.total || subtotal + tax;
 
   return (
     <Card elevation={2} className={classNames(styles.container, className, { [styles.small]: isSmall })}>
@@ -68,7 +71,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
             Order Subtotal
           </Typography>
           <Typography variant="body1" className={styles.value}>
-            {formatCurrency(subtotal)}
+            {formatCurrency(orderSummary?.subtotal || subtotal)}
           </Typography>
         </div>
         {isDonationRequest && (
@@ -77,7 +80,17 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
               Donation Adjustment
             </Typography>
             <Typography variant="body1" className={styles.value}>
-              -{formatCurrency(subtotal)}
+              -{formatCurrency(orderSummary?.subtotal || subtotal)}
+            </Typography>
+          </div>
+        )}
+        {(orderSummary?.discount || discount) && (
+          <div className={styles.line}>
+            <Typography variant="body1" className={styles.label}>
+              Discount {discountCode && `(${formatDiscountCode(discountCode)})`}
+            </Typography>
+            <Typography variant="body1" className={styles.value}>
+              -{formatCurrency(orderSummary?.discount || discount)}
             </Typography>
           </div>
         )}
@@ -96,7 +109,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
             Tax ({formatPercentage(taxRate)})
           </Typography>
           <Typography variant="body1" className={styles.value}>
-            {formatCurrency(tax)}
+            {formatCurrency(orderSummary?.tax || tax)}
           </Typography>
         </div>
       </div>
@@ -105,9 +118,10 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
           Total
         </Typography>
         <Typography variant="body1" className={styles.value}>
-          {formatCurrency(isDonationRequest ? 0 : total)}
+          {formatCurrency(isDonationRequest ? 0 : orderSummary?.total || total)}
         </Typography>
       </div>
+      {editable && <DiscountCode className={styles.discount} />}
     </Card>
   );
 };

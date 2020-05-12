@@ -99,9 +99,11 @@ export interface ICheckoutFormData extends ICheckoutFormDataDelivery, ICheckoutF
 export interface IOrderIntent extends ICheckoutFormData {
   status: OrderStatus;
   subtotal: number;
+  discount?: number;
   tax: number;
   total: number;
   items: IOrderItem[];
+  discountCode?: string;
   stripePaymentId?: string;
 }
 
@@ -110,6 +112,7 @@ export interface IOrderSummary extends ICheckoutFormBase {
   createdAt: string;
   status: OrderStatus;
   subtotal: number;
+  discount?: number;
   tax: number;
   total: number;
   items: IOrderItem[];

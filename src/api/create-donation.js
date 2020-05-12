@@ -40,12 +40,12 @@ exports.handler = async (event, context) => {
 
     const donationSummary = {
       id: order.fields['Donation ID'],
-      createdAt: order.fields['Order Created'],
+      createdAt: order.fields['Created'],
       fullName: order.fields['Name'],
       phone: order.fields['Phone Number'],
       email: order.fields['Email'],
       stripePaymentId: order.fields['Stripe Payment ID'],
-      amount: order.fields['Amount'],
+      total: order.fields['Amount'],
     };
 
     sendDonationConfirmationEmail(donationSummary);

@@ -80,6 +80,7 @@ function themeWithColor(color: string): any {
       },
       MuiLink: {
         root: {
+          cursor: 'pointer',
           transition: 'color 0.3s, opacity 0.3s',
           '&:hover': {
             color: 'rgba(0,0,0,0.87)',

@@ -1,6 +1,6 @@
 import * as Reselect from 'reselect';
 import { IAppState } from './app';
-import { IDonationSummary, IOrderSummary, PaymentStatus } from '../common/types';
+import { IDiscountCode, IDonationSummary, IOrderSummary, PaymentStatus } from '../common/types';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 
 // model
@@ -10,12 +10,16 @@ export interface ICheckoutState {
   confirmation?: IOrderSummary | IDonationSummary;
   isDonationRequest: boolean;
   donationAmount: number;
+  discountCode?: IDiscountCode;
 }
 
 // actions
 export const SetIsPaying = TypedAction.define('APP/CHECKOUT/SET_IS_PAYING')<boolean>();
 export const SetError = TypedAction.define('APP/CHECKOUT/SET_ERROR')<string | undefined>();
-export const SetConfirmation = TypedAction.define('APP/CHECKOUT/SET_CONFIRMATION')<IOrderSummary | IDonationSummary>();
+export const SetConfirmation = TypedAction.define('APP/CHECKOUT/SET_CONFIRMATION')<
+  IOrderSummary | IDonationSummary | undefined
+>();
+export const SetDiscountCode = TypedAction.define('APP/CHECKOUT/SET_DISCOUNT_CODE')<IDiscountCode | undefined>();
 export const SetIsDonationRequest = TypedAction.define('APP/CHECKOUT/SET_IS_DONATION_REQUEST')<boolean>();
 export const SetDonationAmount = TypedAction.define('APP/CHECKOUT/SET_DONATION_AMOUNT')<number>();
 
@@ -24,6 +28,7 @@ export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
   .withHandler(SetIsPaying.TYPE, (state, isPaying) => setWith(state, { isPaying }))
   .withHandler(SetError.TYPE, (state, error) => setWith(state, { error }))
   .withHandler(SetConfirmation.TYPE, (state, confirmation) => setWith(state, { confirmation }))
+  .withHandler(SetDiscountCode.TYPE, (state, discountCode) => setWith(state, { discountCode }))
   .withHandler(SetIsDonationRequest.TYPE, (state, isDonationRequest) => setWith(state, { isDonationRequest }))
   .withHandler(SetDonationAmount.TYPE, (state, donationAmount) => setWith(state, { donationAmount }))
   .withDefaultHandler((state) => (state ? state : initialCheckoutState))
@@ -36,6 +41,7 @@ export const initialCheckoutState: ICheckoutState = {
   isDonationRequest: false,
   confirmation: undefined,
   donationAmount: 50,
+  discountCode: undefined,
 };
 
 // selectors

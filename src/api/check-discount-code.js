@@ -35,7 +35,12 @@ exports.handler = async (event, context) => {
       };
     }
 
-    return successResponse(matchedCode);
+    return successResponse({
+      id: matchedCode.id,
+      code: matchedCode['Code'],
+      amount: matchedCode['Amount'],
+      type: matchedCode['Type']
+    });
   } catch (error) {
     console.error('error', error);
     return errorResponse(error.message);

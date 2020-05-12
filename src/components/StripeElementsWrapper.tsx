@@ -12,7 +12,6 @@ interface Props {
 const StripeElementsWrapper: React.FC<Props> = ({ children, type }) => {
   const stripePromise = useSelector<IAppState, Promise<Stripe | null> | null>(stripePromiseSelector(type));
 
-  console.log('type', type);
   // do not render if stripe object is not a promise yet.
   if (Promise.resolve(stripePromise) !== stripePromise) {
     return null;

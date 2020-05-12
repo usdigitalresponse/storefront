@@ -61,7 +61,7 @@ export class AirtableService {
 
   public static async createOrder(order: IOrderIntent) {
     return fetch('/.netlify/functions/create-order', {
-      method: 'POST', // or 'PUT'
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
     }).then((res) => res.json());
@@ -69,10 +69,17 @@ export class AirtableService {
 
   public static async createDonation(order: IDonationIntent) {
     return fetch('/.netlify/functions/create-donation', {
-      method: 'POST', // or 'PUT'
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
     }).then((res) => res.json());
+  }
+
+  public static async checkDiscountCode(code: string) {
+    return fetch(`/.netlify/functions/check-discount-code?discountCode=${code}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    }).then((res) => (res.status === 200 ? res.json() : null));
   }
 
   private constructor(store: Store) {
