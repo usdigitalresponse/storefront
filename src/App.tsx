@@ -4,7 +4,6 @@ import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { StripeService } from './services/StripeService';
 import { configureStore } from './store/configureStore';
 import { routePaths } from './common/router';
-import AboutPage from './pages/AboutPage';
 import CartDialog from './components/CartDialog';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
@@ -15,6 +14,7 @@ import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import LocationsDialog from './components/LocationsDialog';
 import MuiThemeWrapper from './components/MuiThemeWrapper';
+import NotFoundPage from './pages/NotFoundPage';
 import ProductsPage from './pages/ProductsPage';
 import React from 'react';
 
@@ -25,7 +25,6 @@ StripeService.init(store);
 // must also update routePaths /src/common/router.ts
 const routeComponents: Record<string, React.FC> = {
   home: HomePage,
-  about: AboutPage,
   products: ProductsPage,
   donate: DonatePage,
   drivers: DriversPage,
@@ -44,6 +43,7 @@ function App() {
             {Object.keys(routeComponents).map((routeId) => (
               <Route key={routeId} path={routePaths[routeId]} component={routeComponents[routeId]} exact={true} />
             ))}
+            <Route component={NotFoundPage} />
           </Switch>
           <CartDialog />
           <LocationsDialog />
