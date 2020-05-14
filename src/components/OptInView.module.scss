@@ -1,0 +1,27 @@
+@import '../common/variables';
+
+.container {
+  .label {
+    display: flex;
+    align-items: flex-start;
+
+    > span {
+      @include fontSize();
+      line-height: normal;
+
+      &:first-child {
+        margin-top: -9px;
+      }
+
+      &:last-child {
+        color: $colorTextSecondary;
+      }
+    }
+  }
+
+  &.small {
+    .label {
+
+    }
+  }
+}

@@ -32,6 +32,7 @@ import AddressView from '../components/AddressView';
 import BaseLayout from '../layouts/BaseLayout';
 import Content from '../components/Content';
 import DeliveryPreferences from '../components/DeliveryPreferences';
+import OptInView from '../components/OptInView';
 import OrderSummary from '../components/OrderSummary';
 import OrderTypeView from '../components/OrderTypeView';
 import PhoneField from '../components/PhoneField';
@@ -118,6 +119,7 @@ function CheckoutPageMain() {
                     type="email"
                     inputRef={register({ required: 'Email is required' })}
                   />
+                  {!isDonationRequest && <OptInView />}
                 </Grid>
               </Grid>
               {orderType === OrderType.PICKUP && (
@@ -224,6 +226,7 @@ function CheckoutPageMain() {
           <Grid item md={4} xs={12} container className={styles.right}>
             <div className={!isSmall ? styles.sidebar : undefined}>
               <OrderSummary className={styles.summary} showLineItems editable={!isDonationRequest} />
+              <OptInView className={styles.optIn} />
               <Button
                 className={classNames({ [styles.readOnly]: isPaying })}
                 fullWidth
