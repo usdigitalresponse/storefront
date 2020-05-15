@@ -1,5 +1,4 @@
 import { Checkbox, FormControlLabel, Grid, Typography } from '@material-ui/core';
-import { ICheckoutFormDataDelivery } from '../common/types';
 import { useIsSmall } from '../common/hooks';
 import Content from './Content';
 import React, { useEffect, useState } from 'react';
@@ -9,10 +8,9 @@ import styles from './DeliveryPreferences.module.scss';
 interface Props {
   inputRef: any;
   watch: any;
-  setValue: (update: Array<Partial<ICheckoutFormDataDelivery>>) => void;
 }
 
-const DeliveryPreferences: React.FC<Props> = ({ inputRef, watch, setValue }) => {
+const DeliveryPreferences: React.FC<Props> = ({ inputRef, watch }) => {
   const isSmall = useIsSmall();
   const [anytime, setAnytime] = useState<boolean>(true);
   const values = watch([
