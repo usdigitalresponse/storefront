@@ -1,15 +1,17 @@
 import { Autocomplete } from '@material-ui/lab';
+import { IAppState } from '../store/app';
 import { TextField, TextFieldProps } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 import React from 'react';
 
 const ZipCodeField: React.FC<TextFieldProps> = (props) => {
-  const zipCodes = ['12345', '35566', '23425', '23423'];
+  const validZipcodes = useSelector<IAppState, string[]>((state) => state.cms.validZipcodes);
 
-  return zipCodes == null ? (
+  return validZipcodes.length === 0 ? (
     <TextField {...props} />
   ) : (
     <Autocomplete
-      options={zipCodes}
+      options={validZipcodes}
       className={props.className}
       renderInput={(params) => <TextField {...props} {...params} />}
     />

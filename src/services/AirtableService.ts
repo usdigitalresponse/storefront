@@ -12,6 +12,7 @@ import {
   SetStripePromise,
   SetTaxRate,
   SetThemeColor,
+  SetValidZipcodes,
 } from '../store/cms';
 import { SetSelectedLocation } from '../store/cart';
 import { Store } from 'redux';
@@ -40,6 +41,7 @@ export class AirtableService {
           SetContent.create(records.content),
           SetInventory.create(records.inventory),
           SetSchedules.create(records.schedules),
+          SetValidZipcodes.create(records.validZipcodes),
           SetPickupLocations.create(records.pickupLocations),
           // config
           SetLanguages.create(records.config.languages),

@@ -71,12 +71,20 @@ exports.handler = async (event, context) => {
       };
     });
 
+    // Valid Zipcodes
+    const validZipcodesRecords = await fetchTable('Valid Zipcodes', { view: DEFAULT_VIEW });
+
+    const validZipcodes = validZipcodesRecords.map((row) => {
+      return row.fields['Zip Code'];
+    });
+
     return successResponse({
       config,
       content,
       inventory,
       pickupLocations,
       schedules,
+      validZipcodes,
     });
   } catch (error) {
     return errorResponse(error.message);
