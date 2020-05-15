@@ -16,7 +16,7 @@ const OptInView: React.FC<Props> = ({ className }) => {
       <FormControlLabel
         className={styles.label}
         control={<Checkbox name="subsidizedPricing" color="primary" />}
-        label="I'd like to learn about subsidized pricing"
+        label="I'd like to learn about subsidized pricing programs"
       />
       <FormControlLabel
         className={styles.label}

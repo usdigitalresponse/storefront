@@ -119,7 +119,7 @@ function CheckoutPageMain() {
                     type="email"
                     inputRef={register({ required: 'Email is required' })}
                   />
-                  {!isDonationRequest && <OptInView />}
+                  {!isDonationRequest && <OptInView className={styles.optIn} />}
                 </Grid>
               </Grid>
               {orderType === OrderType.PICKUP && (
@@ -226,7 +226,6 @@ function CheckoutPageMain() {
           <Grid item md={4} xs={12} container className={styles.right}>
             <div className={!isSmall ? styles.sidebar : undefined}>
               <OrderSummary className={styles.summary} showLineItems editable={!isDonationRequest} />
-              <OptInView className={styles.optIn} />
               <Button
                 className={classNames({ [styles.readOnly]: isPaying })}
                 fullWidth

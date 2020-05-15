@@ -5,16 +5,16 @@
     display: flex;
     align-items: flex-start;
 
+    &:first-child {
+      margin-bottom: spacing(1);
+    }
+
     > span {
       @include fontSize();
       line-height: normal;
 
       &:first-child {
-        margin-top: -9px;
-      }
-
-      &:last-child {
-        color: $colorTextSecondary;
+        margin-top: -10px;
       }
     }
   }
