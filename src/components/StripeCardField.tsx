@@ -1,6 +1,8 @@
 import { CardElement } from '@stripe/react-stripe-js';
+import { SetError } from '../store/checkout';
 import { StripeCardElementOptions } from '@stripe/stripe-js';
 import { Typography, useTheme } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
 import React from 'react';
 import classNames from 'classnames';
 import styles from './StripeCardField.module.scss';
@@ -33,13 +35,19 @@ interface Props {
 
 const StripeCardField: React.FC<Props> = ({ errorMessage, className }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+
+  function onChange() {
+    dispatch(SetError.create(undefined));
+  }
+
   return (
     <>
       <div
         className={classNames(styles.container, className)}
         style={{ borderColor: errorMessage ? theme.palette.error.main : undefined }}
       >
-        <CardElement options={cardOptions} />
+        <CardElement onChange={onChange} options={cardOptions} />
       </div>
       {errorMessage && (
         <Typography variant="body2" color="error" className={styles.errorMessage}>
