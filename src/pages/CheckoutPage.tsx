@@ -233,11 +233,17 @@ function CheckoutPageMain() {
                 color="primary"
                 size="large"
                 type="submit"
-                disabled={hasErrors || !items.length}
+                disabled={hasErrors || !!paymentError || !items.length}
               >
                 {isPaying && <CircularProgress size={26} className={styles.spinner} />}
                 {!isPaying && 'Place Order'}
               </Button>
+              {(hasErrors || !!paymentError) && (
+                <Typography className={styles.errorMessage} color="error">
+                  Please fix the errors in your form
+                </Typography>
+              )}
+              {items.length === 0 && <Typography className={styles.errorMessage}>Your cart is empty</Typography>}
             </div>
           </Grid>
         </Grid>
