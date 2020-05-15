@@ -45,7 +45,7 @@ import classNames from 'classnames';
 import styles from './CheckoutPage.module.scss';
 
 function CheckoutPageMain() {
-  const { register, setValue, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
+  const { register, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const defaultState = useSelector<IAppState, string | undefined>((state) => state.cms.defaultState);
   const isSmall = useIsSmall();
@@ -119,7 +119,7 @@ function CheckoutPageMain() {
                     type="email"
                     inputRef={register({ required: 'Email is required' })}
                   />
-                  {!isDonationRequest && <OptInView className={styles.optIn} />}
+                  {!isDonationRequest && <OptInView className={styles.optIn} inputRef={register} />}
                 </Grid>
               </Grid>
               {orderType === OrderType.PICKUP && (
@@ -164,7 +164,7 @@ function CheckoutPageMain() {
                       Delivery Preferences
                     </Typography>
                     <Grid item md={8} xs={12}>
-                      <DeliveryPreferences inputRef={register} setValue={setValue} watch={watch} />
+                      <DeliveryPreferences inputRef={register} watch={watch} />
                     </Grid>
                   </Grid>
                   <Grid container className={styles.section}>

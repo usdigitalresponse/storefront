@@ -80,6 +80,8 @@ exports.handler = async (event, context) => {
         Tax: orderIntent.tax,
         Total: orderIntent.total,
         'Discount Code': orderIntent.discountCode,
+        'Opt In Comms': orderIntent.optInComms,
+        'Opt In Subsidy': orderIntent.optInSubsidy,
       },
       { typecast: true },
     );

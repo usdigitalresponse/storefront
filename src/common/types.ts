@@ -59,6 +59,8 @@ export interface ICheckoutFormBase {
   fullName: string;
   phone: string;
   email: string;
+  optInComms: boolean;
+  optInSubsidy: boolean;
   type: OrderType;
 }
 
@@ -83,6 +85,9 @@ export type CheckoutFormField =
   | 'fullName'
   | 'phone'
   | 'email'
+  | 'email'
+  | 'optInComms'
+  | 'optInSubsidy'
   | 'street1'
   | 'street2'
   | 'city'
