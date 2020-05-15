@@ -21,7 +21,10 @@
 
   &.small {
     .label {
-
+      &:first-child {
+        margin-top: spacing(1);
+        margin-bottom: spacing(2);
+      }
     }
   }
 }
