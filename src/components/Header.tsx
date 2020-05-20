@@ -68,7 +68,7 @@ const Header: React.FC = () => {
           </>
         )}
         <Link href={reverse('home')} variant="h6" className={styles.title}>
-          <Content id="page_title" />
+          <Content id="header_title" />
         </Link>
         {!isSmall && !isCheckout && (
           <div>

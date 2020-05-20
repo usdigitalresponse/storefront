@@ -13,6 +13,7 @@ import {
   SetTaxRate,
   SetThemeColor,
   SetValidZipcodes,
+  makeContentValueSelector,
 } from '../store/cms';
 import { SetSelectedLocation } from '../store/cart';
 import { Store } from 'redux';
@@ -60,6 +61,7 @@ export class AirtableService {
         }
 
         AirtableService.store.dispatch(CompoundAction(actions));
+        document.title = makeContentValueSelector()(AirtableService.store.getState(), 'page_title');
       });
   }
 

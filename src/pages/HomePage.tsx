@@ -24,7 +24,7 @@ const HomePage: React.FC<Props> = () => {
           <Grid item container justify="flex-start" className={styles.content}>
             <Grid item md={6} xs={12}>
               <Typography variant="h1" className={styles.heroTitle}>
-                <Content id="page_title" />
+                <Content id="banner_title" />
               </Typography>
               <Typography variant="body1" className={styles.heroDescription}>
                 <Content id="banner_copy" />
