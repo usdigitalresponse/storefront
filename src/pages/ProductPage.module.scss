@@ -1,0 +1,14 @@
+@import '../common/variables';
+
+.container {
+  .backLink {
+    @include fontSize('md');
+    display: flex;
+    align-items: center;
+    margin-bottom: spacing(4);
+
+    .backIcon {
+      margin-right: spacing(1);
+    }
+  }
+}

@@ -16,10 +16,11 @@ import styles from './ProductDetail.module.scss';
 
 interface Props {
   product: InventoryRecord;
+  card?: boolean;
   className?: string;
 }
 
-const ProductDetail: React.FC<Props> = ({ product, className }) => {
+const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
   const isSmall = useIsSmall();
   const [short, setShort] = useState<boolean>(true);
   const [quantity, setQuantity] = useState<number>(1);
@@ -44,7 +45,7 @@ const ProductDetail: React.FC<Props> = ({ product, className }) => {
 
   return (
     <Card
-      elevation={isSmall ? 2 : 0}
+      elevation={isSmall && card ? 2 : 0}
       raised={isSmall}
       className={classNames(styles.container, className, { [styles.small]: isSmall, [styles.large]: !isSmall })}
     >

@@ -1,0 +1,21 @@
+@import '../common/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .image {
+    width: 275px;
+    height: 275px;
+    margin-bottom: spacing(2);
+  }
+
+  .name {
+    @include fontSize('md');
+  }
+
+  .price {
+    @include fontSize();
+  }
+}

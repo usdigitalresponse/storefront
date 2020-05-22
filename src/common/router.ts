@@ -1,10 +1,11 @@
 import qs from 'qs';
 
 // must also update routeComponents in /src/App.tsx
-export type RouteId = 'home' | 'products' | 'donate' | 'drivers' | 'cart' | 'checkout' | 'confirmation';
+export type RouteId = 'home' | 'products' | 'product' | 'donate' | 'drivers' | 'cart' | 'checkout' | 'confirmation';
 export const routePaths: Record<string, string> = {
   home: '/',
   products: '/products',
+  product: '/products/:id',
   donate: '/donate',
   drivers: '/drivers',
   cart: '/cart',

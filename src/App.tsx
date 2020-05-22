@@ -15,6 +15,7 @@ import HomePage from './pages/HomePage';
 import LocationsDialog from './components/LocationsDialog';
 import MuiThemeWrapper from './components/MuiThemeWrapper';
 import NotFoundPage from './pages/NotFoundPage';
+import ProductPage from './pages/ProductPage';
 import ProductsPage from './pages/ProductsPage';
 import React from 'react';
 
@@ -26,6 +27,7 @@ StripeService.init(store);
 const routeComponents: Record<string, React.FC> = {
   home: HomePage,
   products: ProductsPage,
+  product: ProductPage,
   donate: DonatePage,
   drivers: DriversPage,
   cart: CartPage,
