@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import Footer from '../components/Footer';
 import Loading from '../components/Loading';
 import React, { ReactNode } from 'react';
+import ReactMarkdown from 'react-markdown';
 import classNames from 'classnames';
 import styles from './BaseLayout.module.scss';
 
@@ -41,7 +42,7 @@ const BaseLayout: React.FC<Props> = ({ children, title, description, padding, ma
                 </Typography>
                 {description && typeof description === 'string' && (
                   <Typography className={styles.description} variant="body1">
-                    {description}
+                    <ReactMarkdown unwrapDisallowed disallowedTypes={['paragraph']} source={description} />
                   </Typography>
                 )}
                 {description && typeof description !== 'string' && description}

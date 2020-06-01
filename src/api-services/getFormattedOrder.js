@@ -19,6 +19,16 @@ export function getFormattedOrder(orderId, view) {
         filterByFormula: `{Order} = "${orderId}"`,
       });
 
+      if (order['Type'] === 'Pickup') {
+        const pickupLocations = await fetchTable('Pickup Locations', {
+          view: 'Grid view',
+        });
+        const pickupAddresses = pickupLocations
+          .filter((row) => row.id === order['Pickup Location'][0])
+          .map((row) => row.fields['Address']);
+        order.pickupAddress = pickupAddresses[0];
+      }
+
       order.items = itemResult.map((row) => {
         return row.fields;
       });
@@ -26,7 +36,6 @@ export function getFormattedOrder(orderId, view) {
       const allInventoryIds = order.items.map((item) => {
         return item['Inventory'][0];
       });
-      console.log('inventoryIds', allInventoryIds);
 
       const inventoryResult = await fetchTable('Inventory', {
         view: 'Grid view',

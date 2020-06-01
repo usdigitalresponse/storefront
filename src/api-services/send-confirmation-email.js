@@ -12,14 +12,15 @@ export const sendOrderConfirmationEmail = (orderId) => {
       }
 
       const order = await getFormattedOrder(orderId, 'Orders to Fulfill');
-
       const formattedAmount = numeral(order['Total']).format('$0,0.00');
 
-      let orderItemText = '<ul>';
+      let orderItemList = '<ul style="margin-top: 0px; margin-left: 5px; padding-left: 0px">';
       order.items.map((item) => {
-        orderItemText += '<li>' + item['Quantity'] + ' x ' + item['inventoryName'] + '</li>';
+        orderItemList += '<li>' + item['Quantity'] + ' x ' + item['inventoryName'] + '</li>';
       });
-      orderItemText += '</ul>';
+      orderItemList += '</ul>';
+
+      const isDelivery = order['Type'] === 'Delivery';
 
       const emailOptions = {
         to: {
@@ -28,15 +29,16 @@ export const sendOrderConfirmationEmail = (orderId) => {
         },
         subject: 'Order Confirmation',
         htmlBody: `
-        <p>Thank you for your order.</p>
-        <p>
-          <b>Name:</b> ${order['Name']}<br/>
-          <b>Address:</b> ${order['Delivery Address']}<br/>
-            ${orderItemText}
-
-          <br/>
-          <b>Total:</b> ${formattedAmount}<br/>
-        </p>
+        <p>Thank you for your order. You'll receive another email confirming the date and time of your pickup once your order is fulfilled.</p>
+        <b>Name:</b>
+        <p style="margin-top: 0px;">${order['Name']}</p>
+        <b>${isDelivery ? 'Delivery Address' : 'Pickup Location'}:</b>
+        <p style="white-space: pre-wrap; margin-top: 0px;">${
+          isDelivery ? order['Delivery Address'] : order.pickupAddress
+        }</p>
+        <b>Items ordered:</b>
+        ${orderItemList}
+        <b>Total:</b> ${formattedAmount}<br/>
         `,
       };
 
@@ -94,11 +96,11 @@ export const sendOrderDeliveryNotification = (orderId, deliveryDate) => {
 
       const order = await getFormattedOrder(orderId, 'Orders To Deliver');
 
-      let orderItemText = '<ul>';
+      let orderItemList = '<ul>';
       order.items.map((item) => {
-        orderItemText += '<li>' + item['Quantity'] + ' x ' + item['inventoryName'] + '</li>';
+        orderItemList += '<li>' + item['Quantity'] + ' x ' + item['inventoryName'] + '</li>';
       });
-      orderItemText += '</ul>';
+      orderItemList += '</ul>';
 
       const emailOptions = {
         to: {
@@ -111,7 +113,7 @@ export const sendOrderDeliveryNotification = (orderId, deliveryDate) => {
         <p>
           <b>Name:</b> ${order['Name']}<br/>
           <b>Address:</b> ${order['Delivery Address']}<br/>
-            ${orderItemText}
+            ${orderItemList}
         </p>
         `,
       };
