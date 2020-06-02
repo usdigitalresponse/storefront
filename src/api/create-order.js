@@ -98,14 +98,11 @@ exports.handler = async (event, context) => {
       }),
     );
 
-    sendOrderConfirmationEmail(order.fields['Order ID'])
-      .then(() => {
-        console.log('Email sent');
-      })
-      .catch((error) => {
-        console.log('Could not send email confirmation:');
-        console.error(error);
-      });
+    try {
+      await sendOrderConfirmationEmail(order.fields['Order ID']);
+    } catch (error) {
+      console.error('Could not send confirmation email: ', error);
+    }
 
     const orderSummary = {
       id: order.fields['Order ID'],
