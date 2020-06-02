@@ -14,7 +14,7 @@ export const sendOrderConfirmationEmail = (orderId) => {
       }
 
       console.log('getting formatted order');
-      const order = await getFormattedOrder(orderId, 'Orders to Fulfill');
+      const order = await getFormattedOrder(orderId, 'Grid view');
       console.log('got formatted order');
       const formattedAmount = numeral(order['Total']).format('$0,0.00');
 

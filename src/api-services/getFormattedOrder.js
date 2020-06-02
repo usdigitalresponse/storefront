@@ -6,7 +6,7 @@ export function getFormattedOrder(orderId, view) {
       console.log('getting order result with orderId', orderId, 'and view', view);
       const orderResult = await fetchTable('Orders', {
         view: view,
-        filterByFormula: `{Order ID} = ${orderId}`,
+        // filterByFormula: `{Order ID} = ${orderId}`,
       });
       console.log('got order result');
 
@@ -16,7 +16,7 @@ export function getFormattedOrder(orderId, view) {
       }
 
       console.log('getting order');
-      const order = orderResult.map((row) => row.fields)[0];
+      const order = orderResult.filter((row) => row.fields['Order ID'] === orderId).map((row) => row.fields)[0];
       console.log('got order, getting itemResult');
 
       const itemResult = await fetchTable('Order Items', {
