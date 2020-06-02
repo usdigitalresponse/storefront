@@ -26,7 +26,15 @@ export const valueOrNull = function(configValues, key) {
 };
 
 export const fetchTable = function(tableName, selectOptions) {
-  return base(tableName)
-    .select(selectOptions)
-    .firstPage();
+  console.log('fetching table', tableName, 'with selectOptions', selectOptions);
+  let results;
+
+  try {
+    results = base(tableName)
+      .select(selectOptions)
+      .firstPage();
+  } catch (e) {
+    console.log(e);
+  }
+  return results;
 };
