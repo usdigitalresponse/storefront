@@ -6,12 +6,16 @@ const { getFormattedOrder } = require('../api-services/getFormattedOrder');
 
 export const sendOrderConfirmationEmail = (orderId) => {
   return new Promise(async (resolve, reject) => {
+    console.log('trying to send order email');
     try {
       if (!orderId) {
+        console.log('no order id');
         throw new Error('No orderId specified');
       }
 
+      console.log('getting formatted order');
       const order = await getFormattedOrder(orderId, 'Orders to Fulfill');
+      console.log('got formatted order');
       const formattedAmount = numeral(order['Total']).format('$0,0.00');
 
       let orderItemList = '<ul style="margin-top: 0px; margin-left: 5px; padding-left: 0px">';

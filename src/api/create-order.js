@@ -86,6 +86,8 @@ exports.handler = async (event, context) => {
       { typecast: true },
     );
 
+    console.log('order', order);
+
     const items = await base('Order Items').create(
       orderIntent.items.map((item) => {
         return {
@@ -97,6 +99,8 @@ exports.handler = async (event, context) => {
         };
       }),
     );
+
+    console.log('trying to send confirmation email');
 
     sendOrderConfirmationEmail(order.fields['Order ID']);
 
