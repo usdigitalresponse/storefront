@@ -1,13 +1,5 @@
 const { sendOrderConfirmationEmail } = require('../api-services/send-confirmation-email');
 
-function resolveAfter2Seconds() {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve();
-    }, 2000);
-  });
-}
-
 exports.handler = async (event, context) => {
   try {
     if (event.httpMethod !== 'POST') {
@@ -94,8 +86,6 @@ exports.handler = async (event, context) => {
       { typecast: true },
     );
 
-    console.log('order', order);
-
     const items = await base('Order Items').create(
       orderIntent.items.map((item) => {
         return {
@@ -108,10 +98,7 @@ exports.handler = async (event, context) => {
       }),
     );
 
-    console.log('waiting for 2 seconds...');
-    await resolveAfter2Seconds();
-    console.log('NOW trying to send confirmation email');
-    sendOrderConfirmationEmail(base, order.fields['Order ID']);
+    sendOrderConfirmationEmail(order.fields['Order ID']);
 
     const orderSummary = {
       id: order.fields['Order ID'],
