@@ -111,7 +111,7 @@ exports.handler = async (event, context) => {
     console.log('waiting for 2 seconds...');
     await resolveAfter2Seconds();
     console.log('NOW trying to send confirmation email');
-    sendOrderConfirmationEmail(order.fields['Order ID']);
+    sendOrderConfirmationEmail(base, order.fields['Order ID']);
 
     const orderSummary = {
       id: order.fields['Order ID'],

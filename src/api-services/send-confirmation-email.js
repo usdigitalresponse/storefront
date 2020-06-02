@@ -4,7 +4,7 @@ const moment = require('moment');
 
 const { getFormattedOrder } = require('../api-services/getFormattedOrder');
 
-export const sendOrderConfirmationEmail = (orderId) => {
+export const sendOrderConfirmationEmail = (base, orderId) => {
   return new Promise(async (resolve, reject) => {
     console.log('trying to send order email');
     try {
@@ -14,7 +14,7 @@ export const sendOrderConfirmationEmail = (orderId) => {
       }
 
       console.log('getting formatted order');
-      const order = await getFormattedOrder(orderId, 'Grid view');
+      const order = await getFormattedOrder(base, orderId, 'Orders to Fulfill');
       console.log('got formatted order');
       const formattedAmount = numeral(order['Total']).format('$0,0.00');
 
@@ -98,7 +98,7 @@ export const sendOrderDeliveryNotification = (orderId, deliveryDate) => {
         throw new Error('No deliveryDate specified');
       }
 
-      const order = await getFormattedOrder(orderId, 'Orders To Deliver');
+      const order = await getFormattedOrder(base, orderId, 'Orders To Deliver');
 
       let orderItemList = '<ul>';
       order.items.map((item) => {
