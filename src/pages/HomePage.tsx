@@ -16,12 +16,23 @@ const HomePage: React.FC<Props> = () => {
   const theme = useTheme();
   const primaryColor: any = theme.palette.primary;
   const bannerImage = useContentImage('banner_image');
+  const bannerLogo = useContentImage('banner_logo');
 
   return (
     <BaseLayout padding={0} maxWidth="unset">
       <div className={classNames(styles.home, { [styles.small]: isSmall })}>
-        <Grid container justify="center" className={styles.hero} style={{ backgroundImage: `url(${bannerImage.url})` }}>
+        <Grid
+          container
+          justify="center"
+          className={classNames(styles.hero, { [styles.hasLogo]: !!bannerLogo })}
+          style={{ backgroundImage: `url(${bannerImage.url})` }}
+        >
           <Grid item container justify="flex-start" className={styles.content}>
+            {bannerLogo && isSmall && (
+              <Grid item md={6} xs={12} className={styles.logo}>
+                <img src={bannerLogo.url} alt={bannerLogo.alt} className={styles.logoImg} />
+              </Grid>
+            )}
             <Grid item md={6} xs={12}>
               <Typography variant="h1" className={styles.heroTitle}>
                 <Content id="banner_title" />
@@ -62,6 +73,11 @@ const HomePage: React.FC<Props> = () => {
                 </Button>
               </div>
             </Grid>
+            {bannerLogo && !isSmall && (
+              <Grid item md={6} xs={12} className={styles.logo}>
+                <img src={bannerLogo.url} alt={bannerLogo.alt} className={styles.logoImg} />
+              </Grid>
+            )}
           </Grid>
         </Grid>
         <Grid container justify="center" className={styles.section}>

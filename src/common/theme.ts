@@ -66,11 +66,6 @@ function themeWithColor(color: string): any {
         },
         contained: {
           color: 'white !important',
-          opacity: 0.9,
-          transition: 'opacity 0.3s',
-          '&:hover': {
-            opacity: 1,
-          },
         },
       },
       MuiTooltip: {

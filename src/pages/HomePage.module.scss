@@ -4,11 +4,21 @@
   .hero {
     padding: spacing(20) 0;
     width: 100vw;
-    background-color: aliceblue;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: left top;
   }
+
+  .logo {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .logoImg {
+      height: 275px;
+    }
+  }
+
 
   .content {
     width: 100%;
@@ -65,6 +75,10 @@
   &.small {
     .hero {
       padding: spacing(10) 0 spacing(6);
+
+      &.hasLogo {
+        padding-top: spacing(4);
+      }
     }
 
     .heroTitle {
@@ -77,7 +91,15 @@
       line-height: 36px;
     }
 
+    .logo {
+      justify-content: center;
+      margin-bottom: spacing(4);
 
+      .logoImg {
+        height: auto;
+        width: 250px;
+      }
+    }
 
     .content {
       padding: 0 spacing(4);
