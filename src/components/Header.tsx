@@ -42,7 +42,7 @@ const Header: React.FC = () => {
 
   return (
     <AppBar position="sticky" elevation={0} className={styles.header}>
-      <Toolbar>
+      <Toolbar className={styles.toolbar}>
         {isSmall && !isCheckout && (
           <>
             <IconButton
@@ -70,20 +70,27 @@ const Header: React.FC = () => {
         <Link href={reverse('home')} variant="h6" className={styles.title}>
           <Content id="header_title" />
         </Link>
-        {!isSmall && !isCheckout && (
-          <div>
-            {headerNavItems.slice(1).map((item, i) => (
-              <Link key={i} href={item.url} className={styles.headerLink}>
-                {item.name}
-              </Link>
-            ))}
-          </div>
-        )}
-        <IconButton edge="end" color="primary" component={Link} href={reverse(isDonationRequest ? 'checkout' : 'cart')}>
-          <Badge badgeContent={IOrderItemsCount} color="secondary" invisible={IOrderItemsCount === 0}>
-            <CartIcon />
-          </Badge>
-        </IconButton>
+        <div className={styles.right}>
+          {!isSmall && !isCheckout && (
+            <>
+              {headerNavItems.slice(1).map((item, i) => (
+                <Link key={i} href={item.url} className={styles.headerLink}>
+                  {item.name}
+                </Link>
+              ))}
+            </>
+          )}
+          <IconButton
+            edge="end"
+            color="primary"
+            component={Link}
+            href={reverse(isDonationRequest ? 'checkout' : 'cart')}
+          >
+            <Badge badgeContent={IOrderItemsCount} color="secondary" invisible={IOrderItemsCount === 0}>
+              <CartIcon />
+            </Badge>
+          </IconButton>
+        </div>
       </Toolbar>
     </AppBar>
   );

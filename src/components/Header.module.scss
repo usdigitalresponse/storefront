@@ -4,9 +4,18 @@
   background-color: white !important;
   @include shadowBorder('bottom', true);
 
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .title {
-    flex-grow: 1;
     opacity: 1 !important;
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
   }
 
   .menuButton {
