@@ -4,6 +4,7 @@ import { useContent } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
 import { useTheme } from '@material-ui/core';
 import ContactUs from './Contact';
+import Content from './Content';
 import Link from './Link';
 import React from 'react';
 import classNames from 'classnames';
@@ -16,6 +17,7 @@ const Footer: React.FC = () => {
   const navPurchase = useContent('nav_purchase');
   const navDonate = useContent('nav_donate');
   const navDrive = useContent('nav_drive');
+  const navLink = useContent('nav_link');
   const footerNavItems: INavItem[] = [
     { name: navPurchase, url: reverse('products') },
     { name: navDonate, url: reverse('donate') },
@@ -31,6 +33,11 @@ const Footer: React.FC = () => {
             {item.name}
           </Link>
         ))}
+        {navLink && (
+          <div className={styles.link}>
+            <Content id="nav_link" markdown />
+          </div>
+        )}
       </div>
       <ContactUs />
     </div>

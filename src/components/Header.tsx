@@ -23,6 +23,7 @@ const Header: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const navPurchase = useContent('nav_purchase');
   const navDonate = useContent('nav_donate');
+  const navLink = useContent('nav_link');
   const navDrive = useContent('nav_drive');
   const headerNavItems: INavItem[] = [
     { name: 'Home', url: reverse('home') },
@@ -61,6 +62,11 @@ const Header: React.FC = () => {
                       <ListItemText primary={item.name} />
                     </ListItem>
                   ))}
+                  {navLink && (
+                    <ListItem button>
+                      <Content id="nav_link" markdown />
+                    </ListItem>
+                  )}
                 </List>
                 <Contact className={styles.contact} textClassName={styles.contactText} />
               </div>
@@ -78,6 +84,11 @@ const Header: React.FC = () => {
                   {item.name}
                 </Link>
               ))}
+              {navLink && (
+                <div className={styles.headerLink}>
+                  <Content id="nav_link" markdown />
+                </div>
+              )}
             </>
           )}
           <IconButton

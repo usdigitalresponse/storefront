@@ -5,6 +5,7 @@ import {
   SetContent,
   SetDefaultState,
   SetDonationUnits,
+  SetDriverFormId,
   SetInventory,
   SetLanguages,
   SetPickupLocations,
@@ -49,6 +50,7 @@ export class AirtableService {
           SetThemeColor.create(records.config.theme_color),
           SetTaxRate.create(records.config.tax_rate),
           SetDefaultState.create(records.config.default_state),
+          SetDriverFormId.create(records.config.driver_form_id),
           SetDonationUnits.create(records.config.donation_units),
           SetStripePromise.create({
             main: records.config.stripe_main_public_api_key,

@@ -23,6 +23,7 @@ export interface ICmsState {
   schedules: ISchedule[];
   validZipcodes: string[];
   donationPresets: number[];
+  driverFormId: string;
   themeColor: string;
 }
 
@@ -35,6 +36,7 @@ export const SetThemeColor = TypedAction.define('APP/CMS/SET_THEME_COLOR')<any>(
 export const SetDonationPresets = TypedAction.define('APP/CMS/SET_DONATION_PRESETS')<any>();
 export const SetDonationUnits = TypedAction.define('APP/CMS/SET_DONATION_UNITS')<any>();
 export const SetDefaultState = TypedAction.define('APP/CMS/SET_DEFAULT_STATE')<any>();
+export const SetDriverFormId = TypedAction.define('APP/CMS/SET_DRIVER_FORM_ID')<any>();
 export const SetPickupLocations = TypedAction.define('APP/CMS/SET_PICKUP_LOCATIONS')<any>();
 export const SetSchedules = TypedAction.define('APP/CMS/SET_SCHEDULES')<any>();
 export const SetValidZipcodes = TypedAction.define('APP/CMS/SET_VALID_ZIPCODES')<any>();
@@ -51,6 +53,7 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
   .withHandler(SetThemeColor.TYPE, (state, themeColor) => setWith(state, { themeColor }))
   .withHandler(SetDonationUnits.TYPE, (state, donationUnits) => setWith(state, { donationUnits }))
   .withHandler(SetDonationPresets.TYPE, (state, donationPresets) => setWith(state, { donationPresets }))
+  .withHandler(SetDriverFormId.TYPE, (state, driverFormId) => setWith(state, { driverFormId }))
   .withHandler(SetDefaultState.TYPE, (state, defaultState) => setWith(state, { defaultState }))
   .withHandler(SetPickupLocations.TYPE, (state, pickupLocations) => setWith(state, { pickupLocations }))
   .withHandler(SetStripePromise.TYPE, (state, keys) =>
@@ -77,6 +80,7 @@ export const initialCmsState: ICmsState = {
   pickupLocations: [],
   schedules: [],
   validZipcodes: [],
+  driverFormId: '',
   donationPresets: [25, 50, 100, 250],
   themeColor: 'green',
 };
