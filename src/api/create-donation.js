@@ -48,7 +48,11 @@ exports.handler = async (event, context) => {
       total: order.fields['Amount'],
     };
 
-    sendDonationConfirmationEmail(donationSummary);
+    try {
+      await sendDonationConfirmationEmail(donationSummary);
+    } catch (error) {
+      console.error('Could not send confirmation email: ', error);
+    }
 
     return {
       statusCode: 200,
