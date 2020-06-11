@@ -9,6 +9,7 @@ import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import ConfirmationPage from './pages/ConfirmationPage';
 import DonatePage from './pages/DonatePage';
+import DriverRoute from './components/DriverRoute';
 import DriversPage from './pages/DriversPage';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
@@ -45,6 +46,7 @@ function App() {
             {Object.keys(routeComponents).map((routeId) => (
               <Route key={routeId} path={routePaths[routeId]} component={routeComponents[routeId]} exact={true} />
             ))}
+            <DriverRoute />
             <Route component={NotFoundPage} />
           </Switch>
           <CartDialog />

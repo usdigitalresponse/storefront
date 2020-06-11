@@ -31,6 +31,12 @@
 .drawerContent {
   min-width: 250px;
 
+  .drawerTitle {
+    @include fontSize('md');
+    line-height: 1.5em;
+    max-width: 80%;
+  }
+
   .contact {
     align-items: flex-start;
     padding: spacing(2);

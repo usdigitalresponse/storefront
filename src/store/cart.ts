@@ -110,9 +110,10 @@ export const discountSelector = Reselect.createSelector(
 export const taxSelector = Reselect.createSelector(
   subtotalSelector,
   discountSelector,
-  (state: IAppState) => state.cms.taxRate,
-  (subtotal: number, discount: number, taxRate: number) => {
-    return Math.max(subtotal - discount, 0) * taxRate;
+  (state: IAppState) => state.cms.config.taxRate,
+  (state: IAppState) => state.checkout.isDonationRequest,
+  (subtotal: number, discount: number, taxRate: number, isDonationRequest: boolean) => {
+    return isDonationRequest ? 0 : Math.max(subtotal - discount, 0) * taxRate;
   },
 );
 

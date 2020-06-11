@@ -17,11 +17,13 @@ const OptInView: React.FC<Props> = ({ inputRef, className }) => {
 
   return (
     <div className={classNames(styles.container, className, { [styles.small]: isSmall })}>
-      <FormControlLabel
-        className={styles.label}
-        control={<Checkbox name="optInSubsidy" color="primary" inputRef={inputRef} />}
-        label={subsidyLabel}
-      />
+      {subsidyLabel && (
+        <FormControlLabel
+          className={styles.label}
+          control={<Checkbox name="optInSubsidy" color="primary" inputRef={inputRef} />}
+          label={subsidyLabel}
+        />
+      )}
       <FormControlLabel
         className={styles.label}
         control={<Checkbox name="optInComms" color="primary" inputRef={inputRef} />}

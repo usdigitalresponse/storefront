@@ -1,6 +1,6 @@
 import * as Reselect from 'reselect';
 import { IAppState } from './app';
-import { IContentRecord, IPickupLocation, ISchedule, InventoryRecord } from '../common/types';
+import { IConfig, IContentRecord, IPickupLocation, ISchedule, InventoryRecord } from '../common/types';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 import { useMemo } from 'react';
@@ -8,35 +8,23 @@ import { useSelector } from 'react-redux';
 
 // model
 export interface ICmsState {
+  config: IConfig;
   content: Record<string, IContentRecord>;
   inventory: InventoryRecord[];
-  languages: string[];
   language: string;
   stripeObjects: {
     main: Promise<Stripe | null> | null;
     donation: Promise<Stripe | null> | null;
   };
-  taxRate: number;
-  defaultState?: string;
-  donationUnits?: string;
   pickupLocations: IPickupLocation[];
   schedules: ISchedule[];
   validZipcodes: string[];
-  donationPresets: number[];
-  driverFormId: string;
-  themeColor: string;
 }
 
 // actions
+export const SetConfig = TypedAction.define('APP/CMS/SET_CONFIG')<IConfig>();
 export const SetContent = TypedAction.define('APP/CMS/SET_RECORDS')<any>();
 export const SetInventory = TypedAction.define('APP/CMS/SET_INVENTORY')<any>();
-export const SetLanguages = TypedAction.define('APP/CMS/SET_LANGUAGES')<any>();
-export const SetTaxRate = TypedAction.define('APP/CMS/SET_TAX_RATE')<any>();
-export const SetThemeColor = TypedAction.define('APP/CMS/SET_THEME_COLOR')<any>();
-export const SetDonationPresets = TypedAction.define('APP/CMS/SET_DONATION_PRESETS')<any>();
-export const SetDonationUnits = TypedAction.define('APP/CMS/SET_DONATION_UNITS')<any>();
-export const SetDefaultState = TypedAction.define('APP/CMS/SET_DEFAULT_STATE')<any>();
-export const SetDriverFormId = TypedAction.define('APP/CMS/SET_DRIVER_FORM_ID')<any>();
 export const SetPickupLocations = TypedAction.define('APP/CMS/SET_PICKUP_LOCATIONS')<any>();
 export const SetSchedules = TypedAction.define('APP/CMS/SET_SCHEDULES')<any>();
 export const SetValidZipcodes = TypedAction.define('APP/CMS/SET_VALID_ZIPCODES')<any>();
@@ -44,17 +32,11 @@ export const SetStripePromise = TypedAction.define('APP/CMS/SET_STRIPE_PROMISE')
 
 // reducer
 export const cmsReducer: any = TypedReducer.builder<ICmsState>()
+  .withHandler(SetConfig.TYPE, (state, config) => setWith(state, { config }))
   .withHandler(SetContent.TYPE, (state, content) => setWith(state, { content }))
-  .withHandler(SetLanguages.TYPE, (state, languages) => setWith(state, { languages }))
   .withHandler(SetInventory.TYPE, (state, inventory) => setWith(state, { inventory }))
   .withHandler(SetSchedules.TYPE, (state, schedules) => setWith(state, { schedules }))
   .withHandler(SetValidZipcodes.TYPE, (state, validZipcodes) => setWith(state, { validZipcodes }))
-  .withHandler(SetTaxRate.TYPE, (state, taxRate) => setWith(state, { taxRate }))
-  .withHandler(SetThemeColor.TYPE, (state, themeColor) => setWith(state, { themeColor }))
-  .withHandler(SetDonationUnits.TYPE, (state, donationUnits) => setWith(state, { donationUnits }))
-  .withHandler(SetDonationPresets.TYPE, (state, donationPresets) => setWith(state, { donationPresets }))
-  .withHandler(SetDriverFormId.TYPE, (state, driverFormId) => setWith(state, { driverFormId }))
-  .withHandler(SetDefaultState.TYPE, (state, defaultState) => setWith(state, { defaultState }))
   .withHandler(SetPickupLocations.TYPE, (state, pickupLocations) => setWith(state, { pickupLocations }))
   .withHandler(SetStripePromise.TYPE, (state, keys) =>
     setWith(state, {
@@ -66,23 +48,28 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
 
 // init
 export const initialCmsState: ICmsState = {
+  config: {
+    languages: ['en'],
+    taxRate: 0,
+    projectName: 'USDR Food',
+    defaultState: undefined,
+    themeColor: 'indigo',
+    donationUnits: undefined,
+    deliveryPreferences: true,
+    driverForm: true,
+    driverFormId: '',
+    driverFormName: undefined,
+  },
   content: {},
   inventory: [],
   stripeObjects: {
     main: null,
     donation: null,
   },
-  languages: ['en'],
   language: 'en',
-  taxRate: 0,
-  defaultState: undefined,
-  donationUnits: undefined,
   pickupLocations: [],
   schedules: [],
   validZipcodes: [],
-  driverFormId: '',
-  donationPresets: [25, 50, 100, 250],
-  themeColor: 'green',
 };
 
 // selectors

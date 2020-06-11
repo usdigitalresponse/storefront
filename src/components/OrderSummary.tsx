@@ -26,7 +26,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
   const subtotal = useSelector<IAppState, number>(subtotalSelector);
   const discount = useSelector<IAppState, number>(discountSelector);
   const discountCode = useSelector<IAppState, IDiscountCode | undefined>((state) => state.checkout.discountCode);
-  const taxRate = useSelector<IAppState, number>((state) => state.cms.taxRate);
+  const taxRate = useSelector<IAppState, number>((state) => state.cms.config.taxRate);
   const tax = useSelector<IAppState, number>(taxSelector);
   const total = useSelector<IAppState, number>(totalSelector);
   const inventory = useSelector<IAppState, InventoryRecord[]>((state) => state.cms.inventory);

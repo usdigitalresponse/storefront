@@ -1,7 +1,9 @@
+import { IAppState } from '../store/app';
 import { INavItem } from '../common/types';
 import { reverse } from '../common/router';
 import { useContent } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
+import { useSelector } from 'react-redux';
 import { useTheme } from '@material-ui/core';
 import ContactUs from './Contact';
 import Content from './Content';
@@ -18,12 +20,18 @@ const Footer: React.FC = () => {
   const navDonate = useContent('nav_donate');
   const navDrive = useContent('nav_drive');
   const navLink = useContent('nav_link');
+  const driverForm = useSelector<IAppState, boolean>((state) => state.cms.config.driverForm);
+  const driverFormName = useSelector<IAppState, string | undefined>((state) => state.cms.config.driverFormName);
   const footerNavItems: INavItem[] = [
     { name: navPurchase, url: reverse('products') },
     { name: navDonate, url: reverse('donate') },
-    { name: navDrive, url: reverse('drivers') },
-    { name: 'Partner Login', url: 'https://airtable.com' },
   ];
+
+  if (driverForm) {
+    footerNavItems.push({ name: navDrive, url: driverFormName ? `/${driverFormName}` : reverse('drivers') });
+  }
+
+  footerNavItems.push({ name: 'Partner Login', url: 'https://airtable.com' });
 
   return (
     <div className={styles.footer} style={{ backgroundColor: `${primaryColor[50]}80` }}>

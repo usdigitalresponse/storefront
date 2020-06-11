@@ -1,7 +1,9 @@
 import { Button, Grid, Typography, useTheme } from '@material-ui/core';
+import { IAppState } from '../store/app';
 import { reverse } from '../common/router';
 import { useContentImage } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
+import { useSelector } from 'react-redux';
 import BaseLayout from '../layouts/BaseLayout';
 import Content from '../components/Content';
 import Link from '../components/Link';
@@ -17,6 +19,8 @@ const HomePage: React.FC<Props> = () => {
   const primaryColor: any = theme.palette.primary;
   const bannerImage = useContentImage('banner_image');
   const bannerLogo = useContentImage('banner_logo');
+  const driverForm = useSelector<IAppState, boolean>((state) => state.cms.config.driverForm);
+  const driverFormName = useSelector<IAppState, string | undefined>((state) => state.cms.config.driverFormName);
 
   return (
     <BaseLayout padding={0} maxWidth="unset">
@@ -61,16 +65,18 @@ const HomePage: React.FC<Props> = () => {
                 >
                   <Content id="donate_button_label" />
                 </Button>
-                <Button
-                  className={styles.ctaButton}
-                  size="large"
-                  color="primary"
-                  variant="contained"
-                  component={Link}
-                  href={reverse('drivers')}
-                >
-                  <Content id="drive_button_label" />
-                </Button>
+                {driverForm && (
+                  <Button
+                    className={styles.ctaButton}
+                    size="large"
+                    color="primary"
+                    variant="contained"
+                    component={Link}
+                    href={driverFormName ? `/${driverFormName}` : reverse('drivers')}
+                  >
+                    <Content id="drive_button_label" />
+                  </Button>
+                )}
               </div>
             </Grid>
             {bannerLogo && !isSmall && (
@@ -117,7 +123,7 @@ const HomePage: React.FC<Props> = () => {
         </Grid>
         <Grid container justify="center" className={styles.section}>
           <Grid item container spacing={isSmall ? undefined : 4} justify="center" className={styles.content}>
-            <Grid item md={6} xs={12} className={styles.sectionHalf}>
+            <Grid item md={driverForm ? 6 : 12} xs={12} className={styles.sectionHalf}>
               <Typography variant="h2" className={styles.sectionTitle}>
                 <Content id="donate_title" />
               </Typography>
@@ -135,24 +141,26 @@ const HomePage: React.FC<Props> = () => {
                 <Content id="donate_button_label" />
               </Button>
             </Grid>
-            <Grid item md={6} xs={12} className={styles.sectionHalf}>
-              <Typography variant="h2" className={styles.sectionTitle}>
-                <Content id="drive_title" />
-              </Typography>
-              <Typography variant="body1" className={styles.sectionBody}>
-                <Content id="drive_copy" markdown />
-              </Typography>
-              <Button
-                className={styles.ctaButton}
-                size="large"
-                color="primary"
-                variant="contained"
-                component={Link}
-                href={reverse('drivers')}
-              >
-                <Content id="drive_button_label" />
-              </Button>
-            </Grid>
+            {driverForm && (
+              <Grid item md={6} xs={12} className={styles.sectionHalf}>
+                <Typography variant="h2" className={styles.sectionTitle}>
+                  <Content id="drive_title" />
+                </Typography>
+                <Typography variant="body1" className={styles.sectionBody}>
+                  <Content id="drive_copy" markdown />
+                </Typography>
+                <Button
+                  className={styles.ctaButton}
+                  size="large"
+                  color="primary"
+                  variant="contained"
+                  component={Link}
+                  href={driverFormName ? `/${driverFormName}` : reverse('drivers')}
+                >
+                  <Content id="drive_button_label" />
+                </Button>
+              </Grid>
+            )}
           </Grid>
         </Grid>
       </div>

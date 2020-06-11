@@ -10,7 +10,7 @@ import styles from './DriversPage.module.scss';
 
 const DriversPage: React.FC = () => {
   const isSmall = useIsSmall();
-  const driverFormId = useSelector<IAppState, string>((state) => state.cms.driverFormId);
+  const driverFormId = useSelector<IAppState, string>((state) => state.cms.config.driverFormId);
   const [loading, setLoading] = useState<boolean>(true);
 
   return (

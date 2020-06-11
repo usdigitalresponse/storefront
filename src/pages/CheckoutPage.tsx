@@ -23,13 +23,15 @@ import { SetIsDonationRequest, paymentStatusSelector } from '../store/checkout';
 import { SetLocationsDialogIsOpen, selectedLocationSelector } from '../store/cart';
 import { StripeService } from '../services/StripeService';
 import { reverse } from '../common/router';
+import { useContent } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
 import { useElements, useStripe } from '@stripe/react-stripe-js';
 import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
 import AddressView from '../components/AddressView';
 import BaseLayout from '../layouts/BaseLayout';
+import ConfirmEligibilityView from '../components/ConfirmEligibilityView';
 import Content from '../components/Content';
 import DeliveryPreferences from '../components/DeliveryPreferences';
 import OptInView from '../components/OptInView';
@@ -42,12 +44,13 @@ import StripeCardField from '../components/StripeCardField';
 import StripeElementsWrapper from '../components/StripeElementsWrapper';
 import ZipCodeField from '../components/ZipCodeField';
 import classNames from 'classnames';
+import qs from 'qs';
 import styles from './CheckoutPage.module.scss';
 
 function CheckoutPageMain() {
   const { register, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
-  const defaultState = useSelector<IAppState, string | undefined>((state) => state.cms.defaultState);
+  const defaultState = useSelector<IAppState, string | undefined>((state) => state.cms.config.defaultState);
   const isSmall = useIsSmall();
   const hasErrors = Object.keys(errors).length > 0;
   const stripe = useStripe();
@@ -55,12 +58,22 @@ function CheckoutPageMain() {
   const items = useSelector<IAppState, IOrderItem[]>((state) => state.cart.items);
   const paymentStatus = useSelector<IAppState, PaymentStatus>(paymentStatusSelector);
   const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
+  const showDeliveryPrefs = useSelector<IAppState, boolean>((state) => state.cms.config.deliveryPreferences);
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
+  const requiresEligibility = !!useContent('checkout_donation_confirm_eligibility');
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
   const selectedLocationId = useSelector<IAppState, string | undefined>((state) => state.cart.selectedLocation);
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
+
+  useEffect(() => {
+    const isWaitlist = !!qs.parse(location.search.slice(1))?.waitlist;
+    if (isWaitlist) {
+      dispatch(SetIsDonationRequest.create(true));
+    }
+  }, [dispatch, location.search]);
 
   useEffect(() => {
     if (selectedLocationId) {
@@ -91,6 +104,8 @@ function CheckoutPageMain() {
     };
   }
 
+  const disableSubmit = hasErrors || !!paymentError || !items.length;
+
   return (
     <BaseLayout>
       <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.container, { [styles.small]: isSmall })}>
@@ -120,6 +135,13 @@ function CheckoutPageMain() {
                     inputRef={register({ required: 'Email is required' })}
                   />
                   {!isDonationRequest && <OptInView className={styles.optIn} inputRef={register} />}
+                  {isDonationRequest && (
+                    <ConfirmEligibilityView
+                      className={styles.optIn}
+                      inputRef={register({ required: requiresEligibility ? 'Eligiblity required' : false })}
+                      errors={errors}
+                    />
+                  )}
                 </Grid>
               </Grid>
               {orderType === OrderType.PICKUP && (
@@ -159,14 +181,16 @@ function CheckoutPageMain() {
               )}
               {orderType === OrderType.DELIVERY && (
                 <>
-                  <Grid container className={styles.section}>
-                    <Typography variant="h3" className={styles.title}>
-                      Delivery Preferences
-                    </Typography>
-                    <Grid item md={8} xs={12}>
-                      <DeliveryPreferences inputRef={register} watch={watch} />
+                  {showDeliveryPrefs && (
+                    <Grid container className={styles.section}>
+                      <Typography variant="h3" className={styles.title}>
+                        Delivery Preferences
+                      </Typography>
+                      <Grid item md={8} xs={12}>
+                        <DeliveryPreferences inputRef={register} watch={watch} />
+                      </Grid>
                     </Grid>
-                  </Grid>
+                  )}
                   <Grid container className={styles.section}>
                     <Typography variant="h3" className={styles.title}>
                       Delivery Address
@@ -213,7 +237,13 @@ function CheckoutPageMain() {
                       <Content id="checkout_waitlist_copy" />
                     </Typography>
                     <Typography variant="body1" className={styles.payMessage}>
-                      <Link onClick={() => dispatch(SetIsDonationRequest.create(false))} className={styles.payLink}>
+                      <Link
+                        onClick={() => {
+                          dispatch(SetIsDonationRequest.create(false));
+                          history.push(reverse('checkout'));
+                        }}
+                        className={styles.payLink}
+                      >
                         Click here
                       </Link>{' '}
                       if you'd rather pay for these items yourself.
@@ -233,7 +263,7 @@ function CheckoutPageMain() {
                 color="primary"
                 size="large"
                 type="submit"
-                disabled={hasErrors || !!paymentError || !items.length}
+                disabled={disableSubmit}
               >
                 {isPaying && <CircularProgress size={26} className={styles.spinner} />}
                 {!isPaying && 'Place Order'}

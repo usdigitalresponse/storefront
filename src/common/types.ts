@@ -1,3 +1,16 @@
+export interface IConfig {
+  languages: string[];
+  taxRate: number;
+  projectName: string;
+  defaultState?: string;
+  themeColor: string;
+  donationUnits?: string;
+  deliveryPreferences: boolean;
+  driverForm: boolean;
+  driverFormId: string;
+  driverFormName?: string;
+}
+
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
   en: string;
   en_es: string;
@@ -62,6 +75,7 @@ export interface ICheckoutFormBase {
   optInComms: boolean;
   optInSubsidy: boolean;
   type: OrderType;
+  eligible?: boolean;
 }
 
 export interface ICheckoutFormDataDelivery extends ICheckoutFormBase {
@@ -85,9 +99,9 @@ export type CheckoutFormField =
   | 'fullName'
   | 'phone'
   | 'email'
-  | 'email'
   | 'optInComms'
   | 'optInSubsidy'
+  | 'eligible'
   | 'street1'
   | 'street2'
   | 'city'

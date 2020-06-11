@@ -2,17 +2,12 @@ import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
 import { IDonationIntent, IOrderIntent } from '../common/types';
 import {
+  SetConfig,
   SetContent,
-  SetDefaultState,
-  SetDonationUnits,
-  SetDriverFormId,
   SetInventory,
-  SetLanguages,
   SetPickupLocations,
   SetSchedules,
   SetStripePromise,
-  SetTaxRate,
-  SetThemeColor,
   SetValidZipcodes,
   makeContentValueSelector,
 } from '../store/cms';
@@ -40,18 +35,23 @@ export class AirtableService {
         }
 
         const actions: any = [
+          SetConfig.create({
+            languages: records.config.languages,
+            taxRate: records.config.tax_rate,
+            projectName: records.config.project_name,
+            defaultState: records.config.default_state,
+            themeColor: records.config.theme_color,
+            donationUnits: records.config.donation_units,
+            deliveryPreferences: records.config.delivery_preferences === 'false' ? false : true,
+            driverForm: records.config.driver_form === 'false' ? false : true,
+            driverFormId: records.config.driver_form_id,
+            driverFormName: records.config.driver_form_name,
+          }),
           SetContent.create(records.content),
           SetInventory.create(records.inventory),
           SetSchedules.create(records.schedules),
           SetValidZipcodes.create(records.validZipcodes),
           SetPickupLocations.create(records.pickupLocations),
-          // config
-          SetLanguages.create(records.config.languages),
-          SetThemeColor.create(records.config.theme_color),
-          SetTaxRate.create(records.config.tax_rate),
-          SetDefaultState.create(records.config.default_state),
-          SetDriverFormId.create(records.config.driver_form_id),
-          SetDonationUnits.create(records.config.donation_units),
           SetStripePromise.create({
             main: records.config.stripe_main_public_api_key,
             donation: records.config.stripe_donation_public_api_key,

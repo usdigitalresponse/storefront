@@ -1,8 +1,18 @@
-import { AppBar, Badge, Drawer, IconButton, List, ListItem, ListItemText, Toolbar } from '@material-ui/core';
+import {
+  AppBar,
+  Badge,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { INavItem } from '../common/types';
 import { IOrderItemCountSelector } from '../store/cart';
-import { reverse, routePaths } from '../common/router';
+import { reverse } from '../common/router';
 import { useContent } from '../store/cms';
 import { useIsSmall, usePrevious } from '../common/hooks';
 import { useLocation } from 'react-router-dom';
@@ -16,21 +26,26 @@ import React, { useEffect, useState } from 'react';
 import styles from './Header.module.scss';
 
 const Header: React.FC = () => {
-  const isCheckout = useLocation().pathname === routePaths.checkout;
   const isSmall = useIsSmall();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
+  const driverForm = useSelector<IAppState, boolean>((state) => state.cms.config.driverForm);
+  const driverFormName = useSelector<IAppState, string | undefined>((state) => state.cms.config.driverFormName);
   const IOrderItemsCount = useSelector<IAppState, number>(IOrderItemCountSelector);
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const navPurchase = useContent('nav_purchase');
   const navDonate = useContent('nav_donate');
   const navLink = useContent('nav_link');
   const navDrive = useContent('nav_drive');
+
   const headerNavItems: INavItem[] = [
     { name: 'Home', url: reverse('home') },
     { name: navPurchase, url: reverse('products') },
     { name: navDonate, url: reverse('donate') },
-    { name: navDrive, url: reverse('drivers') },
   ];
+
+  if (driverForm) {
+    headerNavItems.push({ name: navDrive, url: driverFormName ? '/jobs' : reverse('drivers') });
+  }
 
   const location = useLocation();
   const prevLocation = usePrevious(location);
@@ -44,7 +59,7 @@ const Header: React.FC = () => {
   return (
     <AppBar position="sticky" elevation={0} className={styles.header}>
       <Toolbar className={styles.toolbar}>
-        {isSmall && !isCheckout && (
+        {isSmall && (
           <>
             <IconButton
               edge="start"
@@ -57,6 +72,11 @@ const Header: React.FC = () => {
             <Drawer anchor="left" open={drawerIsOpen} onClose={() => setDrawerIsOpen(false)}>
               <div className={styles.drawerContent}>
                 <List>
+                  <ListItem>
+                    <Typography variant="h1" className={styles.drawerTitle}>
+                      <Content id="header_title" />
+                    </Typography>
+                  </ListItem>
                   {headerNavItems.map((item, i) => (
                     <ListItem key={i} button component={Link} href={item.url}>
                       <ListItemText primary={item.name} />
@@ -73,11 +93,13 @@ const Header: React.FC = () => {
             </Drawer>
           </>
         )}
-        <Link href={reverse('home')} variant="h6" className={styles.title}>
-          <Content id="header_title" />
-        </Link>
+        {!isSmall && (
+          <Link href={reverse('home')} variant="h6" className={styles.title}>
+            <Content id="header_title" />
+          </Link>
+        )}
         <div className={styles.right}>
-          {!isSmall && !isCheckout && (
+          {!isSmall && (
             <>
               {headerNavItems.slice(1).map((item, i) => (
                 <Link key={i} href={item.url} className={styles.headerLink}>

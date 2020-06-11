@@ -11,7 +11,7 @@
 
     > span {
       @include fontSize();
-      line-height: normal;
+      margin-top: -1px;
 
       &:first-child {
         margin-top: -10px;

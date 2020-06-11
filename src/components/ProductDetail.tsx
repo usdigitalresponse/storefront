@@ -40,7 +40,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
 
   function addToWaitlist() {
     dispatch(CompoundAction([SetItems.create([{ id, quantity: 1 }]), SetIsDonationRequest.create(true)]));
-    history.push(reverse('checkout'));
+    history.push(reverse('checkout', { waitlist: true }));
   }
 
   return (

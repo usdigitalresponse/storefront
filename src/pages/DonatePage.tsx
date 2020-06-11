@@ -43,8 +43,7 @@ const DonatePageMain: React.FC = () => {
   const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
   const donationAmount = useSelector<IAppState, number>((state) => state.checkout.donationAmount);
-  const donationPresets = useSelector<IAppState, number[]>((state) => state.cms.donationPresets);
-  const donationUnits = useSelector<IAppState, string | undefined>((state) => state.cms.donationUnits);
+  const donationUnits = useSelector<IAppState, string | undefined>((state) => state.cms.config.donationUnits);
   const otherAmount = watch('otherAmount');
   const donationUnitCountSelector = useMemo(makeDonationUnitCountSelector, []);
   const donationUnitCount = useSelector((state: IAppState) => donationUnitCountSelector(state, otherAmount));
@@ -52,6 +51,7 @@ const DonatePageMain: React.FC = () => {
   const dispatch = useDispatch();
   const title = useContent('donate_page_title');
   const description = useContent('donate_page_subtitle');
+  const donationPresets = [25, 50, 100, 250];
 
   async function onSubmit(data: IDonationFormData) {
     const status = await StripeService.donate(data, stripe, elements);

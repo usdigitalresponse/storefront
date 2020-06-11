@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import React from 'react';
 
 const Loading: React.FC = () => {
-  const themeColor = useSelector<IAppState, string>((state) => state.cms.themeColor);
+  const themeColor = useSelector<IAppState, string>((state) => state.cms.config.themeColor);
 
   return (
     <div className="sk-loading">

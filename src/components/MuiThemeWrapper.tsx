@@ -5,7 +5,7 @@ import React from 'react';
 import theme from '../common/theme';
 
 const MuiThemeWrapper: React.FC = ({ children }) => {
-  const themeColor = useSelector<IAppState, string>((state) => state.cms.themeColor);
+  const themeColor = useSelector<IAppState, string>((state) => state.cms.config.themeColor);
 
   return <ThemeProvider theme={theme(themeColor)}>{children}</ThemeProvider>;
 };
