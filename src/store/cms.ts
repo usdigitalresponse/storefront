@@ -132,7 +132,7 @@ export const makeContentValueSelector = () =>
       }
 
       if (!value) {
-        console.log(`Missing ${key} value in CMS`);
+        // console.log(`Missing ${key} value in CMS`);
         return '';
       }
 
@@ -157,7 +157,7 @@ export const makeContentImageSelector = () =>
       }
 
       if (!value) {
-        console.log(`Missing ${key} value in CMS`);
+        // console.log(`Missing ${key} value in CMS`);
         return { url: '', alt: '' };
       }
 
