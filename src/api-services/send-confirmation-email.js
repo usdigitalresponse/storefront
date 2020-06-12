@@ -58,7 +58,7 @@ export const sendDonationConfirmationEmail = (donationSummary) => {
         throw new Error('No donationSummary specified');
       }
 
-      const formattedAmount = numeral(donationSummary.amount).format('$0,0.00');
+      const formattedAmount = numeral(donationSummary.total).format('$0,0.00');
 
       const emailOptions = {
         to: {
