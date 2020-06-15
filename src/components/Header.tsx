@@ -44,7 +44,7 @@ const Header: React.FC = () => {
   ];
 
   if (driverForm) {
-    headerNavItems.push({ name: navDrive, url: driverFormName ? '/jobs' : reverse('drivers') });
+    headerNavItems.push({ name: navDrive, url: driverFormName ? `/${driverFormName}` : reverse('drivers') });
   }
 
   const location = useLocation();
