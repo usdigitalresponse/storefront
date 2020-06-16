@@ -55,6 +55,7 @@ export const initialCmsState: ICmsState = {
     defaultState: undefined,
     themeColor: 'indigo',
     donationUnits: undefined,
+    deliveryEnabled: true,
     deliveryPreferences: true,
     driverForm: true,
     driverFormId: '',

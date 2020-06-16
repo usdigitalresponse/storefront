@@ -17,31 +17,38 @@ const OrderTypeSelector: React.FC = () => {
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
   const pickupLocationCount = useSelector<IAppState, number>((state) => state.cms.pickupLocations.length);
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
+  const deliveryEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.deliveryEnabled);
 
   return (
     <Grid container spacing={2} alignItems={isSmall ? undefined : 'stretch'}>
-      <Grid item md={6} xs={12} className={styles.column}>
-        <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
-          <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.DELIVERY))}>
-            <div className={classNames(styles.content, styles.delivery)}>
-              <div className={styles.check}>
-                {orderType === OrderType.DELIVERY ? <CheckedIcon color="primary" /> : <UncheckedIcon color="primary" />}
+      {deliveryEnabled && (
+        <Grid item md={6} xs={12} className={styles.column}>
+          <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
+            <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.DELIVERY))}>
+              <div className={classNames(styles.content, styles.delivery)}>
+                <div className={styles.check}>
+                  {orderType === OrderType.DELIVERY ? (
+                    <CheckedIcon color="primary" />
+                  ) : (
+                    <UncheckedIcon color="primary" />
+                  )}
+                </div>
+                <div className={styles.label}>
+                  <Typography variant="h4" className={styles.title}>
+                    Deliver to Me
+                  </Typography>
+                  <Typography variant="body1" className={styles.description}>
+                    Credit / Debit Card Only
+                  </Typography>
+                </div>
               </div>
-              <div className={styles.label}>
-                <Typography variant="h4" className={styles.title}>
-                  Deliver to Me
-                </Typography>
-                <Typography variant="body1" className={styles.description}>
-                  Credit / Debit Card Only
-                </Typography>
-              </div>
-            </div>
-          </CardActionArea>
-        </Card>
-      </Grid>
-      <Grid item md={6} xs={12}>
+            </CardActionArea>
+          </Card>
+        </Grid>
+      )}
+      <Grid item md={deliveryEnabled ? 6 : 12} xs={12}>
         <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
-          <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.PICKUP))}>
+          <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.PICKUP))} disabled={!deliveryEnabled}>
             <div className={styles.content}>
               <div className={styles.check}>
                 {orderType === OrderType.PICKUP ? <CheckedIcon color="primary" /> : <UncheckedIcon color="primary" />}

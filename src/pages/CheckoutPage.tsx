@@ -67,6 +67,7 @@ function CheckoutPageMain() {
   const location = useLocation();
   const dispatch = useDispatch();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
+  const deliveryEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.deliveryEnabled);
 
   useEffect(() => {
     const isWaitlist = !!qs.parse(location.search.slice(1))?.waitlist;
@@ -111,7 +112,7 @@ function CheckoutPageMain() {
       <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.container, { [styles.small]: isSmall })}>
         <Grid container spacing={2}>
           <Grid item md={8} xs={12}>
-            <OrderTypeView />
+            {deliveryEnabled && <OrderTypeView />}
             <Card elevation={2} className={styles.form}>
               <Grid container className={styles.section}>
                 <Typography variant="h3" className={styles.title}>

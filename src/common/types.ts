@@ -5,6 +5,7 @@ export interface IConfig {
   defaultState?: string;
   themeColor: string;
   donationUnits?: string;
+  deliveryEnabled: boolean;
   deliveryPreferences: boolean;
   driverForm: boolean;
   driverFormId: string;

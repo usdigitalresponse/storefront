@@ -1,6 +1,6 @@
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { IDonationIntent, IOrderIntent } from '../common/types';
+import { IDonationIntent, IOrderIntent, OrderType } from '../common/types';
 import {
   SetConfig,
   SetContent,
@@ -11,7 +11,7 @@ import {
   SetValidZipcodes,
   makeContentValueSelector,
 } from '../store/cms';
-import { SetSelectedLocation } from '../store/cart';
+import { SetOrderType, SetSelectedLocation } from '../store/cart';
 import { Store } from 'redux';
 
 export class AirtableService {
@@ -34,6 +34,7 @@ export class AirtableService {
           return;
         }
 
+        const deliveryEnabled = records.config.delivery_enabled === 'false' ? false : true;
         const actions: any = [
           SetConfig.create({
             languages: records.config.languages,
@@ -42,11 +43,13 @@ export class AirtableService {
             defaultState: records.config.default_state,
             themeColor: records.config.theme_color,
             donationUnits: records.config.donation_units,
+            deliveryEnabled: deliveryEnabled,
             deliveryPreferences: records.config.delivery_preferences === 'false' ? false : true,
             driverForm: records.config.driver_form === 'false' ? false : true,
             driverFormId: records.config.driver_form_id,
             driverFormName: records.config.driver_form_name,
           }),
+          SetOrderType.create(deliveryEnabled ? OrderType.DELIVERY : OrderType.PICKUP),
           SetContent.create(records.content),
           SetInventory.create(records.inventory),
           SetSchedules.create(records.schedules),
