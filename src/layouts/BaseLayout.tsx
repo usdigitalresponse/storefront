@@ -1,6 +1,6 @@
 import { Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { appIsReadySelector } from '../store/cms';
+import { appIsReadySelector, useContent } from '../store/cms';
 import { useIsSmall, useScrollToTop } from '../common/hooks';
 import { useSelector } from 'react-redux';
 import Footer from '../components/Footer';
@@ -21,6 +21,7 @@ const BaseLayout: React.FC<Props> = ({ children, title, description, padding, ma
   useScrollToTop();
   const isSmall = useIsSmall();
   const appIsReady = useSelector<IAppState, boolean>(appIsReadySelector);
+  document.title = useContent('page_title');
 
   return (
     <div className={styles.container}>
