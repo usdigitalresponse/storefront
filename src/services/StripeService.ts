@@ -7,6 +7,7 @@ import {
   IDonationFormData,
   IDonationSummary,
   IOrderSummary,
+  OrderType,
   PaymentStatus,
   PaymentType,
 } from '../common/types';
@@ -98,7 +99,7 @@ export class StripeService {
     const items = state.cart.items;
     const confirmation: IOrderSummary = await AirtableService.createOrder({
       ...formData,
-      status: isDonationRequest ? 'Donation Requested' : requiresPayment ? 'Paid' : 'Placed',
+      status: isDonationRequest ? 'Donation Requested' : type === OrderType.DELIVERY ? 'Paid' : 'Placed',
       type,
       subtotal,
       discount,
