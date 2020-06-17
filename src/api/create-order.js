@@ -26,7 +26,7 @@ exports.handler = async (event, context) => {
 
     if (orderIntent.type === 'Delivery') {
       requiredDeliveryFields.forEach((field) => {
-        if (!orderIntent[field]) {
+        if (orderIntent[field] == null) {
           throw new Error('Invalid Order Intent: ' + field + ' not set');
         }
       });

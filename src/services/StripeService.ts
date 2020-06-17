@@ -11,7 +11,14 @@ import {
   PaymentType,
 } from '../common/types';
 import { SetConfirmation, SetDiscountCode, SetError, SetIsPaying } from '../store/checkout';
-import { SetItems, discountSelector, subtotalSelector, taxSelector, totalSelector } from '../store/cart';
+import {
+  SetItems,
+  discountSelector,
+  requiresPaymentSelector,
+  subtotalSelector,
+  taxSelector,
+  totalSelector,
+} from '../store/cart';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
 import { makeContentValueSelector } from '../store/cms';
@@ -71,43 +78,47 @@ export class StripeService {
     const discount = discountSelector(state);
     const tax = taxSelector(state);
     const total = totalSelector(state);
+    const requiresPayment = requiresPaymentSelector(state);
     const discountCode = state.checkout.discountCode?.code;
     const isDonationRequest = state.checkout.isDonationRequest;
 
     let stripePaymentId: string | undefined;
-    if (!isDonationRequest) {
+    if (requiresPayment) {
       stripePaymentId = await StripeService.processPayment('main', total, stripe, elements);
     } else {
       StripeService.store.dispatch(SetIsPaying.create(true));
     }
 
-    if (isDonationRequest || stripePaymentId) {
-      const type = state.cart.orderType;
-      const items = state.cart.items;
-      const confirmation: IOrderSummary = await AirtableService.createOrder({
-        ...formData,
-        status: isDonationRequest ? 'Donation Requested' : 'Paid',
-        type,
-        subtotal,
-        discount,
-        tax,
-        total,
-        discountCode,
-        items,
-        stripePaymentId,
-      });
-
-      StripeService.store.dispatch(
-        CompoundAction([
-          SetConfirmation.create(confirmation),
-          SetIsPaying.create(false),
-          SetItems.create([]),
-          SetDiscountCode.create(undefined),
-        ]),
-      );
-
-      return PaymentStatus.SUCCEEDED;
+    if (requiresPayment && !stripePaymentId) {
+      StripeService.store.dispatch(SetError.create('Payment could not be processed.'));
+      return PaymentStatus.FAILED;
     }
+
+    const type = state.cart.orderType;
+    const items = state.cart.items;
+    const confirmation: IOrderSummary = await AirtableService.createOrder({
+      ...formData,
+      status: isDonationRequest ? 'Donation Requested' : requiresPayment ? 'Paid' : 'Placed',
+      type,
+      subtotal,
+      discount,
+      tax,
+      total,
+      discountCode,
+      items,
+      stripePaymentId,
+    });
+
+    StripeService.store.dispatch(
+      CompoundAction([
+        SetConfirmation.create(confirmation),
+        SetIsPaying.create(false),
+        SetItems.create([]),
+        SetDiscountCode.create(undefined),
+      ]),
+    );
+
+    return PaymentStatus.SUCCEEDED;
   }
 
   public static async donate(formData: IDonationFormData, stripe: Stripe | null, elements: StripeElements | null) {

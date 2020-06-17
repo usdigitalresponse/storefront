@@ -126,6 +126,15 @@ export const totalSelector = Reselect.createSelector(
   },
 );
 
+export const requiresPaymentSelector = Reselect.createSelector(
+  totalSelector,
+  (state: IAppState) => state.cart.orderType,
+  (state: IAppState) => state.checkout.isDonationRequest,
+  (total: number, orderType: OrderType, isDonationRequest: boolean) => {
+    return total > 0 && orderType === OrderType.DELIVERY && !isDonationRequest;
+  },
+);
+
 export const selectedLocationSelector = Reselect.createSelector(
   pickupLocationsSelector,
   (state: IAppState) => state.cart.selectedLocation,

@@ -146,7 +146,7 @@ export function isOrderSummary(confirmation?: IOrderSummary | IDonationSummary):
   return !!confirmation && (confirmation as IOrderSummary).items !== undefined;
 }
 
-export type OrderStatus = 'Donation Requested' | 'Paid';
+export type OrderStatus = 'Donation Requested' | 'Paid' | 'Placed';
 
 export type DonationFormField = 'fullName' | 'phone' | 'email' | 'otherAmount';
 

@@ -20,7 +20,7 @@ import {
 } from '../common/types';
 import { IAppState } from '../store/app';
 import { SetIsDonationRequest, paymentStatusSelector } from '../store/checkout';
-import { SetLocationsDialogIsOpen, selectedLocationSelector } from '../store/cart';
+import { SetLocationsDialogIsOpen, requiresPaymentSelector, selectedLocationSelector } from '../store/cart';
 import { StripeService } from '../services/StripeService';
 import { reverse } from '../common/router';
 import { useContent } from '../store/cms';
@@ -68,6 +68,7 @@ function CheckoutPageMain() {
   const dispatch = useDispatch();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const deliveryEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.deliveryEnabled);
+  const requiresPayment = useSelector<IAppState, boolean>(requiresPaymentSelector);
 
   useEffect(() => {
     const isWaitlist = !!qs.parse(location.search.slice(1))?.waitlist;
@@ -223,35 +224,37 @@ function CheckoutPageMain() {
                   </Grid>
                 </>
               )}
-              <Grid container className={styles.section}>
-                <Typography variant="h3" className={styles.title}>
-                  Payment Details
-                </Typography>
-                {!isDonationRequest && (
-                  <Grid item md={8} xs={12}>
-                    <StripeCardField errorMessage={paymentError} />
-                  </Grid>
-                )}
-                {isDonationRequest && (
-                  <Grid item md={8} xs={12}>
-                    <Typography variant="body1" className={styles.payMessage}>
-                      <Content id="checkout_waitlist_copy" />
-                    </Typography>
-                    <Typography variant="body1" className={styles.payMessage}>
-                      <Link
-                        onClick={() => {
-                          dispatch(SetIsDonationRequest.create(false));
-                          history.push(reverse('checkout'));
-                        }}
-                        className={styles.payLink}
-                      >
-                        Click here
-                      </Link>{' '}
-                      if you'd rather pay for these items yourself.
-                    </Typography>
-                  </Grid>
-                )}
-              </Grid>
+              {requiresPayment && (
+                <Grid container className={styles.section}>
+                  <Typography variant="h3" className={styles.title}>
+                    Payment Details
+                  </Typography>
+                  {!isDonationRequest && (
+                    <Grid item md={8} xs={12}>
+                      <StripeCardField errorMessage={paymentError} />
+                    </Grid>
+                  )}
+                  {isDonationRequest && (
+                    <Grid item md={8} xs={12}>
+                      <Typography variant="body1" className={styles.payMessage}>
+                        <Content id="checkout_waitlist_copy" />
+                      </Typography>
+                      <Typography variant="body1" className={styles.payMessage}>
+                        <Link
+                          onClick={() => {
+                            dispatch(SetIsDonationRequest.create(false));
+                            history.push(reverse('checkout'));
+                          }}
+                          className={styles.payLink}
+                        >
+                          Click here
+                        </Link>{' '}
+                        if you'd rather pay for these items yourself.
+                      </Typography>
+                    </Grid>
+                  )}
+                </Grid>
+              )}
             </Card>
           </Grid>
           <Grid item md={4} xs={12} container className={styles.right}>
