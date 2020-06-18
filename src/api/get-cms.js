@@ -45,6 +45,7 @@ exports.handler = async (event, context) => {
           zip: row.fields['Address Zip'],
         },
         schedules: row.fields['Schedules'],
+        waitlistOnly: row.fields['Waitlist Only'],
       };
     });
 
@@ -66,6 +67,21 @@ exports.handler = async (event, context) => {
       return row.fields['Zip Code'];
     });
 
+    // Questions
+    const questionsRecords = await fetchTable('Questions', { view: DEFAULT_VIEW });
+    const questions = questionsRecords.map((row) => {
+      const optionsString = row.fields['Options'];
+      const label = row.fields['Label'];
+      return {
+        id: row.id,
+        label: label ? label.trim() : label,
+        type: row.fields['Type'],
+        options: optionsString ? optionsString.split(',').map(v => v.trim()) : null,
+        waitlistOnly: row.fields['Waitlist Only'],
+        required: row.fields['Required'],
+      };
+    });
+
     return successResponse({
       config,
       content,
@@ -73,6 +89,7 @@ exports.handler = async (event, context) => {
       pickupLocations,
       schedules,
       validZipcodes,
+      questions,
     });
   } catch (error) {
     return errorResponse(error.message);

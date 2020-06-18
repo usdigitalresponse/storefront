@@ -32,7 +32,7 @@ exports.handler = async (event, context) => {
       });
     } else if (orderIntent.type === 'Pickup') {
       requiredPickupFields.forEach((field) => {
-        if (!orderIntent[field]) {
+        if (!orderIntent[field] == null) {
           throw new Error('Invalid Order Intent: ' + field + ' not set');
         }
       });
@@ -53,6 +53,7 @@ exports.handler = async (event, context) => {
       });
     });
 
+    // collate delivery preferences
     const deliveryPreferences = [];
     if (orderIntent.deliveryPref_weekends) deliveryPreferences.push('Weekends');
     if (orderIntent.deliveryPref_weekdays) deliveryPreferences.push('Weekdays');
@@ -86,6 +87,7 @@ exports.handler = async (event, context) => {
       { typecast: true },
     );
 
+    // process order items
     const items = await base('Order Items').create(
       orderIntent.items.map((item) => {
         return {
@@ -97,6 +99,44 @@ exports.handler = async (event, context) => {
         };
       }),
     );
+
+    // process question responses
+    const questionResponses = Object.keys(orderIntent)
+      .filter((field) => /^question-/.test(field))
+      .reduce((acc, field) => {
+        const [questionName, option] = field.split('_');
+        const id = questionName.replace('question-', '');
+        const val = orderIntent[field];
+
+        if (!acc[id]) {
+          if (option && val) {
+            acc[id] = option;
+          } else if(!option && typeof val === 'boolean') {
+            acc[id] = val === true ? 'yes' : 'no';
+          } else if (!option) {
+            acc[id] = val;
+          }
+        } else {
+          acc[id] += val ? `,${option}` : '';
+        }
+
+        return acc;
+      }, {});
+
+    const questionIds = Object.keys(questionResponses);
+    if (questionIds.length) {
+      await base('Response Items').create(
+        questionIds.map((questionId) => {
+          return {
+            fields: {
+              Question: [questionId],
+              Order: [order.id],
+              Response: questionResponses[questionId],
+            },
+          };
+        }),
+      );
+    }
 
     try {
       await sendOrderConfirmationEmail(order.fields['Order ID']);
@@ -139,6 +179,7 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({ ...orderSummary }),
     };
   } catch (err) {
+    console.error('createOrder failed with error: ', err);
     return {
       statusCode: 500,
       headers: {

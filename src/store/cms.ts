@@ -1,6 +1,6 @@
 import * as Reselect from 'reselect';
 import { IAppState } from './app';
-import { IConfig, IContentRecord, IPickupLocation, ISchedule, InventoryRecord } from '../common/types';
+import { IConfig, IContentRecord, IPickupLocation, ISchedule, InventoryRecord, Question } from '../common/types';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 import { useMemo } from 'react';
@@ -19,6 +19,7 @@ export interface ICmsState {
   pickupLocations: IPickupLocation[];
   schedules: ISchedule[];
   validZipcodes: string[];
+  questions: Question[];
 }
 
 // actions
@@ -28,6 +29,7 @@ export const SetInventory = TypedAction.define('APP/CMS/SET_INVENTORY')<any>();
 export const SetPickupLocations = TypedAction.define('APP/CMS/SET_PICKUP_LOCATIONS')<any>();
 export const SetSchedules = TypedAction.define('APP/CMS/SET_SCHEDULES')<any>();
 export const SetValidZipcodes = TypedAction.define('APP/CMS/SET_VALID_ZIPCODES')<any>();
+export const SetQuestions = TypedAction.define('APP/CMS/SET_QUESTIONS')<any>();
 export const SetStripePromise = TypedAction.define('APP/CMS/SET_STRIPE_PROMISE')<any>();
 
 // reducer
@@ -37,6 +39,7 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
   .withHandler(SetInventory.TYPE, (state, inventory) => setWith(state, { inventory }))
   .withHandler(SetSchedules.TYPE, (state, schedules) => setWith(state, { schedules }))
   .withHandler(SetValidZipcodes.TYPE, (state, validZipcodes) => setWith(state, { validZipcodes }))
+  .withHandler(SetQuestions.TYPE, (state, questions) => setWith(state, { questions }))
   .withHandler(SetPickupLocations.TYPE, (state, pickupLocations) => setWith(state, { pickupLocations }))
   .withHandler(SetStripePromise.TYPE, (state, keys) =>
     setWith(state, {
@@ -57,6 +60,9 @@ export const initialCmsState: ICmsState = {
     donationUnits: undefined,
     deliveryEnabled: true,
     deliveryPreferences: true,
+    deliveryOptionsOnCheckout: false,
+    cartEnabled: true,
+    payUponPickupEnabled: true,
     driverForm: true,
     driverFormId: '',
     driverFormName: undefined,
@@ -71,6 +77,7 @@ export const initialCmsState: ICmsState = {
   pickupLocations: [],
   schedules: [],
   validZipcodes: [],
+  questions: [],
 };
 
 // selectors
@@ -97,17 +104,28 @@ export const stripePromiseSelector = (type: 'donation' | 'main') =>
     },
   );
 
+export const questionsSelector = Reselect.createSelector(
+  (state: IAppState) => state.cms.questions,
+  (state: IAppState) => state.checkout.isDonationRequest,
+  (questions: Question[], isDonationRequest: boolean) => {
+    return questions.filter((question) => isDonationRequest || (!isDonationRequest && !question.waitlistOnly));
+  },
+);
+
 export const pickupLocationsSelector = Reselect.createSelector(
   (state: IAppState) => state.cms.pickupLocations,
   (state: IAppState) => state.cms.schedules,
-  (pickupLocations: IPickupLocation[], schedules: ISchedule[]) => {
-    return pickupLocations.map((pickupLocation) => {
-      const resolvedSchedules = pickupLocation.schedules
-        ? pickupLocation.schedules.map((scheduleId: any) => schedules.find((s) => s.id === scheduleId)!)
-        : [];
-      pickupLocation.schedules = resolvedSchedules;
-      return pickupLocation;
-    });
+  (state: IAppState) => state.checkout.isDonationRequest,
+  (pickupLocations: IPickupLocation[], schedules: ISchedule[], isDonationRequest: boolean) => {
+    return pickupLocations
+      .map((pickupLocation) => {
+        const resolvedSchedules = pickupLocation.schedules
+          ? pickupLocation.schedules.map((scheduleId: any) => schedules.find((s) => s.id === scheduleId)!)
+          : [];
+        pickupLocation.resolvedSchedules = resolvedSchedules;
+        return pickupLocation;
+      })
+      .filter((pickupLocation) => isDonationRequest || (!isDonationRequest && !pickupLocation.waitlistOnly));
   },
 );
 
@@ -175,7 +193,8 @@ export const makeContentImageSelector = () =>
   );
 
 export function getRecordValueForLanguage(record: IContentRecord, language: string) {
-  return record[language] as string;
+  const val = record[language] as string;
+  return val ? val.trim() : '';
 }
 
 // hooks

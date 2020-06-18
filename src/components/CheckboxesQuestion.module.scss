@@ -1,0 +1,17 @@
+@import '../common/variables';
+
+
+.container {
+  .label {
+    margin-top: spacing(2);
+  }
+
+  &.small {
+    .column:first-child {
+      margin-bottom: spacing(2);
+    }
+  }
+}
+
+
+

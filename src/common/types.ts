@@ -7,6 +7,9 @@ export interface IConfig {
   donationUnits?: string;
   deliveryEnabled: boolean;
   deliveryPreferences: boolean;
+  deliveryOptionsOnCheckout: boolean;
+  cartEnabled: boolean;
+  payUponPickupEnabled: boolean;
   driverForm: boolean;
   driverFormId: string;
   driverFormName?: string;
@@ -198,7 +201,9 @@ export interface IPickupLocation {
   id: string;
   name: string;
   address: IAddress;
-  schedules: Array<string | ISchedule>;
+  schedules: string[];
+  resolvedSchedules?: ISchedule[];
+  waitlistOnly?: boolean;
 }
 
 export function isSchedule(schedule?: string | ISchedule): schedule is ISchedule {
@@ -228,3 +233,27 @@ export interface IDiscountCode {
 }
 
 export type PaymentType = 'main' | 'donation';
+
+export type QuestionType = 'Single Checkbox' | 'Multiple Checkboxes' | 'Text Input';
+
+interface IQuestionBase {
+  id: string;
+  label: string;
+  type: QuestionType;
+  required: boolean;
+  waitlistOnly: boolean;
+}
+
+export interface ITextInputQuestion extends IQuestionBase {
+  type: 'Text Input';
+}
+
+export interface ICheckboxQuestion extends IQuestionBase {
+  type: 'Single Checkbox';
+}
+
+export interface ICheckboxesQuestion extends IQuestionBase {
+  type: 'Multiple Checkboxes';
+  options: string[];
+}
+export type Question = ITextInputQuestion | ICheckboxQuestion | ICheckboxesQuestion;

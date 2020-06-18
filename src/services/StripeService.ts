@@ -97,6 +97,7 @@ export class StripeService {
 
     const type = state.cart.orderType;
     const items = state.cart.items;
+
     const confirmation: IOrderSummary = await AirtableService.createOrder({
       ...formData,
       status: isDonationRequest ? 'Donation Requested' : type === OrderType.DELIVERY ? 'Paid' : 'Placed',

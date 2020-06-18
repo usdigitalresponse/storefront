@@ -7,6 +7,7 @@ import { getProduct } from '../common/utils';
 import { reverse } from '../common/router';
 import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
+import Content from './Content';
 import DiscountCode from './DiscountCode';
 import Link from './Link';
 import React from 'react';
@@ -77,7 +78,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
         {isDonationRequest && (
           <div className={styles.line}>
             <Typography variant="body1" className={styles.label}>
-              Donation Adjustment
+              <Content id="order_summary_donation_adjustment_label" defaultText="Donation Adjustment" />
             </Typography>
             <Typography variant="body1" className={styles.value}>
               -{formatCurrency(orderSummary?.subtotal || subtotal)}

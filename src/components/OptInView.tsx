@@ -24,11 +24,13 @@ const OptInView: React.FC<Props> = ({ inputRef, className }) => {
           label={subsidyLabel}
         />
       )}
-      <FormControlLabel
-        className={styles.label}
-        control={<Checkbox name="optInComms" color="primary" inputRef={inputRef} />}
-        label={commsLabel}
-      />
+      {commsLabel && (
+        <FormControlLabel
+          className={styles.label}
+          control={<Checkbox name="optInComms" color="primary" inputRef={inputRef} />}
+          label={commsLabel}
+        />
+      )}
     </div>
   );
 };

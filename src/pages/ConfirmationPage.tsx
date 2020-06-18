@@ -1,13 +1,6 @@
 import { Card, Chip, Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import {
-  IDonationSummary,
-  IOrderSummary,
-  IPickupLocation,
-  ISchedule,
-  isDonationSummary,
-  isOrderSummary,
-} from '../common/types';
+import { IDonationSummary, IOrderSummary, IPickupLocation, isDonationSummary, isOrderSummary } from '../common/types';
 import { formatDate } from '../common/format';
 import { pickupLocationsSelector, useContent } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
@@ -136,7 +129,7 @@ const ConfirmationPage: React.FC<Props> = () => {
                   <AddressView address={pickupLocation.address} />
                   <ScheduleView
                     variant="body1"
-                    schedules={pickupLocation.schedules as ISchedule[]}
+                    schedules={pickupLocation.resolvedSchedules}
                     className={styles.schedules}
                   />
                 </Grid>

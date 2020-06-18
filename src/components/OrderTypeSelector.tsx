@@ -2,25 +2,31 @@ import { Button, Card, CardActionArea, CardActions, Grid, Typography } from '@ma
 import { IAppState } from '../store/app';
 import { IPickupLocation, OrderType } from '../common/types';
 import { SetLocationsDialogIsOpen, SetOrderType, selectedLocationSelector } from '../store/cart';
+import { pickupLocationsSelector } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsSmall } from '../common/hooks';
 import AddressView from './AddressView';
 import CheckedIcon from '@material-ui/icons/CheckBox';
+import Content from './Content';
 import React from 'react';
 import UncheckedIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import classNames from 'classnames';
 import styles from './OrderTypeSelector.module.scss';
 
-const OrderTypeSelector: React.FC = () => {
+interface Props {
+  className?: string;
+}
+
+const OrderTypeSelector: React.FC<Props> = ({ className }) => {
   const isSmall = useIsSmall();
   const dispatch = useDispatch();
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
-  const pickupLocationCount = useSelector<IAppState, number>((state) => state.cms.pickupLocations.length);
+  const pickupLocationCount = useSelector<IAppState, IPickupLocation[]>(pickupLocationsSelector).length;
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const deliveryEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.deliveryEnabled);
 
   return (
-    <Grid container spacing={2} alignItems={isSmall ? undefined : 'stretch'}>
+    <Grid container spacing={2} alignItems={isSmall ? undefined : 'stretch'} className={className}>
       {deliveryEnabled && (
         <Grid item md={6} xs={12} className={styles.column}>
           <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
@@ -35,10 +41,10 @@ const OrderTypeSelector: React.FC = () => {
                 </div>
                 <div className={styles.label}>
                   <Typography variant="h4" className={styles.title}>
-                    Deliver to Me
+                    <Content id="delivery_option_title" defaultText="Delivery" />
                   </Typography>
                   <Typography variant="body1" className={styles.description}>
-                    Credit / Debit Card Only
+                    <Content id="delivery_option_subtitle" defaultText="Credit / Debit Card Only" />
                   </Typography>
                 </div>
               </div>
@@ -55,10 +61,10 @@ const OrderTypeSelector: React.FC = () => {
               </div>
               <div className={classNames(styles.label, { [styles.pickupLabel]: pickupLocationCount > 1 })}>
                 <Typography variant="h4" className={styles.title}>
-                  Pickup
+                  <Content id="pickup_option_title" defaultText="Pickup" />
                 </Typography>
                 <Typography variant="body1" className={styles.description}>
-                  Required for EBT or Cash
+                  <Content id="pickup_option_subtitle" defaultText="Required for EBT or Cash" />
                 </Typography>
                 {selectedLocation && (
                   <div className={styles.selectedLocation}>

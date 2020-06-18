@@ -8,11 +8,12 @@ interface Props {
   text?: string;
   markdown?: boolean;
   className?: string;
+  defaultText?: string;
 }
 
-const Content: React.FC<Props> = ({ id, markdown = false, className, text }) => {
+const Content: React.FC<Props> = ({ id, markdown = false, className, text, defaultText }) => {
   const cmsContent = useContent(id);
-  const content = text || cmsContent;
+  const content = text || cmsContent || defaultText;
 
   return markdown ? (
     <ReactMarkdown

@@ -17,17 +17,22 @@ const AddressView: React.FC<Props> = ({ address, variant = 'body1', className, t
 
   return (
     <div className={classNames(styles.container, className)}>
-      <Typography className={textClassName} variant={variant}>
-        {street1}
-      </Typography>
+      {street1 && (
+        <Typography className={textClassName} variant={variant}>
+          {street1}
+        </Typography>
+      )}
       {street2 && (
         <Typography className={textClassName} variant={variant}>
           {street2}
         </Typography>
       )}
-      <Typography className={textClassName} variant={variant}>
-        {city}, {state} {zip}
-      </Typography>
+      {(city || state || zip) && (
+        <Typography className={textClassName} variant={variant}>
+          {city}
+          {city && state ? ',' : ''} {state} {zip}
+        </Typography>
+      )}
     </div>
   );
 };

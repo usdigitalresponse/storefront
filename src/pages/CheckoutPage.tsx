@@ -13,17 +13,19 @@ import {
 import {
   CheckoutFormField,
   ICheckoutFormData,
+  IConfig,
   IOrderItem,
   IPickupLocation,
   OrderType,
   PaymentStatus,
+  Question,
 } from '../common/types';
 import { IAppState } from '../store/app';
 import { SetIsDonationRequest, paymentStatusSelector } from '../store/checkout';
 import { SetLocationsDialogIsOpen, requiresPaymentSelector, selectedLocationSelector } from '../store/cart';
 import { StripeService } from '../services/StripeService';
+import { questionsSelector, useContent } from '../store/cms';
 import { reverse } from '../common/router';
-import { useContent } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
 import { useElements, useStripe } from '@stripe/react-stripe-js';
 import { useForm } from 'react-hook-form';
@@ -36,8 +38,10 @@ import Content from '../components/Content';
 import DeliveryPreferences from '../components/DeliveryPreferences';
 import OptInView from '../components/OptInView';
 import OrderSummary from '../components/OrderSummary';
+import OrderTypeSelector from '../components/OrderTypeSelector';
 import OrderTypeView from '../components/OrderTypeView';
 import PhoneField from '../components/PhoneField';
+import Questions from '../components/Questions';
 import React, { useEffect } from 'react';
 import StateField from '../components/StateField';
 import StripeCardField from '../components/StripeCardField';
@@ -49,8 +53,9 @@ import styles from './CheckoutPage.module.scss';
 
 function CheckoutPageMain() {
   const { register, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
+  const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
+  const { defaultState, deliveryPreferences, deliveryEnabled, deliveryOptionsOnCheckout } = config;
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
-  const defaultState = useSelector<IAppState, string | undefined>((state) => state.cms.config.defaultState);
   const isSmall = useIsSmall();
   const hasErrors = Object.keys(errors).length > 0;
   const stripe = useStripe();
@@ -58,16 +63,15 @@ function CheckoutPageMain() {
   const items = useSelector<IAppState, IOrderItem[]>((state) => state.cart.items);
   const paymentStatus = useSelector<IAppState, PaymentStatus>(paymentStatusSelector);
   const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
-  const showDeliveryPrefs = useSelector<IAppState, boolean>((state) => state.cms.config.deliveryPreferences);
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
   const requiresEligibility = !!useContent('checkout_donation_confirm_eligibility');
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
+  const questions = useSelector<IAppState, Question[]>(questionsSelector);
   const selectedLocationId = useSelector<IAppState, string | undefined>((state) => state.cart.selectedLocation);
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
-  const deliveryEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.deliveryEnabled);
   const requiresPayment = useSelector<IAppState, boolean>(requiresPaymentSelector);
 
   useEffect(() => {
@@ -113,11 +117,12 @@ function CheckoutPageMain() {
       <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.container, { [styles.small]: isSmall })}>
         <Grid container spacing={2}>
           <Grid item md={8} xs={12}>
-            {deliveryEnabled && <OrderTypeView />}
+            {deliveryOptionsOnCheckout && <OrderTypeSelector className={styles.orderType} />}
+            {!deliveryOptionsOnCheckout && deliveryEnabled && <OrderTypeView className={styles.orderType} />}
             <Card elevation={2} className={styles.form}>
               <Grid container className={styles.section}>
                 <Typography variant="h3" className={styles.title}>
-                  Contact Information
+                  Personal Information
                 </Typography>
                 <Grid item md={8} xs={12}>
                   <TextField
@@ -136,6 +141,9 @@ function CheckoutPageMain() {
                     type="email"
                     inputRef={register({ required: 'Email is required' })}
                   />
+                  {questions.length !== 0 && (
+                    <Questions register={register} errors={errors} questionClassName={styles.field} />
+                  )}
                   {!isDonationRequest && <OptInView className={styles.optIn} inputRef={register} />}
                   {isDonationRequest && (
                     <ConfirmEligibilityView
@@ -183,7 +191,7 @@ function CheckoutPageMain() {
               )}
               {orderType === OrderType.DELIVERY && (
                 <>
-                  {showDeliveryPrefs && (
+                  {deliveryPreferences && (
                     <Grid container className={styles.section}>
                       <Typography variant="h3" className={styles.title}>
                         Delivery Preferences
