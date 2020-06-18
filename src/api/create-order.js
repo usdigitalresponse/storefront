@@ -72,6 +72,7 @@ exports.handler = async (event, context) => {
         address_street2: orderIntent.street2,
         address_city: orderIntent.city,
         address_state: orderIntent.state,
+        Subsidized: orderIntent.subsidized,
         address_zip: orderIntent.zip,
         'Pickup Location': orderIntent.type === 'Pickup' ? [orderIntent.pickupLocationId] : undefined,
         'Stripe Payment ID': orderIntent.stripePaymentId,

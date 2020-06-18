@@ -11,8 +11,8 @@ export const sendOrderConfirmationEmail = (orderId) => {
         throw new Error('No orderId specified');
       }
 
-      const order = await getFormattedOrder(orderId, 'Orders to Fulfill');
-      const formattedAmount = numeral(order['Total']).format('$0,0.00');
+      const order = await getFormattedOrder(orderId, 'All Orders');
+      const formattedAmount = numeral(order['Subsidized'] ? 0 : order['Total']).format('$0,0.00');
 
       let orderItemList = '<ul style="margin-top: 0px; margin-left: 5px; padding-left: 0px">';
       order.items.map((item) => {

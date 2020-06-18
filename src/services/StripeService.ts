@@ -101,6 +101,7 @@ export class StripeService {
     const confirmation: IOrderSummary = await AirtableService.createOrder({
       ...formData,
       status: isDonationRequest ? 'Donation Requested' : type === OrderType.DELIVERY ? 'Paid' : 'Placed',
+      subsidized: isDonationRequest,
       type,
       subtotal,
       discount,

@@ -126,6 +126,7 @@ export interface IOrderIntent extends ICheckoutFormData {
   tax: number;
   total: number;
   items: IOrderItem[];
+  subsidized: boolean;
   discountCode?: string;
   stripePaymentId?: string;
 }
@@ -139,6 +140,7 @@ export interface IOrderSummary extends ICheckoutFormBase {
   tax: number;
   total: number;
   items: IOrderItem[];
+  subsidized: boolean;
   stripePaymentId?: string;
   deliveryAddress?: IAddress;
   pickupLocationId?: string;
