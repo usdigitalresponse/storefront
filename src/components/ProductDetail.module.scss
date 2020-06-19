@@ -45,7 +45,13 @@
 
   .ctaAccessories {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
     align-items: center;
+
+    @media screen and (max-width: 1066px) {
+      margin-top:-(spacing(3));
+    }
   }
 
   .ctaButton {
