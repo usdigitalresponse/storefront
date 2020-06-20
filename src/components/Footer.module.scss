@@ -1,30 +1,48 @@
 @import '../common/variables';
 
-.footer {
+.container {
   width: 100vw;
   min-height: $footerHeight;
   padding: spacing(6) 0;
   background-color: #f5f5f5;
-}
 
-.links {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin-bottom: spacing(6);
+  .links {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: spacing(6);
 
-  .link {
-    margin: 0 spacing(2) !important;
-    text-transform: capitalize;
+    .link {
+      margin: 0 spacing(2) !important;
+      text-transform: capitalize;
+    }
+  }
+
+  .logo {
+    margin: spacing(4) auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .logoImg {
+      width: 500px;
+    }
   }
 
   &.small {
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    .links {
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
 
-    .link {
-      margin: spacing(1) 0 !important;
+      .link {
+        margin: spacing(1) 0 !important;
+      }
+    }
+
+    .logo .logoImg {
+      width: 300px;
     }
   }
 }
+
