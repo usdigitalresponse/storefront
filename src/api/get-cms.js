@@ -30,7 +30,7 @@ exports.handler = async (event, context) => {
           image: row.fields['Image'],
           stockRemaining: row.fields['Stock Remaining'] ? row.fields['Stock Remaining'] : null,
           stockLocation: row.fields['Stock Location'] ? row.fields['Stock Location'] : null,
-          validZipcodes: row.fields['Valid Zipcodes'] ? row.fields['Valid Zipcodes'].split(',') : [],
+          validZipcodes: row.fields['Valid Zipcodes'] ? row.fields['Valid Zipcodes'] : null,
         };
       });
     // Pickup Locations
