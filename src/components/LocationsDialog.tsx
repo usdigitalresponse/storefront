@@ -18,6 +18,7 @@ import AddressView from './AddressView';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
 // import SearchIcon from '@material-ui/icons/Search';
+import ScheduleView from './ScheduleView';
 import classNames from 'classnames';
 import styles from './LocationsDialog.module.scss';
 
@@ -82,6 +83,7 @@ const LocationsDialog: React.FC<Props> = () => {
                 {location.name}
               </Typography>
               <AddressView address={location.address} className={styles.itemAddress} variant="body2" />
+              <ScheduleView variant="body2" schedules={location.resolvedSchedules} className={styles.schedules} />
             </ListItem>
           ))}
         </List>

@@ -9,6 +9,7 @@ import AddressView from './AddressView';
 import CheckedIcon from '@material-ui/icons/CheckBox';
 import Content from './Content';
 import React from 'react';
+import ScheduleView from './ScheduleView';
 import UncheckedIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import classNames from 'classnames';
 import styles from './OrderTypeSelector.module.scss';
@@ -75,6 +76,11 @@ const OrderTypeSelector: React.FC<Props> = ({ className }) => {
                       address={selectedLocation.address}
                       variant="body2"
                       textClassName={styles.locationAddress}
+                    />
+                    <ScheduleView
+                      variant="body2"
+                      schedules={selectedLocation.resolvedSchedules}
+                      className={styles.schedules}
                     />
                   </div>
                 )}

@@ -278,7 +278,7 @@ function CheckoutPageMain() {
                 disabled={disableSubmit}
               >
                 {isPaying && <CircularProgress size={26} className={styles.spinner} />}
-                {!isPaying && 'Place Order'}
+                {!isPaying && <Content id="checkout_submit_button_label" defaultText="Place Order" />}
               </Button>
               {(hasErrors || !!paymentError) && (
                 <Typography className={styles.errorMessage} color="error">

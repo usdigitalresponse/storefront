@@ -54,6 +54,10 @@
     .locationAddress {
       @include fontSize('sm');
     }
+
+    .schedules {
+      margin-top: spacing(1);
+    }
   }
 
   .title {

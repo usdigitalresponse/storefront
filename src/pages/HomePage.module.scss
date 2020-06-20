@@ -12,10 +12,10 @@
   .logo {
     display: flex;
     justify-content: flex-end;
-    align-items: center;
+    align-items: flex-start;
 
     .logoImg {
-      height: 275px;
+      width: 350px;
     }
   }
 
@@ -96,7 +96,7 @@
     }
 
     .logo {
-      justify-content: center;
+      justify-content: flex-start;
       margin-bottom: spacing(4);
 
       .logoImg {
