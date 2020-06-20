@@ -28,9 +28,11 @@ exports.handler = async (event, context) => {
           description: row.fields['Description'],
           price: row.fields['Price'],
           image: row.fields['Image'],
+          stockRemaining: row.fields['Stock Remaining'] ? row.fields['Stock Remaining'] : null,
+          stockLocation: row.fields['Stock Location'] ? row.fields['Stock Location'] : null,
+          validZipcodes: row.fields['Valid Zipcodes'] ? row.fields['Valid Zipcodes'].split(',') : [],
         };
       });
-
     // Pickup Locations
     const pickupLocationRecords = await fetchTable('Pickup Locations', { view: DEFAULT_VIEW });
     const pickupLocations = pickupLocationRecords.map((row) => {
@@ -76,7 +78,7 @@ exports.handler = async (event, context) => {
         id: row.id,
         label: label ? label.trim() : label,
         type: row.fields['Type'],
-        options: optionsString ? optionsString.split(',').map(v => v.trim()) : null,
+        options: optionsString ? optionsString.split(',').map((v) => v.trim()) : null,
         waitlistOnly: row.fields['Waitlist Only'],
         required: row.fields['Required'],
       };
