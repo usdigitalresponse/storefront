@@ -72,6 +72,10 @@
       }
   }
 
+  .sectionHalf {
+    padding-right: spacing(4);
+  }
+
   &.small {
     .hero {
       padding: spacing(10) 0 spacing(6);
@@ -111,6 +115,7 @@
     }
 
     .sectionHalf {
+      padding-right: 0;
       margin-bottom: spacing(6);
     }
 

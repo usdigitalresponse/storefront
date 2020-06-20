@@ -4,7 +4,10 @@ export interface IConfig {
   projectName: string;
   defaultState?: string;
   themeColor: string;
+  paymentEnabled: boolean;
+  donationEnabled: boolean;
   donationUnits?: string;
+  defaultOrderType: OrderType;
   deliveryEnabled: boolean;
   deliveryPreferences: boolean;
   deliveryOptionsOnCheckout: boolean;

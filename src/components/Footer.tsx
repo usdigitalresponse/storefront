@@ -1,5 +1,5 @@
 import { IAppState } from '../store/app';
-import { INavItem } from '../common/types';
+import { IConfig, INavItem } from '../common/types';
 import { reverse } from '../common/router';
 import { useContent } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
@@ -20,12 +20,13 @@ const Footer: React.FC = () => {
   const navDonate = useContent('nav_donate');
   const navDrive = useContent('nav_drive');
   const navLink = useContent('nav_link');
-  const driverForm = useSelector<IAppState, boolean>((state) => state.cms.config.driverForm);
-  const driverFormName = useSelector<IAppState, string | undefined>((state) => state.cms.config.driverFormName);
-  const footerNavItems: INavItem[] = [
-    { name: navPurchase, url: reverse('products') },
-    { name: navDonate, url: reverse('donate') },
-  ];
+  const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
+  const { driverForm, driverFormName, donationEnabled } = config;
+  const footerNavItems: INavItem[] = [{ name: navPurchase, url: reverse('products') }];
+
+  if (donationEnabled) {
+    footerNavItems.push({ name: navDonate, url: reverse('donate') });
+  }
 
   if (driverForm) {
     footerNavItems.push({ name: navDrive, url: driverFormName ? `/${driverFormName}` : reverse('drivers') });

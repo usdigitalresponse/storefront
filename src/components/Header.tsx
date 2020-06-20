@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { INavItem } from '../common/types';
+import { IConfig, INavItem } from '../common/types';
 import { IOrderItemCountSelector } from '../store/cart';
 import { reverse } from '../common/router';
 import { useContent } from '../store/cms';
@@ -28,8 +28,8 @@ import styles from './Header.module.scss';
 const Header: React.FC = () => {
   const isSmall = useIsSmall();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
-  const driverForm = useSelector<IAppState, boolean>((state) => state.cms.config.driverForm);
-  const driverFormName = useSelector<IAppState, string | undefined>((state) => state.cms.config.driverFormName);
+  const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
+  const { driverForm, driverFormName, donationEnabled } = config;
   const IOrderItemsCount = useSelector<IAppState, number>(IOrderItemCountSelector);
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const navPurchase = useContent('nav_purchase');
@@ -40,8 +40,11 @@ const Header: React.FC = () => {
   const headerNavItems: INavItem[] = [
     { name: 'Home', url: reverse('home') },
     { name: navPurchase, url: reverse('products') },
-    { name: navDonate, url: reverse('donate') },
   ];
+
+  if (donationEnabled) {
+    headerNavItems.push({ name: navDonate, url: reverse('donate') });
+  }
 
   if (driverForm) {
     headerNavItems.push({ name: navDrive, url: driverFormName ? `/${driverFormName}` : reverse('drivers') });

@@ -20,6 +20,7 @@ const HomePage: React.FC<Props> = () => {
   const bannerImage = useContentImage('banner_image');
   const bannerLogo = useContentImage('banner_logo');
   const driverForm = useSelector<IAppState, boolean>((state) => state.cms.config.driverForm);
+  const donationEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.donationEnabled);
   const driverFormName = useSelector<IAppState, string | undefined>((state) => state.cms.config.driverFormName);
 
   return (
@@ -55,16 +56,18 @@ const HomePage: React.FC<Props> = () => {
                 >
                   <Content id="purchase_button_label" />
                 </Button>
-                <Button
-                  className={styles.ctaButton}
-                  size="large"
-                  color="primary"
-                  variant="contained"
-                  component={Link}
-                  href={reverse('donate')}
-                >
-                  <Content id="donate_button_label" />
-                </Button>
+                {donationEnabled && (
+                  <Button
+                    className={styles.ctaButton}
+                    size="large"
+                    color="primary"
+                    variant="contained"
+                    component={Link}
+                    href={reverse('donate')}
+                  >
+                    <Content id="donate_button_label" />
+                  </Button>
+                )}
                 {driverForm && (
                   <Button
                     className={styles.ctaButton}
@@ -122,27 +125,29 @@ const HomePage: React.FC<Props> = () => {
           </Grid>
         </Grid>
         <Grid container justify="center" className={styles.section}>
-          <Grid item container spacing={isSmall ? undefined : 4} justify="center" className={styles.content}>
-            <Grid item md={driverForm ? 6 : 12} xs={12} className={styles.sectionHalf}>
-              <Typography variant="h2" className={styles.sectionTitle}>
-                <Content id="donate_title" />
-              </Typography>
-              <Typography variant="body1" className={styles.sectionBody}>
-                <Content id="donate_copy" markdown />
-              </Typography>
-              <Button
-                className={styles.ctaButton}
-                size="large"
-                color="primary"
-                variant="contained"
-                component={Link}
-                href={reverse('donate')}
-              >
-                <Content id="donate_button_label" />
-              </Button>
-            </Grid>
+          <Grid item container justify="center" className={styles.content}>
+            {donationEnabled && (
+              <Grid item md={driverForm ? 6 : 12} xs={12} className={styles.sectionHalf}>
+                <Typography variant="h2" className={styles.sectionTitle}>
+                  <Content id="donate_title" />
+                </Typography>
+                <Typography variant="body1" className={styles.sectionBody}>
+                  <Content id="donate_copy" markdown />
+                </Typography>
+                <Button
+                  className={styles.ctaButton}
+                  size="large"
+                  color="primary"
+                  variant="contained"
+                  component={Link}
+                  href={reverse('donate')}
+                >
+                  <Content id="donate_button_label" />
+                </Button>
+              </Grid>
+            )}
             {driverForm && (
-              <Grid item md={6} xs={12} className={styles.sectionHalf}>
+              <Grid item md={donationEnabled ? 6 : 12} xs={12} className={styles.sectionHalf}>
                 <Typography variant="h2" className={styles.sectionTitle}>
                   <Content id="drive_title" />
                 </Typography>

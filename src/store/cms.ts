@@ -1,6 +1,14 @@
 import * as Reselect from 'reselect';
 import { IAppState } from './app';
-import { IConfig, IContentRecord, IPickupLocation, ISchedule, InventoryRecord, Question } from '../common/types';
+import {
+  IConfig,
+  IContentRecord,
+  IPickupLocation,
+  ISchedule,
+  InventoryRecord,
+  OrderType,
+  Question,
+} from '../common/types';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 import { useMemo } from 'react';
@@ -57,7 +65,10 @@ export const initialCmsState: ICmsState = {
     projectName: 'USDR Food',
     defaultState: undefined,
     themeColor: 'indigo',
+    paymentEnabled: true,
+    donationEnabled: true,
     donationUnits: undefined,
+    defaultOrderType: OrderType.DELIVERY,
     deliveryEnabled: true,
     deliveryPreferences: true,
     deliveryOptionsOnCheckout: false,

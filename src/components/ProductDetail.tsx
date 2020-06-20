@@ -1,12 +1,13 @@
 import { AddItem, SetDialogIsOpen, SetItems } from '../store/cart';
 import { Button, Card, Grid, Select, Typography } from '@material-ui/core';
 import { CompoundAction } from 'redoodle';
+import { IAppState } from '../store/app';
 import { InventoryRecord } from '../common/types';
 import { SetIsDonationRequest } from '../store/checkout';
 import { formatCurrency } from '../common/format';
 import { getImageUrl } from '../common/utils';
 import { reverse } from '../common/router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
 import Content from './Content';
@@ -27,6 +28,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
   const dispatch = useDispatch();
   const { id, name, description, price } = product;
   const history = useHistory();
+  const paymentEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.paymentEnabled);
 
   function addToCart() {
     dispatch(
@@ -73,7 +75,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
           <Grid item md={6} xs={12} className={styles.ctaAction}>
             <Button
               className={styles.ctaButton}
-              variant="outlined"
+              variant={paymentEnabled ? 'outlined' : 'contained'}
               color="primary"
               size="large"
               onClick={addToWaitlist}
@@ -82,41 +84,43 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
             </Button>
           </Grid>
         </Grid>
-        <Grid container alignItems="center" className={styles.cta}>
-          <Grid item md={6} xs={12} className={styles.ctaInfo}>
-            <Typography variant="subtitle1" className={styles.ctaTitle}>
-              <Content id="products_purchase_title" />
-            </Typography>
-            <Typography variant="body2" className={styles.ctaDescription}>
-              <Content id="products_purchase_copy" markdown />
-            </Typography>
-          </Grid>
-          <Grid item md={6} xs={12} className={styles.ctaAction}>
-            <div className={styles.ctaAccessories}>
-              <Typography variant="h5" className={styles.price}>
-                {formatCurrency(price)}
+        {paymentEnabled && (
+          <Grid container alignItems="center" className={styles.cta}>
+            <Grid item md={6} xs={12} className={styles.ctaInfo}>
+              <Typography variant="subtitle1" className={styles.ctaTitle}>
+                <Content id="products_purchase_title" />
               </Typography>
-              <Select
-                native
-                className={styles.quantity}
-                color="primary"
-                variant="outlined"
-                value={quantity}
-                inputProps={{ name: 'quantity' }}
-                onChange={(e: ChangeEvent<any>) => setQuantity(parseInt(e.target.value))}
-              >
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
-                  <option key={q} value={q}>
-                    {q}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <Button className={styles.ctaButton} variant="contained" color="primary" size="large" onClick={addToCart}>
-              <Content id="products_purchase_button_label" />
-            </Button>
+              <Typography variant="body2" className={styles.ctaDescription}>
+                <Content id="products_purchase_copy" markdown />
+              </Typography>
+            </Grid>
+            <Grid item md={6} xs={12} className={styles.ctaAction}>
+              <div className={styles.ctaAccessories}>
+                <Typography variant="h5" className={styles.price}>
+                  {formatCurrency(price)}
+                </Typography>
+                <Select
+                  native
+                  className={styles.quantity}
+                  color="primary"
+                  variant="outlined"
+                  value={quantity}
+                  inputProps={{ name: 'quantity' }}
+                  onChange={(e: ChangeEvent<any>) => setQuantity(parseInt(e.target.value))}
+                >
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
+                    <option key={q} value={q}>
+                      {q}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <Button className={styles.ctaButton} variant="contained" color="primary" size="large" onClick={addToCart}>
+                <Content id="products_purchase_button_label" />
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </div>
     </Card>
   );
