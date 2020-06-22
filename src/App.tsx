@@ -18,6 +18,7 @@ import MuiThemeWrapper from './components/MuiThemeWrapper';
 import NotFoundPage from './pages/NotFoundPage';
 import ProductPage from './pages/ProductPage';
 import ProductsPage from './pages/ProductsPage';
+import SchemaPage from './pages/SchemaPage';
 import React from 'react';
 
 const store = configureStore();
@@ -34,6 +35,7 @@ const routeComponents: Record<string, React.FC> = {
   cart: CartPage,
   checkout: CheckoutPage,
   confirmation: ConfirmationPage,
+  schemaTest: SchemaPage,
 };
 
 function App() {

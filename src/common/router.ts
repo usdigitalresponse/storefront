@@ -1,7 +1,16 @@
 import qs from 'qs';
 
 // must also update routeComponents in /src/App.tsx
-export type RouteId = 'home' | 'products' | 'product' | 'donate' | 'drivers' | 'cart' | 'checkout' | 'confirmation';
+export type RouteId =
+  | 'home'
+  | 'products'
+  | 'product'
+  | 'donate'
+  | 'drivers'
+  | 'cart'
+  | 'checkout'
+  | 'confirmation'
+  | 'schema';
 export const routePaths: Record<string, string> = {
   home: '/',
   products: '/products',
@@ -11,6 +20,7 @@ export const routePaths: Record<string, string> = {
   cart: '/cart',
   checkout: '/checkout',
   confirmation: '/confirmation',
+  schema: '/schema',
 };
 
 export function reverse(routeId: RouteId, params?: Record<string, any>): string {
