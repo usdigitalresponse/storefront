@@ -1,61 +1,42 @@
-const { fetchTable } = require('../api-services/airtableHelper');
+const { fetchTable, findRecord } = require('../api-services/airtableHelper');
 
 export function getFormattedOrder(orderId, view) {
   return new Promise(async (resolve, reject) => {
     try {
-      const orderResult = await fetchTable('Orders', {
-        view: view,
-        filterByFormula: `{Order ID} = ${orderId}`,
+      if (!orderId) {
+        throw new Error('No order id set');
+      }
+
+      let orderResult = await fetchTable('Orders', {
+        view: 'All Orders',
+        filterByFormula: `{Order ID} = "${orderId}"`,
       });
 
-      if (orderResult.length === 0) {
+      if (!orderResult || !orderResult.length) {
         throw new Error('Order not found for ID: ' + orderId);
       }
 
-      const order = orderResult.map((row) => row.fields)[0];
+      const order = orderResult[0].fields;
 
       const itemResult = await fetchTable('Order Items', {
         view: 'Grid view',
-        filterByFormula: `{Order} = "${orderId}"`,
+        filterByFormula: `{Order} = "${order['Order ID']}"`,
       });
-
-      if (order['Type'] === 'Pickup') {
-        const pickupLocations = await fetchTable('Pickup Locations', {
-          view: 'Grid view',
-        });
-        const pickupAddresses = pickupLocations
-          .filter((row) => row.id === order['Pickup Location'][0])
-          .map((row) => row.fields['Address']);
-        order.pickupAddress = pickupAddresses[0];
-      }
 
       order.items = itemResult.map((row) => {
         return row.fields;
       });
 
-      const allInventoryIds = order.items.map((item) => {
-        return item['Inventory'][0];
-      });
+      if (order['Type'] === 'Pickup' && order['Pickup Location'].length) {
+        const pickupLocation = await findRecord('Pickup Locations', order['Pickup Location'][0]);
 
-      const inventoryResult = await fetchTable('Inventory', {
-        view: 'Grid view',
-        filterByFormula: "OR( RECORD_ID() = '" + allInventoryIds.join("', RECORD_ID() = '") + "')",
-      });
-      const inventoryById = {};
-      inventoryResult.map((row) => {
-        inventoryById[row.id] = {
-          id: row.id,
-          name: row.fields['Name'],
-        };
-      });
+        if (pickupLocation) {
+          order.pickupAddress = pickupLocation.fields['Address'];
+          order.pickupEmail = pickupLocation.fields['Email'];
+          order.pickupName = pickupLocation.fields['Name'];
+        }
+      }
 
-      order.items = order.items.map((item) => {
-        return {
-          ...item,
-          inventoryName:
-            item.Inventory.length && inventoryById[item.Inventory[0]] ? inventoryById[item.Inventory[0]]['name'] : null,
-        };
-      });
       resolve(order);
     } catch (error) {
       reject(error);
