@@ -169,7 +169,7 @@ export const sendOrderConfirmationEmailPickupLocation = (order) => {
         subject: 'Order Notification ID: ' + order['Order ID'],
         htmlBody: `
         <b>Name:</b>
-        <p style="margin-top: 0px;">${order['Name']}</p>
+        <p style="margin-top: 0px;">${order['Name']} | ${order['Email']}</p>
         <b>${isDelivery ? 'Delivery Address' : 'Pickup Location'}:</b>
         <p style="white-space: pre-wrap; margin-top: 0px;">${
           isDelivery ? order['Delivery Address'] : order.pickupAddress
