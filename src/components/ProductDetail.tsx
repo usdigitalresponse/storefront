@@ -74,7 +74,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
             </Typography>
             {stockByLocation && locations && locations.length && (
               <div className={styles.locations}>
-                <Typography variant="body2">Avaialable in the following locations:</Typography>
+                <Typography variant="body2">Available in the following locations:</Typography>
                 <ul className={styles.locationList}>
                   {locations.map((location) => (
                     <Typography key={location.id} component="li" variant="body2" className={classNames()}>
