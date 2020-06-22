@@ -33,6 +33,7 @@ exports.handler = async (event, context) => {
           stockZipcodes: row.fields['Stock Zipcodes'] ? row.fields['Stock Zipcodes'].split(',') : [],
         };
       });
+
     // Pickup Locations
     const pickupLocationRecords = await fetchTable('Pickup Locations', { view: DEFAULT_VIEW });
     const pickupLocations = pickupLocationRecords.map((row) => {
