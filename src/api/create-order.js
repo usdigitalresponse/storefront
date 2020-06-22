@@ -1,4 +1,8 @@
-const { sendOrderConfirmationEmail } = require('../api-services/send-confirmation-email');
+const {
+  sendOrderConfirmationEmailUser,
+  sendOrderConfirmationEmailPickupLocation,
+} = require('../api-services/send-confirmation-email');
+const { getFormattedOrder } = require('../api-services/getFormattedOrder');
 
 exports.handler = async (event, context) => {
   try {
@@ -112,7 +116,7 @@ exports.handler = async (event, context) => {
         if (!acc[id]) {
           if (option && val) {
             acc[id] = option;
-          } else if(!option && typeof val === 'boolean') {
+          } else if (!option && typeof val === 'boolean') {
             acc[id] = val === true ? 'yes' : 'no';
           } else if (!option) {
             acc[id] = val;
@@ -140,7 +144,12 @@ exports.handler = async (event, context) => {
     }
 
     try {
-      await sendOrderConfirmationEmail(order.fields['Order ID']);
+      const formattedOrder = await getFormattedOrder(order.fields['Order ID'], 'All Orders');
+
+      await Promise.all([
+        sendOrderConfirmationEmailUser(formattedOrder),
+        sendOrderConfirmationEmailPickupLocation(formattedOrder),
+      ]);
     } catch (error) {
       console.error('Could not send confirmation email: ', error);
     }

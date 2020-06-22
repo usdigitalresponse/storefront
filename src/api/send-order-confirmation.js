@@ -1,4 +1,5 @@
-const { sendOrderDeliveryNotification } = require('../api-services/send-confirmation-email');
+const { sendOrderConfirmationEmailPickupLocation } = require('../api-services/send-confirmation-email');
+const { getFormattedOrder } = require('../api-services/getFormattedOrder');
 
 exports.handler = async (event, context) => {
   try {
@@ -23,12 +24,13 @@ exports.handler = async (event, context) => {
       throw new Error('No orderId specified');
     }
 
-    const deliveryDate = event.queryStringParameters.deliveryDate;
-    if (!deliveryDate) {
-      throw new Error('No deliveryDate specified');
-    }
+    // const deliveryDate = event.queryStringParameters.deliveryDate;
+    // if (!deliveryDate) {
+    //   throw new Error('No deliveryDate specified');
+    // }
 
-    const result = await sendOrderDeliveryNotification(orderId, deliveryDate);
+    const formattedOrder = await getFormattedOrder(orderId);
+    const result = await sendOrderConfirmationEmailPickupLocation(formattedOrder);
 
     return {
       statusCode: 200,

@@ -30,3 +30,7 @@ export const fetchTable = function(tableName, selectOptions) {
     .select(selectOptions)
     .firstPage();
 };
+
+export const findRecord = function(tableName, airtableRecordId) {
+  return base(tableName).find(airtableRecordId);
+};
