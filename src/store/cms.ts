@@ -6,7 +6,6 @@ import {
   IOrderItem,
   IPickupLocation,
   ISchedule,
-  IStockLocation,
   InventoryRecord,
   OrderType,
   Question,
