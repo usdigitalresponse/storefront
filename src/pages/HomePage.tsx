@@ -94,9 +94,7 @@ const HomePage: React.FC<Props> = () => {
             <Typography variant="h2" className={styles.sectionTitle}>
               <Content id="introduction_title" />
             </Typography>
-            <Typography variant="body1">
-              <Content id="introduction_copy" markdown allowParagraphs />
-            </Typography>
+            <Content id="introduction_copy" markdown allowParagraphs />
           </Grid>
         </Grid>
         <Grid
@@ -109,9 +107,7 @@ const HomePage: React.FC<Props> = () => {
             <Typography variant="h2" className={styles.sectionTitle}>
               <Content id="purchase_title" />
             </Typography>
-            <Typography variant="body1" className={styles.sectionBody}>
-              <Content id="purchase_copy" markdown allowParagraphs />
-            </Typography>
+            <Content id="purchase_copy" markdown allowParagraphs />
             <Button
               className={styles.ctaButton}
               size="large"
@@ -131,9 +127,7 @@ const HomePage: React.FC<Props> = () => {
                 <Typography variant="h2" className={styles.sectionTitle}>
                   <Content id="donate_title" />
                 </Typography>
-                <Typography variant="body1" className={styles.sectionBody}>
-                  <Content id="donate_copy" markdown />
-                </Typography>
+                <Content id="donate_copy" markdown allowParagraphs />
                 <Button
                   className={styles.ctaButton}
                   size="large"
@@ -151,9 +145,7 @@ const HomePage: React.FC<Props> = () => {
                 <Typography variant="h2" className={styles.sectionTitle}>
                   <Content id="drive_title" />
                 </Typography>
-                <Typography variant="body1" className={styles.sectionBody}>
-                  <Content id="drive_copy" markdown />
-                </Typography>
+                <Content id="drive_copy" markdown allowParagraphs />
                 <Button
                   className={styles.ctaButton}
                   size="large"

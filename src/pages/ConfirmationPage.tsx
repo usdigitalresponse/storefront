@@ -1,6 +1,13 @@
 import { Card, Chip, Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { IDonationSummary, IOrderSummary, IPickupLocation, isDonationSummary, isOrderSummary } from '../common/types';
+import {
+  IDonationSummary,
+  IOrderSummary,
+  IPickupLocation,
+  OrderStatus,
+  isDonationSummary,
+  isOrderSummary,
+} from '../common/types';
 import { formatDate } from '../common/format';
 import { pickupLocationsSelector, useContent } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
@@ -24,9 +31,7 @@ const ConfirmationPage: React.FC<Props> = () => {
   const isSmall = useIsSmall();
   const confirmationCopyAll =
     useContent('confirmation_copy_all') || `We've sent an email confirmation to {customer-email}`;
-  const confirmationCopyOrder =
-    useContent('confirmation_copy_order') ||
-    `You'll receive another email confirming the date and time of your {delivery|pickup} once your order is fulfilled.`;
+  const confirmationCopyOrder = useContent('confirmation_copy_order');
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
   const pickupLocation =
     isOrderSummary(confirmation) && confirmation.pickupLocationId && pickupLocations
@@ -47,9 +52,16 @@ const ConfirmationPage: React.FC<Props> = () => {
         : '',
     );
 
+  const title =
+    type === 'order'
+      ? (confirmation as IOrderSummary).status === OrderStatus.WAITLIST
+        ? 'On the waitlist!'
+        : 'Order Placed!'
+      : 'Thank you!';
+
   return (
     <BaseLayout
-      title={type === 'order' ? 'Order Placed!' : 'Thank you!'}
+      title={title}
       description={
         <Typography variant="body1" className={styles.description}>
           <Content text={confirmationCopy} markdown />

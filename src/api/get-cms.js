@@ -1,7 +1,6 @@
-const DEFAULT_VIEW = 'Grid view';
-
 const { airTableRowsAsKey, valueOrNull, fetchTable } = require('../api-services/airtableHelper');
 const { successResponse, errorResponse } = require('../api-services/response');
+const DEFAULT_VIEW = 'Grid view';
 
 exports.handler = async (event, context) => {
   try {
@@ -28,8 +27,8 @@ exports.handler = async (event, context) => {
           description: row.fields['Description'],
           price: row.fields['Price'],
           image: row.fields['Image'],
-          stockRemaining: row.fields['Stock Remaining'] ? row.fields['Stock Remaining'] : null,
-          stockLocation: row.fields['Stock Location'] ? row.fields['Stock Location'] : null,
+          stockRemaining: row.fields['Stock Remaining'] != null ? row.fields['Stock Remaining'] : null,
+          stockLocation: row.fields['Linked Pickup Location'] ? row.fields['Linked Pickup Location'][0] : null,
           stockZipcodes: row.fields['Stock Zipcodes'] ? row.fields['Stock Zipcodes'].split(',') : [],
         };
       });

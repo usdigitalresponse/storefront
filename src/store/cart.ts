@@ -140,6 +140,8 @@ export const selectedLocationSelector = Reselect.createSelector(
   pickupLocationsSelector,
   (state: IAppState) => state.cart.selectedLocation,
   (pickupLocations: IPickupLocation[], selectedLocation?: string) => {
-    return pickupLocations.find((location) => selectedLocation === location.id);
+    return pickupLocations.length === 1
+      ? pickupLocations[0]
+      : pickupLocations.find((location) => selectedLocation === location.id);
   },
 );

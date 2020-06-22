@@ -28,6 +28,20 @@
     text-align: justify;
   }
 
+  .locations {
+    margin: spacing(2) 0 spacing(4);
+
+    .locationList {
+      margin: spacing(1) 0 0;
+      padding-left: 18px;
+
+      .soldout {
+        text-decoration: line-through;
+        margin-right: spacing(1);
+      }
+    }
+  }
+
   .cta {
     margin-top: spacing(4);
   }

@@ -7,6 +7,7 @@ import {
   IDonationFormData,
   IDonationSummary,
   IOrderSummary,
+  OrderStatus,
   OrderType,
   PaymentStatus,
   PaymentType,
@@ -22,7 +23,8 @@ import {
 } from '../store/cart';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
-import { makeContentValueSelector } from '../store/cms';
+import { getOrderItemsForOrderIntent, getProduct } from '../common/utils';
+import { makeContentValueSelector, productListSelector } from '../store/cms';
 
 export class StripeService {
   public static store: Store<IAppState>;
@@ -79,9 +81,11 @@ export class StripeService {
     const discount = discountSelector(state);
     const tax = taxSelector(state);
     const total = totalSelector(state);
+    const productList = productListSelector(state);
     const requiresPayment = requiresPaymentSelector(state);
     const discountCode = state.checkout.discountCode?.code;
     const isDonationRequest = state.checkout.isDonationRequest;
+    const stockByLocation = state.cms.config.stockByLocation;
 
     let stripePaymentId: string | undefined;
     if (requiresPayment) {
@@ -98,9 +102,13 @@ export class StripeService {
     const type = state.cart.orderType;
     const items = state.cart.items;
 
-    const confirmation: IOrderSummary = await AirtableService.createOrder({
+    const orderIntent = {
       ...formData,
-      status: isDonationRequest ? 'Donation Requested' : type === OrderType.DELIVERY ? 'Paid' : 'Placed',
+      status: isDonationRequest
+        ? OrderStatus.DONATION_REQUESTED
+        : type === OrderType.DELIVERY
+        ? OrderStatus.PAID
+        : OrderStatus.PLACED,
       subsidized: isDonationRequest,
       type,
       subtotal,
@@ -110,7 +118,20 @@ export class StripeService {
       discountCode,
       items,
       stripePaymentId,
-    });
+    };
+
+    if (stockByLocation) {
+      orderIntent.items = getOrderItemsForOrderIntent(orderIntent, productList);
+
+      if (orderIntent.items.length === 1) {
+        const product = getProduct(orderIntent.items[0].id, productList);
+        if (product && product.stockRemaining != null && product.stockRemaining <= 0) {
+          orderIntent.status = OrderStatus.WAITLIST;
+        }
+      }
+    }
+
+    const confirmation: IOrderSummary = await AirtableService.createOrder(orderIntent);
 
     StripeService.store.dispatch(
       CompoundAction([

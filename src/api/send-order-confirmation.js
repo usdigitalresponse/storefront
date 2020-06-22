@@ -1,4 +1,4 @@
-const { sendOrderConfirmationEmailPickupLocation } = require('../api-services/send-confirmation-email');
+const { sendOrderConfirmationEmailPartner } = require('../api-services/send-confirmation-email');
 const { getFormattedOrder } = require('../api-services/getFormattedOrder');
 
 exports.handler = async (event, context) => {
@@ -30,7 +30,7 @@ exports.handler = async (event, context) => {
     // }
 
     const formattedOrder = await getFormattedOrder(orderId);
-    const result = await sendOrderConfirmationEmailPickupLocation(formattedOrder);
+    const result = await sendOrderConfirmationEmailPartner(formattedOrder);
 
     return {
       statusCode: 200,

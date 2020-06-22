@@ -16,6 +16,7 @@ export interface IConfig {
   driverForm: boolean;
   driverFormId: string;
   driverFormName?: string;
+  stockByLocation: boolean;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
@@ -30,6 +31,11 @@ export interface InventoryRecord {
   description: string;
   price: number;
   image: AirtableImage[];
+  stockRemaining?: number;
+  stockLocation?: string;
+  stockZipcodes?: string[];
+  locations?: IStockLocation[];
+  zipcodes?: IStockZipcodes[];
 }
 
 export interface AirtableImage {
@@ -154,7 +160,12 @@ export function isOrderSummary(confirmation?: IOrderSummary | IDonationSummary):
   return !!confirmation && (confirmation as IOrderSummary).items !== undefined;
 }
 
-export type OrderStatus = 'Donation Requested' | 'Paid' | 'Placed';
+export enum OrderStatus {
+  DONATION_REQUESTED = 'Donation Requested',
+  PAID = 'Paid',
+  PLACED = 'Placed',
+  WAITLIST = 'Waitlist',
+}
 
 export type DonationFormField = 'fullName' | 'phone' | 'email' | 'otherAmount';
 
@@ -209,6 +220,17 @@ export interface IPickupLocation {
   schedules: string[];
   resolvedSchedules?: ISchedule[];
   waitlistOnly?: boolean;
+}
+
+export interface IStockLocation extends IPickupLocation {
+  inventoryId: string;
+  stockRemaining: number;
+}
+
+export interface IStockZipcodes {
+  inventoryId: string;
+  zipcodes: string[];
+  stockRemaining: number;
 }
 
 export function isSchedule(schedule?: string | ISchedule): schedule is ISchedule {

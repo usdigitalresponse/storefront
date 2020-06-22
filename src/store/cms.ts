@@ -3,14 +3,17 @@ import { IAppState } from './app';
 import {
   IConfig,
   IContentRecord,
+  IOrderItem,
   IPickupLocation,
   ISchedule,
+  IStockLocation,
   InventoryRecord,
   OrderType,
   Question,
 } from '../common/types';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
+import { getPickupLocation, getProduct } from '../common/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -77,6 +80,7 @@ export const initialCmsState: ICmsState = {
     driverForm: true,
     driverFormId: '',
     driverFormName: undefined,
+    stockByLocation: false,
   },
   content: {},
   inventory: [],
@@ -123,12 +127,75 @@ export const questionsSelector = Reselect.createSelector(
   },
 );
 
+export const productListSelector = Reselect.createSelector(
+  inventorySelector,
+  (state: IAppState) => state.cms.pickupLocations,
+  (state: IAppState) => state.cms.config.stockByLocation,
+  (inventory: InventoryRecord[], pickupLocations: IPickupLocation[], stockByLocation: boolean) => {
+    if (stockByLocation) {
+      const consolidatedInventoryObject = inventory.reduce((acc, item) => {
+        if (!acc[item.name]) {
+          acc[item.name] = { ...item };
+        }
+
+        if (!acc[item.name].locations) {
+          acc[item.name].locations = [];
+        }
+
+        if (!acc[item.name].zipcodes) {
+          acc[item.name].zipcodes = [];
+        }
+
+        if (item.stockLocation && item.stockRemaining != null) {
+          const location: any = getPickupLocation(item.stockLocation, pickupLocations);
+          if (location) {
+            location.inventoryId = item.id;
+            location.stockRemaining = item.stockRemaining;
+            acc[item.name].locations!.push(location);
+          }
+        }
+
+        if (item.stockZipcodes && item.stockRemaining != null) {
+          acc[item.name].zipcodes!.push({
+            inventoryId: item.id,
+            zipcodes: item.stockZipcodes,
+            stockRemaining: item.stockRemaining,
+          });
+        }
+
+        return acc;
+      }, {} as Record<string, InventoryRecord>);
+
+      return Object.keys(consolidatedInventoryObject).map((key) => consolidatedInventoryObject[key]);
+    } else {
+      return inventory;
+    }
+  },
+);
+
 export const pickupLocationsSelector = Reselect.createSelector(
   (state: IAppState) => state.cms.pickupLocations,
   (state: IAppState) => state.cms.schedules,
+  (state: IAppState) => state.cart.items,
   (state: IAppState) => state.checkout.isDonationRequest,
-  (pickupLocations: IPickupLocation[], schedules: ISchedule[], isDonationRequest: boolean) => {
-    return pickupLocations
+  (state: IAppState) => state.cms.config.stockByLocation,
+  productListSelector,
+  (
+    pickupLocations: IPickupLocation[],
+    schedules: ISchedule[],
+    cartItems: IOrderItem[],
+    isDonationRequest: boolean,
+    stockByLocation: boolean,
+    productList: InventoryRecord[],
+  ) => {
+    let resolvedPickupLocations = [];
+    if (stockByLocation && cartItems.length === 1) {
+      resolvedPickupLocations = getProduct(cartItems[0].id, productList)?.locations || pickupLocations;
+    } else {
+      resolvedPickupLocations = pickupLocations;
+    }
+
+    return resolvedPickupLocations
       .map((pickupLocation) => {
         const resolvedSchedules = pickupLocation.schedules
           ? pickupLocation.schedules.map((scheduleId: any) => schedules.find((s) => s.id === scheduleId)!)

@@ -1,8 +1,8 @@
 const { sendEmail } = require('./sendEmail');
-const { fetchTable } = require('./airtableHelper');
 const numeral = require('numeral');
 const moment = require('moment');
 
+const { getEmailBody } = require('./getEmailBody');
 const { getFormattedOrder } = require('./getFormattedOrder');
 
 const validEmailRegex = (email) => {
@@ -20,15 +20,7 @@ export const sendOrderConfirmationEmailUser = (order) => {
         throw new Error('No order specified');
       }
 
-      const formattedAmount = numeral(order['Subsidized'] ? 0 : order['Total']).format('$0,0.00');
-
-      let orderItemList = '<ul style="margin-top: 0px; margin-left: 5px; padding-left: 0px">';
-      order.items.map((item) => {
-        orderItemList += '<li>' + item['Quantity'] + ' x ' + item['Inventory Name'] + '</li>';
-      });
-      orderItemList += '</ul>';
-
-      const isDelivery = order['Type'] === 'Delivery';
+      const emailBody = await getEmailBody(order);
 
       const emailOptions = {
         to: {
@@ -36,18 +28,7 @@ export const sendOrderConfirmationEmailUser = (order) => {
           name: order['Name'],
         },
         subject: 'Order Confirmation',
-        htmlBody: `
-        <p>Thank you for your order.</p>
-        <b>Name:</b>
-        <p style="margin-top: 0px;">${order['Name']}</p>
-        <b>${isDelivery ? 'Delivery Address' : 'Pickup Location'}:</b>
-        <p style="white-space: pre-wrap; margin-top: 0px;">${
-          isDelivery ? order['Delivery Address'] : order.pickupAddress
-        }</p>
-        <b>Items ordered:</b>
-        ${orderItemList}
-        <b>Total:</b> ${formattedAmount}<br/>
-        `,
+        htmlBody: emailBody,
       };
 
       const emailResult = await sendEmail(emailOptions);
@@ -135,7 +116,7 @@ export const sendOrderDeliveryNotification = (orderId, deliveryDate) => {
   });
 };
 
-export const sendOrderConfirmationEmailPickupLocation = (order) => {
+export const sendOrderConfirmationEmailPartner = (order) => {
   return new Promise(async (resolve, reject) => {
     try {
       if (!order) {
@@ -151,14 +132,14 @@ export const sendOrderConfirmationEmailPickupLocation = (order) => {
         return resolve();
       }
 
-      const formattedAmount = numeral(order['Subsidized'] ? 0 : order['Total']).format('$0,0.00');
-
       let orderItemList = '<ul style="margin-top: 0px; margin-left: 5px; padding-left: 0px">';
       order.items.map((item) => {
         orderItemList += '<li>' + item['Quantity'] + ' x ' + item['Inventory Name'] + '</li>';
       });
       orderItemList += '</ul>';
 
+      const formattedAmount = numeral(order['Subsidized'] ? 0 : order['Total']).format('$0,0.00');
+      const orderAmount = order['Subsidized'] ? '' : `<b>Total:</b> ${formattedAmount} <br />`;
       const isDelivery = order['Type'] === 'Delivery';
 
       const emailOptions = {
@@ -176,11 +157,9 @@ export const sendOrderConfirmationEmailPickupLocation = (order) => {
         }</p>
         <b>Items ordered:</b>
         ${orderItemList}
-        <b>Total:</b> ${formattedAmount}<br/>
+        ${orderAmount}
         `,
       };
-
-      // console.log('EMAIL OPTIONS', emailOptions);
 
       const emailResult = await sendEmail(emailOptions);
 

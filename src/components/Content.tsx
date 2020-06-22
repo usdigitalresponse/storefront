@@ -12,14 +12,14 @@ interface Props {
   allowParagraphs?: boolean;
 }
 
-const Content: React.FC<Props> = ({ id, markdown = false, className, text, defaultText, allowParagraphs }) => {
+const Content: React.FC<Props> = ({ id, markdown = false, className, text, defaultText, allowParagraphs = false }) => {
   const cmsContent = useContent(id);
   const content = text || cmsContent || defaultText;
 
   return markdown ? (
     <ReactMarkdown
       unwrapDisallowed={!allowParagraphs}
-      disallowedTypes={allowParagraphs ? undefined : ['paragraph']}
+      disallowedTypes={!allowParagraphs ? ['paragraph'] : undefined}
       renderers={{ link: Link, linkReference: Link }}
       source={content}
     />

@@ -55,6 +55,7 @@ export class AirtableService {
             driverForm: records.config.driver_form === 'false' ? false : true,
             driverFormId: records.config.driver_form_id,
             driverFormName: records.config.driver_form_name,
+            stockByLocation: records.config.stock_by_location === 'true' ? true : false,
           }),
           SetOrderType.create(
             deliveryEnabled ? records.config.defaultOrderType || OrderType.DELIVERY : OrderType.PICKUP,

@@ -2,7 +2,7 @@ import { AddItem, SetDialogIsOpen, SetItems } from '../store/cart';
 import { Button, Card, Grid, Select, Typography } from '@material-ui/core';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { InventoryRecord } from '../common/types';
+import { IConfig, InventoryRecord } from '../common/types';
 import { SetIsDonationRequest } from '../store/checkout';
 import { formatCurrency } from '../common/format';
 import { getImageUrl } from '../common/utils';
@@ -26,9 +26,10 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
   const [short, setShort] = useState<boolean>(true);
   const [quantity, setQuantity] = useState<number>(1);
   const dispatch = useDispatch();
-  const { id, name, description, price } = product;
+  const { id, name, description, price, locations } = product;
   const history = useHistory();
-  const paymentEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.paymentEnabled);
+  const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
+  const { paymentEnabled, stockByLocation } = config;
 
   function addToCart() {
     dispatch(
@@ -71,6 +72,21 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
             <Typography variant="body2" className={styles.ctaDescription}>
               <Content id="products_waitlist_copy" markdown />
             </Typography>
+            {stockByLocation && locations && locations.length && (
+              <div className={styles.locations}>
+                <Typography variant="body2">Avaialable in the following locations:</Typography>
+                <ul className={styles.locationList}>
+                  {locations.map((location) => (
+                    <Typography key={location.id} component="li" variant="body2" className={classNames()}>
+                      <span className={classNames({ [styles.soldout]: location.stockRemaining === 0 })}>
+                        {location.name}
+                      </span>
+                      {location.stockRemaining === 0 && <span>Sold Out - Waitlist Only</span>}
+                    </Typography>
+                  ))}
+                </ul>
+              </div>
+            )}
           </Grid>
           <Grid item md={6} xs={12} className={styles.ctaAction}>
             <Button
