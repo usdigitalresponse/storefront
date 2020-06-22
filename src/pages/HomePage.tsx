@@ -95,7 +95,7 @@ const HomePage: React.FC<Props> = () => {
               <Content id="introduction_title" />
             </Typography>
             <Typography variant="body1">
-              <Content id="introduction_copy" markdown />
+              <Content id="introduction_copy" markdown allowParagraphs />
             </Typography>
           </Grid>
         </Grid>
@@ -110,7 +110,7 @@ const HomePage: React.FC<Props> = () => {
               <Content id="purchase_title" />
             </Typography>
             <Typography variant="body1" className={styles.sectionBody}>
-              <Content id="purchase_copy" markdown />
+              <Content id="purchase_copy" markdown allowParagraphs />
             </Typography>
             <Button
               className={styles.ctaButton}

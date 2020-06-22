@@ -9,16 +9,17 @@ interface Props {
   markdown?: boolean;
   className?: string;
   defaultText?: string;
+  allowParagraphs?: boolean;
 }
 
-const Content: React.FC<Props> = ({ id, markdown = false, className, text, defaultText }) => {
+const Content: React.FC<Props> = ({ id, markdown = false, className, text, defaultText, allowParagraphs }) => {
   const cmsContent = useContent(id);
   const content = text || cmsContent || defaultText;
 
   return markdown ? (
     <ReactMarkdown
-      unwrapDisallowed
-      disallowedTypes={['paragraph']}
+      unwrapDisallowed={!allowParagraphs}
+      disallowedTypes={allowParagraphs ? undefined : ['paragraph']}
       renderers={{ link: Link, linkReference: Link }}
       source={content}
     />
