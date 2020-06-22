@@ -180,7 +180,7 @@ export const sendOrderConfirmationEmailPickupLocation = (order) => {
         `,
       };
 
-      console.log('EMAIL OPTIONS', emailOptions);
+      // console.log('EMAIL OPTIONS', emailOptions);
 
       const emailResult = await sendEmail(emailOptions);
 
