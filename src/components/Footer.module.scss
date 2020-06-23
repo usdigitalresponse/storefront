@@ -2,6 +2,7 @@
 
 .container {
   width: 100vw;
+  box-sizing: border-box;
   min-height: $footerHeight;
   padding: spacing(6) 0;
   background-color: #f5f5f5;

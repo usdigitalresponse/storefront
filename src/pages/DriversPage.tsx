@@ -1,4 +1,5 @@
 import { IAppState } from '../store/app';
+import { IConfig } from '../common/types';
 import { Typography } from '@material-ui/core';
 import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
@@ -10,7 +11,8 @@ import styles from './DriversPage.module.scss';
 
 const DriversPage: React.FC = () => {
   const isSmall = useIsSmall();
-  const driverFormId = useSelector<IAppState, string>((state) => state.cms.config.driverFormId);
+  const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
+  const { driverFormId } = config;
   const [loading, setLoading] = useState<boolean>(true);
 
   return (
@@ -25,7 +27,7 @@ const DriversPage: React.FC = () => {
             src={`https://airtable.com/embed/${driverFormId}?backgroundColor=white`}
             frameBorder="0"
             width="100%"
-            height={isSmall ? 2400 : 2280}
+            height={window.innerHeight - 64}
             style={{ backgroundColor: 'hsl(0,0%,98%)' }}
           />
         )}
