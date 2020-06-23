@@ -8,7 +8,6 @@ import {
   IDonationSummary,
   IOrderSummary,
   OrderStatus,
-  OrderType,
   PaymentStatus,
   PaymentType,
 } from '../common/types';
