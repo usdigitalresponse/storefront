@@ -285,7 +285,7 @@ function CheckoutPageMain() {
               </Button>
               {(hasErrors || !!paymentError) && (
                 <Typography className={styles.errorMessage} color="error">
-                  Please fix the errors in your form
+                  {paymentError || 'Please fix the errors in your form'}
                 </Typography>
               )}
               {items.length === 0 && <Typography className={styles.errorMessage}>Your cart is empty</Typography>}

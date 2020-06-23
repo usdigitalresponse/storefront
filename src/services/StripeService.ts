@@ -6,7 +6,6 @@ import {
   ICheckoutFormData,
   IDonationFormData,
   IDonationSummary,
-  IOrderSummary,
   OrderStatus,
   PaymentStatus,
   PaymentType,
@@ -123,18 +122,21 @@ export class StripeService {
       orderIntent.items = getOrderItemsForOrderIntent(orderIntent, productList);
     }
 
-    const confirmation: IOrderSummary = await AirtableService.createOrder(orderIntent);
-
-    StripeService.store.dispatch(
-      CompoundAction([
-        SetConfirmation.create(confirmation),
-        SetIsPaying.create(false),
-        SetItems.create([]),
-        SetDiscountCode.create(undefined),
-      ]),
-    );
-
-    return PaymentStatus.SUCCEEDED;
+    const confirmation = await AirtableService.createOrder(orderIntent);
+    if (confirmation.status === 'Error') {
+      StripeService.store.dispatch(CompoundAction([SetError.create(confirmation.error), SetIsPaying.create(false)]));
+      return PaymentStatus.FAILED;
+    } else {
+      StripeService.store.dispatch(
+        CompoundAction([
+          SetConfirmation.create(confirmation),
+          SetIsPaying.create(false),
+          SetItems.create([]),
+          SetDiscountCode.create(undefined),
+        ]),
+      );
+      return PaymentStatus.SUCCEEDED;
+    }
   }
 
   public static async donate(formData: IDonationFormData, stripe: Stripe | null, elements: StripeElements | null) {

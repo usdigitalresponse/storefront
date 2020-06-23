@@ -3,7 +3,7 @@ const {
   sendOrderConfirmationEmailPartner,
 } = require('../api-services/send-confirmation-email');
 const { getFormattedOrder } = require('../api-services/getFormattedOrder');
-const { findRecord } = require ('../api-services/airtableHelper');
+const { findRecord, fetchTable, DEFAULT_VIEW } = require ('../api-services/airtableHelper');
 
 exports.handler = async (event, context) => {
   try {
@@ -100,6 +100,17 @@ exports.handler = async (event, context) => {
       },
       { typecast: true },
     );
+
+    // Note: temporaily disable this logic until further notice
+    // prevent duplicate orders
+    // let existingOrders = await fetchTable('Orders', {
+    //   view: DEFAULT_VIEW,
+    //   filterByFormula: `AND({Name} = "${orderIntent.fullName}", {Email} = "${orderIntent.email}")`,
+    // });
+
+    // if (existingOrders && existingOrders.length > 0) {
+    //   throw new Error('Only one order per person!');
+    // }
 
     // process order items
     const items = await base('Order Items').create(
