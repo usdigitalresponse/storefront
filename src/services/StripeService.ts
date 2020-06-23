@@ -106,7 +106,7 @@ export class StripeService {
       ...formData,
       status: isDonationRequest
         ? OrderStatus.DONATION_REQUESTED
-        : type === OrderType.DELIVERY
+        : stripePaymentId
         ? OrderStatus.PAID
         : OrderStatus.PLACED,
       subsidized: isDonationRequest,
