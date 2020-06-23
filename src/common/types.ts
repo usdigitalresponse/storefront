@@ -261,7 +261,7 @@ export interface IDiscountCode {
 
 export type PaymentType = 'main' | 'donation';
 
-export type QuestionType = 'Single Checkbox' | 'Multiple Checkboxes' | 'Text Input';
+export type QuestionType = 'Single Checkbox' | 'Multiple Checkboxes' | 'Text Input' | 'Select';
 
 interface IQuestionBase {
   id: string;
@@ -283,4 +283,9 @@ export interface ICheckboxesQuestion extends IQuestionBase {
   type: 'Multiple Checkboxes';
   options: string[];
 }
-export type Question = ITextInputQuestion | ICheckboxQuestion | ICheckboxesQuestion;
+
+export interface ISelectQuestion extends IQuestionBase {
+  type: 'Select';
+  options: string[];
+}
+export type Question = ITextInputQuestion | ICheckboxQuestion | ICheckboxesQuestion | ISelectQuestion;

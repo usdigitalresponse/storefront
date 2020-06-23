@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import CheckboxQuestion from './CheckboxQuestion';
 import CheckboxesQuestion from './CheckboxesQuestion';
 import React from 'react';
+import SelectQuestion from './SelectQuestion';
 import TextInputQuestion from './TextInputQuestion';
 
 interface Props {
@@ -47,6 +48,16 @@ const Questions: React.FC<Props> = ({ register, errors, questionClassName }) => 
                 key={question.id}
                 question={question}
                 inputRef={register}
+                className={questionClassName}
+              />
+            );
+          case 'Select':
+            return (
+              <SelectQuestion
+                key={question.id}
+                question={question}
+                inputRef={register({ required: question.required ? `${question.label} is required` : undefined })}
+                errors={errors}
                 className={questionClassName}
               />
             );

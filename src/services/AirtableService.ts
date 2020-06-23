@@ -46,7 +46,7 @@ export class AirtableService {
             paymentEnabled: records.config.payment_enabled === 'false' ? false : true,
             donationEnabled: records.config.donation_enabled === 'false' ? false : true,
             donationUnits: records.config.donation_units,
-            defaultOrderType: records.config.defaultOrderType || OrderType.DELIVERY,
+            defaultOrderType: records.config.default_order_type || OrderType.DELIVERY,
             deliveryEnabled: deliveryEnabled,
             deliveryPreferences: records.config.delivery_preferences === 'false' ? false : true,
             deliveryOptionsOnCheckout: records.config.delivery_options_on_checkout === 'true' ? true : false,
@@ -58,7 +58,7 @@ export class AirtableService {
             stockByLocation: records.config.stock_by_location === 'true' ? true : false,
           }),
           SetOrderType.create(
-            deliveryEnabled ? records.config.defaultOrderType || OrderType.DELIVERY : OrderType.PICKUP,
+            deliveryEnabled ? records.config.default_order_type || OrderType.DELIVERY : OrderType.PICKUP,
           ),
           SetContent.create(records.content),
           SetInventory.create(records.inventory),
