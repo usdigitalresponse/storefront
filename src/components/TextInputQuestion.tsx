@@ -21,6 +21,7 @@ const TextInputQuestion: React.FC<Props> = ({ question, inputRef, errors, classN
       helperText: error?.message,
       fullWidth: true,
       variant: 'outlined',
+      autoComplete: 'off',
     };
   }
 

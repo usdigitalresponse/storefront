@@ -67,7 +67,7 @@ function CheckoutPageMain() {
   const requiresEligibility = !!useContent('checkout_donation_confirm_eligibility');
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
   const questions = useSelector<IAppState, Question[]>(questionsSelector);
-  const selectedLocationId = useSelector<IAppState, string | undefined>((state) => state.cart.selectedLocation);
+  const selectedLocationId = selectedLocation?.id;
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();

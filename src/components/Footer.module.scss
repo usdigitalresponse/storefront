@@ -20,7 +20,7 @@
   }
 
   .logo {
-    margin: spacing(4) auto;
+    margin: spacing(2) auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -41,8 +41,12 @@
       }
     }
 
-    .logo .logoImg {
-      width: 300px;
+    .logo {
+      margin: spacing(2) auto;
+
+      .logoImg {
+        width: 300px;
+      }
     }
   }
 }

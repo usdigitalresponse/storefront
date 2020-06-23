@@ -123,12 +123,12 @@ export const sendOrderConfirmationEmailPartner = (order) => {
         throw new Error('No order specified');
       }
 
-      if (!order.pickupEmail) {
+      if (!order.notificationEmail) {
         return resolve('No pickup email specified');
       }
 
-      if (!validEmailRegex(order.pickupEmail)) {
-        console.log('Could not send pickup email to: ' + order.pickupEmail);
+      if (!validEmailRegex(order.notificationEmail)) {
+        console.log('Could not send pickup email to: ' + order.notificationEmail);
         return resolve();
       }
 
@@ -144,7 +144,7 @@ export const sendOrderConfirmationEmailPartner = (order) => {
 
       const emailOptions = {
         to: {
-          email: order.pickupEmail,
+          email: order.notificationEmail,
           name: order.pickupName,
         },
         subject: 'Order Notification ID: ' + order['Order ID'],

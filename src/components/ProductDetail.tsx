@@ -72,7 +72,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
             <Typography variant="body2" className={styles.ctaDescription}>
               <Content id="products_waitlist_copy" markdown />
             </Typography>
-            {stockByLocation && locations && locations.length && (
+            {stockByLocation && locations && (
               <div className={styles.locations}>
                 <Typography variant="body2">Available in the following locations:</Typography>
                 <ul className={styles.locationList}>

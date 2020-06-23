@@ -1,8 +1,8 @@
 import { Button, Card, CardActionArea, CardActions, Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { IPickupLocation, OrderType } from '../common/types';
+import { IConfig, IPickupLocation, OrderType } from '../common/types';
 import { SetLocationsDialogIsOpen, SetOrderType, selectedLocationSelector } from '../store/cart';
-import { pickupLocationsSelector } from '../store/cms';
+import { pickupLocationsSelector, validZipcodesSelector } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsSmall } from '../common/hooks';
 import AddressView from './AddressView';
@@ -24,7 +24,9 @@ const OrderTypeSelector: React.FC<Props> = ({ className }) => {
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
   const pickupLocationCount = useSelector<IAppState, IPickupLocation[]>(pickupLocationsSelector).length;
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
-  const deliveryEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.deliveryEnabled);
+  const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
+  const validZipcodes = useSelector<IAppState, string[]>(validZipcodesSelector);
+  const { deliveryEnabled, stockByLocation } = config;
 
   return (
     <Grid container spacing={2} alignItems={isSmall ? undefined : 'stretch'} className={className}>
@@ -46,6 +48,7 @@ const OrderTypeSelector: React.FC<Props> = ({ className }) => {
                   </Typography>
                   <Typography variant="body1" className={styles.description}>
                     <Content id="delivery_option_subtitle" defaultText="Credit / Debit Card Only" />
+                    {stockByLocation && <span> Only valid for {validZipcodes.join(', ')}.</span>}
                   </Typography>
                 </div>
               </div>

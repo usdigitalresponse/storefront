@@ -206,6 +206,23 @@ export const pickupLocationsSelector = Reselect.createSelector(
   },
 );
 
+export const validZipcodesSelector = Reselect.createSelector(
+  (state: IAppState) => state.cms.validZipcodes,
+  (state: IAppState) => state.cart.items,
+  (state: IAppState) => state.cms.config.stockByLocation,
+  productListSelector,
+  (validZipcodes: string[], cartItems: IOrderItem[], stockByLocation: boolean, productList: InventoryRecord[]) => {
+    if (stockByLocation && cartItems.length === 1 && cartItems[0].quantity === 1) {
+      const stockZipcodes = getProduct(cartItems[0].id, productList)?.zipcodes;
+      return stockZipcodes
+        ? stockZipcodes.reduce((acc, stockZipcode) => acc.concat(stockZipcode.zipcodes), [] as string[]).sort()
+        : validZipcodes.sort();
+    } else {
+      return validZipcodes.sort();
+    }
+  },
+);
+
 export const makeProductDetailSelector = () =>
   Reselect.createSelector(
     inventorySelector,
@@ -228,7 +245,6 @@ export const makeContentValueSelector = () =>
       }
 
       if (!value) {
-        // console.log(`Missing ${key} value in CMS`);
         return '';
       }
 
@@ -253,7 +269,6 @@ export const makeContentImageSelector = () =>
       }
 
       if (!value) {
-        // console.log(`Missing ${key} value in CMS`);
         return { url: '', alt: '' };
       }
 

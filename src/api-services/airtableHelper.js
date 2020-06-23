@@ -7,6 +7,8 @@ if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY) {
 let Airtable = require('airtable');
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
 
+export const DEFAULT_VIEW = 'Grid view';
+
 export const airTableRowsAsKey = function(records) {
   const rowFields = records.map((row) => {
     return row.fields;
@@ -22,6 +24,11 @@ export const airTableRowsAsKey = function(records) {
 
   return fieldsByKey;
 };
+
+export function getRecordValueForLanguage(record, language) {
+  const val = record[language];
+  return val ? val.trim() : '';
+}
 
 export const valueOrNull = function(configValues, key) {
   return configValues[key] ? configValues[key].value : null;

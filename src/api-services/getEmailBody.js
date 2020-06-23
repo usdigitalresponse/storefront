@@ -1,12 +1,7 @@
-const { airTableRowsAsKey, fetchTable } = require('./airtableHelper');
+const { airTableRowsAsKey, fetchTable, getRecordValueForLanguage } = require('./airtableHelper');
 let markdown = require('markdown-it')();
 const numeral = require('numeral');
 const DEFAULT_VIEW = 'Grid view';
-
-function getRecordValueForLanguage(record, language) {
-  const val = record[language];
-  return val ? val.trim() : '';
-}
 
 export function getEmailBody(order) {
   return new Promise(async (resolve, reject) => {
