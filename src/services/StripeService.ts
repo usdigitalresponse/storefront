@@ -22,7 +22,7 @@ import {
 } from '../store/cart';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
-import { getOrderItemsForOrderIntent, getProduct } from '../common/utils';
+import { getOrderItemsForOrderIntent } from '../common/utils';
 import { makeContentValueSelector, productListSelector } from '../store/cms';
 
 export class StripeService {
