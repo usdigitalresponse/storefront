@@ -20,8 +20,9 @@ import {
   PaymentStatus,
   Question,
 } from '../common/types';
+import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { SetIsDonationRequest, paymentStatusSelector } from '../store/checkout';
+import { SetError, SetIsDonationRequest, SetIsPaying, paymentStatusSelector } from '../store/checkout';
 import { SetLocationsDialogIsOpen, requiresPaymentSelector, selectedLocationSelector } from '../store/cart';
 import { StripeService } from '../services/StripeService';
 import { questionsSelector, useContent } from '../store/cms';
@@ -46,6 +47,7 @@ import React, { useEffect } from 'react';
 import StateField from '../components/StateField';
 import StripeCardField from '../components/StripeCardField';
 import StripeElementsWrapper from '../components/StripeElementsWrapper';
+import WaitlistDialog from '../components/WaitlistDialog';
 import ZipCodeField from '../components/ZipCodeField';
 import classNames from 'classnames';
 import qs from 'qs';
@@ -88,8 +90,9 @@ function CheckoutPageMain() {
   }, [clearError, selectedLocationId]);
 
   async function onSubmit(data: ICheckoutFormData) {
-    const status = await StripeService.pay(data, stripe, elements);
+    dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
 
+    const status = await StripeService.pay(data, stripe, elements);
     if (status === PaymentStatus.SUCCEEDED) {
       history.push(reverse('confirmation'));
     }
@@ -292,6 +295,7 @@ function CheckoutPageMain() {
             </div>
           </Grid>
         </Grid>
+        <WaitlistDialog onSubmit={handleSubmit(onSubmit)} />
       </form>
     </BaseLayout>
   );

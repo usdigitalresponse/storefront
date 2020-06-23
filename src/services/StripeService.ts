@@ -6,22 +6,24 @@ import {
   ICheckoutFormData,
   IDonationFormData,
   IDonationSummary,
+  IOrderIntent,
   OrderStatus,
   PaymentStatus,
   PaymentType,
 } from '../common/types';
-import { SetConfirmation, SetDiscountCode, SetError, SetIsPaying } from '../store/checkout';
+import { SetConfirmation, SetDiscountCode, SetError, SetIsPaying, SetWaitlistDialogIsOpen } from '../store/checkout';
 import {
   SetItems,
   discountSelector,
   requiresPaymentSelector,
+  singleCartItemStockRemainingSelector,
   subtotalSelector,
   taxSelector,
   totalSelector,
 } from '../store/cart';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
-import { getOrderItemsForOrderIntent } from '../common/utils';
+import { getOrderItemsForOrderIntent, getProduct } from '../common/utils';
 import { makeContentValueSelector, productListSelector } from '../store/cms';
 
 export class StripeService {
@@ -39,7 +41,7 @@ export class StripeService {
     elements: StripeElements,
   ) {
     const errorMessage = makeContentValueSelector()(StripeService.store.getState(), 'error_payment');
-    StripeService.store.dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
+
     try {
       const clientSecretResult = await fetch(
         `/.netlify/functions/stripe-payment?amountCents=${Math.round(amount * 100)}&paymentType=${paymentType}`,
@@ -81,32 +83,16 @@ export class StripeService {
     const total = totalSelector(state);
     const productList = productListSelector(state);
     const requiresPayment = requiresPaymentSelector(state);
+    const waitlistConfirmed = state.checkout.waitlistConfirmed;
     const discountCode = state.checkout.discountCode?.code;
     const isDonationRequest = state.checkout.isDonationRequest;
     const stockByLocation = state.cms.config.stockByLocation;
-
-    let stripePaymentId: string | undefined;
-    if (requiresPayment) {
-      stripePaymentId = await StripeService.processPayment('main', total, stripe, elements);
-    } else {
-      StripeService.store.dispatch(SetIsPaying.create(true));
-    }
-
-    if (requiresPayment && !stripePaymentId) {
-      StripeService.store.dispatch(SetError.create('Payment could not be processed.'));
-      return PaymentStatus.FAILED;
-    }
-
     const type = state.cart.orderType;
     const items = state.cart.items;
 
-    const orderIntent = {
+    const orderIntent: IOrderIntent = {
       ...formData,
-      status: isDonationRequest
-        ? OrderStatus.DONATION_REQUESTED
-        : stripePaymentId
-        ? OrderStatus.PAID
-        : OrderStatus.PLACED,
+      status: isDonationRequest ? OrderStatus.DONATION_REQUESTED : OrderStatus.PLACED,
       subsidized: isDonationRequest,
       type,
       subtotal,
@@ -115,11 +101,39 @@ export class StripeService {
       total,
       discountCode,
       items,
-      stripePaymentId,
     };
 
     if (stockByLocation) {
       orderIntent.items = getOrderItemsForOrderIntent(orderIntent, productList);
+
+      if (!waitlistConfirmed) {
+        await AirtableService.fetchInventory();
+        const newState = StripeService.store.getState();
+
+        if (orderIntent.items.length === 1 && orderIntent.items[0].quantity === 1) {
+          const product = getProduct(orderIntent.items[0].id, newState.cms.inventory);
+          const stockRemaining = product?.stockRemaining;
+          if (stockRemaining === 0) {
+            AirtableService.store.dispatch(
+              CompoundAction([SetWaitlistDialogIsOpen.create(true), SetIsPaying.create(false)]),
+            );
+            return;
+          }
+        }
+      }
+    }
+
+    // process payment
+    let stripePaymentId: string | undefined;
+    if (requiresPayment) {
+      stripePaymentId = await StripeService.processPayment('main', total, stripe, elements);
+      if (stripePaymentId) {
+        orderIntent.status = OrderStatus.PAID;
+        orderIntent.stripePaymentId = stripePaymentId;
+      } else {
+        StripeService.store.dispatch(SetError.create('Payment could not be processed.'));
+        return PaymentStatus.FAILED;
+      }
     }
 
     const confirmation = await AirtableService.createOrder(orderIntent);

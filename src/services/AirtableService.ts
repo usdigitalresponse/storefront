@@ -24,8 +24,8 @@ export class AirtableService {
     AirtableService.fetchRecords();
   }
 
-  private static fetchRecords() {
-    fetch('/.netlify/functions/get-cms')
+  public static async fetchRecords() {
+    return fetch('/.netlify/functions/get-cms')
       .then((res) => res.json())
       .then((records: Record<string, any>) => {
         if (!records) return;
@@ -78,6 +78,15 @@ export class AirtableService {
 
         AirtableService.store.dispatch(CompoundAction(actions));
         document.title = makeContentValueSelector()(AirtableService.store.getState(), 'page_title');
+      });
+  }
+
+  public static async fetchInventory() {
+    return fetch('/.netlify/functions/get-cms')
+      .then((res) => res.json())
+      .then((records: Record<string, any>) => {
+        if (!records) return;
+        AirtableService.store.dispatch(SetInventory.create(records.inventory));
       });
   }
 

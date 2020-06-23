@@ -11,6 +11,8 @@ export interface ICheckoutState {
   isDonationRequest: boolean;
   donationAmount: number;
   discountCode?: IDiscountCode;
+  waitlistDialogIsOpen: boolean;
+  waitlistConfirmed: boolean;
 }
 
 // actions
@@ -22,6 +24,8 @@ export const SetConfirmation = TypedAction.define('APP/CHECKOUT/SET_CONFIRMATION
 export const SetDiscountCode = TypedAction.define('APP/CHECKOUT/SET_DISCOUNT_CODE')<IDiscountCode | undefined>();
 export const SetIsDonationRequest = TypedAction.define('APP/CHECKOUT/SET_IS_DONATION_REQUEST')<boolean>();
 export const SetDonationAmount = TypedAction.define('APP/CHECKOUT/SET_DONATION_AMOUNT')<number>();
+export const SetWaitlistDialogIsOpen = TypedAction.define('APP/CHECKOUT/SET_WAITLIST_DIALOG_IS_OPEN')<boolean>();
+export const SetWaitlistConfirmed = TypedAction.define('APP/CHECKOUT/SET_WAITLIST_CONFIRMED')<boolean>();
 
 // reducer
 export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
@@ -31,6 +35,8 @@ export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
   .withHandler(SetDiscountCode.TYPE, (state, discountCode) => setWith(state, { discountCode }))
   .withHandler(SetIsDonationRequest.TYPE, (state, isDonationRequest) => setWith(state, { isDonationRequest }))
   .withHandler(SetDonationAmount.TYPE, (state, donationAmount) => setWith(state, { donationAmount }))
+  .withHandler(SetWaitlistDialogIsOpen.TYPE, (state, waitlistDialogIsOpen) => setWith(state, { waitlistDialogIsOpen }))
+  .withHandler(SetWaitlistConfirmed.TYPE, (state, waitlistConfirmed) => setWith(state, { waitlistConfirmed }))
   .withDefaultHandler((state) => (state ? state : initialCheckoutState))
   .build();
 
@@ -42,6 +48,8 @@ export const initialCheckoutState: ICheckoutState = {
   confirmation: undefined,
   donationAmount: 50,
   discountCode: undefined,
+  waitlistDialogIsOpen: false,
+  waitlistConfirmed: false,
 };
 
 // selectors

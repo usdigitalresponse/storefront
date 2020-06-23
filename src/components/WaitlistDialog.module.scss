@@ -1,0 +1,28 @@
+@import '../common/variables';
+
+.dialog {
+  .title h2 {
+    display: flex;
+    align-items: center;
+  }
+
+  .footer {
+    padding: spacing(3) !important;
+  }
+
+  &.small {
+    .footer {
+      flex-direction: column;
+    }
+
+    .actionButton {
+      align-self: stretch;
+      margin: 0;
+
+      &:first-child {
+        margin-bottom: spacing(2);
+      }
+    }
+  }
+}
+
