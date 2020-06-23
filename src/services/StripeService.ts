@@ -121,13 +121,6 @@ export class StripeService {
 
     if (stockByLocation) {
       orderIntent.items = getOrderItemsForOrderIntent(orderIntent, productList);
-
-      if (orderIntent.items.length === 1) {
-        const product = getProduct(orderIntent.items[0].id, productList);
-        if (product && product.stockRemaining != null && product.stockRemaining <= 0) {
-          orderIntent.status = OrderStatus.WAITLIST;
-        }
-      }
     }
 
     const confirmation: IOrderSummary = await AirtableService.createOrder(orderIntent);

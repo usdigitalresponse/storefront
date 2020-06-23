@@ -3,6 +3,7 @@ const {
   sendOrderConfirmationEmailPartner,
 } = require('../api-services/send-confirmation-email');
 const { getFormattedOrder } = require('../api-services/getFormattedOrder');
+const { findRecord } = require ('../api-services/airtableHelper');
 
 exports.handler = async (event, context) => {
   try {
@@ -64,6 +65,14 @@ exports.handler = async (event, context) => {
     if (orderIntent.deliveryPref_mornings) deliveryPreferences.push('Mornings');
     if (orderIntent.deliveryPref_afternoons) deliveryPreferences.push('Afternoons');
     if (orderIntent.deliveryPref_evenings) deliveryPreferences.push('Evenings');
+
+    // get correct order status
+    if (orderIntent.items.length === 1 && orderIntent.items[0].quantity === 1) {
+      const product = await findRecord('Inventory', orderIntent.items[0].id)
+      if (product && product.fields['Stock Remaining'] != null && product.fields['Stock Remaining'] <= 0) {
+        orderIntent.status = 'Waitlist';
+      }
+    }
 
     const order = await base('Orders').create(
       {
