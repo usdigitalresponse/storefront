@@ -19,7 +19,7 @@ exports.handler = async (event, context) => {
     // Inventory
     const inventoryRecords = await fetchTable('Inventory', { view: DEFAULT_VIEW });
     const inventory = inventoryRecords
-      .filter((row) => row.fields['Name'] && row.fields['Description'] && row.fields['Price'] && row.fields['Image'])
+      .filter((row) => row.fields['Name'] && row.fields['Description'] && row.fields['Price'] && row.fields['Image'] && !row.fields['Disabled'])
       .map((row) => {
         return {
           id: row.id,
