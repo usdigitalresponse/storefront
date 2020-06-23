@@ -127,7 +127,10 @@ function CheckoutPageMain() {
                 <Grid item md={8} xs={12}>
                   <TextField
                     {...textFieldProps('Name', 'fullName', 'First Last')}
-                    inputRef={register({ required: 'Name is required' })}
+                    inputRef={register({
+                      required: 'Name is required',
+                      pattern: { value: /[\w-']+ [\w-'][\w-']+/, message: 'First and Last name required' },
+                    })}
                     autoCorrect="off"
                   />
                   <TextField
