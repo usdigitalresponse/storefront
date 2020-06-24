@@ -58,15 +58,16 @@ exports.handler = async (event, context) => {
       });
     });
 
+    // Note: delaying launch of this feature, but still want the other things in this PR
     // prevent duplicate orders
-    let existingOrders = await fetchTable('Orders', {
-      view: DEFAULT_VIEW,
-      filterByFormula: `AND({Name} = "${orderIntent.fullName}", {Email} = "${orderIntent.email}")`,
-    });
+    // let existingOrders = await fetchTable('Orders', {
+    //   view: DEFAULT_VIEW,
+    //   filterByFormula: `AND({Name} = "${orderIntent.fullName}", {Email} = "${orderIntent.email}")`,
+    // });
 
-    if (existingOrders && existingOrders.length > 0) {
-      throw new Error('You have already placed an order. One order per person.');
-    }
+    // if (existingOrders && existingOrders.length > 0) {
+    //   throw new Error('You have already placed an order. One order per person.');
+    // }
 
     // collate delivery preferences
     const deliveryPreferences = [];
