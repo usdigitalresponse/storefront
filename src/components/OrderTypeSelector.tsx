@@ -5,11 +5,10 @@ import { SetLocationsDialogIsOpen, SetOrderType, selectedLocationSelector } from
 import { pickupLocationsSelector, validZipcodesSelector } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsSmall } from '../common/hooks';
-import AddressView from './AddressView';
 import CheckedIcon from '@material-ui/icons/CheckBox';
 import Content from './Content';
+import Location from './Location';
 import React from 'react';
-import ScheduleView from './ScheduleView';
 import UncheckedIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import classNames from 'classnames';
 import styles from './OrderTypeSelector.module.scss';
@@ -70,23 +69,7 @@ const OrderTypeSelector: React.FC<Props> = ({ className }) => {
                 <Typography variant="body1" className={styles.description}>
                   <Content id="pickup_option_subtitle" defaultText="Required for EBT or Cash" />
                 </Typography>
-                {selectedLocation && (
-                  <div className={styles.selectedLocation}>
-                    <Typography variant="body2" className={styles.locationName}>
-                      {selectedLocation.name}
-                    </Typography>
-                    <AddressView
-                      address={selectedLocation.address}
-                      variant="body2"
-                      textClassName={styles.locationAddress}
-                    />
-                    <ScheduleView
-                      variant="body2"
-                      schedules={selectedLocation.resolvedSchedules}
-                      className={styles.schedules}
-                    />
-                  </div>
-                )}
+                {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
               </div>
             </div>
           </CardActionArea>
