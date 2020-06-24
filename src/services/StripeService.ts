@@ -16,7 +16,6 @@ import {
   SetItems,
   discountSelector,
   requiresPaymentSelector,
-  singleCartItemStockRemainingSelector,
   subtotalSelector,
   taxSelector,
   totalSelector,
