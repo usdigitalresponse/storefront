@@ -101,15 +101,16 @@ exports.handler = async (event, context) => {
       { typecast: true },
     );
 
+    // Note: temporaily disable this logic until further notice
     // prevent duplicate orders
-    let existingOrders = await fetchTable('Orders', {
-      view: DEFAULT_VIEW,
-      filterByFormula: `AND({Name} = "${orderIntent.fullName}", {Email} = "${orderIntent.email}")`,
-    });
+    // let existingOrders = await fetchTable('Orders', {
+    //   view: DEFAULT_VIEW,
+    //   filterByFormula: `AND({Name} = "${orderIntent.fullName}", {Email} = "${orderIntent.email}")`,
+    // });
 
-    if (existingOrders && existingOrders.length > 0) {
-      throw new Error('Only one order per person!');
-    }
+    // if (existingOrders && existingOrders.length > 0) {
+    //   throw new Error('Only one order per person!');
+    // }
 
     // process order items
     const items = await base('Order Items').create(
@@ -163,7 +164,7 @@ exports.handler = async (event, context) => {
     }
 
     try {
-      const formattedOrder = await getFormattedOrder(order.fields['Order ID'], DEFAULT_VIEW);
+      const formattedOrder = await getFormattedOrder(order.fields['Order ID'], 'All Orders');
       await Promise.all([
         sendOrderConfirmationEmailUser(formattedOrder),
         sendOrderConfirmationEmailPartner(formattedOrder),

@@ -227,10 +227,6 @@ export interface IStockLocation extends IPickupLocation {
   stockRemaining: number;
 }
 
-export function isStockLocation(location?: IPickupLocation | IStockLocation): location is IStockLocation {
-  return !!location && (location as IStockLocation).inventoryId !== undefined;
-}
-
 export interface IStockZipcodes {
   inventoryId: string;
   zipcodes: string[];

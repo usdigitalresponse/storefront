@@ -32,11 +32,11 @@ import { useElements, useStripe } from '@stripe/react-stripe-js';
 import { useForm } from 'react-hook-form';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
+import AddressView from '../components/AddressView';
 import BaseLayout from '../layouts/BaseLayout';
 import ConfirmEligibilityView from '../components/ConfirmEligibilityView';
 import Content from '../components/Content';
 import DeliveryPreferences from '../components/DeliveryPreferences';
-import Location from '../components/Location';
 import OptInView from '../components/OptInView';
 import OrderSummary from '../components/OrderSummary';
 import OrderTypeSelector from '../components/OrderTypeSelector';
@@ -113,7 +113,7 @@ function CheckoutPageMain() {
     };
   }
 
-  const disableSubmit = hasErrors || !items.length;
+  const disableSubmit = hasErrors || !!paymentError || !items.length;
 
   return (
     <BaseLayout>
@@ -166,7 +166,18 @@ function CheckoutPageMain() {
                     Pickup Location
                   </Typography>
                   <Grid item md={8} xs={12}>
-                    {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
+                    {selectedLocation && (
+                      <div className={styles.selectedLocation}>
+                        <Typography variant="body1" className={styles.locationName}>
+                          {selectedLocation.name}
+                        </Typography>
+                        <AddressView
+                          address={selectedLocation.address}
+                          variant="body2"
+                          textClassName={styles.locationAddress}
+                        />
+                      </div>
+                    )}
                     <Button
                       className={classNames(styles.locationButton, { [styles.error]: !!errors.pickupLocationId })}
                       color="primary"

@@ -1,4 +1,4 @@
-const { compareTable, DEFAULT_VIEW } = require('../api-services/airtableHelper');
+const { compareTable } = require('../api-services/airtableHelper');
 const { successResponse, errorResponse } = require('../api-services/response');
 
 exports.handler = async (event, context) => {
@@ -21,7 +21,7 @@ exports.handler = async (event, context) => {
     const schemaPromises = [
       {
         tableName: 'Orders',
-        viewName: DEFAULT_VIEW,
+        viewName: 'All Orders',
       },
       'Order Items',
       'Inventory',

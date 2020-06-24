@@ -9,7 +9,8 @@ import {
 } from '../common/types';
 import { IAppState } from './app';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
-import { pickupLocationsSelector } from './cms';
+import { getProduct } from '../common/utils';
+import { pickupLocationsSelector, productListSelector } from './cms';
 import update from 'immutability-helper';
 
 // model
@@ -123,6 +124,19 @@ export const totalSelector = Reselect.createSelector(
   taxSelector,
   (subtotal: number, discount: number, tax: number) => {
     return Math.max(subtotal - discount, 0) + tax;
+  },
+);
+
+export const singleCartItemStockRemainingSelector = Reselect.createSelector(
+  productListSelector,
+  (state: IAppState) => state.cart.items,
+  (state: IAppState) => state.cms.config.stockByLocation,
+  (productList: InventoryRecord[], cartItems: IOrderItem[], stockByLocation: boolean) => {
+    if (stockByLocation && cartItems.length === 1 && cartItems[0].quantity === 1) {
+      const product = getProduct(cartItems[0].id, productList);
+      return product?.stockRemaining;
+    }
+    return undefined;
   },
 );
 

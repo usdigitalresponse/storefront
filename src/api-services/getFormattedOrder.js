@@ -1,4 +1,10 @@
-const { fetchTable, airTableRowsAsKey, findRecord, DEFAULT_VIEW } = require('../api-services/airtableHelper');
+const {
+  fetchTable,
+  airTableRowsAsKey,
+  findRecord,
+  getRecordValueForLanguage,
+  DEFAULT_VIEW,
+} = require('../api-services/airtableHelper');
 
 export function getFormattedOrder(orderId, view) {
   return new Promise(async (resolve, reject) => {
@@ -8,7 +14,7 @@ export function getFormattedOrder(orderId, view) {
       }
 
       let orderResult = await fetchTable('Orders', {
-        view: view,
+        view: 'All Orders',
         filterByFormula: `{Order ID} = "${orderId}"`,
       });
 
@@ -19,7 +25,7 @@ export function getFormattedOrder(orderId, view) {
       const order = orderResult[0].fields;
 
       const itemResult = await fetchTable('Order Items', {
-        view: DEFAULT_VIEW,
+        view: 'Grid view',
         filterByFormula: `{Order} = "${order['Order ID']}"`,
       });
 
