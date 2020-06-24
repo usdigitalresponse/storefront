@@ -49,10 +49,10 @@ const WaitlistDialog: React.FC<Props> = ({ onSubmit }) => {
           autoFocus
           variant="contained"
         >
-          Change my order
+          <Content id="checkout_waitlist_dialog_cancel_label" defaultText="Change my order" />
         </Button>
         <Button className={styles.actionButton} size="large" onClick={onConfirm} color="primary" variant="outlined">
-          Add me to the waitlist
+          <Content id="checkout_waitlist_dialog_submit_label" defaultText="Add me to the waitlist" />
         </Button>
       </DialogActions>
     </Dialog>

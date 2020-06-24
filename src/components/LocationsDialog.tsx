@@ -9,16 +9,15 @@ import {
   Typography,
 } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { IPickupLocation } from '../common/types';
+import { IPickupLocation, IStockLocation } from '../common/types';
 import { SetLocationsDialogIsOpen, SetSelectedLocation } from '../store/cart';
 import { pickupLocationsSelector } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsSmall } from '../common/hooks';
-import AddressView from './AddressView';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
 // import SearchIcon from '@material-ui/icons/Search';
-import ScheduleView from './ScheduleView';
+import Location from './Location';
 import classNames from 'classnames';
 import styles from './LocationsDialog.module.scss';
 
@@ -28,7 +27,7 @@ const LocationsDialog: React.FC<Props> = () => {
   const isSmall = useIsSmall();
   const isOpen = useSelector<IAppState, boolean>((state) => state.cart.locationsDialogIsOpen);
   const dispatch = useDispatch();
-  const pickupLocations = useSelector<IAppState, IPickupLocation[]>(pickupLocationsSelector);
+  const pickupLocations = useSelector<IAppState, Array<IPickupLocation | IStockLocation>>(pickupLocationsSelector);
   const selectedLocation = useSelector<IAppState, string | undefined>((state) => state.cart.selectedLocation);
 
   function onClose() {
@@ -79,11 +78,7 @@ const LocationsDialog: React.FC<Props> = () => {
               button
               onClick={onSelection(location.id)}
             >
-              <Typography variant="body1" className={styles.itemName}>
-                {location.name}
-              </Typography>
-              <AddressView address={location.address} className={styles.itemAddress} variant="body2" />
-              <ScheduleView variant="body2" schedules={location.resolvedSchedules} className={styles.schedules} />
+              <Location location={location} />
             </ListItem>
           ))}
         </List>
