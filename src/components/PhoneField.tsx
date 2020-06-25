@@ -1,3 +1,4 @@
+import 'cleave.js/dist/addons/cleave-phone.us.js';
 import Cleave from 'cleave.js/react';
 import React from 'react';
 
@@ -11,14 +12,12 @@ const PhoneField: React.FC<Props> = (props: any) => {
       {...other}
       htmlRef={inputRef}
       type="tel"
-      placeholder="(000) 000-0000"
+      placeholder="000-000-0000"
       onChange={(e: any) => onChange({ target: { value: e.target.rawValue } })}
       options={{
-        blocks: [0, 3, 3, 4],
-        delimiters: ['(', ') ', '-'],
-        numericOnly: true,
-        noImmediatePrefix: true,
-        rawValueTrimPrefix: true,
+        phone: true,
+        phoneRegionCode: 'US',
+        delimiter: '-',
       }}
     />
   );
