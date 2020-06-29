@@ -3,7 +3,7 @@ const {
   sendOrderConfirmationEmailPartner,
 } = require('../api-services/send-confirmation-email');
 const { getFormattedOrder } = require('../api-services/getFormattedOrder');
-const { findRecord, fetchTable, DEFAULT_VIEW } = require ('../api-services/airtableHelper');
+const { airTableRowsAsKey, findRecord, fetchTable, DEFAULT_VIEW } = require ('../api-services/airtableHelper');
 
 exports.handler = async (event, context) => {
   try {
@@ -59,13 +59,19 @@ exports.handler = async (event, context) => {
     });
 
     // prevent duplicate orders
-    let existingOrders = await fetchTable('Orders', {
-      view: DEFAULT_VIEW,
-      filterByFormula: `AND({Name} = "${orderIntent.fullName}", {Email} = "${orderIntent.email}")`,
-    });
+    const configRecords = await fetchTable('Config', { view: DEFAULT_VIEW });
+    const configRecordsByKey = airTableRowsAsKey(configRecords);
+    const shouldLimit = configRecordsByKey?.limit_to_one_order?.value === 'true' ? true : false;
 
-    if (existingOrders && existingOrders.length > 0) {
-      throw new Error('You have already placed an order. One order per person.');
+    if (shouldLimit) {
+      let existingOrders = await fetchTable('Orders', {
+        view: DEFAULT_VIEW,
+        filterByFormula: `AND({Name} = "${orderIntent.fullName}", {Email} = "${orderIntent.email}")`,
+      });
+
+      if (existingOrders && existingOrders.length > 0) {
+        throw new Error('You have already placed an order. One order per person.');
+      }
     }
 
     // collate delivery preferences
