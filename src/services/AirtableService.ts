@@ -38,7 +38,7 @@ export class AirtableService {
         const deliveryEnabled = records.config.delivery_enabled === 'false' ? false : true;
         const actions: any = [
           SetConfig.create({
-            languages: records.config.languages,
+            languages: records.config.languages.split(','),
             taxRate: records.config.tax_rate,
             projectName: records.config.project_name,
             defaultState: records.config.default_state,

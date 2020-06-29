@@ -9,7 +9,7 @@ import {
 } from '../common/types';
 import { IAppState } from './app';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
-import { pickupLocationsSelector } from './cms';
+import { inventorySelector, pickupLocationsSelector } from './cms';
 import update from 'immutability-helper';
 
 // model
@@ -87,7 +87,7 @@ export const IOrderItemCountSelector = Reselect.createSelector(itemsSelector, (i
 
 export const subtotalSelector = Reselect.createSelector(
   (state: IAppState) => state.cart.items,
-  (state: IAppState) => state.cms.inventory,
+  inventorySelector,
   (cartItems: IOrderItem[], inventory: InventoryRecord[]) => {
     return cartItems.reduce((acc: number, cartItem: IOrderItem) => {
       return acc + cartItem.quantity * (inventory.find((product) => product.id === cartItem.id)?.price || 0);

@@ -25,10 +25,16 @@ export interface IContentRecord extends Record<string, string | AirtableImage[]>
   image: AirtableImage[];
 }
 
+export interface InventoryStrings {
+  name: string;
+  description: string;
+}
+
 export interface InventoryRecord {
   id: string;
   name: string;
   description: string;
+  strings?: Record<string, InventoryStrings>;
   price: number;
   image: AirtableImage[];
   stockRemaining?: number;
@@ -267,9 +273,15 @@ export type PaymentType = 'main' | 'donation';
 
 export type QuestionType = 'Single Checkbox' | 'Multiple Checkboxes' | 'Text Input' | 'Select';
 
+export interface IQuestionStrings {
+  label: string;
+  options: string[];
+}
+
 interface IQuestionBase {
   id: string;
   label: string;
+  strings?: Record<string, IQuestionStrings>;
   type: QuestionType;
   required: boolean;
   waitlistOnly: boolean;

@@ -16,6 +16,9 @@ exports.handler = async (event, context) => {
       return acc;
     }, {});
 
+    // create languages array
+    const languages = config.languages.split(',');
+
     // Inventory
     const inventoryRecords = await fetchTable('Inventory', { view: DEFAULT_VIEW });
     const inventory = inventoryRecords
@@ -25,6 +28,16 @@ exports.handler = async (event, context) => {
           id: row.id,
           name: row.fields['Name'],
           description: row.fields['Description'],
+          strings: languages.reduce((acc, language) => {
+            acc[language] = language === 'en' ? {
+              name: row.fields['Name'],
+              description: row.fields['Description'],
+            } : {
+              name: row.fields[`Name_${language}`],
+              description: row.fields[`Description_${language}`],
+            };
+            return acc;
+          }, {}),
           price: row.fields['Price'],
           image: row.fields['Image'],
           stockRemaining: row.fields['Stock Remaining'] != null ? row.fields['Stock Remaining'] : null,
@@ -77,6 +90,12 @@ exports.handler = async (event, context) => {
       return {
         id: row.id,
         label: label ? label.trim() : label,
+        strings: languages.reduce((acc, language) => {
+          const label = language === 'en' ? row.fields['Label'] : row.fields[`Label_${language}`];
+          const optionsString = language === 'en' ? row.fields['Options'] : row.fields[`Options_${language}`];
+          acc[language] = { label: label ? label.trim() : label, options: optionsString ? optionsString.split(',').map((v) => v.trim()) : null }
+          return acc;
+        }, {}),
         type: row.fields['Type'],
         options: optionsString ? optionsString.split(',').map((v) => v.trim()) : null,
         waitlistOnly: row.fields['Waitlist Only'],
@@ -94,6 +113,7 @@ exports.handler = async (event, context) => {
       questions,
     });
   } catch (error) {
+    console.error(error.message);
     return errorResponse(error.message);
   }
 };
