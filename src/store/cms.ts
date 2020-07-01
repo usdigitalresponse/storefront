@@ -244,8 +244,9 @@ export const makeContentValueSelector = () =>
   Reselect.createSelector(
     (state: IAppState) => state.cms.content,
     (state: IAppState) => state.cms.language,
+    (state: IAppState) => state.cms.config.languages,
     (_: any, key: string) => key,
-    (content: Record<string, IContentRecord>, language: string, key: string) => {
+    (content: Record<string, IContentRecord>, language: string, languages: string[], key: string) => {
       const value: IContentRecord = content[key];
 
       if (Object.keys(content).length === 0) {
@@ -260,7 +261,7 @@ export const makeContentValueSelector = () =>
         return value.image[0]?.url;
       }
 
-      return getRecordValueForLanguage(value, language);
+      return getRecordValueForLanguage(value, language, languages);
     },
   );
 
@@ -268,8 +269,9 @@ export const makeContentImageSelector = () =>
   Reselect.createSelector(
     (state: IAppState) => state.cms.content,
     (state: IAppState) => state.cms.language,
+    (state: IAppState) => state.cms.config.languages,
     (_: any, key: string) => key,
-    (content: Record<string, IContentRecord>, language: string, key: string) => {
+    (content: Record<string, IContentRecord>, language: string, languages: string[], key: string) => {
       const value: IContentRecord = content[key];
 
       if (Object.keys(content).length === 0) {
@@ -283,7 +285,7 @@ export const makeContentImageSelector = () =>
       if (value.image) {
         return {
           url: value.image[0]?.url,
-          alt: getRecordValueForLanguage(value, language),
+          alt: getRecordValueForLanguage(value, language, languages),
         };
       } else {
         console.log(`${key} is not an image value in CMS`);
@@ -292,8 +294,8 @@ export const makeContentImageSelector = () =>
     },
   );
 
-export function getRecordValueForLanguage(record: IContentRecord, language: string) {
-  const val = record[language] as string;
+export function getRecordValueForLanguage(record: IContentRecord, language: string, languages: string[]) {
+  const val = languages.length > 1 ? (record[language] as string) : (record.en as string);
   return val ? val.trim() : '';
 }
 
