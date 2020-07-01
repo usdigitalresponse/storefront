@@ -12,7 +12,7 @@ import {
 } from '../common/types';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
-import { getPickupLocation, getProduct } from '../common/utils';
+import { getPickupLocation, getProduct, inventoryForLanguage, questionForLanguage } from '../common/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -41,6 +41,7 @@ export const SetSchedules = TypedAction.define('APP/CMS/SET_SCHEDULES')<any>();
 export const SetValidZipcodes = TypedAction.define('APP/CMS/SET_VALID_ZIPCODES')<any>();
 export const SetQuestions = TypedAction.define('APP/CMS/SET_QUESTIONS')<any>();
 export const SetStripePromise = TypedAction.define('APP/CMS/SET_STRIPE_PROMISE')<any>();
+export const SetLanguage = TypedAction.define('APP/CMS/SET_LANGUAGE')<string>();
 
 // reducer
 export const cmsReducer: any = TypedReducer.builder<ICmsState>()
@@ -56,6 +57,7 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
       stripeObjects: { main: loadStripe(keys.main), donation: loadStripe(keys.donation) },
     }),
   )
+  .withHandler(SetLanguage.TYPE, (state, language) => setWith(state, { language }))
   .withDefaultHandler((state) => (state ? state : initialCmsState))
   .build();
 
@@ -97,8 +99,10 @@ export const initialCmsState: ICmsState = {
 // selectors
 export const inventorySelector = Reselect.createSelector(
   (state: IAppState) => state.cms.inventory,
-  (inventory: InventoryRecord[]) => {
-    return inventory;
+  (state: IAppState) => state.cms.language,
+  (state: IAppState) => state.cms.config.languages,
+  (inventory: InventoryRecord[], selectedLanguage: string, languages: string[]) => {
+    return languages.length > 1 ? inventoryForLanguage(inventory, selectedLanguage) : inventory;
   },
 );
 
@@ -120,9 +124,13 @@ export const stripePromiseSelector = (type: 'donation' | 'main') =>
 
 export const questionsSelector = Reselect.createSelector(
   (state: IAppState) => state.cms.questions,
+  (state: IAppState) => state.cms.language,
+  (state: IAppState) => state.cms.config.languages,
   (state: IAppState) => state.checkout.isDonationRequest,
-  (questions: Question[], isDonationRequest: boolean) => {
-    return questions.filter((question) => isDonationRequest || (!isDonationRequest && !question.waitlistOnly));
+  (questions: Question[], selectedLanguage: string, languages: string[], isDonationRequest: boolean) => {
+    return (languages.length > 1 ? questionForLanguage(questions, selectedLanguage) : questions).filter(
+      (question) => isDonationRequest || (!isDonationRequest && !question.waitlistOnly),
+    );
   },
 );
 
@@ -236,8 +244,9 @@ export const makeContentValueSelector = () =>
   Reselect.createSelector(
     (state: IAppState) => state.cms.content,
     (state: IAppState) => state.cms.language,
+    (state: IAppState) => state.cms.config.languages,
     (_: any, key: string) => key,
-    (content: Record<string, IContentRecord>, language: string, key: string) => {
+    (content: Record<string, IContentRecord>, language: string, languages: string[], key: string) => {
       const value: IContentRecord = content[key];
 
       if (Object.keys(content).length === 0) {
@@ -252,7 +261,7 @@ export const makeContentValueSelector = () =>
         return value.image[0]?.url;
       }
 
-      return getRecordValueForLanguage(value, language);
+      return getRecordValueForLanguage(value, language, languages);
     },
   );
 
@@ -260,8 +269,9 @@ export const makeContentImageSelector = () =>
   Reselect.createSelector(
     (state: IAppState) => state.cms.content,
     (state: IAppState) => state.cms.language,
+    (state: IAppState) => state.cms.config.languages,
     (_: any, key: string) => key,
-    (content: Record<string, IContentRecord>, language: string, key: string) => {
+    (content: Record<string, IContentRecord>, language: string, languages: string[], key: string) => {
       const value: IContentRecord = content[key];
 
       if (Object.keys(content).length === 0) {
@@ -275,7 +285,7 @@ export const makeContentImageSelector = () =>
       if (value.image) {
         return {
           url: value.image[0]?.url,
-          alt: getRecordValueForLanguage(value, language),
+          alt: getRecordValueForLanguage(value, language, languages),
         };
       } else {
         console.log(`${key} is not an image value in CMS`);
@@ -284,8 +294,8 @@ export const makeContentImageSelector = () =>
     },
   );
 
-export function getRecordValueForLanguage(record: IContentRecord, language: string) {
-  const val = record[language] as string;
+export function getRecordValueForLanguage(record: IContentRecord, language: string, languages: string[]) {
+  const val = languages.length > 1 ? (record[language] as string) : (record.en as string);
   return val ? val.trim() : '';
 }
 

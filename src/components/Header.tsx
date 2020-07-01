@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux';
 import CartIcon from '@material-ui/icons/ShoppingCart';
 import Contact from './Contact';
 import Content from './Content';
+import LanguageSelector from './LanguageSelector';
 import Link from './Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import React, { useEffect, useState } from 'react';
@@ -29,7 +30,7 @@ const Header: React.FC = () => {
   const isSmall = useIsSmall();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const { driverForm, driverFormName, donationEnabled } = config;
+  const { driverForm, driverFormName, donationEnabled, cartEnabled } = config;
   const IOrderItemsCount = useSelector<IAppState, number>(IOrderItemCountSelector);
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const navPurchase = useContent('nav_purchase');
@@ -116,16 +117,19 @@ const Header: React.FC = () => {
               )}
             </>
           )}
-          <IconButton
-            edge="end"
-            color="primary"
-            component={Link}
-            href={reverse(isDonationRequest ? 'checkout' : 'cart')}
-          >
-            <Badge badgeContent={IOrderItemsCount} color="secondary" invisible={IOrderItemsCount === 0}>
-              <CartIcon />
-            </Badge>
-          </IconButton>
+          {cartEnabled && (
+            <IconButton
+              edge="end"
+              color="primary"
+              component={Link}
+              href={reverse(isDonationRequest ? 'checkout' : 'cart')}
+            >
+              <Badge badgeContent={IOrderItemsCount} color="secondary" invisible={IOrderItemsCount === 0}>
+                <CartIcon />
+              </Badge>
+            </IconButton>
+          )}
+          <LanguageSelector className={styles.languageSelector} />
         </div>
       </Toolbar>
     </AppBar>

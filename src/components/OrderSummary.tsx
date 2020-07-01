@@ -4,6 +4,7 @@ import { IDiscountCode, IOrderItem, IOrderSummary, InventoryRecord, OrderType } 
 import { discountSelector, subtotalSelector, taxSelector, totalSelector } from '../store/cart';
 import { formatCurrency, formatDiscountCode, formatPercentage } from '../common/format';
 import { getProduct } from '../common/utils';
+import { inventorySelector } from '../store/cms';
 import { reverse } from '../common/router';
 import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
@@ -30,7 +31,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
   const taxRate = useSelector<IAppState, number>((state) => state.cms.config.taxRate);
   const tax = useSelector<IAppState, number>(taxSelector);
   const total = useSelector<IAppState, number>(totalSelector);
-  const inventory = useSelector<IAppState, InventoryRecord[]>((state) => state.cms.inventory);
+  const inventory = useSelector<IAppState, InventoryRecord[]>(inventorySelector);
   const items = useSelector<IAppState, IOrderItem[]>((state) => state.cart.items);
   const isDelivery =
     useSelector<IAppState, OrderType>((state) => state.cart.orderType) === OrderType.DELIVERY ||

@@ -1,4 +1,12 @@
-import { AirtableImage, IOrderIntent, IOrderItem, IPickupLocation, InventoryRecord, OrderType } from './types';
+import {
+  AirtableImage,
+  IOrderIntent,
+  IOrderItem,
+  IPickupLocation,
+  InventoryRecord,
+  OrderType,
+  Question,
+} from './types';
 
 export function getImageUrl(image?: AirtableImage[]): string {
   return (image && image[0] && image[0].url) || '';
@@ -10,6 +18,16 @@ export function getProduct(id: string, inventory: InventoryRecord[]): InventoryR
 
 export function getPickupLocation(id: string, pickupLocations: IPickupLocation[]): IPickupLocation | undefined {
   return pickupLocations.find((item) => item.id === id);
+}
+
+export function getLanguageName(id: string): string {
+  switch (id) {
+    case 'es':
+      return 'Español';
+    case 'en':
+    default:
+      return 'English';
+  }
 }
 
 export function getOrderItemsForOrderIntent(orderIntent: IOrderIntent, productList: InventoryRecord[]): IOrderItem[] {
@@ -45,4 +63,28 @@ export function getOrderItemsForOrderIntent(orderIntent: IOrderIntent, productLi
   }
 
   return orderIntent.items;
+}
+
+export function inventoryForLanguage(inventory: InventoryRecord[], language: string): InventoryRecord[] {
+  return inventory.map((item) => ({
+    ...item,
+    ...(item.strings && item.strings[language] && item.strings[language].name
+      ? { name: item.strings[language].name }
+      : {}),
+    ...(item.strings && item.strings[language] && item.strings[language].description
+      ? { description: item.strings[language].description }
+      : {}),
+  }));
+}
+
+export function questionForLanguage(questions: Question[], language: string): Question[] {
+  return questions.map((question) => ({
+    ...question,
+    ...(question.strings && question.strings[language] && question.strings[language].label
+      ? { label: question.strings[language].label }
+      : {}),
+    ...(question.strings && question.strings[language] && question.strings[language].options
+      ? { options: question.strings[language].options }
+      : {}),
+  }));
 }
