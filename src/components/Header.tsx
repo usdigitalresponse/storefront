@@ -30,7 +30,8 @@ const Header: React.FC = () => {
   const isSmall = useIsSmall();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const { driverForm, driverFormName, donationEnabled, cartEnabled } = config;
+
+  const { embeddedViewEnabled, embeddedViewName, donationEnabled, cartEnabled } = config;
   const IOrderItemsCount = useSelector<IAppState, number>(IOrderItemCountSelector);
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const navPurchase = useContent('nav_purchase');
@@ -47,8 +48,8 @@ const Header: React.FC = () => {
     headerNavItems.push({ name: navDonate, url: reverse('donate') });
   }
 
-  if (driverForm) {
-    headerNavItems.push({ name: navDrive, url: driverFormName ? `/${driverFormName}` : reverse('drivers') });
+  if (embeddedViewEnabled) {
+    headerNavItems.push({ name: navDrive, url: embeddedViewName ? `/${embeddedViewName}` : reverse('drivers') });
   }
 
   const location = useLocation();

@@ -36,6 +36,7 @@ export class AirtableService {
         }
 
         const deliveryEnabled = records.config.delivery_enabled === 'false' ? false : true;
+
         const actions: any = [
           SetConfig.create({
             languages: records.config.languages.split(','),
@@ -52,9 +53,9 @@ export class AirtableService {
             deliveryOptionsOnCheckout: records.config.delivery_options_on_checkout === 'true' ? true : false,
             cartEnabled: records.config.cart_enabled === 'false' ? false : true,
             payUponPickupEnabled: records.config.pay_upon_pickup_enabled === 'false' ? false : true,
-            driverForm: records.config.driver_form === 'false' ? false : true,
-            driverFormId: records.config.driver_form_id,
-            driverFormName: records.config.driver_form_name,
+            embeddedViewEnabled: records.config.driver_form === 'false' ? false : true,
+            embeddedViewId: records.config.embedded_view_id,
+            embeddedViewName: records.config.embedded_view_name,
             stockByLocation: records.config.stock_by_location === 'true' ? true : false,
           }),
           SetOrderType.create(
