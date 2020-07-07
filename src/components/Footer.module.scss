@@ -30,6 +30,12 @@
     }
   }
 
+  .attribution {
+    display: flex;
+    justify-content: center;
+    margin-top: spacing(2);
+  }
+
   &.small {
     .links {
       flex-direction: column;

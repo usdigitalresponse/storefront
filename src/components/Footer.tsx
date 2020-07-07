@@ -54,6 +54,9 @@ const Footer: React.FC = () => {
       <div className={styles.logo}>
         {footerLogo && <img src={footerLogo.url} alt={footerLogo.alt} className={styles.logoImg} />}
       </div>
+      <div className={styles.attribution}>
+        <Content id="footer_attribution" markdown allowParagraphs />
+      </div>
     </div>
   );
 };
