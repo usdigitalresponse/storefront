@@ -22,15 +22,15 @@ const Footer: React.FC = () => {
   const navLink = useContent('nav_link');
   const footerLogo = useContentImage('footer_logo');
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const { driverForm, driverFormName, donationEnabled } = config;
+  const { embeddedViewEnabled, embeddedViewName, donationEnabled } = config;
   const footerNavItems: INavItem[] = [{ name: navPurchase, url: reverse('products') }];
 
   if (donationEnabled) {
     footerNavItems.push({ name: navDonate, url: reverse('donate') });
   }
 
-  if (driverForm) {
-    footerNavItems.push({ name: navDrive, url: driverFormName ? `/${driverFormName}` : reverse('drivers') });
+  if (embeddedViewEnabled) {
+    footerNavItems.push({ name: navDrive, url: embeddedViewName ? `/${embeddedViewName}` : reverse('drivers') });
   }
 
   return (

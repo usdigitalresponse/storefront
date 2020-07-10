@@ -13,9 +13,9 @@ export interface IConfig {
   deliveryOptionsOnCheckout: boolean;
   cartEnabled: boolean;
   payUponPickupEnabled: boolean;
-  driverForm: boolean;
-  driverFormId: string;
-  driverFormName?: string;
+  embeddedViewEnabled: boolean;
+  embeddedViewId: string;
+  embeddedViewName?: string;
   stockByLocation: boolean;
 }
 

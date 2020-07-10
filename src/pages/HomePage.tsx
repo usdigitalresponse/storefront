@@ -19,9 +19,9 @@ const HomePage: React.FC<Props> = () => {
   const primaryColor: any = theme.palette.primary;
   const bannerImage = useContentImage('banner_image');
   const bannerLogo = useContentImage('banner_logo');
-  const driverForm = useSelector<IAppState, boolean>((state) => state.cms.config.driverForm);
+  const embeddedViewEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.embeddedViewEnabled);
   const donationEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.donationEnabled);
-  const driverFormName = useSelector<IAppState, string | undefined>((state) => state.cms.config.driverFormName);
+  const embeddedViewName = useSelector<IAppState, string | undefined>((state) => state.cms.config.embeddedViewName);
 
   return (
     <BaseLayout padding={0} maxWidth="unset">
@@ -68,14 +68,14 @@ const HomePage: React.FC<Props> = () => {
                     <Content id="donate_button_label" />
                   </Button>
                 )}
-                {driverForm && (
+                {embeddedViewEnabled && (
                   <Button
                     className={styles.ctaButton}
                     size="large"
                     color="primary"
                     variant="contained"
                     component={Link}
-                    href={driverFormName ? `/${driverFormName}` : reverse('drivers')}
+                    href={embeddedViewName ? `/${embeddedViewName}` : reverse('drivers')}
                   >
                     <Content id="drive_button_label" />
                   </Button>
@@ -123,7 +123,7 @@ const HomePage: React.FC<Props> = () => {
         <Grid container justify="center" className={styles.section}>
           <Grid item container justify="center" className={styles.content}>
             {donationEnabled && (
-              <Grid item md={driverForm ? 6 : 12} xs={12} className={styles.sectionHalf}>
+              <Grid item md={embeddedViewEnabled ? 6 : 12} xs={12} className={styles.sectionHalf}>
                 <Typography variant="h2" className={styles.sectionTitle}>
                   <Content id="donate_title" />
                 </Typography>
@@ -140,7 +140,7 @@ const HomePage: React.FC<Props> = () => {
                 </Button>
               </Grid>
             )}
-            {driverForm && (
+            {embeddedViewEnabled && (
               <Grid item md={donationEnabled ? 6 : 12} xs={12} className={styles.sectionHalf}>
                 <Typography variant="h2" className={styles.sectionTitle}>
                   <Content id="drive_title" />
@@ -152,7 +152,7 @@ const HomePage: React.FC<Props> = () => {
                   color="primary"
                   variant="contained"
                   component={Link}
-                  href={driverFormName ? `/${driverFormName}` : reverse('drivers')}
+                  href={embeddedViewName ? `/${embeddedViewName}` : reverse('drivers')}
                 >
                   <Content id="drive_button_label" />
                 </Button>
