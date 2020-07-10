@@ -19,6 +19,8 @@ const HomePage: React.FC<Props> = () => {
   const primaryColor: any = theme.palette.primary;
   const bannerImage = useContentImage('banner_image');
   const bannerLogo = useContentImage('banner_logo');
+  const introImage = useContentImage('introduction_image');
+
   const embeddedViewEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.embeddedViewEnabled);
   const donationEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.donationEnabled);
   const embeddedViewName = useSelector<IAppState, string | undefined>((state) => state.cms.config.embeddedViewName);
@@ -94,7 +96,8 @@ const HomePage: React.FC<Props> = () => {
             <Typography variant="h2" className={styles.sectionTitle}>
               <Content id="introduction_title" />
             </Typography>
-            <Content id="introduction_copy" markdown allowParagraphs />
+            <Content id="introduction_copy" markdown />
+            {introImage && <img src={introImage.url} alt={introImage.alt} className={styles.introImg} />}
           </Grid>
         </Grid>
         <Grid
