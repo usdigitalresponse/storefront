@@ -32,7 +32,7 @@ const LanguageSelector: React.FC<Props> = ({ className }) => {
     };
   };
 
-  return languages && languages.length > 1 ? (
+  return languages && languages.length > 1 && languages.map ? (
     <>
       <Button className={className} variant="outlined" size="small" color="primary" onClick={handleClick}>
         {getLanguageName(selectedLanguage)}
