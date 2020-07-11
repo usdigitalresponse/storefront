@@ -7,10 +7,12 @@ It is a single page app in React with a serverless backend currently being serve
 ### Setup Overview
 
 1. Request access to this repo, Airtable, and Netlify
-2. Add API keys to your local `.env` file
-3. Run `yarn`, `yarn start`, and `yarn start:api` to install dependencies and start the app
+2. [Add API keys](#api-keys-and-env) to your local `.env` file
+3. Run `yarn`, `yarn start`, and `yarn start:api` to [install dependencies and start the app](#running-the-app)
 
 ### API Keys and `.env`
+
+Ask someone with access to invite you to the USDR Food Airtable workspace. Once you have access:
 
 #### 1. Get Airtable API keys
 
@@ -30,7 +32,7 @@ There are two Stripe API keys, a main Stripe key and a donation Stripe key. Both
 
 #### 3. Create `.env`
 
-Create a `.env` file in the repo's root directory using a copy of `.example.env` and add your keys:
+Create a `.env` file in the repo's root directory using a copy of [`.example.env`](https://github.com/usdigitalresponse/storefront/blob/master/.example.env) and add your keys:
 
 ```
 AIRTABLE_API_KEY=
@@ -71,7 +73,7 @@ yarn start
 
 Runs the app in development mode.
 
-By default it will serve the app at [http://localhost:3000](http://localhost:3000) which you can view in your browser. The port number is configurable by setting `PORT=your_port_number` in your [`.env` file](#dotenv).
+By default it will serve the app at [http://localhost:3000](http://localhost:3000) which you can view in your browser. The port number is configurable by setting `PORT=your_port_number` in your [`.env` file](#3-create-env).
 
 The page will reload when you make edits. **You're ready to start contributing!**
 
@@ -83,7 +85,7 @@ yarn build
 
 Builds a minified and optimized version of the app for production to the `build` folder. **Your app is ready to be deployed!**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+See the section about [deployment](#setting-up-netlify-deploying-a-site) or [Create React App's docs](https://create-react-app.dev/docs/deployment) for more information.
 
 ## Setting up Netlify (Deploying a site)
 
