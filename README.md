@@ -77,17 +77,19 @@ By default it will serve the app at [http://localhost:3000](http://localhost:300
 
 The page will reload when you make edits. **You're ready to start contributing!**
 
-#### 4. Build app (when ready to deploy)
+#### 4. Build app
 
 ```
 yarn build
 ```
 
+*Note: Netlify automates our deploy process and this step is not normally required*
+
 Builds a minified and optimized version of the app for production to the `build` folder. **Your app is ready to be deployed!**
 
 See the section about [deployment](#setting-up-netlify-deploying-a-site) or [Create React App's docs](https://create-react-app.dev/docs/deployment) for more information.
 
-## Setting up Netlify (Deploying a site)
+## Setting up Netlify
 
 We use [Netlify](https://app.netlify.com/teams/usdr/sites) to manage deploys. Here are the steps you will need to deploy a new site:
 
@@ -96,7 +98,7 @@ We use [Netlify](https://app.netlify.com/teams/usdr/sites) to manage deploys. He
 3. Sign up/Log in, ideally with your Github.
 4. Click "New site from Git", choose Github as the provider.
 5. Change the user to `usdigitalresponse` and you should see the option to choose `storefront`.
-6. Write `build` in the `publish directory` field.
+6. Enter `build` into the `publish directory` field.
 7. Hit show advanced, and add the same variables as another site. You can find variables by clicking on a site, navigating to `Build & deploy` and then `Environment`. Generally, there should be 6 variables with the following keys (hint: hitting `edit` will allow you to see and copy the full key/value):
 
 ```
@@ -106,11 +108,14 @@ MASTER_AIRTABLE_API_KEY
 MASTER_AIRTABLE_BASE_ID
 STRIPE_DONATION_PRIVATE_API_KEY
 STRIPE_MAIN_PRIVATE_API_KEY
+SENDGRID_API_KEY
 ```
 
-The one that will be different than the defaults is `AIRTABLE_BASE_ID`, which will correspond to your unique Airtable. You can find the id in the URL of your base after going to [api.airtable.com](api.airtable.com).
+`AIRTABLE_BASE_ID` corresponds to the Airtable base for this project. You can find the id in the URL of your base after going to [api.airtable.com](api.airtable.com). You will need to obtain the Stripe and Sendgrid api keys from the partner after they have set up their respective Stripe and Sendgrid accounts.
 
-8. Hit `Deploy Site`. It will take a bit of time, but you'll be able to see your site soon! You can also edit parts of the URL.
+## Deploying the site
+
+All merges to master will deploy to every connected Netlify site. It will take a bit of time, but you'll be able to see the latest version within minutes.
 
 ## Testing Stripe checkout
 
