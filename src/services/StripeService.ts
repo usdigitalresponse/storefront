@@ -11,15 +11,15 @@ import {
   PaymentStatus,
   PaymentType,
 } from '../common/types';
-import { SetConfirmation, SetDiscountCode, SetError, SetIsPaying, SetWaitlistDialogIsOpen } from '../store/checkout';
 import {
-  SetItems,
-  discountSelector,
+  SetConfirmation,
+  SetDiscountCode,
+  SetError,
+  SetIsPaying,
+  SetWaitlistDialogIsOpen,
   requiresPaymentSelector,
-  subtotalSelector,
-  taxSelector,
-  totalSelector,
-} from '../store/cart';
+} from '../store/checkout';
+import { SetItems, discountSelector, subtotalSelector, taxSelector, totalSelector } from '../store/cart';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
 import { getOrderItemsForOrderIntent, getProduct } from '../common/utils';

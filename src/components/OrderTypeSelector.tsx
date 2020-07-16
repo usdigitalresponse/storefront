@@ -25,14 +25,14 @@ const OrderTypeSelector: React.FC<Props> = ({ className }) => {
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const validZipcodes = useSelector<IAppState, string[]>(validZipcodesSelector);
-  const { deliveryEnabled, stockByLocation } = config;
+  const { deliveryEnabled, pickupEnabled, stockByLocation } = config;
 
   return (
     <Grid container spacing={2} alignItems={isSmall ? undefined : 'stretch'} className={className}>
       {deliveryEnabled && (
-        <Grid item md={6} xs={12} className={styles.column}>
+        <Grid item md={deliveryEnabled && pickupEnabled ? 6 : 12} xs={12} className={styles.column}>
           <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
-            <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.DELIVERY))}>
+            <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.DELIVERY))} disabled={!pickupEnabled}>
               <div className={classNames(styles.content, styles.delivery)}>
                 <div className={styles.check}>
                   {orderType === OrderType.DELIVERY ? (
@@ -55,37 +55,39 @@ const OrderTypeSelector: React.FC<Props> = ({ className }) => {
           </Card>
         </Grid>
       )}
-      <Grid item md={deliveryEnabled ? 6 : 12} xs={12}>
-        <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
-          <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.PICKUP))} disabled={!deliveryEnabled}>
-            <div className={styles.content}>
-              <div className={styles.check}>
-                {orderType === OrderType.PICKUP ? <CheckedIcon color="primary" /> : <UncheckedIcon color="primary" />}
+      {pickupEnabled && (
+        <Grid item md={deliveryEnabled && pickupEnabled ? 6 : 12} xs={12}>
+          <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
+            <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.PICKUP))} disabled={!deliveryEnabled}>
+              <div className={styles.content}>
+                <div className={styles.check}>
+                  {orderType === OrderType.PICKUP ? <CheckedIcon color="primary" /> : <UncheckedIcon color="primary" />}
+                </div>
+                <div className={classNames(styles.label, { [styles.pickupLabel]: pickupLocationCount > 1 })}>
+                  <Typography variant="h4" className={styles.title}>
+                    <Content id="pickup_option_title" defaultText="Pickup" />
+                  </Typography>
+                  <Typography variant="body1" className={styles.description}>
+                    <Content id="pickup_option_subtitle" defaultText="Required for EBT or Cash" />
+                  </Typography>
+                  {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
+                </div>
               </div>
-              <div className={classNames(styles.label, { [styles.pickupLabel]: pickupLocationCount > 1 })}>
-                <Typography variant="h4" className={styles.title}>
-                  <Content id="pickup_option_title" defaultText="Pickup" />
-                </Typography>
-                <Typography variant="body1" className={styles.description}>
-                  <Content id="pickup_option_subtitle" defaultText="Required for EBT or Cash" />
-                </Typography>
-                {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
-              </div>
-            </div>
-          </CardActionArea>
-          {pickupLocationCount > 1 && (
-            <CardActions className={styles.actions}>
-              <Button
-                color="primary"
-                onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
-                disabled={orderType === OrderType.DELIVERY}
-              >
-                {selectedLocation ? 'Change' : 'Choose'} location...
-              </Button>
-            </CardActions>
-          )}
-        </Card>
-      </Grid>
+            </CardActionArea>
+            {pickupLocationCount > 1 && (
+              <CardActions className={styles.actions}>
+                <Button
+                  color="primary"
+                  onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
+                  disabled={orderType === OrderType.DELIVERY}
+                >
+                  {selectedLocation ? 'Change' : 'Choose'} location...
+                </Button>
+              </CardActions>
+            )}
+          </Card>
+        </Grid>
+      )}
     </Grid>
   );
 };

@@ -23,6 +23,14 @@
   .title {
     @include fontSize('lg');
     margin-bottom: spacing(3);
+
+    &.payment {
+      margin-bottom: spacing(1);
+    }
+  }
+
+  .payState {
+    margin-bottom: spacing(1);
   }
 
   .field {
@@ -95,6 +103,10 @@
 
     .title {
       margin-bottom: spacing(2);
+
+      &.payment {
+        margin-bottom: 0;
+      }
     }
 
     .field {

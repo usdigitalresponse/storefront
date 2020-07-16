@@ -13,14 +13,14 @@
 
   .title {
     @include fontSize();
-    @include shadowBorder('right');
     font-weight: 500;
-    padding-right: spacing(2);
-    margin-right: spacing(2);
     align-self: stretch;
   }
 
   .label {
+    padding-left: spacing(2);
+    margin-left: spacing(2);
+    @include shadowBorder('left');
     @include fontSize();
   }
 }

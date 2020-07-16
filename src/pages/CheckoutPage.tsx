@@ -2,10 +2,13 @@ import {
   Button,
   Card,
   CircularProgress,
+  FormControlLabel,
   FormHelperText,
   Grid,
   Input,
   Link,
+  Radio,
+  RadioGroup,
   TextField,
   TextFieldProps,
   Typography,
@@ -17,13 +20,21 @@ import {
   IOrderItem,
   IPickupLocation,
   OrderType,
+  PayState,
   PaymentStatus,
   Question,
 } from '../common/types';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { SetError, SetIsDonationRequest, SetIsPaying, paymentStatusSelector } from '../store/checkout';
-import { SetLocationsDialogIsOpen, requiresPaymentSelector, selectedLocationSelector } from '../store/cart';
+import {
+  SetError,
+  SetIsDonationRequest,
+  SetIsPaying,
+  SetPayState,
+  paymentStatusSelector,
+  requiresPaymentSelector,
+} from '../store/checkout';
+import { SetLocationsDialogIsOpen, selectedLocationSelector } from '../store/cart';
 import { StripeService } from '../services/StripeService';
 import { questionsSelector, useContent } from '../store/cms';
 import { reverse } from '../common/router';
@@ -56,7 +67,14 @@ import styles from './CheckoutPage.module.scss';
 function CheckoutPageMain() {
   const { register, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const { defaultState, deliveryPreferences, deliveryEnabled, deliveryOptionsOnCheckout } = config;
+  const {
+    defaultState,
+    deliveryPreferences,
+    deliveryEnabled,
+    deliveryOptionsOnCheckout,
+    payUponDeliveryEnabled,
+    payUponPickupEnabled,
+  } = config;
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const isSmall = useIsSmall();
   const hasErrors = Object.keys(errors).length > 0;
@@ -75,6 +93,13 @@ function CheckoutPageMain() {
   const dispatch = useDispatch();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const requiresPayment = useSelector<IAppState, boolean>(requiresPaymentSelector);
+  const payState = useSelector<IAppState, PayState>((state) => state.checkout.payState);
+  const payNowOptionLabel = useContent('pay_now_option_label');
+  const payLaterOptionLabel = useContent('pay_later_option_label');
+
+  const showPaymentOptions =
+    (orderType === OrderType.PICKUP && payUponPickupEnabled) ||
+    (orderType === OrderType.DELIVERY && payUponDeliveryEnabled);
 
   useEffect(() => {
     const isWaitlist = !!qs.parse(location.search.slice(1))?.waitlist;
@@ -227,12 +252,31 @@ function CheckoutPageMain() {
                   </Grid>
                 </>
               )}
-              {requiresPayment && (
+              {(requiresPayment || (payState === PayState.LATER && showPaymentOptions)) && (
                 <Grid container className={styles.section}>
-                  <Typography variant="h3" className={styles.title}>
+                  <Typography variant="h3" className={classNames(styles.title, styles.payment)}>
                     Payment Details
                   </Typography>
-                  {!isDonationRequest && (
+                  {showPaymentOptions && (
+                    <RadioGroup
+                      row
+                      value={payState}
+                      onChange={(e) => dispatch(SetPayState.create(e.target.value as PayState))}
+                      className={styles.payState}
+                    >
+                      <FormControlLabel
+                        value={PayState.NOW}
+                        control={<Radio color="primary" />}
+                        label={payNowOptionLabel || 'Pay now'}
+                      />
+                      <FormControlLabel
+                        value={PayState.LATER}
+                        control={<Radio color="primary" />}
+                        label={payLaterOptionLabel || 'Pay later'}
+                      />
+                    </RadioGroup>
+                  )}
+                  {requiresPayment && (
                     <Grid item md={8} xs={12}>
                       <StripeCardField errorMessage={paymentError} />
                     </Grid>

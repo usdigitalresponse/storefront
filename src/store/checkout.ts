@@ -1,8 +1,17 @@
 import * as Reselect from 'reselect';
 import { IAppState } from './app';
-import { IDiscountCode, IDonationSummary, IOrderSummary, InventoryRecord, PaymentStatus } from '../common/types';
+import {
+  IDiscountCode,
+  IDonationSummary,
+  IOrderSummary,
+  InventoryRecord,
+  OrderType,
+  PayState,
+  PaymentStatus,
+} from '../common/types';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 import { inventorySelector } from './cms';
+import { totalSelector } from './cart';
 
 // model
 export interface ICheckoutState {
@@ -14,6 +23,7 @@ export interface ICheckoutState {
   discountCode?: IDiscountCode;
   waitlistDialogIsOpen: boolean;
   waitlistConfirmed: boolean;
+  payState: PayState;
 }
 
 // actions
@@ -27,6 +37,7 @@ export const SetIsDonationRequest = TypedAction.define('APP/CHECKOUT/SET_IS_DONA
 export const SetDonationAmount = TypedAction.define('APP/CHECKOUT/SET_DONATION_AMOUNT')<number>();
 export const SetWaitlistDialogIsOpen = TypedAction.define('APP/CHECKOUT/SET_WAITLIST_DIALOG_IS_OPEN')<boolean>();
 export const SetWaitlistConfirmed = TypedAction.define('APP/CHECKOUT/SET_WAITLIST_CONFIRMED')<boolean>();
+export const SetPayState = TypedAction.define('APP/CHECKOUT/SET_PAY_STATE')<PayState>();
 
 // reducer
 export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
@@ -38,6 +49,7 @@ export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
   .withHandler(SetDonationAmount.TYPE, (state, donationAmount) => setWith(state, { donationAmount }))
   .withHandler(SetWaitlistDialogIsOpen.TYPE, (state, waitlistDialogIsOpen) => setWith(state, { waitlistDialogIsOpen }))
   .withHandler(SetWaitlistConfirmed.TYPE, (state, waitlistConfirmed) => setWith(state, { waitlistConfirmed }))
+  .withHandler(SetPayState.TYPE, (state, payState) => setWith(state, { payState }))
   .withDefaultHandler((state) => (state ? state : initialCheckoutState))
   .build();
 
@@ -51,6 +63,7 @@ export const initialCheckoutState: ICheckoutState = {
   discountCode: undefined,
   waitlistDialogIsOpen: false,
   waitlistConfirmed: false,
+  payState: PayState.NOW,
 };
 
 // selectors
@@ -85,5 +98,27 @@ export const paymentStatusSelector = Reselect.createSelector(
     else if (confirmation) return PaymentStatus.SUCCEEDED;
     else if (error) return PaymentStatus.FAILED;
     else return PaymentStatus.NONE;
+  },
+);
+
+export const requiresPaymentSelector = Reselect.createSelector(
+  totalSelector,
+  (state: IAppState) => state.cart.orderType,
+  (state: IAppState) => state.checkout.isDonationRequest,
+  (state: IAppState) => state.cms.config.payUponPickupEnabled,
+  (state: IAppState) => state.checkout.payState,
+  (
+    total: number,
+    orderType: OrderType,
+    isDonationRequest: boolean,
+    payUponPickupEnabled: boolean,
+    payState: PayState,
+  ) => {
+    return (
+      total > 0 &&
+      (orderType === OrderType.DELIVERY || !payUponPickupEnabled) &&
+      !isDonationRequest &&
+      payState === PayState.NOW
+    );
   },
 );
