@@ -8,11 +8,13 @@ export interface IConfig {
   donationEnabled: boolean;
   donationUnits?: string;
   defaultOrderType: OrderType;
+  pickupEnabled: boolean;
   deliveryEnabled: boolean;
   deliveryPreferences: boolean;
   deliveryOptionsOnCheckout: boolean;
   cartEnabled: boolean;
   payUponPickupEnabled: boolean;
+  payUponDeliveryEnabled: boolean;
   embeddedViewEnabled: boolean;
   embeddedViewId: string;
   embeddedViewName?: string;
@@ -305,3 +307,8 @@ export interface ISelectQuestion extends IQuestionBase {
   options: string[];
 }
 export type Question = ITextInputQuestion | ICheckboxQuestion | ICheckboxesQuestion | ISelectQuestion;
+
+export enum PayState {
+  NOW = 'now',
+  LATER = 'later',
+}

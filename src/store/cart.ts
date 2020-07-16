@@ -126,16 +126,6 @@ export const totalSelector = Reselect.createSelector(
   },
 );
 
-export const requiresPaymentSelector = Reselect.createSelector(
-  totalSelector,
-  (state: IAppState) => state.cart.orderType,
-  (state: IAppState) => state.checkout.isDonationRequest,
-  (state: IAppState) => state.cms.config.payUponPickupEnabled,
-  (total: number, orderType: OrderType, isDonationRequest: boolean, payUponPickupEnabled: boolean) => {
-    return total > 0 && (orderType === OrderType.DELIVERY || !payUponPickupEnabled) && !isDonationRequest;
-  },
-);
-
 export const selectedLocationSelector = Reselect.createSelector(
   pickupLocationsSelector,
   (state: IAppState) => state.cart.selectedLocation,

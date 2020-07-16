@@ -1,6 +1,6 @@
 import { Card, Link, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { OrderType } from '../common/types';
+import { IConfig, OrderType } from '../common/types';
 import { SetOrderType } from '../store/cart';
 import { useDispatch, useSelector } from 'react-redux';
 import Content from './Content';
@@ -15,6 +15,8 @@ interface Props {
 
 const OrderTypeView: React.FC<Props> = ({ className }) => {
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
+  const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
+  const { deliveryEnabled, pickupEnabled } = config;
   const dispatch = useDispatch();
 
   return (
@@ -25,18 +27,26 @@ const OrderTypeView: React.FC<Props> = ({ className }) => {
       </Typography>
       {orderType === OrderType.DELIVERY && (
         <Typography variant="body1" className={styles.label}>
-          <Content id="delivery_option_alert" defaultText="Credit / Debit cards only. To pay with EBT or Cash" />,{' '}
-          <Link onClick={() => dispatch(SetOrderType.create(OrderType.PICKUP))} className={styles.link}>
-            switch to pickup
-          </Link>
+          {pickupEnabled && (
+            <>
+              <Content id="delivery_option_alert" defaultText="Credit / Debit cards only. To pay with EBT or Cash, " />
+              <Link onClick={() => dispatch(SetOrderType.create(OrderType.PICKUP))} className={styles.link}>
+                switch to pickup
+              </Link>
+            </>
+          )}
         </Typography>
       )}
       {orderType === OrderType.PICKUP && (
         <Typography variant="body1" className={styles.label}>
-          <Content id="pickup_option_alert" defaultText="To have your order delivered" />,{' '}
-          <Link onClick={() => dispatch(SetOrderType.create(OrderType.DELIVERY))} className={styles.link}>
-            switch to delivery
-          </Link>
+          {deliveryEnabled && (
+            <>
+              <Content id="pickup_option_alert" defaultText="To have your order delivered, " />
+              <Link onClick={() => dispatch(SetOrderType.create(OrderType.DELIVERY))} className={styles.link}>
+                switch to delivery
+              </Link>
+            </>
+          )}
         </Typography>
       )}
     </Card>
