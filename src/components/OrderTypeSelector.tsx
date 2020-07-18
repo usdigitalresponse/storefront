@@ -2,7 +2,7 @@ import { Button, Card, CardActionArea, CardActions, Grid, Typography } from '@ma
 import { IAppState } from '../store/app';
 import { IConfig, IPickupLocation, OrderType } from '../common/types';
 import { SetLocationsDialogIsOpen, SetOrderType, selectedLocationSelector } from '../store/cart';
-import { pickupLocationsSelector, validZipcodesSelector } from '../store/cms';
+import { pickupLocationsSelector, zipcodeListSelector } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsSmall } from '../common/hooks';
 import CheckedIcon from '@material-ui/icons/CheckBox';
@@ -24,7 +24,7 @@ const OrderTypeSelector: React.FC<Props> = ({ className }) => {
   const pickupLocationCount = useSelector<IAppState, IPickupLocation[]>(pickupLocationsSelector).length;
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const validZipcodes = useSelector<IAppState, string[]>(validZipcodesSelector);
+  const zipcodeList = useSelector<IAppState, string[]>(zipcodeListSelector);
   const { deliveryEnabled, pickupEnabled, stockByLocation } = config;
 
   return (
@@ -47,7 +47,7 @@ const OrderTypeSelector: React.FC<Props> = ({ className }) => {
                   </Typography>
                   <Typography variant="body1" className={styles.description}>
                     <Content id="delivery_option_subtitle" defaultText="Credit / Debit Card Only" />
-                    {stockByLocation && <span> Only valid for {validZipcodes.join(', ')}.</span>}
+                    {stockByLocation && <span> Only valid for {zipcodeList.join(', ')}.</span>}
                   </Typography>
                 </div>
               </div>

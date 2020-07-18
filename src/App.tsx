@@ -18,8 +18,8 @@ import MuiThemeWrapper from './components/MuiThemeWrapper';
 import NotFoundPage from './pages/NotFoundPage';
 import ProductPage from './pages/ProductPage';
 import ProductsPage from './pages/ProductsPage';
-import SchemaPage from './pages/SchemaPage';
 import React from 'react';
+import SchemaPage from './pages/SchemaPage';
 
 const store = configureStore();
 AirtableService.init(store);

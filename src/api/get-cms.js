@@ -69,7 +69,6 @@ exports.handler = async (event, context) => {
     const schedules = schedulesRecords.map((row) => {
       return {
         id: row.id,
-        type: row.fields['Type'],
         start: row.fields['Start Time'],
         end: row.fields['End Time'],
         day: row.fields['Day'],
@@ -79,7 +78,10 @@ exports.handler = async (event, context) => {
     // Valid Zipcodes
     const validZipcodesRecords = await fetchTable('Valid Zipcodes', { view: DEFAULT_VIEW });
     const validZipcodes = validZipcodesRecords.map((row) => {
-      return row.fields['Zip Code'];
+      return {
+        zipcode: row.fields['Zip Code'],
+        schedules: row.fields['Linked Schedules']
+      }
     });
 
     // Questions
