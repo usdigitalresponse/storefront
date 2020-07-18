@@ -248,7 +248,6 @@ export interface IStockZipcodes {
 export interface IValidZipcode {
   zipcode: string;
   schedules?: string[];
-  resolvedSchedules?: ISchedule[];
 }
 
 export type ZipcodeScheduleMap = Record<string, ISchedule[]>;
