@@ -8,6 +8,7 @@ import ArrowIcon from '@material-ui/icons/ArrowForward';
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import styles from './DiscountCode.module.scss';
+import Content from "./Content";
 
 interface Props {
   className?: string;
@@ -38,7 +39,9 @@ const DiscountCode: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={classNames(styles.container, className)}>
-      {!show && <Link onClick={() => setShow(true)}>I have a discount code</Link>}
+      {!show && <Link onClick={() => setShow(true)}>
+        <Content id="discount_code_label" defaultText="I have a discount code"/>
+      </Link>}
       {show && (
         <TextField
           fullWidth
