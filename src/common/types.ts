@@ -5,6 +5,7 @@ export interface IConfig {
   defaultState?: string;
   themeColor: string;
   paymentEnabled: boolean;
+  waitlistEnabled: boolean;
   donationEnabled: boolean;
   donationUnits?: string;
   defaultOrderType: OrderType;
