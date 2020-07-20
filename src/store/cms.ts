@@ -70,6 +70,7 @@ export const initialCmsState: ICmsState = {
     defaultState: undefined,
     themeColor: 'indigo',
     paymentEnabled: true,
+    waitlistEnabled: true,
     donationEnabled: true,
     donationUnits: undefined,
     defaultOrderType: OrderType.DELIVERY,

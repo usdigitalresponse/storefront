@@ -29,7 +29,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
   const { id, name, description, price, locations } = product;
   const history = useHistory();
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const { paymentEnabled, stockByLocation } = config;
+  const { paymentEnabled, waitlistEnabled, stockByLocation } = config;
 
   function addToCart() {
     dispatch(
@@ -101,42 +101,44 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
             </Grid>
           </Grid>
         )}
-        <Grid container alignItems="center" className={styles.cta}>
-          <Grid item md={6} xs={12} className={styles.ctaInfo}>
-            <Typography variant="subtitle1" className={styles.ctaTitle}>
-              <Content id="products_waitlist_title" />
-            </Typography>
-            <Typography variant="body2" className={styles.ctaDescription}>
-              <Content id="products_waitlist_copy" markdown />
-            </Typography>
-            {stockByLocation && locations && (
-              <div className={styles.locations}>
-                <Typography variant="body2">Available in the following locations:</Typography>
-                <ul className={styles.locationList}>
-                  {locations.map((location) => (
-                    <Typography key={location.id} component="li" variant="body2" className={classNames()}>
-                      <span className={classNames({ [styles.soldout]: location.stockRemaining === 0 })}>
-                        {location.name}
-                      </span>
-                      {location.stockRemaining === 0 && <span>Sold Out - Waitlist Only</span>}
-                    </Typography>
-                  ))}
-                </ul>
-              </div>
-            )}
+        {waitlistEnabled && (
+          <Grid container alignItems="center" className={styles.cta}>
+            <Grid item md={6} xs={12} className={styles.ctaInfo}>
+              <Typography variant="subtitle1" className={styles.ctaTitle}>
+                <Content id="products_waitlist_title" />
+              </Typography>
+              <Typography variant="body2" className={styles.ctaDescription}>
+                <Content id="products_waitlist_copy" markdown />
+              </Typography>
+              {stockByLocation && locations && (
+                <div className={styles.locations}>
+                  <Typography variant="body2">Available in the following locations:</Typography>
+                  <ul className={styles.locationList}>
+                    {locations.map((location) => (
+                      <Typography key={location.id} component="li" variant="body2" className={classNames()}>
+                        <span className={classNames({ [styles.soldout]: location.stockRemaining === 0 })}>
+                          {location.name}
+                        </span>
+                        {location.stockRemaining === 0 && <span>Sold Out - Waitlist Only</span>}
+                      </Typography>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </Grid>
+            <Grid item md={6} xs={12} className={styles.ctaAction}>
+              <Button
+                className={styles.ctaButton}
+                variant={paymentEnabled ? 'outlined' : 'contained'}
+                color="primary"
+                size="large"
+                onClick={addToWaitlist}
+              >
+                <Content id="products_waitlist_button_label" />
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item md={6} xs={12} className={styles.ctaAction}>
-            <Button
-              className={styles.ctaButton}
-              variant={paymentEnabled ? 'outlined' : 'contained'}
-              color="primary"
-              size="large"
-              onClick={addToWaitlist}
-            >
-              <Content id="products_waitlist_button_label" />
-            </Button>
-          </Grid>
-        </Grid>
+        )}
       </div>
     </Card>
   );

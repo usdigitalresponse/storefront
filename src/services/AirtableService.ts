@@ -45,6 +45,7 @@ export class AirtableService {
             defaultState: records.config.default_state,
             themeColor: records.config.theme_color,
             paymentEnabled: records.config.payment_enabled === 'false' ? false : true,
+            waitlistEnabled: records.config.waitlist_enabled === 'false' ? false : true,
             donationEnabled: records.config.donation_enabled === 'false' ? false : true,
             donationUnits: records.config.donation_units,
             defaultOrderType: records.config.default_order_type || OrderType.DELIVERY,
