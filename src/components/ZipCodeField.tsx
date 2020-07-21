@@ -28,14 +28,14 @@ const ZipCodeField: React.FC<TextFieldProps> = (props) => {
         className={props.className}
         renderInput={(params) => <TextField {...props} {...params} />}
       />
-      {zipcodeSchedules[selectedZipcode] && zipcodeSchedules[selectedZipcode].length && (
+      {zipcodeSchedules[selectedZipcode] && zipcodeSchedules[selectedZipcode].length > 0 ? (
         <>
           <Typography variant="body2" className={styles.note}>
             <Content id="zipcode_delivery_schedule_label" defaultText="Delivery is available for this zipcode" />
           </Typography>
           <ScheduleView variant="body2" schedules={zipcodeSchedules[selectedZipcode]} className={styles.note} />
         </>
-      )}
+      ) : null}
     </>
   );
 };
