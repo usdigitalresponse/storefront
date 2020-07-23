@@ -28,11 +28,10 @@ export function getEmailBody(order) {
       if (isDelivery && order.address_zip) {
         const validZipcodeRecords = await fetchTable('Valid Zipcodes', {
           view: DEFAULT_VIEW,
-          fields: ['Linked Schedules'],
-          filterByFormula: `AND({Zip Code} = "${order.address_zip}", NOT({Linked Schedules} = BLANK()))`,
+          filterByFormula: `{Zip Code} = "${order.address_zip}"`,
         });
 
-        if (validZipcodeRecords.length > 0) {
+        if (validZipcodeRecords.length > 0 && validZipcodeRecords[0].fields['Linked Schedules']) {
           const zipcodeRecordLookup = validZipcodeRecords[0].fields['Linked Schedules']
             .map((schedule) => `RECORD_ID() = "${schedule}"`)
             .join(', ');
