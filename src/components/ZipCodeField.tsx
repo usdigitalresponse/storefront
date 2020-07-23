@@ -31,7 +31,7 @@ const ZipCodeField: React.FC<TextFieldProps> = (props) => {
       {zipcodeSchedules[selectedZipcode] && zipcodeSchedules[selectedZipcode].length > 0 ? (
         <>
           <Typography variant="body2" className={styles.note}>
-            <Content id="zipcode_delivery_schedule_label" defaultText="Delivery is available for this zipcode" />
+            <Content id="zipcode_delivery_schedule_label" defaultText="Delivery to this zip code has the following schedule:" />
           </Typography>
           <ScheduleView variant="body2" schedules={zipcodeSchedules[selectedZipcode]} className={styles.note} />
         </>
