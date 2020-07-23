@@ -13,7 +13,8 @@ const ZipCodeField: React.FC<TextFieldProps> = (props) => {
   const zipcodeList = useSelector<IAppState, string[]>(zipcodeListSelector);
   const zipcodeSchedules = useSelector<IAppState, ZipcodeScheduleMap>(zipcodeSchedulesSelector);
 
-  const [selectedZipcode, setSelectedZipcode] = useState<string>('');
+  // Material UI Autocomplete throws a warning if passed an empty string; its empty state is null
+  const [selectedZipcode, setSelectedZipcode] = useState<string | null>(null);
 
   return zipcodeList.length === 0 ? (
     <TextField {...props} />
@@ -28,10 +29,13 @@ const ZipCodeField: React.FC<TextFieldProps> = (props) => {
         className={props.className}
         renderInput={(params) => <TextField {...props} {...params} />}
       />
-      {zipcodeSchedules[selectedZipcode] && zipcodeSchedules[selectedZipcode].length > 0 ? (
+      {selectedZipcode && zipcodeSchedules[selectedZipcode] && zipcodeSchedules[selectedZipcode].length > 0 ? (
         <>
           <Typography variant="body2" className={styles.note}>
-            <Content id="zipcode_delivery_schedule_label" defaultText="Delivery to this zip code has the following schedule:" />
+            <Content
+              id="zipcode_delivery_schedule_label"
+              defaultText="Delivery to this zip code has the following schedule:"
+            />
           </Typography>
           <ScheduleView variant="body2" schedules={zipcodeSchedules[selectedZipcode]} className={styles.note} />
         </>
