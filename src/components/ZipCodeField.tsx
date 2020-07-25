@@ -13,6 +13,9 @@ const ZipCodeField: React.FC<TextFieldProps> = (props) => {
   const zipcodeList = useSelector<IAppState, string[]>(zipcodeListSelector);
   const zipcodeSchedules = useSelector<IAppState, ZipcodeScheduleMap>(zipcodeSchedulesSelector);
 
+  // We should be using react-hook-form's watch('zip') instead of `useState` to control the zip code value
+  // but it causes a bug that prevents users from typing in the TextField. Leaving it like this for now.
+  //
   // Material UI Autocomplete throws a warning if passed an empty string; its empty state is null
   const [selectedZipcode, setSelectedZipcode] = useState<string | null>(null);
 
