@@ -6,7 +6,7 @@ It is a single page app in React with a serverless backend currently being serve
 
 ### Setup Overview
 
-1. Request access to this repo, Airtable, and Netlify
+1. Request access to this repo, Airtable, SendGrid, and Netlify
 2. [Add API keys](#api-keys-and-env) to your local `.env` file
 3. Run `yarn`, `yarn start`, and `yarn start:api` to [install dependencies and start the app](#running-the-app)
 
@@ -25,6 +25,8 @@ Create an Airtable account and copy your personal API key at https://airtable.co
 To get a base ID, go to https://airtable.com/api and click on any USDR Food base e.g. Storefront Demo.
 
 The app ID begins with `app`. You can either grab the ID from the url `https://airtable.com/[some_key_beginning_with_app]/api/` or it will be displayed in the Introduction section: `The ID of this base is [some_key_beginning_with_app].`
+
+*Note: It is recommended that you clone the Storefront Demo base and use this copy while developing. This way you can test schema changes without worrying about breaking other instances of the app.*
 
 #### 2. Get Stripe API keys
 
@@ -88,6 +90,26 @@ yarn build
 Builds a minified and optimized version of the app for production to the `build` folder. **Your app is ready to be deployed!**
 
 See the section about [deployment](#setting-up-netlify-deploying-a-site) or [Create React App's docs](https://create-react-app.dev/docs/deployment) for more information.
+
+### Sending Emails in Dev
+
+Ask someone on the team for an invitation to the team SendGrid account. Once you have access:
+
+#### 1. Set the SendGrid API key
+
+You can grab the API key at https://app.sendgrid.com/settings/api_keys or have someone send it to you.
+
+Add the SendGrid API key to your `.env` file:
+
+```
+SENDGRID_API_KEY=
+```
+
+#### 2. Set the `email_from_address` field in Airtable
+
+In the `Config` table of your Airtable base, set the `email_from_address` to `storefront@usdigitalresponse.org`.
+
+Restart the app. You should now be able to receive emails sent by the app (e.g. order confirmation email).
 
 ## Setting up Netlify
 

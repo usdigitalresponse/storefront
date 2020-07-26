@@ -6,9 +6,11 @@ import {
   IOrderItem,
   IPickupLocation,
   ISchedule,
+  IValidZipcode,
   InventoryRecord,
   OrderType,
   Question,
+  ZipcodeScheduleMap,
 } from '../common/types';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
@@ -28,7 +30,7 @@ export interface ICmsState {
   };
   pickupLocations: IPickupLocation[];
   schedules: ISchedule[];
-  validZipcodes: string[];
+  validZipcodes: IValidZipcode[];
   questions: Question[];
 }
 
@@ -217,20 +219,41 @@ export const pickupLocationsSelector = Reselect.createSelector(
   },
 );
 
-export const validZipcodesSelector = Reselect.createSelector(
+export const zipcodeListSelector = Reselect.createSelector(
   (state: IAppState) => state.cms.validZipcodes,
   (state: IAppState) => state.cart.items,
   (state: IAppState) => state.cms.config.stockByLocation,
   productListSelector,
-  (validZipcodes: string[], cartItems: IOrderItem[], stockByLocation: boolean, productList: InventoryRecord[]) => {
+  (
+    validZipcodes: IValidZipcode[],
+    cartItems: IOrderItem[],
+    stockByLocation: boolean,
+    productList: InventoryRecord[],
+  ) => {
+    const zipcodes = validZipcodes.map((validZipcode: IValidZipcode) => validZipcode.zipcode);
+
     if (stockByLocation && cartItems.length === 1 && cartItems[0].quantity === 1) {
       const stockZipcodes = getProduct(cartItems[0].id, productList)?.zipcodes;
       return stockZipcodes
         ? stockZipcodes.reduce((acc, stockZipcode) => acc.concat(stockZipcode.zipcodes), [] as string[]).sort()
-        : validZipcodes.sort();
+        : zipcodes.sort();
     } else {
-      return validZipcodes.sort();
+      return zipcodes.sort();
     }
+  },
+);
+
+export const zipcodeSchedulesSelector = Reselect.createSelector(
+  (state: IAppState) => state.cms.validZipcodes,
+  (state: IAppState) => state.cms.schedules,
+  (validZipcodes: IValidZipcode[], schedules: ISchedule[]) => {
+    return validZipcodes.reduce((zipcodeSchedules: ZipcodeScheduleMap, validZipcode: IValidZipcode) => {
+      zipcodeSchedules[validZipcode.zipcode] = validZipcode.schedules
+        ? validZipcode.schedules.map((scheduleId: any) => schedules.find((s) => s.id === scheduleId)!)
+        : [];
+
+      return zipcodeSchedules;
+    }, {});
   },
 );
 

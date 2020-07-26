@@ -1,6 +1,6 @@
 import BaseLayout from '../layouts/BaseLayout';
 import Loading from '../components/Loading';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const SchemaPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);

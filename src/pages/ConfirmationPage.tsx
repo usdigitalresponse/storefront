@@ -5,11 +5,12 @@ import {
   IOrderSummary,
   IPickupLocation,
   OrderStatus,
+  ZipcodeScheduleMap,
   isDonationSummary,
   isOrderSummary,
 } from '../common/types';
 import { formatDate } from '../common/format';
-import { pickupLocationsSelector, useContent } from '../store/cms';
+import { pickupLocationsSelector, useContent, zipcodeSchedulesSelector } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
 import AddressView from '../components/AddressView';
@@ -33,6 +34,7 @@ const ConfirmationPage: React.FC<Props> = () => {
     useContent('confirmation_copy_all') || `We've sent an email confirmation to {customer-email}`;
   const confirmationCopyOrder = useContent('confirmation_copy_order');
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
+  const zipcodeSchedules = useSelector<IAppState, ZipcodeScheduleMap>(zipcodeSchedulesSelector);
   const pickupLocation =
     isOrderSummary(confirmation) && confirmation.pickupLocationId && pickupLocations
       ? pickupLocations.find((location) => location.id === confirmation.pickupLocationId)
@@ -123,6 +125,13 @@ const ConfirmationPage: React.FC<Props> = () => {
                     Delivery Address
                   </Typography>
                   <AddressView address={confirmation.deliveryAddress} />
+                  {zipcodeSchedules[confirmation.deliveryAddress?.zip] && (
+                    <ScheduleView
+                      variant="body2"
+                      schedules={zipcodeSchedules[confirmation.deliveryAddress.zip]}
+                      className={styles.schedules}
+                    />
+                  )}
                   {confirmation.deliveryPreferences && (
                     <div className={styles.preferences}>
                       {confirmation.deliveryPreferences.map((pref) => (

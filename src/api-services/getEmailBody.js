@@ -24,13 +24,43 @@ export function getEmailBody(order) {
       const isDelivery = order['Type'] === 'Delivery';
       const pickupLocationName = order.pickupName;
 
+      let deliverySchedule = '';
+      if (isDelivery && order.address_zip) {
+        const validZipcodeRecords = await fetchTable('Valid Zipcodes', {
+          view: DEFAULT_VIEW,
+          filterByFormula: `{Zip Code} = "${order.address_zip}"`,
+        });
+
+        if (validZipcodeRecords.length > 0 && validZipcodeRecords[0].fields['Linked Schedules']) {
+          const zipcodeRecordLookup = validZipcodeRecords[0].fields['Linked Schedules']
+            .map((schedule) => `RECORD_ID() = "${schedule}"`)
+            .join(', ');
+
+          const schedulesRecords = await fetchTable('Schedules', {
+            view: DEFAULT_VIEW,
+            fields: ['Start Time', 'End Time', 'Day'],
+            filterByFormula: `OR(${zipcodeRecordLookup})`,
+          });
+
+          deliverySchedule = schedulesRecords
+            .map((row) => {
+              return `${row.fields['Day']}s from ${row.fields['Start Time']} to ${row.fields['End Time']}`;
+            })
+            .join(', ');
+        }
+      }
+
       const orderDetails = `
         <p style="margin-top: 0px;"></p>
         <b>${isDelivery ? 'Delivery Address' : 'Pickup Location'}:</b>
         <p style="white-space: pre-wrap; margin-top: 0px;">${
           isDelivery ? order['Delivery Address'] : order.pickupAddress
         }</p>
-        <b>Items ordered:</b>
+        ${deliverySchedule &&
+          `<p style="margin-top: 0px;"></p>
+            <b>Delivery Schedule:</b>
+            <p style="white-space: pre-wrap; margin-top: 0px;">${deliverySchedule}</p>`}
+        <b>Items Ordered:</b>
         ${orderItemList}
         ${orderAmount}
         `;

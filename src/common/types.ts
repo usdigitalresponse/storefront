@@ -246,6 +246,13 @@ export interface IStockZipcodes {
   stockRemaining: number;
 }
 
+export interface IValidZipcode {
+  zipcode: string;
+  schedules?: string[];
+}
+
+export type ZipcodeScheduleMap = Record<string, ISchedule[]>;
+
 export function isSchedule(schedule?: string | ISchedule): schedule is ISchedule {
   return !!schedule && (schedule as ISchedule).id !== undefined;
 }
@@ -254,7 +261,6 @@ export type Day = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | '
 
 export interface ISchedule {
   id: string;
-  type: OrderType;
   start: string;
   end: string;
   day: Day;
