@@ -117,18 +117,26 @@ exports.handler = async (event, context) => {
       { typecast: true },
     );
 
-    // process order items
-    const items = await base('Order Items').create(
-      orderIntent.items.map((item) => {
-        return {
-          fields: {
-            Order: [order.id],
-            Quantity: item.quantity,
-            Inventory: [item.id],
-          },
-        };
-      }),
-    );
+    // process order items in batches of 10 (airtable limits to 10 records created per request)
+    let iter = 0;
+    const items = [];
+    while (iter * 10 < orderIntent.items.length) {
+      const start = iter * 10;
+      const end = Math.min(iter * 10 + 10, orderIntent.items.length);
+      const iterItems = await base('Order Items').create(
+        orderIntent.items.slice(start, end).map((item) => {
+          return {
+            fields: {
+              Order: [order.id],
+              Quantity: item.quantity,
+              Inventory: [item.id],
+            },
+          };
+        }),
+      );
+      items.push(...iterItems);
+      iter++;
+    }
 
     // process question responses
     const questionResponses = Object.keys(orderIntent)
