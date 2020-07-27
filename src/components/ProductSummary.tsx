@@ -23,7 +23,9 @@ const ProductSummary: React.FC<Props> = ({ product, className }) => {
       className={classNames(styles.container, className, { [styles.small]: isSmall })}
       onClick={() => history.push(`products/${id}`)}
     >
-      <img className={styles.image} src={getImageUrl(image)} alt={name} />
+      <div className={styles.imageContainer}>
+        <img className={styles.image} src={getImageUrl(image)} alt={name} />
+      </div>
       <Typography variant="body1" className={styles.name}>
         {name}
       </Typography>

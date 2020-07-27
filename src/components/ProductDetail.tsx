@@ -52,7 +52,9 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
       raised={isSmall}
       className={classNames(styles.container, className, { [styles.small]: isSmall, [styles.large]: !isSmall })}
     >
-      <img className={styles.image} src={getImageUrl(product.image)} alt={product.name} />
+      <div className={styles.imageContainer}>
+        <img className={styles.image} src={getImageUrl(product.image)} alt={product.name} />
+      </div>
       <div className={styles.content}>
         <Typography variant="h4" className={styles.title}>
           {name}
