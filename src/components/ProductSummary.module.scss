@@ -5,11 +5,20 @@
   flex-direction: column;
   align-items: center;
 
-  .image {
-    width: 275px;
+  .imageContainer {
     height: 275px;
+    width: 275px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: spacing(2);
+
+    .image {
+      max-width: 275px;
+      max-height: 275px;
+    }
   }
+
 
   .name {
     @include fontSize('md');
