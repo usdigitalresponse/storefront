@@ -230,7 +230,10 @@ export const zipcodeListSelector = Reselect.createSelector(
     stockByLocation: boolean,
     productList: InventoryRecord[],
   ) => {
-    const zipcodes = validZipcodes.map((validZipcode: IValidZipcode) => validZipcode.zipcode);
+    const zipcodes = validZipcodes
+      // Prevent undefined zipcode values
+      .filter((validZipcode: IValidZipcode) => validZipcode.zipcode)
+      .map((validZipcode: IValidZipcode) => validZipcode.zipcode);
 
     if (stockByLocation && cartItems.length === 1 && cartItems[0].quantity === 1) {
       const stockZipcodes = getProduct(cartItems[0].id, productList)?.zipcodes;
