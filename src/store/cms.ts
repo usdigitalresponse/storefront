@@ -250,13 +250,15 @@ export const zipcodeSchedulesSelector = Reselect.createSelector(
   (state: IAppState) => state.cms.validZipcodes,
   (state: IAppState) => state.cms.schedules,
   (validZipcodes: IValidZipcode[], schedules: ISchedule[]) => {
-    return validZipcodes.reduce((zipcodeSchedules: ZipcodeScheduleMap, validZipcode: IValidZipcode) => {
-      zipcodeSchedules[validZipcode.zipcode] = validZipcode.schedules
-        ? validZipcode.schedules.map((scheduleId: any) => schedules.find((s) => s.id === scheduleId)!)
-        : [];
+    return validZipcodes
+      .filter((validZipcode: IValidZipcode) => validZipcode.zipcode)
+      .reduce((zipcodeSchedules: ZipcodeScheduleMap, validZipcode: IValidZipcode) => {
+        zipcodeSchedules[validZipcode.zipcode] = validZipcode.schedules
+          ? validZipcode.schedules.map((scheduleId: any) => schedules.find((s) => s.id === scheduleId)!)
+          : [];
 
-      return zipcodeSchedules;
-    }, {});
+        return zipcodeSchedules;
+      }, {});
   },
 );
 
