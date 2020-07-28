@@ -64,6 +64,9 @@
     "typeface-inter": "^3.12.0",
     "typescript": "~3.7.2"
   },
+  "resolutions": {
+    "lodash": "^4.17.19"
+  },
   "scripts": {
     "dev": "yarn run start && yarn run start:api",
     "start": "react-scripts start",
