@@ -77,12 +77,14 @@ exports.handler = async (event, context) => {
 
     // Valid Zipcodes
     const validZipcodesRecords = await fetchTable('Valid Zipcodes', { view: DEFAULT_VIEW });
-    const validZipcodes = validZipcodesRecords.map((row) => {
-      return {
-        zipcode: row.fields['Zip Code'],
-        schedules: row.fields['Linked Schedules']
-      }
-    });
+    const validZipcodes = validZipcodesRecords
+      .filter((row) => row.fields['Zip Code'])
+      .map((row) => {
+        return {
+          zipcode: row.fields['Zip Code'],
+          schedules: row.fields['Linked Schedules']
+        }
+      });
 
     // Questions
     const questionsRecords = await fetchTable('Questions', { view: DEFAULT_VIEW });
