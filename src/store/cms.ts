@@ -230,10 +230,7 @@ export const zipcodeListSelector = Reselect.createSelector(
     stockByLocation: boolean,
     productList: InventoryRecord[],
   ) => {
-    const zipcodes = validZipcodes
-      // Prevent undefined zipcode values
-      .filter((validZipcode: IValidZipcode) => validZipcode.zipcode)
-      .map((validZipcode: IValidZipcode) => validZipcode.zipcode);
+    const zipcodes = validZipcodes.map((validZipcode: IValidZipcode) => validZipcode.zipcode);
 
     if (stockByLocation && cartItems.length === 1 && cartItems[0].quantity === 1) {
       const stockZipcodes = getProduct(cartItems[0].id, productList)?.zipcodes;
@@ -250,15 +247,13 @@ export const zipcodeSchedulesSelector = Reselect.createSelector(
   (state: IAppState) => state.cms.validZipcodes,
   (state: IAppState) => state.cms.schedules,
   (validZipcodes: IValidZipcode[], schedules: ISchedule[]) => {
-    return validZipcodes
-      .filter((validZipcode: IValidZipcode) => validZipcode.zipcode)
-      .reduce((zipcodeSchedules: ZipcodeScheduleMap, validZipcode: IValidZipcode) => {
-        zipcodeSchedules[validZipcode.zipcode] = validZipcode.schedules
-          ? validZipcode.schedules.map((scheduleId: any) => schedules.find((s) => s.id === scheduleId)!)
-          : [];
+    return validZipcodes.reduce((zipcodeSchedules: ZipcodeScheduleMap, validZipcode: IValidZipcode) => {
+      zipcodeSchedules[validZipcode.zipcode] = validZipcode.schedules
+        ? validZipcode.schedules.map((scheduleId: any) => schedules.find((s) => s.id === scheduleId)!)
+        : [];
 
-        return zipcodeSchedules;
-      }, {});
+      return zipcodeSchedules;
+    }, {});
   },
 );
 
