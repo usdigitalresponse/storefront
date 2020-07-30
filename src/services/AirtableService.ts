@@ -60,6 +60,7 @@ export class AirtableService {
             embeddedViewId: records.config.embedded_view_id,
             embeddedViewName: records.config.embedded_view_name,
             stockByLocation: records.config.stock_by_location === 'true' ? true : false,
+            stripeAPIKeyMain: records.config.stripe_main_public_api_key,
           }),
           SetOrderType.create(
             deliveryEnabled ? records.config.default_order_type || OrderType.DELIVERY : OrderType.PICKUP,

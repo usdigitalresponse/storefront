@@ -107,14 +107,17 @@ export const requiresPaymentSelector = Reselect.createSelector(
   (state: IAppState) => state.checkout.isDonationRequest,
   (state: IAppState) => state.cms.config.payUponPickupEnabled,
   (state: IAppState) => state.checkout.payState,
+  (state: IAppState) => state.cms.config.stripeAPIKeyMain,
   (
     total: number,
     orderType: OrderType,
     isDonationRequest: boolean,
     payUponPickupEnabled: boolean,
     payState: PayState,
+    stripeAPIKeyMain?: string
   ) => {
     return (
+      typeof stripeAPIKeyMain === 'string' &&
       total > 0 &&
       (orderType === OrderType.DELIVERY || !payUponPickupEnabled) &&
       !isDonationRequest &&
