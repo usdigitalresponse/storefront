@@ -186,6 +186,26 @@ exports.handler = async (event, context) => {
       console.error('Could not send order confirmation email: ', error);
     }
 
+    // send to connected NEX base
+    const nexBaseId = configRecordsByKey?.nex_integration_base_id?.value;
+    if (nexBaseId) {
+      try {
+        const nexBase = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(nexBaseId);
+        await nexBase('Orders').create({
+          'Order ID': order.fields['Order ID'],
+          Name: order.fields['Name'],
+          Email: order.fields['Email'],
+          'Phone Number': order.fields['Phone Number'],
+          'Order Contents': items.map(item => `${item.fields.Quantity}x ${item.fields['Inventory Name']}`).join(", "),
+          Type: order.fields['Type'],
+          'Order Address': order.fields['Order Address'] ? typeof order.fields['Order Address'] === 'string' ? order.fields['Order Address'] : order.fields['Order Address'][0] : '',
+          'Delivery Preferences': order.fields['Delivery Preferences'],
+        });
+      } catch (error) {
+        console.log('Count not send order to NEX base', error);
+      }
+    }
+
     const orderSummary = {
       id: order.fields['Order ID'],
       status: order.fields['Order Status'],
