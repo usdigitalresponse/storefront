@@ -56,7 +56,13 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
   .withHandler(SetPickupLocations.TYPE, (state, pickupLocations) => setWith(state, { pickupLocations }))
   .withHandler(SetStripePromise.TYPE, (state, keys) =>
     setWith(state, {
-      stripeObjects: { main: loadStripe(keys.main), donation: loadStripe(keys.donation) },
+      stripeObjects: {
+        ...state.stripeObjects,
+        ...Object.keys(keys).reduce((stripeKeys: Record<string, Promise<Stripe | null> | null>, keyType: string) => {
+          stripeKeys[keyType] = loadStripe(keys[keyType])
+          return stripeKeys;
+        }, {})
+      }
     }),
   )
   .withHandler(SetLanguage.TYPE, (state, language) => setWith(state, { language }))

@@ -21,6 +21,7 @@ export interface IConfig {
   embeddedViewName?: string;
   stockByLocation: boolean;
   stripeAPIKeyMain?: string;
+  stripeAPIKeyDonation?: string;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {

@@ -73,8 +73,6 @@ export class StripeService {
   }
 
   public static async pay(formData: ICheckoutFormData, stripe: Stripe | null, elements: StripeElements | null) {
-    if (!stripe || !elements) return;
-
     const state = StripeService.store.getState();
     const subtotal = subtotalSelector(state);
     const discount = discountSelector(state);
@@ -125,6 +123,11 @@ export class StripeService {
     // process payment
     let stripePaymentId: string | undefined;
     if (requiresPayment) {
+      if (!stripe || !elements) {
+        StripeService.store.dispatch(SetError.create('Stripe or elements object missing.'));
+        return PaymentStatus.FAILED;
+      }
+
       stripePaymentId = await StripeService.processPayment('main', total, stripe, elements);
       if (stripePaymentId) {
         orderIntent.status = OrderStatus.PAID;

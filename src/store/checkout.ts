@@ -114,7 +114,7 @@ export const requiresPaymentSelector = Reselect.createSelector(
     isDonationRequest: boolean,
     payUponPickupEnabled: boolean,
     payState: PayState,
-    stripeAPIKeyMain?: string
+    stripeAPIKeyMain?: string,
   ) => {
     return (
       typeof stripeAPIKeyMain === 'string' &&

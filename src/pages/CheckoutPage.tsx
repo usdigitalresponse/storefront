@@ -36,6 +36,7 @@ import {
 } from '../store/checkout';
 import { SetLocationsDialogIsOpen, selectedLocationSelector } from '../store/cart';
 import { StripeService } from '../services/StripeService';
+import { Stripe, StripeElements } from '@stripe/stripe-js';
 import { questionsSelector, useContent } from '../store/cms';
 import { reverse } from '../common/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -64,7 +65,12 @@ import classNames from 'classnames';
 import qs from 'qs';
 import styles from './CheckoutPage.module.scss';
 
-function CheckoutPageMain() {
+interface Props {
+  stripe?: Stripe | null;
+  elements?: StripeElements | null;
+}
+
+const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) => {
   const { register, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const {
@@ -78,8 +84,6 @@ function CheckoutPageMain() {
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const isSmall = useIsSmall();
   const hasErrors = Object.keys(errors).length > 0;
-  const stripe = useStripe();
-  const elements = useElements();
   const items = useSelector<IAppState, IOrderItem[]>((state) => state.cart.items);
   const paymentStatus = useSelector<IAppState, PaymentStatus>(paymentStatusSelector);
   const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
@@ -332,12 +336,24 @@ function CheckoutPageMain() {
       </form>
     </BaseLayout>
   );
-}
+};
 
-export default function CheckoutPage() {
+// TODO: useStripe and useElement must be called in an Elements component, and
+// the Elements component doesn't work without a valid stripe promise...this was my
+// workaround but I imagine there's a better way to do this
+const CheckoutPageWithStripe = () => {
+  const stripe = useStripe();
+  const elements = useElements();
+
   return (
     <StripeElementsWrapper type="main">
-      <CheckoutPageMain />
+      <CheckoutPageMain stripe={stripe} elements={elements} />
     </StripeElementsWrapper>
   );
+};
+
+export default function CheckoutPage() {
+  const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
+
+  return config.stripeAPIKeyMain ? <CheckoutPageWithStripe /> : <CheckoutPageMain />;
 }
