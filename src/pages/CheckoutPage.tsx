@@ -35,8 +35,8 @@ import {
   requiresPaymentSelector,
 } from '../store/checkout';
 import { SetLocationsDialogIsOpen, selectedLocationSelector } from '../store/cart';
-import { StripeService } from '../services/StripeService';
 import { Stripe, StripeElements } from '@stripe/stripe-js';
+import { StripeService } from '../services/StripeService';
 import { questionsSelector, useContent } from '../store/cms';
 import { reverse } from '../common/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -345,15 +345,17 @@ const CheckoutPageWithStripe = () => {
   const stripe = useStripe();
   const elements = useElements();
 
-  return (
-    <StripeElementsWrapper type="main">
-      <CheckoutPageMain stripe={stripe} elements={elements} />
-    </StripeElementsWrapper>
-  );
+  return <CheckoutPageMain stripe={stripe} elements={elements} />;
 };
 
 export default function CheckoutPage() {
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
 
-  return config.stripeAPIKeyMain ? <CheckoutPageWithStripe /> : <CheckoutPageMain />;
+  return config.stripeAPIKeyMain ? (
+    <StripeElementsWrapper type="main">
+      <CheckoutPageWithStripe />
+    </StripeElementsWrapper>
+  ) : (
+    <CheckoutPageMain />
+  );
 }

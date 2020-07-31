@@ -59,10 +59,10 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
       stripeObjects: {
         ...state.stripeObjects,
         ...Object.keys(keys).reduce((stripeKeys: Record<string, Promise<Stripe | null> | null>, keyType: string) => {
-          stripeKeys[keyType] = loadStripe(keys[keyType])
+          stripeKeys[keyType] = loadStripe(keys[keyType]);
           return stripeKeys;
-        }, {})
-      }
+        }, {}),
+      },
     }),
   )
   .withHandler(SetLanguage.TYPE, (state, language) => setWith(state, { language }))
