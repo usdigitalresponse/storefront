@@ -191,7 +191,7 @@ exports.handler = async (event, context) => {
     if (nexBaseId) {
       try {
         const nexBase = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(nexBaseId);
-        await nexBase('Orders').create({
+        await nexBase('Deliveries').create({
           'Order ID': order.fields['Order ID'],
           Name: order.fields['Name'],
           Email: order.fields['Email'],
