@@ -56,7 +56,7 @@ export class AirtableService {
             cartEnabled: records.config.cart_enabled === 'false' ? false : true,
             payUponPickupEnabled: records.config.pay_upon_pickup_enabled === 'false' ? false : true,
             payUponDeliveryEnabled: records.config.pay_upon_pickup_enabled === 'true' ? true : false,
-            embeddedViewEnabled: records.config.driver_form === 'false' ? false : true,
+            embeddedViewEnabled: records.config.embedded_view_enabled === 'false' ? false : true,
             embeddedViewId: records.config.embedded_view_id,
             embeddedViewName: records.config.embedded_view_name,
             stockByLocation: records.config.stock_by_location === 'true' ? true : false,
