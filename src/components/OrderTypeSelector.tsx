@@ -46,7 +46,7 @@ const OrderTypeSelector: React.FC<Props> = ({ className }) => {
                     <Content id="delivery_option_title" defaultText="Delivery" />
                   </Typography>
                   <Typography variant="body1" className={styles.description}>
-                    <Content id="delivery_option_subtitle" defaultText="Credit / Debit Card Only" />
+                    <Content id="delivery_option_subtitle" defaultText="Credit / Debit Card" />
                     {stockByLocation && <span> Only valid for {zipcodeList.join(', ')}.</span>}
                   </Typography>
                 </div>

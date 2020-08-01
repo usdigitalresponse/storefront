@@ -60,6 +60,8 @@ export class AirtableService {
             embeddedViewId: records.config.embedded_view_id,
             embeddedViewName: records.config.embedded_view_name,
             stockByLocation: records.config.stock_by_location === 'true' ? true : false,
+            stripeAPIKeyMain: records.config.stripe_main_public_api_key,
+            stripeAPIKeyDonation: records.config.stripe_donation_public_api_key,
           }),
           SetOrderType.create(
             deliveryEnabled ? records.config.default_order_type || OrderType.DELIVERY : OrderType.PICKUP,
@@ -70,14 +72,26 @@ export class AirtableService {
           SetValidZipcodes.create(records.validZipcodes),
           SetQuestions.create(records.questions),
           SetPickupLocations.create(records.pickupLocations),
-          SetStripePromise.create({
-            main: records.config.stripe_main_public_api_key,
-            donation: records.config.stripe_donation_public_api_key,
-          }),
         ];
 
         if (records.pickupLocations.length === 1) {
           actions.push(SetSelectedLocation.create(records.pickupLocations[0].id));
+        }
+
+        if (typeof records.config.stripe_main_public_api_key === 'string') {
+          actions.push(
+            SetStripePromise.create({
+              main: records.config.stripe_main_public_api_key,
+            }),
+          );
+        }
+
+        if (typeof records.config.stripe_donation_public_api_key === 'string') {
+          actions.push(
+            SetStripePromise.create({
+              donation: records.config.stripe_donation_public_api_key,
+            }),
+          );
         }
 
         AirtableService.store.dispatch(CompoundAction(actions));
