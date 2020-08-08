@@ -34,7 +34,7 @@ import {
   paymentStatusSelector,
   requiresPaymentSelector,
 } from '../store/checkout';
-import { SetLocationsDialogIsOpen, selectedLocationSelector } from '../store/cart';
+import { SetLocationsDialogIsOpen, selectedLocationSelector, subtotalWithDiscountSelector } from '../store/cart';
 import { Stripe, StripeElements } from '@stripe/stripe-js';
 import { StripeService } from '../services/StripeService';
 import { questionsSelector, useContent } from '../store/cms';
@@ -72,7 +72,7 @@ interface Props {
 }
 
 const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) => {
-  const { register, watch, setValue, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
+  const { register, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const {
     defaultState,
@@ -99,6 +99,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const dispatch = useDispatch();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const requiresPayment = useSelector<IAppState, boolean>(requiresPaymentSelector);
+  const orderTotal = useSelector<IAppState, number>(subtotalWithDiscountSelector);
   const payState = useSelector<IAppState, PayState>((state) => state.checkout.payState);
   const payNowOptionLabel = useContent('pay_now_option_label');
   const payLaterOptionLabel = useContent('pay_later_option_label');
@@ -258,16 +259,18 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                   </Grid>
                 </>
               )}
-              {requiresPayment && tippingEnabled && (
-                <Grid container className={styles.section}>
-                  <Typography variant="h3" className={styles.title}>
-                    Tip
-                  </Typography>
-                  <Grid item md={8} xs={12}>
-                    <TipField />
+              {tippingEnabled &&
+                !isDonationRequest &&
+                (requiresPayment || (payState === PayState.LATER && showPaymentOptions) || orderTotal > 0) && (
+                  <Grid container className={styles.section}>
+                    <Typography variant="h3" className={styles.title}>
+                      Tip
+                    </Typography>
+                    <Grid item md={8} xs={12}>
+                      <TipField />
+                    </Grid>
                   </Grid>
-                </Grid>
-              )}
+                )}
               {(requiresPayment || (payState === PayState.LATER && showPaymentOptions)) && (
                 <Grid container className={styles.section}>
                   <Typography variant="h3" className={classNames(styles.title, styles.payment)}>
