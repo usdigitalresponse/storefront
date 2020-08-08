@@ -1,7 +1,7 @@
 import { Button, Card, Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { itemsSelector } from '../store/cart';
 import { IOrderItem } from '../common/types';
+import { itemsSelector } from '../store/cart';
 import { reverse } from '../common/router';
 import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
