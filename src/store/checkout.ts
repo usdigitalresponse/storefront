@@ -20,6 +20,7 @@ export interface ICheckoutState {
   confirmation?: IOrderSummary | IDonationSummary;
   isDonationRequest: boolean;
   donationAmount: number;
+  tipPercentage: number;
   discountCode?: IDiscountCode;
   waitlistDialogIsOpen: boolean;
   waitlistConfirmed: boolean;
@@ -35,6 +36,7 @@ export const SetConfirmation = TypedAction.define('APP/CHECKOUT/SET_CONFIRMATION
 export const SetDiscountCode = TypedAction.define('APP/CHECKOUT/SET_DISCOUNT_CODE')<IDiscountCode | undefined>();
 export const SetIsDonationRequest = TypedAction.define('APP/CHECKOUT/SET_IS_DONATION_REQUEST')<boolean>();
 export const SetDonationAmount = TypedAction.define('APP/CHECKOUT/SET_DONATION_AMOUNT')<number>();
+export const SetTipPercentage = TypedAction.define('APP/CHECKOUT/SET_TIP_PERCENTAGE')<number>();
 export const SetWaitlistDialogIsOpen = TypedAction.define('APP/CHECKOUT/SET_WAITLIST_DIALOG_IS_OPEN')<boolean>();
 export const SetWaitlistConfirmed = TypedAction.define('APP/CHECKOUT/SET_WAITLIST_CONFIRMED')<boolean>();
 export const SetPayState = TypedAction.define('APP/CHECKOUT/SET_PAY_STATE')<PayState>();
@@ -47,6 +49,7 @@ export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
   .withHandler(SetDiscountCode.TYPE, (state, discountCode) => setWith(state, { discountCode }))
   .withHandler(SetIsDonationRequest.TYPE, (state, isDonationRequest) => setWith(state, { isDonationRequest }))
   .withHandler(SetDonationAmount.TYPE, (state, donationAmount) => setWith(state, { donationAmount }))
+  .withHandler(SetTipPercentage.TYPE, (state, tipPercentage) => setWith(state, { tipPercentage }))
   .withHandler(SetWaitlistDialogIsOpen.TYPE, (state, waitlistDialogIsOpen) => setWith(state, { waitlistDialogIsOpen }))
   .withHandler(SetWaitlistConfirmed.TYPE, (state, waitlistConfirmed) => setWith(state, { waitlistConfirmed }))
   .withHandler(SetPayState.TYPE, (state, payState) => setWith(state, { payState }))
@@ -60,6 +63,7 @@ export const initialCheckoutState: ICheckoutState = {
   isDonationRequest: false,
   confirmation: undefined,
   donationAmount: 50,
+  tipPercentage: 20,
   discountCode: undefined,
   waitlistDialogIsOpen: false,
   waitlistConfirmed: false,

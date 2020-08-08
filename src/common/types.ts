@@ -22,6 +22,7 @@ export interface IConfig {
   stockByLocation: boolean;
   stripeAPIKeyMain?: string;
   stripeAPIKeyDonation?: string;
+  tippingEnabled: boolean;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
@@ -144,6 +145,7 @@ export interface IOrderIntent extends ICheckoutFormData {
   subtotal: number;
   discount?: number;
   tax: number;
+  tip: number;
   total: number;
   items: IOrderItem[];
   subsidized: boolean;
@@ -158,6 +160,7 @@ export interface IOrderSummary extends ICheckoutFormBase {
   subtotal: number;
   discount?: number;
   tax: number;
+  tip: number;
   total: number;
   items: IOrderItem[];
   subsidized: boolean;
