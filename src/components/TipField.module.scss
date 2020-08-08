@@ -1,0 +1,26 @@
+@import '../common/variables';
+
+.container {
+  display: flex;
+
+  .amountButton {
+    height: $textFieldHeight;
+  }
+
+  .otherAmount {
+    margin-left: spacing(1);
+    max-width: 100px;
+  }
+
+  &.small {
+    flex-direction: column;
+
+    .otherAmount {
+      margin-left: 0;
+      margin-top: spacing(2);
+      max-width: unset;
+    }
+  }
+}
+
+

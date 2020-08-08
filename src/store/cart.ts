@@ -107,22 +107,38 @@ export const discountSelector = Reselect.createSelector(
   },
 );
 
-export const taxSelector = Reselect.createSelector(
+export const subtotalWithDiscountSelector = Reselect.createSelector(
   subtotalSelector,
   discountSelector,
+  (subtotal: number, discount: number) => {
+    return Math.max(subtotal - discount, 0);
+  },
+);
+
+export const taxSelector = Reselect.createSelector(
+  subtotalWithDiscountSelector,
   (state: IAppState) => state.cms.config.taxRate,
   (state: IAppState) => state.checkout.isDonationRequest,
-  (subtotal: number, discount: number, taxRate: number, isDonationRequest: boolean) => {
-    return isDonationRequest ? 0 : Math.max(subtotal - discount, 0) * taxRate;
+  (subtotal: number, taxRate: number, isDonationRequest: boolean) => {
+    return isDonationRequest ? 0 : subtotal * taxRate;
+  },
+);
+
+export const tipSelector = Reselect.createSelector(
+  subtotalWithDiscountSelector,
+  (state: IAppState) => state.cms.config.tippingEnabled,
+  (state: IAppState) => state.checkout.tipPercentage,
+  (subtotal: number, tippingEnabled: boolean, tipPercentage: number) => {
+    return tippingEnabled ? subtotal * (tipPercentage / 100) : 0;
   },
 );
 
 export const totalSelector = Reselect.createSelector(
-  subtotalSelector,
-  discountSelector,
+  subtotalWithDiscountSelector,
   taxSelector,
-  (subtotal: number, discount: number, tax: number) => {
-    return Math.max(subtotal - discount, 0) + tax;
+  tipSelector,
+  (subtotal: number, tax: number, tip: number) => {
+    return subtotal + tip + tax;
   },
 );
 

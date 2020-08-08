@@ -1,7 +1,7 @@
 import { Card, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { IDiscountCode, IOrderItem, IOrderSummary, InventoryRecord, OrderType } from '../common/types';
-import { discountSelector, subtotalSelector, taxSelector, totalSelector } from '../store/cart';
+import { IConfig, IDiscountCode, IOrderItem, IOrderSummary, InventoryRecord, OrderType } from '../common/types';
+import { discountSelector, subtotalSelector, taxSelector, tipSelector, totalSelector } from '../store/cart';
 import { formatCurrency, formatDiscountCode, formatPercentage } from '../common/format';
 import { getProduct } from '../common/utils';
 import { inventorySelector } from '../store/cms';
@@ -28,8 +28,11 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
   const subtotal = useSelector<IAppState, number>(subtotalSelector);
   const discount = useSelector<IAppState, number>(discountSelector);
   const discountCode = useSelector<IAppState, IDiscountCode | undefined>((state) => state.checkout.discountCode);
-  const taxRate = useSelector<IAppState, number>((state) => state.cms.config.taxRate);
+  const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
+  const { taxRate, tippingEnabled } = config;
+  const tipPercentage = useSelector<IAppState, number>((state) => state.checkout.tipPercentage);
   const tax = useSelector<IAppState, number>(taxSelector);
+  const tip = useSelector<IAppState, number>(tipSelector);
   const total = useSelector<IAppState, number>(totalSelector);
   const inventory = useSelector<IAppState, InventoryRecord[]>(inventorySelector);
   const items = useSelector<IAppState, IOrderItem[]>((state) => state.cart.items);
@@ -114,6 +117,16 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
             {formatCurrency(orderSummary?.tax || tax)}
           </Typography>
         </div>
+        {(tippingEnabled || orderSummary?.tip) && (
+          <div className={styles.line}>
+            <Typography variant="body1" className={styles.label}>
+              Tip{!orderSummary && ` (${formatPercentage(tipPercentage / 100)})`}
+            </Typography>
+            <Typography variant="body1" className={styles.value}>
+              {formatCurrency(orderSummary?.tip || tip)}
+            </Typography>
+          </div>
+        )}
       </div>
       <div className={classNames(styles.line, styles.total)}>
         <Typography variant="body1" className={styles.label}>
