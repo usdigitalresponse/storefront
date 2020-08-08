@@ -88,7 +88,7 @@ export const IOrderItemCountSelector = Reselect.createSelector(itemsSelector, (i
 });
 
 export const subtotalSelector = Reselect.createSelector(
-  (state: IAppState) => state.cart.items,
+  itemsSelector,
   inventorySelector,
   (cartItems: IOrderItem[], inventory: InventoryRecord[]) => {
     return cartItems.reduce((acc: number, cartItem: IOrderItem) => {
