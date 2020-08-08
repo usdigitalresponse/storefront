@@ -117,12 +117,22 @@ export const taxSelector = Reselect.createSelector(
   },
 );
 
+export const tipSelector = Reselect.createSelector(
+  subtotalSelector,
+  (state: IAppState) => state.cms.config.tippingEnabled,
+  (state: IAppState) => state.checkout.tipPercentage,
+  (subtotal: number, tippingEnabled: boolean, tipPercentage: number) => {
+    return tippingEnabled ? subtotal * (tipPercentage / 100) : 0;
+  },
+);
+
 export const totalSelector = Reselect.createSelector(
   subtotalSelector,
   discountSelector,
   taxSelector,
-  (subtotal: number, discount: number, tax: number) => {
-    return Math.max(subtotal - discount, 0) + tax;
+  tipSelector,
+  (subtotal: number, discount: number, tax: number, tip: number) => {
+    return Math.max(subtotal - discount, 0) + tip + tax;
   },
 );
 

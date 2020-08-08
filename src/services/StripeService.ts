@@ -19,7 +19,7 @@ import {
   SetWaitlistDialogIsOpen,
   requiresPaymentSelector,
 } from '../store/checkout';
-import { SetItems, discountSelector, subtotalSelector, taxSelector, totalSelector } from '../store/cart';
+import { SetItems, discountSelector, subtotalSelector, taxSelector, tipSelector, totalSelector } from '../store/cart';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
 import { getOrderItemsForOrderIntent, getProduct } from '../common/utils';
@@ -77,6 +77,7 @@ export class StripeService {
     const subtotal = subtotalSelector(state);
     const discount = discountSelector(state);
     const tax = taxSelector(state);
+    const tip = tipSelector(state);
     const total = totalSelector(state);
     const productList = productListSelector(state);
     const requiresPayment = requiresPaymentSelector(state);
@@ -95,6 +96,7 @@ export class StripeService {
       subtotal,
       discount,
       tax,
+      tip,
       total,
       discountCode,
       items,

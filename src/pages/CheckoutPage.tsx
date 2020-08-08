@@ -59,6 +59,7 @@ import React, { useEffect } from 'react';
 import StateField from '../components/StateField';
 import StripeCardField from '../components/StripeCardField';
 import StripeElementsWrapper from '../components/StripeElementsWrapper';
+import TipField from '../components/TipField';
 import WaitlistDialog from '../components/WaitlistDialog';
 import ZipCodeField from '../components/ZipCodeField';
 import classNames from 'classnames';
@@ -71,7 +72,7 @@ interface Props {
 }
 
 const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) => {
-  const { register, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
+  const { register, watch, setValue, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const {
     defaultState,
@@ -80,6 +81,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     deliveryOptionsOnCheckout,
     payUponDeliveryEnabled,
     payUponPickupEnabled,
+    tippingEnabled,
   } = config;
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const isSmall = useIsSmall();
@@ -255,6 +257,16 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                     </Grid>
                   </Grid>
                 </>
+              )}
+              {requiresPayment && tippingEnabled && (
+                <Grid container className={styles.section}>
+                  <Typography variant="h3" className={styles.title}>
+                    Tip
+                  </Typography>
+                  <Grid item md={8} xs={12}>
+                    <TipField />
+                  </Grid>
+                </Grid>
               )}
               {(requiresPayment || (payState === PayState.LATER && showPaymentOptions)) && (
                 <Grid container className={styles.section}>

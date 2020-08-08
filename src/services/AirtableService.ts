@@ -62,6 +62,7 @@ export class AirtableService {
             stockByLocation: records.config.stock_by_location === 'true' ? true : false,
             stripeAPIKeyMain: records.config.stripe_main_public_api_key,
             stripeAPIKeyDonation: records.config.stripe_donation_public_api_key,
+            tippingEnabled: records.config.tipping_enabled === 'true' ? true : false,
           }),
           SetOrderType.create(
             deliveryEnabled ? records.config.default_order_type || OrderType.DELIVERY : OrderType.PICKUP,
