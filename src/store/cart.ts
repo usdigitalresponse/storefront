@@ -76,8 +76,10 @@ export const initialCartState: ICartState = {
 // selectors
 export const itemsSelector = Reselect.createSelector(
   (state: IAppState) => state.cart.items,
-  (items: IOrderItem[]) => {
-    return items;
+  inventorySelector,
+  (items: IOrderItem[], inventory: InventoryRecord[]) => {
+    // It's possible for users to have an item in their cart that no longer exists in our inventory, so filter those out
+    return items.filter((item) => inventory.map((product) => product.id).includes(item.id));
   },
 );
 
