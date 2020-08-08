@@ -93,6 +93,7 @@ export const initialCmsState: ICmsState = {
     embeddedViewId: '',
     embeddedViewName: undefined,
     stockByLocation: false,
+    tippingEnabled: false,
   },
   content: {},
   inventory: [],

@@ -65,7 +65,9 @@
     "typescript": "~3.7.2"
   },
   "resolutions": {
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.19",
+    "elliptic": "^6.5.3",
+    "bn.js": "^4.11.9"
   },
   "scripts": {
     "dev": "yarn run start && yarn run start:api",
