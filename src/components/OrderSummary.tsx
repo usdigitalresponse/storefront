@@ -1,7 +1,14 @@
 import { Card, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { IConfig, IDiscountCode, IOrderItem, IOrderSummary, InventoryRecord, OrderType } from '../common/types';
-import { discountSelector, itemsSelector, subtotalSelector, taxSelector, tipSelector, totalSelector } from '../store/cart';
+import {
+  discountSelector,
+  itemsSelector,
+  subtotalSelector,
+  taxSelector,
+  tipSelector,
+  totalSelector,
+} from '../store/cart';
 import { formatCurrency, formatDiscountCode, formatPercentage } from '../common/format';
 import { getProduct } from '../common/utils';
 import { inventorySelector } from '../store/cms';

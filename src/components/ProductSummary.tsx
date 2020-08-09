@@ -1,4 +1,4 @@
-import { ButtonBase, Typography } from '@material-ui/core';
+import { ButtonBase, Chip, Typography } from '@material-ui/core';
 import { InventoryRecord } from '../common/types';
 import { formatCurrency } from '../common/format';
 import { getImageUrl } from '../common/utils';
@@ -14,7 +14,7 @@ interface Props {
 }
 
 const ProductSummary: React.FC<Props> = ({ product, className }) => {
-  const { id, name, image, price } = product;
+  const { id, name, image, price, addOn } = product;
   const isSmall = useIsSmall();
   const history = useHistory();
 
@@ -26,6 +26,7 @@ const ProductSummary: React.FC<Props> = ({ product, className }) => {
       <div className={styles.imageContainer}>
         <img className={styles.image} src={getImageUrl(image)} alt={name} />
       </div>
+      {addOn && <Chip size="small" variant="outlined" label="Add-On Item" />}
       <Typography variant="body1" className={styles.name}>
         {name}
       </Typography>

@@ -1,5 +1,5 @@
-import { AddItem, SetDialogIsOpen, SetItems } from '../store/cart';
-import { Button, Card, Grid, Select, Typography } from '@material-ui/core';
+import { AddItem, IOrderItemCountSelector, SetDialogIsOpen, SetItems } from '../store/cart';
+import { Button, Card, Chip, Grid, Select, Tooltip, Typography } from '@material-ui/core';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
 import { IConfig, InventoryRecord } from '../common/types';
@@ -26,15 +26,16 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
   const [short, setShort] = useState<boolean>(true);
   const [quantity, setQuantity] = useState<number>(1);
   const dispatch = useDispatch();
-  const { id, name, description, price, locations } = product;
+  const { id, name, description, price, locations, addOn } = product;
   const history = useHistory();
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const { paymentEnabled, waitlistEnabled, stockByLocation } = config;
+  const orderItemCount = useSelector<IAppState, number>(IOrderItemCountSelector);
 
   function addToCart() {
     dispatch(
       CompoundAction([
-        AddItem.create({ id, quantity }),
+        AddItem.create({ addOn, id, quantity }),
         SetDialogIsOpen.create(true),
         SetIsDonationRequest.create(false),
       ]),
@@ -58,6 +59,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
       <div className={styles.content}>
         <Typography variant="h4" className={styles.title}>
           {name}
+          {addOn && <Chip size="small" variant="outlined" label="Add-On Item" className={styles.addon} />}
         </Typography>
         <Typography
           variant="body1"
@@ -89,6 +91,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
                   value={quantity}
                   inputProps={{ name: 'quantity' }}
                   onChange={(e: ChangeEvent<any>) => setQuantity(parseInt(e.target.value))}
+                  disabled={addOn && orderItemCount === 0}
                 >
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
                     <option key={q} value={q}>
@@ -97,9 +100,26 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
                   ))}
                 </Select>
               </div>
-              <Button className={styles.ctaButton} variant="contained" color="primary" size="large" onClick={addToCart}>
-                <Content id="products_purchase_button_label" />
-              </Button>
+              <Tooltip
+                title={
+                  addOn && orderItemCount === 0
+                    ? 'This is an add-on item. Add another item to your cart to include this item'
+                    : ''
+                }
+              >
+                <span>
+                  <Button
+                    className={styles.ctaButton}
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    onClick={addToCart}
+                    disabled={addOn && orderItemCount === 0}
+                  >
+                    <Content id="products_purchase_button_label" />
+                  </Button>
+                </span>
+              </Tooltip>
             </Grid>
           </Grid>
         )}
