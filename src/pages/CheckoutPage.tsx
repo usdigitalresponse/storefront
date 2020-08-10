@@ -34,7 +34,7 @@ import {
   paymentStatusSelector,
   requiresPaymentSelector,
 } from '../store/checkout';
-import { SetLocationsDialogIsOpen, selectedLocationSelector } from '../store/cart';
+import { SetLocationsDialogIsOpen, selectedLocationSelector, subtotalWithDiscountSelector } from '../store/cart';
 import { Stripe, StripeElements } from '@stripe/stripe-js';
 import { StripeService } from '../services/StripeService';
 import { questionsSelector, useContent } from '../store/cms';
@@ -102,6 +102,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const payState = useSelector<IAppState, PayState>((state) => state.checkout.payState);
   const payNowOptionLabel = useContent('pay_now_option_label');
   const payLaterOptionLabel = useContent('pay_later_option_label');
+  const orderAmount = useSelector<IAppState, number>(subtotalWithDiscountSelector);
 
   const showPaymentOptions =
     (orderType === OrderType.PICKUP && payUponPickupEnabled) ||
@@ -260,7 +261,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
               )}
               {tippingEnabled &&
                 !isDonationRequest &&
-                (requiresPayment || (payState === PayState.LATER && showPaymentOptions)) && (
+                (requiresPayment || (payState === PayState.LATER && showPaymentOptions) || orderAmount > 0) && (
                   <Grid container className={styles.section}>
                     <Typography variant="h3" className={styles.title}>
                       Tip
