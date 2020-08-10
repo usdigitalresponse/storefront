@@ -9,15 +9,12 @@
   }
 
   .content {
+    flex-grow: 1;
     padding: 0 spacing(4) spacing(6);
   }
 
   .imageContainer {
-    height: 275px;
     width: 275px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     flex-shrink: 0;
     margin-right: spacing(2);
 
@@ -101,7 +98,7 @@
     padding-bottom: 0;
 
     .content {
-      padding: 0 spacing(4) spacing(4);
+      padding: 0 spacing(2) spacing(2);
     }
 
     .title {
@@ -154,11 +151,14 @@
       }
     }
 
-    .image {
-      width: 200px;
-      height: 200px;
-      padding: spacing(4) 0 spacing(2);
-      margin: 0 auto;
+    .imageContainer {
+      height: unset;
+      padding: spacing(2);
+
+      .image {
+        max-width: 300px;
+        max-height: 300px;
+      }
     }
 
     .description, .ctaDescription {
