@@ -108,6 +108,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
                 }
               >
                 <span>
+                  {/* Tooltips don't appear if their immediate child is disabled, so this is wrapped in a <span> as buffer */}
                   <Button
                     className={styles.ctaButton}
                     variant="contained"

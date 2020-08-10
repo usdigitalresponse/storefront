@@ -53,20 +53,14 @@ export const cartReducer: any = TypedReducer.builder<ICartState>()
     return update(state, { items: { $splice: [[index, 1, item]] } });
   })
   .withHandler(RemoveItem.TYPE, (state, index) => {
-    const isLastRegularItem =
-      !state.items[index].addOn && state.items.filter((item) => !item.addOn).length === 1;
+    let nextState = update(state, { items: { $splice: [[index, 1]] } });
 
-    let newState = update(state, { items: { $splice: [[index, 1]] } });
-
-    if (isLastRegularItem) {
-      newState.items.forEach((item, index) => {
-        if (item.addOn) {
-          newState = update(newState, { items: { $splice: [[index, 1]] } });
-        }
-      });
+    // If only add-on items remain, clear the cart. Add-ons require at least one regular item
+    if (nextState.items.filter((item) => !item.addOn).length === 0) {
+      nextState = update(nextState, { items: { $set: [] } });
     }
 
-    return newState;
+    return nextState;
   })
   .withHandler(SetDialogIsOpen.TYPE, (state, dialogIsOpen) => {
     return setWith(state, { dialogIsOpen, lastAdded: dialogIsOpen ? state.lastAdded : undefined });
