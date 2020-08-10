@@ -19,7 +19,7 @@ import {
   SetWaitlistDialogIsOpen,
   requiresPaymentSelector,
 } from '../store/checkout';
-import { SetItems, discountSelector, subtotalSelector, taxSelector, tipSelector, totalSelector } from '../store/cart';
+import { SetItems, discountSelector, itemsSelector, subtotalSelector, taxSelector, tipSelector, totalSelector } from '../store/cart';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
 import { getOrderItemsForOrderIntent, getProduct } from '../common/utils';
@@ -86,7 +86,7 @@ export class StripeService {
     const isDonationRequest = state.checkout.isDonationRequest;
     const stockByLocation = state.cms.config.stockByLocation;
     const type = state.cart.orderType;
-    const items = state.cart.items;
+    const items = itemsSelector(state);
 
     const orderIntent: IOrderIntent = {
       ...formData,

@@ -34,7 +34,12 @@ import {
   paymentStatusSelector,
   requiresPaymentSelector,
 } from '../store/checkout';
-import { SetLocationsDialogIsOpen, selectedLocationSelector, subtotalWithDiscountSelector } from '../store/cart';
+import {
+  SetLocationsDialogIsOpen,
+  itemsSelector,
+  selectedLocationSelector,
+  subtotalWithDiscountSelector,
+} from '../store/cart';
 import { Stripe, StripeElements } from '@stripe/stripe-js';
 import { StripeService } from '../services/StripeService';
 import { questionsSelector, useContent } from '../store/cms';
@@ -86,7 +91,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const isSmall = useIsSmall();
   const hasErrors = Object.keys(errors).length > 0;
-  const items = useSelector<IAppState, IOrderItem[]>((state) => state.cart.items);
+  const items = useSelector<IAppState, IOrderItem[]>(itemsSelector);
   const paymentStatus = useSelector<IAppState, PaymentStatus>(paymentStatusSelector);
   const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;

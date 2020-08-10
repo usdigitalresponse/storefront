@@ -1,7 +1,7 @@
 import { Card, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { IConfig, IDiscountCode, IOrderItem, IOrderSummary, InventoryRecord, OrderType } from '../common/types';
-import { discountSelector, subtotalSelector, taxSelector, tipSelector, totalSelector } from '../store/cart';
+import { discountSelector, itemsSelector, subtotalSelector, taxSelector, tipSelector, totalSelector } from '../store/cart';
 import { formatCurrency, formatDiscountCode, formatPercentage } from '../common/format';
 import { getProduct } from '../common/utils';
 import { inventorySelector } from '../store/cms';
@@ -35,7 +35,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
   const tip = useSelector<IAppState, number>(tipSelector);
   const total = useSelector<IAppState, number>(totalSelector);
   const inventory = useSelector<IAppState, InventoryRecord[]>(inventorySelector);
-  const items = useSelector<IAppState, IOrderItem[]>((state) => state.cart.items);
+  const items = useSelector<IAppState, IOrderItem[]>(itemsSelector);
   const isDelivery =
     useSelector<IAppState, OrderType>((state) => state.cart.orderType) === OrderType.DELIVERY ||
     !!orderSummary?.deliveryAddress;

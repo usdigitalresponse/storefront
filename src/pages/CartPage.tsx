@@ -1,6 +1,7 @@
 import { Button, Card, Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { IOrderItem } from '../common/types';
+import { itemsSelector } from '../store/cart';
 import { reverse } from '../common/router';
 import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
@@ -15,7 +16,7 @@ import styles from './CartPage.module.scss';
 
 const CartPage: React.FC = () => {
   const isSmall = useIsSmall();
-  const cartItems = useSelector<IAppState, IOrderItem[]>((state) => state.cart.items);
+  const cartItems = useSelector<IAppState, IOrderItem[]>(itemsSelector);
 
   return (
     <BaseLayout title="Shopping Cart">
