@@ -7,11 +7,15 @@
     @include fontSize('lg');
   }
 
-  .image {
+  .imageContainer {
     width: 120px;
-    height: 120px;
     flex-shrink: 0;
-    padding: spacing(1) 0 spacing(1) spacing(2);
+    padding: spacing(2) 0 spacing(2) spacing(2);
+
+    .image {
+      max-width: 120px;
+      max-height: 120px;
+    }
   }
 
   .info {
@@ -60,9 +64,14 @@
       @include fontSize('md');
     }
 
-    .image {
+    .imageContainer {
       width: 100px;
       height: 100px;
+
+      .image {
+        max-width: 100px;
+        max-height: 100px;
+      }
     }
 
     .info {

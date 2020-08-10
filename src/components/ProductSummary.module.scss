@@ -6,8 +6,8 @@
   align-items: center;
 
   .imageContainer {
-    height: 275px;
     width: 275px;
+    height: 275px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -26,5 +26,11 @@
 
   .price {
     @include fontSize();
+  }
+
+  &.small {
+    .imageContainer {
+      height: unset;
+    }
   }
 }

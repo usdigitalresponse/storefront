@@ -35,7 +35,9 @@ const CartItem: React.FC<Props> = ({ item, editable = false, className, index })
 
   return product ? (
     <div className={classNames(styles.container, className, { [styles.small]: isSmall })}>
-      <img className={styles.image} src={getImageUrl(product.image)} alt={product.name} />
+      <div className={styles.imageContainer}>
+        <img className={styles.image} src={getImageUrl(product.image)} alt={product.name} />
+      </div>
       <div className={styles.info}>
         <div className={styles.header}>
           <Typography variant="h4" className={styles.name}>
