@@ -1,7 +1,14 @@
 import { Card, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { IConfig, IDiscountCode, IOrderItem, IOrderSummary, InventoryRecord, OrderType } from '../common/types';
-import { discountSelector, itemsSelector, subtotalSelector, taxSelector, tipSelector, totalSelector } from '../store/cart';
+import {
+  discountSelector,
+  itemsSelector,
+  subtotalSelector,
+  taxSelector,
+  tipSelector,
+  totalSelector,
+} from '../store/cart';
 import { formatCurrency, formatDiscountCode, formatPercentage } from '../common/format';
 import { getProduct } from '../common/utils';
 import { inventorySelector } from '../store/cms';
@@ -20,9 +27,10 @@ interface Props {
   editable?: boolean;
   className?: string;
   orderSummary?: IOrderSummary;
+  showTip?: boolean;
 }
 
-const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, orderSummary }) => {
+const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, orderSummary, showTip = false }) => {
   const isSmall = useIsSmall();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const subtotal = useSelector<IAppState, number>(subtotalSelector);
@@ -117,7 +125,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
             {formatCurrency(orderSummary?.tax || tax)}
           </Typography>
         </div>
-        {(tippingEnabled || orderSummary?.tip) && (
+        {showTip && (tippingEnabled || orderSummary?.tip) && (
           <div className={styles.line}>
             <Typography variant="body1" className={styles.label}>
               Tip{!orderSummary && ` (${formatPercentage(tipPercentage / 100)})`}
