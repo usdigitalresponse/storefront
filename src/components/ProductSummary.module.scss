@@ -21,7 +21,13 @@
 
 
   .name {
+    display: flex;
+    align-items: center;
     @include fontSize('md');
+
+    > div {
+      margin-left: spacing(1);
+    }
   }
 
   .price {
