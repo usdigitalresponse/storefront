@@ -45,6 +45,10 @@
     }
   }
 
+  .addon {
+    margin-left: spacing(1);
+  }
+
   &.small {
     .header {
       flex-direction: column;

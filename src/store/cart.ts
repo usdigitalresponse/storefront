@@ -52,7 +52,16 @@ export const cartReducer: any = TypedReducer.builder<ICartState>()
     const index = state.items.findIndex((cartItem) => cartItem.id === item.id);
     return update(state, { items: { $splice: [[index, 1, item]] } });
   })
-  .withHandler(RemoveItem.TYPE, (state, index) => update(state, { items: { $splice: [[index, 1]] } }))
+  .withHandler(RemoveItem.TYPE, (state, index) => {
+    let nextState = update(state, { items: { $splice: [[index, 1]] } });
+
+    // If only add-on items remain, clear the cart. Add-ons require at least one regular item
+    if (nextState.items.filter((item) => !item.addOn).length === 0) {
+      nextState = update(nextState, { items: { $set: [] } });
+    }
+
+    return nextState;
+  })
   .withHandler(SetDialogIsOpen.TYPE, (state, dialogIsOpen) => {
     return setWith(state, { dialogIsOpen, lastAdded: dialogIsOpen ? state.lastAdded : undefined });
   })

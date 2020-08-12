@@ -19,7 +19,15 @@ import {
   SetWaitlistDialogIsOpen,
   requiresPaymentSelector,
 } from '../store/checkout';
-import { SetItems, discountSelector, itemsSelector, subtotalSelector, taxSelector, tipSelector, totalSelector } from '../store/cart';
+import {
+  SetItems,
+  discountSelector,
+  itemsSelector,
+  subtotalSelector,
+  taxSelector,
+  tipSelector,
+  totalSelector,
+} from '../store/cart';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
 import { getOrderItemsForOrderIntent, getProduct } from '../common/utils';

@@ -43,6 +43,7 @@ export interface InventoryRecord {
   strings?: Record<string, InventoryStrings>;
   price: number;
   image: AirtableImage[];
+  addOn: boolean;
   stockRemaining?: number;
   stockLocation?: string;
   stockZipcodes?: string[];
@@ -83,6 +84,7 @@ export interface INavItem {
 export interface IOrderItem {
   id: string;
   quantity: number;
+  addOn?: boolean;
 }
 
 export interface IAddress {

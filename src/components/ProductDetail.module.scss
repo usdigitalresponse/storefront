@@ -88,6 +88,10 @@
     }
   }
 
+  .addon {
+    margin-left: spacing(1);
+  }
+
   h5.price {
     @include fontSize('md');
     margin-right: spacing(2);

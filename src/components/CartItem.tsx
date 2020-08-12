@@ -1,4 +1,4 @@
-import { Button, Select, Typography } from '@material-ui/core';
+import { Button, Chip, Select, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { IOrderItem } from '../common/types';
 import { RemoveItem, UpdateItem } from '../store/cart';
@@ -42,6 +42,7 @@ const CartItem: React.FC<Props> = ({ item, editable = false, className, index })
         <div className={styles.header}>
           <Typography variant="h4" className={styles.name}>
             {product.name}
+            {product.addOn && <Chip size="small" variant="outlined" label="Add-On Item" className={styles.addon} />}
           </Typography>
           <Typography variant="body1" className={styles.price}>
             {formatCurrency(product.price)}
