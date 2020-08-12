@@ -43,7 +43,7 @@ export interface InventoryRecord {
   strings?: Record<string, InventoryStrings>;
   price: number;
   image: AirtableImage[];
-  addOn?: boolean;
+  addOn: boolean;
   stockRemaining?: number;
   stockLocation?: string;
   stockZipcodes?: string[];

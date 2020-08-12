@@ -40,7 +40,7 @@ exports.handler = async (event, context) => {
           }, {}),
           price: row.fields['Price'],
           image: row.fields['Image'],
-          addOn: row.fields['Add On'] != null ? row.fields['Add On'] : false,
+          addOn: !!row.fields['Add On'],
           stockRemaining: row.fields['Stock Remaining'] != null ? row.fields['Stock Remaining'] : null,
           stockLocation: row.fields['Linked Pickup Location'] ? row.fields['Linked Pickup Location'][0] : null,
           stockZipcodes: row.fields['Stock Zipcodes'] ? row.fields['Stock Zipcodes'].split(',') : null,
