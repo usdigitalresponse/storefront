@@ -330,7 +330,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
           </Grid>
           <Grid item md={4} xs={12} container className={styles.right}>
             <div className={!isSmall ? styles.sidebar : undefined}>
-              <OrderSummary className={styles.summary} showLineItems editable={!isDonationRequest} />
+              <OrderSummary className={styles.summary} showLineItems editable={!isDonationRequest} showTip />
               <Button
                 className={classNames({ [styles.readOnly]: isPaying })}
                 fullWidth
