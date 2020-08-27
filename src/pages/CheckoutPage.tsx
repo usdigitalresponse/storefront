@@ -112,6 +112,8 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const contentPayLaterOptionLabel = useContent('pay_later_option_label');
   const contentFieldIsRequired = useContent('checkout_field_is_required');
   const contentFieldName = useContent('checkout_field_name');
+  const contentFieldNameFirstLast = useContent('checkout_field_name_first_last');
+  const contentFieldNameFirstLastRequired = useContent('checkout_field_name_first_last_required');
   const contentFieldPhoneNumber = useContent('checkout_field_phone_number');
   const contentFieldEmail = useContent('checkout_field_email');
   const contentFieldAddressStreet1 = useContent('checkout_field_address_street_1');
@@ -179,10 +181,17 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                 </Typography>
                 <Grid item md={8} xs={12}>
                   <TextField
-                    {...textFieldProps(contentFieldName || 'Name', 'fullName', 'First Last')}
+                    {...textFieldProps(
+                      contentFieldName || 'Name',
+                      'fullName',
+                      contentFieldNameFirstLast || 'First Last',
+                    )}
                     inputRef={register({
                       required: contentFieldIsRequired || 'Name is required',
-                      pattern: { value: /[\w-']+ [\w-'][\w-']+/, message: 'First and Last name required' },
+                      pattern: {
+                        value: /[\w-']+ [\w-'][\w-']+/,
+                        message: contentFieldNameFirstLastRequired || 'First and Last name required',
+                      },
                     })}
                     autoCorrect="off"
                   />
