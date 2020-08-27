@@ -2,6 +2,7 @@ import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
 import { IDonationIntent, IOrderIntent, OrderType } from '../common/types';
 import {
+  SetCategories,
   SetConfig,
   SetContent,
   SetInventory,
@@ -38,6 +39,7 @@ export class AirtableService {
         const deliveryEnabled = records.config.delivery_enabled === 'false' ? false : true;
 
         const actions: any = [
+          SetCategories.create(records.categories),
           SetConfig.create({
             languages: records.config.languages.split(','),
             taxRate: records.config.tax_rate,

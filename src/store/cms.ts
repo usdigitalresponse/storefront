@@ -1,6 +1,7 @@
 import * as Reselect from 'reselect';
 import { IAppState } from './app';
 import {
+  IInventoryCategory,
   IConfig,
   IContentRecord,
   IOrderItem,
@@ -10,16 +11,18 @@ import {
   InventoryRecord,
   OrderType,
   Question,
-  ZipcodeScheduleMap,
+  ZipcodeScheduleMap, CategoryRecord,
 } from '../common/types';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 import { getPickupLocation, getProduct, inventoryForLanguage, questionForLanguage } from '../common/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import {NO_CATEGORY} from "../common/constants";
 
 // model
 export interface ICmsState {
+  categories: IInventoryCategory[];
   config: IConfig;
   content: Record<string, IContentRecord>;
   inventory: InventoryRecord[];
@@ -35,6 +38,7 @@ export interface ICmsState {
 }
 
 // actions
+export const SetCategories = TypedAction.define('APP/CMS/SET_CATEGORIES')<any>();
 export const SetConfig = TypedAction.define('APP/CMS/SET_CONFIG')<IConfig>();
 export const SetContent = TypedAction.define('APP/CMS/SET_RECORDS')<any>();
 export const SetInventory = TypedAction.define('APP/CMS/SET_INVENTORY')<any>();
@@ -47,6 +51,7 @@ export const SetLanguage = TypedAction.define('APP/CMS/SET_LANGUAGE')<string>();
 
 // reducer
 export const cmsReducer: any = TypedReducer.builder<ICmsState>()
+  .withHandler(SetCategories.TYPE, (state, categories) => setWith(state, { categories }))
   .withHandler(SetConfig.TYPE, (state, config) => setWith(state, { config }))
   .withHandler(SetContent.TYPE, (state, content) => setWith(state, { content }))
   .withHandler(SetInventory.TYPE, (state, inventory) => setWith(state, { inventory }))
@@ -71,6 +76,7 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
 
 // init
 export const initialCmsState: ICmsState = {
+  categories: [],
   config: {
     languages: ['en'],
     taxRate: 0,
@@ -191,6 +197,43 @@ export const productListSelector = Reselect.createSelector(
     }
   },
 );
+
+export const productByCategorySelector = Reselect.createSelector(
+  productListSelector,
+  (state: IAppState) => state.cms.language,
+  (state: IAppState) => state.cms.categories,
+  (productList: InventoryRecord[], language: string, categories: IInventoryCategory[]) => {
+    const productsById = productList.reduce((acc, product) => {
+      acc[product.id] = product;
+      return acc;
+    }, {} as Record<string, InventoryRecord>);
+    const categoryRecords = [] as CategoryRecord[];
+
+    // add category records with inventory from table
+    categories.forEach((category) => {
+      if (category.inventory != null) {
+        categoryRecords.push({
+          id: category.id,
+          name: category.strings[language].category,
+          description: category.strings[language].description,
+          inventory: category.inventory.map((productId) => productsById[productId.toString()]),
+        })
+      }
+    });
+
+    //add a category record for products that were not assigned categories
+    const noCategoryProducts = productList.filter(item => item.category === NO_CATEGORY);
+
+    noCategoryProducts.length > 0 && categoryRecords.push({
+      id: NO_CATEGORY,
+      name: language === 'en' ? "Other" : "Otros",
+      description: "",
+      inventory: noCategoryProducts,
+    });
+
+    return categoryRecords;
+  }
+)
 
 export const pickupLocationsSelector = Reselect.createSelector(
   (state: IAppState) => state.cms.pickupLocations,

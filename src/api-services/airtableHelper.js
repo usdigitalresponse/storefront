@@ -8,6 +8,7 @@ let Airtable = require('airtable');
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
 
 export const DEFAULT_VIEW = 'Grid view';
+export const NO_CATEGORY = 'no_category';
 
 export const airTableRowsAsKey = function(records) {
   const rowFields = records.map((row) => {

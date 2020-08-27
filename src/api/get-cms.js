@@ -1,6 +1,5 @@
-const { airTableRowsAsKey, valueOrNull, fetchTable } = require('../api-services/airtableHelper');
+const { airTableRowsAsKey, valueOrNull, fetchTable, NO_CATEGORY, DEFAULT_VIEW } = require('../api-services/airtableHelper');
 const { successResponse, errorResponse } = require('../api-services/response');
-const DEFAULT_VIEW = 'Grid view';
 
 exports.handler = async (event, context) => {
   try {
@@ -18,7 +17,7 @@ exports.handler = async (event, context) => {
 
     // create languages array
     const languages = config.languages.split(',');
-
+    
     // Inventory
     const inventoryRecords = await fetchTable('Inventory', { view: DEFAULT_VIEW });
     const inventory = inventoryRecords
@@ -28,6 +27,7 @@ exports.handler = async (event, context) => {
           id: row.id,
           name: row.fields['Name'],
           description: row.fields['Description'],
+          category: row.fields['Category'] != null ? row.fields['Category'] : NO_CATEGORY,
           strings: languages.reduce((acc, language) => {
             acc[language] = language === 'en' ? {
               name: row.fields['Name'],
@@ -46,6 +46,25 @@ exports.handler = async (event, context) => {
           stockZipcodes: row.fields['Stock Zipcodes'] ? row.fields['Stock Zipcodes'].split(',') : null,
         };
       });
+    
+    // Inventory categories
+    const categoryRecords = await fetchTable('Inventory Categories', { view: DEFAULT_VIEW });
+    const categories = categoryRecords.map((row) => {
+      return {
+        id: row.id,
+        strings: languages.reduce((acc, language) => {
+          acc[language] = language === 'en' ? {
+            category: row.fields['Category'],
+            description: row.fields['Description'],
+          } : {
+            category: row.fields[`Category_${language}`],
+            description: row.fields[`Description_${language}`],
+          }
+          return acc;
+        }, {}),
+        inventory: row.fields['Inventory'],
+      };
+    });
 
     // Pickup Locations
     const pickupLocationRecords = await fetchTable('Pickup Locations', { view: DEFAULT_VIEW });
@@ -112,6 +131,7 @@ exports.handler = async (event, context) => {
       config,
       content,
       inventory,
+      categories,
       pickupLocations,
       schedules,
       validZipcodes,
