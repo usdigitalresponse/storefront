@@ -105,9 +105,22 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const requiresPayment = useSelector<IAppState, boolean>(requiresPaymentSelector);
   const payState = useSelector<IAppState, PayState>((state) => state.checkout.payState);
-  const payNowOptionLabel = useContent('pay_now_option_label');
-  const payLaterOptionLabel = useContent('pay_later_option_label');
   const orderAmount = useSelector<IAppState, number>(subtotalWithDiscountSelector);
+
+  // Content
+  const contentPayNowOptionLabel = useContent('pay_now_option_label');
+  const contentPayLaterOptionLabel = useContent('pay_later_option_label');
+  const contentFieldIsRequired = useContent('checkout_field_is_required');
+  const contentFieldName = useContent('checkout_field_name');
+  const contentFieldPhoneNumber = useContent('checkout_field_phone_number');
+  const contentFieldEmail = useContent('checkout_field_email');
+  const contentFieldAddressStreet1 = useContent('checkout_field_address_street_1');
+  const contentFieldAddressStreet2 = useContent('checkout_field_address_street_2');
+  const contentFieldAddressCity = useContent('checkout_field_address_city');
+  const contentFieldAddressState = useContent('checkout_field_address_state');
+  const contentFieldAddressZipcode = useContent('checkout_field_address_zipcode');
+  const contentLocationOptionChange = useContent('checkout_location_option_change');
+  const contentLocationOptionChoose = useContent('checkout_location_option_choose');
 
   const showPaymentOptions =
     (orderType === OrderType.PICKUP && payUponPickupEnabled) ||
@@ -162,27 +175,27 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
             <Card elevation={2} className={styles.form}>
               <Grid container className={styles.section}>
                 <Typography variant="h3" className={styles.title}>
-                  Personal Information
+                  <Content id="checkout_personal_info_header" defaultText="Personal Information" />
                 </Typography>
                 <Grid item md={8} xs={12}>
                   <TextField
-                    {...textFieldProps('Name', 'fullName', 'First Last')}
+                    {...textFieldProps(contentFieldName || 'Name', 'fullName', 'First Last')}
                     inputRef={register({
-                      required: 'Name is required',
+                      required: contentFieldIsRequired || 'Name is required',
                       pattern: { value: /[\w-']+ [\w-'][\w-']+/, message: 'First and Last name required' },
                     })}
                     autoCorrect="off"
                   />
                   <TextField
-                    {...textFieldProps('Phone Number', 'phone')}
+                    {...textFieldProps(contentFieldPhoneNumber || 'Phone Number', 'phone')}
                     type="tel"
-                    inputRef={register({ required: 'Phone Number is required' })}
+                    inputRef={register({ required: contentFieldIsRequired || 'Phone Number is required' })}
                     InputProps={{ inputComponent: PhoneField }}
                   />
                   <TextField
-                    {...textFieldProps('Email', 'email', 'name@domain.com')}
+                    {...textFieldProps(contentFieldEmail || 'Email', 'email', 'name@domain.com')}
                     type="email"
-                    inputRef={register({ required: 'Email is required' })}
+                    inputRef={register({ required: contentFieldIsRequired || 'Email is required' })}
                   />
                   {questions.length !== 0 && (
                     <Questions register={register} errors={errors} questionClassName={styles.field} />
@@ -200,7 +213,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
               {orderType === OrderType.PICKUP && (
                 <Grid container className={styles.section}>
                   <Typography variant="h3" className={styles.title}>
-                    Pickup Location
+                    <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
                   </Typography>
                   <Grid item md={8} xs={12}>
                     {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
@@ -209,7 +222,10 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                       color="primary"
                       onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
                     >
-                      {selectedLocation ? 'Change' : 'Choose'} location...
+                      {selectedLocation
+                        ? contentLocationOptionChange || 'Change'
+                        : contentLocationOptionChoose || 'Choose'}{' '}
+                      location...
                     </Button>
                     <Input
                       type="hidden"
@@ -217,7 +233,11 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                       value={selectedLocationId || ''}
                       inputRef={register({ required: orderType === OrderType.PICKUP })}
                     />
-                    {errors.pickupLocationId && <FormHelperText error>Please select a pickup location</FormHelperText>}
+                    {errors.pickupLocationId && (
+                      <FormHelperText error>
+                        <Content id="checkout_error_location_missing" defaultText="Please select a pickup location" />
+                      </FormHelperText>
+                    )}
                   </Grid>
                 </Grid>
               )}
@@ -226,7 +246,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                   {deliveryPreferences && (
                     <Grid container className={styles.section}>
                       <Typography variant="h3" className={styles.title}>
-                        Delivery Preferences
+                        <Content id="checkout_delivery_preferences_header" defaultText="Delivery Preferences" />
                       </Typography>
                       <Grid item md={8} xs={12}>
                         <DeliveryPreferences inputRef={register} watch={watch} />
@@ -235,30 +255,37 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                   )}
                   <Grid container className={styles.section}>
                     <Typography variant="h3" className={styles.title}>
-                      Delivery Address
+                      <Content id="checkout_delivery_address_header" defaultText="Delivery Address" />
                     </Typography>
                     <Grid item md={8} xs={12}>
                       <TextField
-                        {...textFieldProps('Street 1', 'street1', '123 Main St.')}
-                        inputRef={register({ required: 'Street 1 is required' })}
+                        {...textFieldProps(contentFieldAddressStreet1 || 'Street 1', 'street1', '123 Main St.')}
+                        inputRef={register({ required: contentFieldIsRequired || 'Street 1 is required' })}
                       />
                       <TextField
-                        {...textFieldProps('Street 2', 'street2', 'Apt 4B, Floor 2, etc.')}
+                        {...textFieldProps(
+                          contentFieldAddressStreet2 || 'Street 2',
+                          'street2',
+                          'Apt 4B, Floor 2, etc.',
+                        )}
                         inputRef={register}
                       />
                       <TextField
-                        {...textFieldProps('City', 'city', 'San Antonio')}
-                        inputRef={register({ required: 'City is required' })}
+                        {...textFieldProps(contentFieldAddressCity || 'City', 'city', 'San Antonio')}
+                        inputRef={register({ required: contentFieldIsRequired || 'City is required' })}
                       />
                       <StateField
-                        {...textFieldProps('State', 'state', 'CA')}
+                        {...textFieldProps(contentFieldAddressState || 'State', 'state', 'CA')}
                         value={defaultState}
                         inputProps={{ readOnly: !!defaultState }}
-                        inputRef={register({ required: 'State is required', maxLength: 2 })}
+                        inputRef={register({ required: contentFieldIsRequired || 'State is required', maxLength: 2 })}
                       />
                       <ZipCodeField
-                        {...textFieldProps('Zip Code', 'zip')}
-                        inputRef={register({ required: 'Zip code is required', maxLength: 5 })}
+                        {...textFieldProps(contentFieldAddressZipcode || 'Zip Code', 'zip')}
+                        inputRef={register({
+                          required: contentFieldIsRequired || 'Zip code is required',
+                          maxLength: 5,
+                        })}
                       />
                     </Grid>
                   </Grid>
@@ -269,7 +296,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                 (requiresPayment || (payState === PayState.LATER && showPaymentOptions) || orderAmount > 0) && (
                   <Grid container className={styles.section}>
                     <Typography variant="h3" className={styles.title}>
-                      Tip
+                      <Content id="tip_label" defaultText="Tip" />
                     </Typography>
                     <Grid item md={8} xs={12}>
                       <TipField />
@@ -279,7 +306,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
               {(requiresPayment || (payState === PayState.LATER && showPaymentOptions)) && (
                 <Grid container className={styles.section}>
                   <Typography variant="h3" className={classNames(styles.title, styles.payment)}>
-                    Payment Details
+                    <Content id="checkout_payment_details_header" defaultText="Payment Details" />
                   </Typography>
                   {showPaymentOptions && (
                     <RadioGroup
@@ -291,12 +318,12 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                       <FormControlLabel
                         value={PayState.NOW}
                         control={<Radio color="primary" />}
-                        label={payNowOptionLabel || 'Pay now'}
+                        label={contentPayNowOptionLabel || 'Pay now'}
                       />
                       <FormControlLabel
                         value={PayState.LATER}
                         control={<Radio color="primary" />}
-                        label={payLaterOptionLabel || 'Pay later'}
+                        label={contentPayLaterOptionLabel || 'Pay later'}
                       />
                     </RadioGroup>
                   )}
@@ -318,9 +345,12 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                           }}
                           className={styles.payLink}
                         >
-                          Click here
+                          <Content id="donation_request_click_here" defaultText="Click here" />
                         </Link>{' '}
-                        if you'd rather pay for these items yourself.
+                        <Content
+                          id="donation_request_rather_pay_yourself"
+                          defaultText="if you'd rather pay for these items yourself."
+                        />
                       </Typography>
                     </Grid>
                   )}
@@ -345,10 +375,16 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
               </Button>
               {(hasErrors || !!paymentError) && (
                 <Typography className={styles.errorMessage} color="error">
-                  {paymentError || 'Please fix the errors in your form'}
+                  {paymentError || (
+                    <Content id="checkout_error_please_fix" defaultText="Please fix the errors in your form" />
+                  )}
                 </Typography>
               )}
-              {items.length === 0 && <Typography className={styles.errorMessage}>Your cart is empty</Typography>}
+              {items.length === 0 && (
+                <Typography className={styles.errorMessage}>
+                  <Content id="checkout_error_cart_empty" defaultText="Your cart is empty" />
+                </Typography>
+              )}
             </div>
           </Grid>
         </Grid>
