@@ -51,7 +51,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
   return (
     <Card elevation={2} className={classNames(styles.container, className, { [styles.small]: isSmall })}>
       <Typography variant="h4" className={styles.title}>
-        Order Summary
+        <Content id="order_summary_header" defaultText="Order Summary" />
       </Typography>
       {showLineItems && (
         <div className={styles.section}>
@@ -73,7 +73,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
           })}
           {editable && !isDonationRequest && (
             <Link className={styles.edit} href={reverse('cart')}>
-              Edit order
+              <Content id="order_summary_edit_order" defaultText="Edit order" />
             </Link>
           )}
         </div>
@@ -81,7 +81,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
       <div className={styles.section}>
         <div className={styles.line}>
           <Typography variant="body1" className={styles.label}>
-            Order Subtotal
+            <Content id="order_summary_subtotal" defaultText="Order Subtotal" />
           </Typography>
           <Typography variant="body1" className={styles.value}>
             {formatCurrency(orderSummary?.subtotal || subtotal)}
@@ -100,7 +100,8 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
         {(!!orderSummary?.discount || !!discount) && (
           <div className={styles.line}>
             <Typography variant="body1" className={styles.label}>
-              Discount {discountCode && `(${formatDiscountCode(discountCode)})`}
+              <Content id="order_summary_discount" defaultText="Discount" />{' '}
+              {discountCode && `(${formatDiscountCode(discountCode)})`}
             </Typography>
             <Typography variant="body1" className={styles.value}>
               -{formatCurrency(orderSummary?.discount || discount)}
@@ -110,16 +111,16 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
         {isDelivery && (
           <div className={styles.line}>
             <Typography variant="body1" className={styles.label}>
-              Delivery Fee
+              <Content id="order_summary_delivery_fee" defaultText="Delivery Fee" />
             </Typography>
             <Typography variant="body1" className={styles.value}>
-              FREE
+              <Content id="order_summary_delivery_fee_free" defaultText="FREE" />
             </Typography>
           </div>
         )}
         <div className={styles.line}>
           <Typography variant="body1" className={styles.label}>
-            Tax ({formatPercentage(taxRate)})
+            <Content id="order_summary_tax" defaultText="Tax" /> ({formatPercentage(taxRate)})
           </Typography>
           <Typography variant="body1" className={styles.value}>
             {formatCurrency(orderSummary?.tax || tax)}
@@ -128,7 +129,8 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
         {showTip && (tippingEnabled || orderSummary?.tip) && (
           <div className={styles.line}>
             <Typography variant="body1" className={styles.label}>
-              Tip{!orderSummary && ` (${formatPercentage(tipPercentage / 100)})`}
+              <Content id="tip_label" defaultText="Tip" />
+              {!orderSummary && ` (${formatPercentage(tipPercentage / 100)})`}
             </Typography>
             <Typography variant="body1" className={styles.value}>
               {formatCurrency(orderSummary?.tip || tip)}
@@ -138,7 +140,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
       </div>
       <div className={classNames(styles.line, styles.total)}>
         <Typography variant="body1" className={styles.label}>
-          Total
+          <Content id="order_summary_total" defaultText="Total" />
         </Typography>
         <Typography variant="body1" className={styles.value}>
           {formatCurrency(isDonationRequest ? 0 : orderSummary?.total || total)}

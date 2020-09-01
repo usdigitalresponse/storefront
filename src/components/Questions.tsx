@@ -1,7 +1,7 @@
 import { FieldError, NestDataObject } from 'react-hook-form';
 import { IAppState } from '../store/app';
 import { Question } from '../common/types';
-import { questionsSelector } from '../store/cms';
+import { questionsSelector, useContent } from '../store/cms';
 import { useSelector } from 'react-redux';
 import CheckboxQuestion from './CheckboxQuestion';
 import CheckboxesQuestion from './CheckboxesQuestion';
@@ -17,6 +17,7 @@ interface Props {
 
 const Questions: React.FC<Props> = ({ register, errors, questionClassName }) => {
   const questions = useSelector<IAppState, Question[]>(questionsSelector);
+  const contentFieldIsRequired = useContent('checkout_field_is_required');
 
   return (
     <>
@@ -28,7 +29,7 @@ const Questions: React.FC<Props> = ({ register, errors, questionClassName }) => 
                 key={question.id}
                 question={question}
                 errors={errors}
-                inputRef={register({ required: question.required ? `${question.label} is required` : undefined })}
+                inputRef={register({ required: question.required ? contentFieldIsRequired : undefined })}
                 className={questionClassName}
               />
             );
@@ -38,7 +39,7 @@ const Questions: React.FC<Props> = ({ register, errors, questionClassName }) => 
                 key={question.id}
                 question={question}
                 errors={errors}
-                inputRef={register({ required: question.required ? `Field is required` : undefined })}
+                inputRef={register({ required: question.required ? contentFieldIsRequired : undefined })}
                 className={questionClassName}
               />
             );
@@ -56,7 +57,7 @@ const Questions: React.FC<Props> = ({ register, errors, questionClassName }) => 
               <SelectQuestion
                 key={question.id}
                 question={question}
-                inputRef={register({ required: question.required ? `${question.label} is required` : undefined })}
+                inputRef={register({ required: question.required ? contentFieldIsRequired : undefined })}
                 errors={errors}
                 className={questionClassName}
               />
