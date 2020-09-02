@@ -42,10 +42,10 @@ const HomePage: React.FC<Props> = () => {
             )}
             <Grid item md={6} xs={12}>
               <Typography variant="h1" className={styles.heroTitle}>
-                <Content id="banner_title" />
+                <Content id="banner_title" markdown />
               </Typography>
               <Typography variant="body1" className={styles.heroDescription}>
-                <Content id="banner_copy" />
+                <Content id="banner_copy" markdown />
               </Typography>
               <div className={styles.cta}>
                 <Button
