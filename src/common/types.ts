@@ -40,6 +40,7 @@ export interface InventoryRecord {
   id: string;
   name: string;
   description: string;
+  category: string;
   strings?: Record<string, InventoryStrings>;
   price: number;
   image: AirtableImage[];
@@ -49,6 +50,24 @@ export interface InventoryRecord {
   stockZipcodes?: string[];
   locations?: IStockLocation[];
   zipcodes?: IStockZipcodes[];
+}
+
+export interface CategoryStrings {
+  category: string;
+  description: string;
+}
+
+export interface IInventoryCategory {
+  id: string;
+  strings: Record<string, CategoryStrings>;
+  inventory: String[];
+}
+
+export interface CategoryRecord {
+  id: string;
+  name: string;
+  description: string;
+  inventory: InventoryRecord[];
 }
 
 export interface AirtableImage {

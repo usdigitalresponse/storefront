@@ -1,0 +1,23 @@
+@import '../common/variables';
+
+.centered {
+  text-align: center;
+}
+
+.container {
+  margin-bottom: spacing(6);
+  padding-bottom: spacing(4);
+
+  .header {
+    margin-bottom: spacing(1);
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.container.small {
+  margin-bottom: spacing(3);
+  padding-bottom: 0;
+}

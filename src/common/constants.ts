@@ -73,3 +73,5 @@ export function byName() {
   });
   return results;
 }
+
+export const NO_CATEGORY = 'no_category';
