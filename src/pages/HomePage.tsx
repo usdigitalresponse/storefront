@@ -1,5 +1,6 @@
 import { Button, Grid, Typography, useTheme } from '@material-ui/core';
 import { IAppState } from '../store/app';
+import { IConfig } from '../common/types';
 import { reverse } from '../common/router';
 import { useContentImage } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
@@ -20,10 +21,8 @@ const HomePage: React.FC<Props> = () => {
   const bannerImage = useContentImage('banner_image');
   const bannerLogo = useContentImage('banner_logo');
   const introImage = useContentImage('introduction_image');
-
-  const embeddedViewEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.embeddedViewEnabled);
-  const donationEnabled = useSelector<IAppState, boolean>((state) => state.cms.config.donationEnabled);
-  const embeddedViewName = useSelector<IAppState, string | undefined>((state) => state.cms.config.embeddedViewName);
+  const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
+  const { embeddedViewName, embeddedViewEnabled, donationEnabled, ordersEnabled } = config;
 
   return (
     <BaseLayout padding={0} maxWidth="unset">
@@ -48,16 +47,18 @@ const HomePage: React.FC<Props> = () => {
                 <Content id="banner_copy" markdown />
               </Typography>
               <div className={styles.cta}>
-                <Button
-                  className={styles.ctaButton}
-                  size="large"
-                  color="primary"
-                  variant="contained"
-                  component={Link}
-                  href={reverse('products')}
-                >
-                  <Content id="purchase_button_label" />
-                </Button>
+                {ordersEnabled && (
+                  <Button
+                    className={styles.ctaButton}
+                    size="large"
+                    color="primary"
+                    variant="contained"
+                    component={Link}
+                    href={reverse('products')}
+                  >
+                    <Content id="purchase_button_label" />
+                  </Button>
+                )}
                 {donationEnabled && (
                   <Button
                     className={styles.ctaButton}
@@ -111,16 +112,18 @@ const HomePage: React.FC<Props> = () => {
               <Content id="purchase_title" />
             </Typography>
             <Content id="purchase_copy" markdown allowParagraphs />
-            <Button
-              className={styles.ctaButton}
-              size="large"
-              color="primary"
-              variant="contained"
-              component={Link}
-              href={reverse('products')}
-            >
-              <Content id="purchase_button_label" />
-            </Button>
+            {ordersEnabled && (
+              <Button
+                className={styles.ctaButton}
+                size="large"
+                color="primary"
+                variant="contained"
+                component={Link}
+                href={reverse('products')}
+              >
+                <Content id="purchase_button_label" />
+              </Button>
+            )}
           </Grid>
         </Grid>
         <Grid container justify="center" className={styles.section}>

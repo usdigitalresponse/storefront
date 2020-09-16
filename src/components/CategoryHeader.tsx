@@ -1,8 +1,8 @@
-import {Typography} from '@material-ui/core';
+import { Typography } from '@material-ui/core';
+import { useIsSmall } from '../common/hooks';
 import React from 'react';
-import styles from './CategoryHeader.module.scss';
 import classNames from 'classnames';
-import {useIsSmall} from "../common/hooks";
+import styles from './CategoryHeader.module.scss';
 
 interface Props {
   categoryName?: string;
@@ -16,11 +16,9 @@ const CategoryHeader: React.FC<Props> = ({ categoryName, description, centered }
   return (
     <div className={classNames(styles.container, centered && styles.centered, isSmall && styles.small)}>
       <Typography variant="h4" className={styles.header}>
-        { categoryName }
+        {categoryName}
       </Typography>
-      <p className={styles.description}>
-        { description }
-      </p>
+      <p className={styles.description}>{description}</p>
     </div>
   );
 };

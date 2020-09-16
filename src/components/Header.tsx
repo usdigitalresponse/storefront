@@ -31,7 +31,7 @@ const Header: React.FC = () => {
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
 
-  const { embeddedViewEnabled, embeddedViewName, donationEnabled, cartEnabled } = config;
+  const { embeddedViewEnabled, embeddedViewName, donationEnabled, ordersEnabled, cartEnabled } = config;
   const IOrderItemsCount = useSelector<IAppState, number>(IOrderItemCountSelector);
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const navPurchase = useContent('nav_purchase');
@@ -39,10 +39,11 @@ const Header: React.FC = () => {
   const navLink = useContent('nav_link');
   const navDrive = useContent('nav_drive');
 
-  const headerNavItems: INavItem[] = [
-    { name: 'Home', url: reverse('home') },
-    { name: navPurchase, url: reverse('products') },
-  ];
+  const headerNavItems: INavItem[] = [{ name: 'Home', url: reverse('home') }];
+
+  if (ordersEnabled) {
+    headerNavItems.push({ name: navPurchase, url: reverse('products') });
+  }
 
   if (donationEnabled) {
     headerNavItems.push({ name: navDonate, url: reverse('donate') });
@@ -118,7 +119,7 @@ const Header: React.FC = () => {
               )}
             </>
           )}
-          {cartEnabled && (
+          {cartEnabled && ordersEnabled && (
             <IconButton
               edge="end"
               color="primary"

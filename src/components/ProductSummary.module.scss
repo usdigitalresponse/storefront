@@ -20,6 +20,15 @@
   }
 
 
+  .nameContainer {
+    display: flex;
+    align-items: center;
+
+    .addOnChip {
+      margin-left: 5px;
+    }
+  }
+
   .name {
     display: flex;
     align-items: center;

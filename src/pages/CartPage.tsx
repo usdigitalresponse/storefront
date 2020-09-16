@@ -1,6 +1,7 @@
 import { Button, Card, Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { IOrderItem } from '../common/types';
+import { Redirect } from 'react-router-dom';
 import { itemsSelector } from '../store/cart';
 import { reverse } from '../common/router';
 import { useIsSmall } from '../common/hooks';
@@ -17,6 +18,11 @@ import styles from './CartPage.module.scss';
 const CartPage: React.FC = () => {
   const isSmall = useIsSmall();
   const cartItems = useSelector<IAppState, IOrderItem[]>(itemsSelector);
+  const ordersEnabled = useSelector((state: IAppState) => state.cms.config.ordersEnabled);
+
+  if (!ordersEnabled) {
+    return <Redirect to="/" />;
+  }
 
   return (
     <BaseLayout title="Shopping Cart">
