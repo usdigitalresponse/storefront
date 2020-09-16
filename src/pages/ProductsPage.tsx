@@ -1,25 +1,28 @@
-import {productByCategorySelector, productListSelector, useContent} from '../store/cms';
+import { IAppState } from '../store/app';
+import { InventoryRecord } from '../common/types';
+import { Redirect } from 'react-router-dom';
+import { productByCategorySelector, productListSelector, useContent } from '../store/cms';
 import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
 import BaseLayout from '../layouts/BaseLayout';
+import CategoryHeader from '../components/CategoryHeader';
 import ProductDetail from '../components/ProductDetail';
 import ProductSummary from '../components/ProductSummary';
 import React from 'react';
 import classNames from 'classnames';
 import styles from './ProductsPage.module.scss';
-import CategoryHeader from "../components/CategoryHeader";
-import {InventoryRecord} from "../common/types";
 
 const ProductsPage: React.FC = () => {
   const productList = useSelector(productListSelector);
   const productByCategoryList = useSelector(productByCategorySelector);
+  const ordersEnabled = useSelector((state: IAppState) => state.cms.config.ordersEnabled);
   const isSmall = useIsSmall();
   const title = useContent('products_page_title');
   const description = useContent('products_page_subtitle');
   const renderSummaries = productList.length > 4;
   const renderByCategory = Object.keys(productByCategoryList).length > 1;
 
-  const productListItems = (productList : InventoryRecord[]) => {
+  const productListItems = (productList: InventoryRecord[]) => {
     return (
       <div className={classNames(styles.container, { [styles.summary]: renderSummaries, [styles.small]: isSmall })}>
         {productList.map((item) =>
@@ -30,14 +33,18 @@ const ProductsPage: React.FC = () => {
           ),
         )}
       </div>
-    )
+    );
+  };
+
+  if (!ordersEnabled) {
+    return <Redirect to="/" />;
   }
 
   if (renderByCategory) {
     return (
       <BaseLayout title={title} description={description}>
         {productByCategoryList.map((categoryRecord) => (
-          <div>
+          <div key={categoryRecord.id}>
             <CategoryHeader
               key={categoryRecord.id}
               categoryName={categoryRecord.name}
@@ -48,7 +55,7 @@ const ProductsPage: React.FC = () => {
           </div>
         ))}
       </BaseLayout>
-    )
+    );
   }
 
   return (

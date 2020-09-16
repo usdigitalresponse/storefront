@@ -15,8 +15,13 @@ interface Props {}
 const ProductPage: React.FC<Props> = () => {
   const routeMatch = useRouteMatch<IProductRouteParams>();
   const productDetailSelector = useMemo(makeProductDetailSelector, []);
+  const ordersEnabled = useSelector((state: IAppState) => state.cms.config.ordersEnabled);
   const product = useSelector((state: IAppState) => productDetailSelector(state, routeMatch.params.id));
   const history = useHistory();
+
+  if (!ordersEnabled) {
+    return <Redirect to="/" />;
+  }
 
   return (
     <BaseLayout>

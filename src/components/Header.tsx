@@ -119,7 +119,7 @@ const Header: React.FC = () => {
               )}
             </>
           )}
-          {cartEnabled && (
+          {cartEnabled && ordersEnabled && (
             <IconButton
               edge="end"
               color="primary"

@@ -26,9 +26,12 @@ const ProductSummary: React.FC<Props> = ({ product, className }) => {
       <div className={styles.imageContainer}>
         <img className={styles.image} src={getImageUrl(image)} alt={name} />
       </div>
-      <Typography variant="body1" className={styles.name}>
-        {name} {addOn && <Chip size="small" variant="outlined" label="Add-On" />}
-      </Typography>
+      <div className={styles.nameContainer}>
+        <Typography variant="body1" className={styles.name}>
+          {name}
+        </Typography>
+        {addOn && <Chip size="small" variant="outlined" label="Add-On" className={styles.addOnChip} />}
+      </div>
       <Typography variant="body1" className={styles.price}>
         {formatCurrency(price)}
       </Typography>

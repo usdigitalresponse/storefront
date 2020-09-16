@@ -26,6 +26,7 @@ import {
 } from '../common/types';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
+import { Redirect, useHistory, useLocation } from 'react-router-dom';
 import {
   SetError,
   SetIsDonationRequest,
@@ -47,7 +48,6 @@ import { reverse } from '../common/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { useElements, useStripe } from '@stripe/react-stripe-js';
 import { useForm } from 'react-hook-form';
-import { useHistory, useLocation } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
 import BaseLayout from '../layouts/BaseLayout';
 import ConfirmEligibilityView from '../components/ConfirmEligibilityView';
@@ -415,6 +415,11 @@ const CheckoutPageWithStripe = () => {
 
 export default function CheckoutPage() {
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
+  const { ordersEnabled } = config;
+
+  if (!ordersEnabled) {
+    return <Redirect to="/" />;
+  }
 
   return config.stripeAPIKeyMain ? (
     <StripeElementsWrapper type="main">
