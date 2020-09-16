@@ -8,6 +8,7 @@ export interface IConfig {
   waitlistEnabled: boolean;
   donationEnabled: boolean;
   donationUnits?: string;
+  ordersEnabled: boolean;
   defaultOrderType: OrderType;
   pickupEnabled: boolean;
   deliveryEnabled: boolean;
@@ -60,7 +61,7 @@ export interface CategoryStrings {
 export interface IInventoryCategory {
   id: string;
   strings: Record<string, CategoryStrings>;
-  inventory: String[];
+  inventory: string[];
 }
 
 export interface CategoryRecord {

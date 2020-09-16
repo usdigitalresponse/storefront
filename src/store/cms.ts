@@ -1,9 +1,9 @@
 import * as Reselect from 'reselect';
-import { IAppState } from './app';
 import {
-  IInventoryCategory,
+  CategoryRecord,
   IConfig,
   IContentRecord,
+  IInventoryCategory,
   IOrderItem,
   IPickupLocation,
   ISchedule,
@@ -11,14 +11,15 @@ import {
   InventoryRecord,
   OrderType,
   Question,
-  ZipcodeScheduleMap, CategoryRecord,
+  ZipcodeScheduleMap,
 } from '../common/types';
+import { IAppState } from './app';
+import { NO_CATEGORY } from '../common/constants';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 import { getPickupLocation, getProduct, inventoryForLanguage, questionForLanguage } from '../common/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import {NO_CATEGORY} from "../common/constants";
 
 // model
 export interface ICmsState {
@@ -87,6 +88,7 @@ export const initialCmsState: ICmsState = {
     waitlistEnabled: true,
     donationEnabled: true,
     donationUnits: undefined,
+    ordersEnabled: true,
     defaultOrderType: OrderType.DELIVERY,
     pickupEnabled: true,
     deliveryEnabled: true,
@@ -217,23 +219,24 @@ export const productByCategorySelector = Reselect.createSelector(
           name: category.strings[language].category,
           description: category.strings[language].description,
           inventory: category.inventory.map((productId) => productsById[productId.toString()]),
-        })
+        });
       }
     });
 
     //add a category record for products that were not assigned categories
-    const noCategoryProducts = productList.filter(item => item.category === NO_CATEGORY);
+    const noCategoryProducts = productList.filter((item) => item.category === NO_CATEGORY);
 
-    noCategoryProducts.length > 0 && categoryRecords.push({
-      id: NO_CATEGORY,
-      name: language === 'en' ? "Other" : "Otros",
-      description: "",
-      inventory: noCategoryProducts,
-    });
+    noCategoryProducts.length > 0 &&
+      categoryRecords.push({
+        id: NO_CATEGORY,
+        name: language === 'en' ? 'Other' : 'Otros',
+        description: '',
+        inventory: noCategoryProducts,
+      });
 
     return categoryRecords;
-  }
-)
+  },
+);
 
 export const pickupLocationsSelector = Reselect.createSelector(
   (state: IAppState) => state.cms.pickupLocations,

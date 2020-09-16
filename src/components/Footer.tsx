@@ -22,8 +22,12 @@ const Footer: React.FC = () => {
   const navLink = useContent('nav_link');
   const footerLogo = useContentImage('footer_logo');
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const { embeddedViewEnabled, embeddedViewName, donationEnabled } = config;
-  const footerNavItems: INavItem[] = [{ name: navPurchase, url: reverse('products') }];
+  const { embeddedViewEnabled, embeddedViewName, donationEnabled, ordersEnabled } = config;
+  const footerNavItems: INavItem[] = [];
+
+  if (ordersEnabled) {
+    footerNavItems.push({ name: navPurchase, url: reverse('products') });
+  }
 
   if (donationEnabled) {
     footerNavItems.push({ name: navDonate, url: reverse('donate') });

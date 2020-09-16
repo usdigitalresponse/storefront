@@ -50,6 +50,7 @@ export class AirtableService {
             waitlistEnabled: records.config.waitlist_enabled === 'false' ? false : true,
             donationEnabled: records.config.donation_enabled === 'false' ? false : true,
             donationUnits: records.config.donation_units,
+            ordersEnabled: records.config.orders_enabled === 'false' ? false : true,
             defaultOrderType: records.config.default_order_type || OrderType.DELIVERY,
             pickupEnabled: records.config.pickup_enabled === 'false' ? false : true,
             deliveryEnabled: deliveryEnabled,
