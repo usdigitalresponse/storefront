@@ -133,7 +133,6 @@ export const subtotalWithDiscountSelector = Reselect.createSelector(
   subtotalSelector,
   discountTotalSelector,
   (subtotal: number, discountTotal: number) => {
-    console.log(discountTotal);
     return Math.max(subtotal - discountTotal, 0);
   },
 );
