@@ -101,7 +101,7 @@ exports.handler = async (event, context) => {
 
     return successResponse({
       id: matchedCode.id,
-      code: validSequentialCode ? code : matchedCode['Code'],
+      code: validSequentialCode ? String(code) : matchedCode['Code'],
       amount: matchedCode['Amount'],
       type: matchedCode['Type']
     });
