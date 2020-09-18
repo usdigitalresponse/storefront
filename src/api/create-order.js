@@ -119,7 +119,7 @@ exports.handler = async (event, context) => {
     );
 
     // add discount codes to used sequential codes
-    if (orderIntent.discountCodes) {
+    if (configRecordsByKey?.sequential_discount_code?.value && orderIntent.discountCodes.length > 0) {
       await base('Used Sequential Codes').create(orderIntent.discountCodes.map(code => ({ fields: { Code: code, Order: [order.id] } })));
     }
 
