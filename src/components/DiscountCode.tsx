@@ -28,7 +28,9 @@ const DiscountCode: React.FC<Props> = ({ className }) => {
   async function onSubmit() {
     setLoading(true);
 
-    if (!discountCodes.map((discountCode: IDiscountCode) => discountCode.code).includes(code)) {
+    if (discountCodes.map((discountCode: IDiscountCode) => discountCode.code).includes(code)) {
+      setError('Code already used, please try another.');
+    } else {
       const discountCode = await AirtableService.checkDiscountCode(code);
 
       if (discountCode) {
@@ -43,8 +45,6 @@ const DiscountCode: React.FC<Props> = ({ className }) => {
       } else {
         setError('Invalid code, please try again.');
       }
-    } else {
-      setError('Code already used, please try another.');
     }
 
     setLoading(false);
