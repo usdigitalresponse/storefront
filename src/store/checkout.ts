@@ -52,7 +52,7 @@ export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
   .withHandler(SetConfirmation.TYPE, (state, confirmation) => setWith(state, { confirmation }))
   .withHandler(SetDiscountCode.TYPE, (state, discountCode) => {
     if (discountCode) {
-      // If the discount is not "stackable" (i.e. multiple codes are not allowed) we just replace whatever is in discountCodes
+      // If multiple codes are not allowed, we just replace whatever is in discountCodes
       return setWith(state, { discountCodes: [discountCode] });
     }
 
