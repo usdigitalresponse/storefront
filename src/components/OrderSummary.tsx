@@ -2,7 +2,8 @@ import { Card, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import { IConfig, IDiscountCode, IOrderItem, IOrderSummary, InventoryRecord, OrderType } from '../common/types';
 import {
-  discountSelector,
+  discountDollarAmountsSelector,
+  discountTotalSelector,
   itemsSelector,
   subtotalSelector,
   taxSelector,
@@ -34,8 +35,9 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
   const isSmall = useIsSmall();
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const subtotal = useSelector<IAppState, number>(subtotalSelector);
-  const discount = useSelector<IAppState, number>(discountSelector);
-  const discountCode = useSelector<IAppState, IDiscountCode | undefined>((state) => state.checkout.discountCode);
+  const discountDollarAmounts = useSelector<IAppState, Record<string, number>>(discountDollarAmountsSelector);
+  const discount = useSelector<IAppState, number>(discountTotalSelector);
+  const discountCodes = useSelector<IAppState, IDiscountCode[]>((state) => state.checkout.discountCodes);
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const { taxRate, tippingEnabled } = config;
   const tipPercentage = useSelector<IAppState, number>((state) => state.checkout.tipPercentage);
@@ -97,16 +99,26 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
             </Typography>
           </div>
         )}
-        {(!!orderSummary?.discount || !!discount) && (
+        {orderSummary?.discount ? (
           <div className={styles.line}>
             <Typography variant="body1" className={styles.label}>
-              <Content id="order_summary_discount" defaultText="Discount" />{' '}
-              {discountCode && `(${formatDiscountCode(discountCode)})`}
+              Discounts
             </Typography>
             <Typography variant="body1" className={styles.value}>
-              -{formatCurrency(orderSummary?.discount || discount)}
+              -{formatCurrency(orderSummary?.discount)}
             </Typography>
           </div>
+        ) : (
+          discountCodes.map((discountCode, index) => (
+            <div key={`${index}-${discountCode}`} className={styles.line}>
+              <Typography variant="body1" className={styles.label}>
+                {discountCode.code} {discountCode && `(${formatDiscountCode(discountCode)})`}
+              </Typography>
+              <Typography variant="body1" className={styles.value}>
+                -{formatCurrency(discountDollarAmounts[discountCode.code])}
+              </Typography>
+            </div>
+          ))
         )}
         {isDelivery && (
           <div className={styles.line}>

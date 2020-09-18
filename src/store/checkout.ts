@@ -12,6 +12,7 @@ import {
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
 import { inventorySelector } from './cms';
 import { totalSelector } from './cart';
+import update from 'immutability-helper';
 
 // model
 export interface ICheckoutState {
@@ -21,7 +22,7 @@ export interface ICheckoutState {
   isDonationRequest: boolean;
   donationAmount: number;
   tipPercentage: number;
-  discountCode?: IDiscountCode;
+  discountCodes: IDiscountCode[];
   waitlistDialogIsOpen: boolean;
   waitlistConfirmed: boolean;
   payState: PayState;
@@ -34,6 +35,9 @@ export const SetConfirmation = TypedAction.define('APP/CHECKOUT/SET_CONFIRMATION
   IOrderSummary | IDonationSummary | undefined
 >();
 export const SetDiscountCode = TypedAction.define('APP/CHECKOUT/SET_DISCOUNT_CODE')<IDiscountCode | undefined>();
+export const SetDiscountCodeMultiple = TypedAction.define('APP/CHECKOUT/SET_DISCOUNT_CODES_MULTIPLE')<
+  IDiscountCode | undefined
+>();
 export const SetIsDonationRequest = TypedAction.define('APP/CHECKOUT/SET_IS_DONATION_REQUEST')<boolean>();
 export const SetDonationAmount = TypedAction.define('APP/CHECKOUT/SET_DONATION_AMOUNT')<number>();
 export const SetTipPercentage = TypedAction.define('APP/CHECKOUT/SET_TIP_PERCENTAGE')<number>();
@@ -46,7 +50,21 @@ export const checkoutReducer: any = TypedReducer.builder<ICheckoutState>()
   .withHandler(SetIsPaying.TYPE, (state, isPaying) => setWith(state, { isPaying }))
   .withHandler(SetError.TYPE, (state, error) => setWith(state, { error }))
   .withHandler(SetConfirmation.TYPE, (state, confirmation) => setWith(state, { confirmation }))
-  .withHandler(SetDiscountCode.TYPE, (state, discountCode) => setWith(state, { discountCode }))
+  .withHandler(SetDiscountCode.TYPE, (state, discountCode) => {
+    if (discountCode) {
+      // If the discount is not "stackable" (i.e. multiple codes are not allowed) we just replace whatever is in discountCodes
+      return setWith(state, { discountCodes: [discountCode] });
+    }
+
+    return setWith(state, { discountCodes: [] });
+  })
+  .withHandler(SetDiscountCodeMultiple.TYPE, (state, discountCode) => {
+    if (discountCode) {
+      return update(state, { discountCodes: { $push: [discountCode] } });
+    }
+
+    return setWith(state, { discountCodes: [] });
+  })
   .withHandler(SetIsDonationRequest.TYPE, (state, isDonationRequest) => setWith(state, { isDonationRequest }))
   .withHandler(SetDonationAmount.TYPE, (state, donationAmount) => setWith(state, { donationAmount }))
   .withHandler(SetTipPercentage.TYPE, (state, tipPercentage) => setWith(state, { tipPercentage }))
@@ -64,7 +82,7 @@ export const initialCheckoutState: ICheckoutState = {
   confirmation: undefined,
   donationAmount: 50,
   tipPercentage: 20,
-  discountCode: undefined,
+  discountCodes: [],
   waitlistDialogIsOpen: false,
   waitlistConfirmed: false,
   payState: PayState.NOW,

@@ -1,8 +1,8 @@
 import { AirtableService } from '../services/AirtableService';
 import { CircularProgress, IconButton, InputAdornment, Link, TextField, useTheme } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { IDiscountCode } from '../common/types';
-import { SetDiscountCode } from '../store/checkout';
+import { IConfig, IDiscountCode } from '../common/types';
+import { SetDiscountCode, SetDiscountCodeMultiple } from '../store/checkout';
 import { useDispatch, useSelector } from 'react-redux';
 import ArrowIcon from '@material-ui/icons/ArrowForward';
 import Content from './Content';
@@ -21,14 +21,22 @@ const DiscountCode: React.FC<Props> = ({ className }) => {
   const [code, setCode] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const discountCode = useSelector<IAppState, IDiscountCode | undefined>((state) => state.checkout.discountCode);
+  const discountCodes = useSelector<IAppState, IDiscountCode[]>((state) => state.checkout.discountCodes);
+  const lastAppliedDiscountCode = discountCodes.slice(-1)[0];
+  const { sequentialDiscountCode } = useSelector<IAppState, IConfig>((state) => state.cms.config);
 
   async function onSubmit() {
     setLoading(true);
     const discountCode = await AirtableService.checkDiscountCode(code);
 
     if (discountCode) {
-      dispatch(SetDiscountCode.create(discountCode));
+      // If this is a sequential discount code, allow multiple entries by adding to discountCodes array
+      if (sequentialDiscountCode) {
+        dispatch(SetDiscountCodeMultiple.create(discountCode));
+      } else {
+        dispatch(SetDiscountCode.create(discountCode));
+      }
+
       setCode('');
     } else {
       setError('Invalid code, please try again.');
@@ -48,7 +56,7 @@ const DiscountCode: React.FC<Props> = ({ className }) => {
         <TextField
           fullWidth
           variant="outlined"
-          label="Discount Code"
+          label={<Content id="discount_code_field_label" defaultText="Discount Code" />}
           autoCapitalize="characters"
           value={code}
           error={!!error}
@@ -65,7 +73,7 @@ const DiscountCode: React.FC<Props> = ({ className }) => {
               return false;
             }
           }}
-          helperText={error || (discountCode ? `Discount code ${discountCode.code} applied!` : undefined)}
+          helperText={error || (lastAppliedDiscountCode ? `Code ${lastAppliedDiscountCode.code} applied!` : undefined)}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">

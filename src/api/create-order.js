@@ -111,9 +111,7 @@ exports.handler = async (event, context) => {
         Tax: orderIntent.tax,
         Tip: orderIntent.tip,
         Total: orderIntent.total,
-        'Discount Code': orderIntent.discountCodes
-          ? orderIntent.discountCodes.join(',')
-          : orderIntent.discountCode,
+        'Discount Code': orderIntent.discountCodes.join(','),
         'Opt In Comms': orderIntent.optInComms,
         'Opt In Subsidy': orderIntent.optInSubsidy,
       },

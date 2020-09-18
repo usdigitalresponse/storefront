@@ -66,6 +66,7 @@ export class AirtableService {
             stripeAPIKeyMain: records.config.stripe_main_public_api_key,
             stripeAPIKeyDonation: records.config.stripe_donation_public_api_key,
             tippingEnabled: records.config.tipping_enabled === 'true' ? true : false,
+            sequentialDiscountCode: records.config.sequential_discount_code,
           }),
           SetOrderType.create(
             deliveryEnabled ? records.config.default_order_type || OrderType.DELIVERY : OrderType.PICKUP,
