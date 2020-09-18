@@ -27,19 +27,24 @@ const DiscountCode: React.FC<Props> = ({ className }) => {
 
   async function onSubmit() {
     setLoading(true);
-    const discountCode = await AirtableService.checkDiscountCode(code);
 
-    if (discountCode) {
-      // If this is a sequential discount code, allow multiple entries by adding to discountCodes array
-      if (sequentialDiscountCode) {
-        dispatch(SetDiscountCodeMultiple.create(discountCode));
+    if (!discountCodes.map((discountCode: IDiscountCode) => discountCode.code).includes(code)) {
+      const discountCode = await AirtableService.checkDiscountCode(code);
+
+      if (discountCode) {
+        // If this is a sequential discount code, allow multiple entries by adding to discountCodes array
+        if (sequentialDiscountCode) {
+          dispatch(SetDiscountCodeMultiple.create(discountCode));
+        } else {
+          dispatch(SetDiscountCode.create(discountCode));
+        }
+
+        setCode('');
       } else {
-        dispatch(SetDiscountCode.create(discountCode));
+        setError('Invalid code, please try again.');
       }
-
-      setCode('');
     } else {
-      setError('Invalid code, please try again.');
+      setError('Code already used, please try another.');
     }
 
     setLoading(false);
