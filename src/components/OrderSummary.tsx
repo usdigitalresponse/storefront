@@ -3,7 +3,6 @@ import { IAppState } from '../store/app';
 import { IConfig, IDiscountCode, IOrderItem, IOrderSummary, InventoryRecord, OrderType } from '../common/types';
 import {
   discountDollarAmountsSelector,
-  discountTotalSelector,
   itemsSelector,
   subtotalSelector,
   taxSelector,
@@ -36,7 +35,6 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const subtotal = useSelector<IAppState, number>(subtotalSelector);
   const discountDollarAmounts = useSelector<IAppState, Record<string, number>>(discountDollarAmountsSelector);
-  const discount = useSelector<IAppState, number>(discountTotalSelector);
   const discountCodes = useSelector<IAppState, IDiscountCode[]>((state) => state.checkout.discountCodes);
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const { taxRate, tippingEnabled } = config;
