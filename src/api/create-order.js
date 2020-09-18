@@ -111,12 +111,17 @@ exports.handler = async (event, context) => {
         Tax: orderIntent.tax,
         Tip: orderIntent.tip,
         Total: orderIntent.total,
-        'Discount Code': orderIntent.discountCode,
+        'Discount Code': orderIntent.discountCodes.join(','),
         'Opt In Comms': orderIntent.optInComms,
         'Opt In Subsidy': orderIntent.optInSubsidy,
       },
       { typecast: true },
     );
+
+    // add discount codes to used sequential codes
+    if (configRecordsByKey?.sequential_discount_code?.value && orderIntent.discountCodes.length > 0) {
+      await base('Used Sequential Codes').create(orderIntent.discountCodes.map(code => ({ fields: { Code: code, Order: [order.id] } })));
+    }
 
     // process order items in batches of 10 (airtable limits to 10 records created per request)
     let iter = 0;

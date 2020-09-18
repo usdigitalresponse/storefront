@@ -24,6 +24,7 @@ export interface IConfig {
   stripeAPIKeyMain?: string;
   stripeAPIKeyDonation?: string;
   tippingEnabled: boolean;
+  sequentialDiscountCode?: string;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
@@ -171,7 +172,7 @@ export interface IOrderIntent extends ICheckoutFormData {
   total: number;
   items: IOrderItem[];
   subsidized: boolean;
-  discountCode?: string;
+  discountCodes: string[];
   stripePaymentId?: string;
 }
 

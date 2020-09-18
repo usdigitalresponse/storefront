@@ -106,23 +106,34 @@ export const subtotalSelector = Reselect.createSelector(
   },
 );
 
-export const discountSelector = Reselect.createSelector(
+const getDiscountDollarAmount = (subtotal: number, discountCode: IDiscountCode) =>
+  discountCode.type === DiscountCodeType.DOLLARS ? discountCode.amount : subtotal * (discountCode.amount / 100);
+
+export const discountDollarAmountsSelector = Reselect.createSelector(
   subtotalSelector,
-  (state: IAppState) => state.checkout.discountCode,
-  (subtotal: number, discountCode?: IDiscountCode) => {
-    return !discountCode
-      ? 0
-      : discountCode.type === DiscountCodeType.DOLLARS
-      ? discountCode.amount
-      : subtotal * (discountCode.amount / 100);
-  },
+  (state: IAppState) => state.checkout.discountCodes,
+  (subtotal: number, discountCodes: IDiscountCode[]) =>
+    discountCodes.reduce((discountAmounts: Record<string, number>, discountCode: IDiscountCode) => {
+      discountAmounts[discountCode.code] = getDiscountDollarAmount(subtotal, discountCode);
+      return discountAmounts;
+    }, {}),
+);
+
+export const discountTotalSelector = Reselect.createSelector(
+  subtotalSelector,
+  (state: IAppState) => state.checkout.discountCodes,
+  (subtotal: number, discountCodes: IDiscountCode[]) =>
+    discountCodes.reduce(
+      (total: number, discountCode: IDiscountCode) => total + getDiscountDollarAmount(subtotal, discountCode),
+      0,
+    ),
 );
 
 export const subtotalWithDiscountSelector = Reselect.createSelector(
   subtotalSelector,
-  discountSelector,
-  (subtotal: number, discount: number) => {
-    return Math.max(subtotal - discount, 0);
+  discountTotalSelector,
+  (subtotal: number, discountTotal: number) => {
+    return Math.max(subtotal - discountTotal, 0);
   },
 );
 

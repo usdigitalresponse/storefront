@@ -14,6 +14,7 @@ import {
 import {
   SetConfirmation,
   SetDiscountCode,
+  SetDiscountCodeMultiple,
   SetError,
   SetIsPaying,
   SetWaitlistDialogIsOpen,
@@ -21,7 +22,7 @@ import {
 } from '../store/checkout';
 import {
   SetItems,
-  discountSelector,
+  discountTotalSelector,
   itemsSelector,
   subtotalSelector,
   taxSelector,
@@ -83,14 +84,14 @@ export class StripeService {
   public static async pay(formData: ICheckoutFormData, stripe: Stripe | null, elements: StripeElements | null) {
     const state = StripeService.store.getState();
     const subtotal = subtotalSelector(state);
-    const discount = discountSelector(state);
+    const discount = discountTotalSelector(state);
     const tax = taxSelector(state);
     const tip = tipSelector(state);
     const total = totalSelector(state);
     const productList = productListSelector(state);
     const requiresPayment = requiresPaymentSelector(state);
     const waitlistConfirmed = state.checkout.waitlistConfirmed;
-    const discountCode = state.checkout.discountCode?.code;
+    const discountCodes = state.checkout.discountCodes.map((discountCode) => discountCode.code);
     const isDonationRequest = state.checkout.isDonationRequest;
     const stockByLocation = state.cms.config.stockByLocation;
     const type = state.cart.orderType;
@@ -106,7 +107,7 @@ export class StripeService {
       tax,
       tip,
       total,
-      discountCode,
+      discountCodes,
       items,
     };
 
@@ -159,6 +160,7 @@ export class StripeService {
           SetIsPaying.create(false),
           SetItems.create([]),
           SetDiscountCode.create(undefined),
+          SetDiscountCodeMultiple.create(undefined),
         ]),
       );
       return PaymentStatus.SUCCEEDED;
