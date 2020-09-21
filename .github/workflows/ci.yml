@@ -1,0 +1,9 @@
+name: storefront-ci
+on: [pull_request]
+jobs:
+  pr:
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: npm install -g yarn
+      - run: yarn lint && yarn build
