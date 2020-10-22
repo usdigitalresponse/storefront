@@ -3,7 +3,6 @@ import { Button, Card, Chip, Grid, Select, Tooltip, Typography } from '@material
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
 import { IConfig, IOrderItem, InventoryRecord } from '../common/types';
-import { NO_CATEGORY } from '../common/constants';
 import { SetIsDonationRequest } from '../store/checkout';
 import { formatCurrency } from '../common/format';
 import { getImageUrl } from '../common/utils';
