@@ -95,6 +95,7 @@ export const initialCmsState: ICmsState = {
     deliveryPreferences: true,
     deliveryOptionsOnCheckout: false,
     cartEnabled: true,
+    singleCategoryCartEnabled: false,
     payUponPickupEnabled: true,
     payUponDeliveryEnabled: false,
     embeddedViewEnabled: true,
