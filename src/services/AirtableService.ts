@@ -57,7 +57,7 @@ export class AirtableService {
             deliveryPreferences: records.config.delivery_preferences === 'false' ? false : true,
             deliveryOptionsOnCheckout: records.config.delivery_options_on_checkout === 'true' ? true : false,
             cartEnabled: records.config.cart_enabled === 'false' ? false : true,
-            singleCategoryCartEnabled: records.config.single_category_cart_enabled === 'false' ? false : true,
+            singleCategoryCartEnabled: records.config.single_category_cart_enabled === 'true' ? true : false,
             payUponPickupEnabled: records.config.pay_upon_pickup_enabled === 'false' ? false : true,
             payUponDeliveryEnabled: records.config.pay_upon_pickup_enabled === 'true' ? true : false,
             embeddedViewEnabled: records.config.embedded_view_enabled === 'false' ? false : true,
