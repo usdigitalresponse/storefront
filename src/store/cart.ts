@@ -162,7 +162,6 @@ export const totalSelector = Reselect.createSelector(
   (state: IAppState) => state.cms.config.deliveryFee,
   (state: IAppState) => state.cart.orderType,
   (subtotal: number, tax: number, tip: number, deliveryFee: number, orderType: OrderType) => {
-    console.log('total', subtotal + tip + tax + (orderType === OrderType.DELIVERY ? deliveryFee : 0));
     return subtotal + tip + tax + (orderType === OrderType.DELIVERY ? deliveryFee : 0);
   },
 );
