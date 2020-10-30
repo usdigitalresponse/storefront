@@ -1,12 +1,13 @@
-import { AddItem, IOrderItemCountSelector, SetDialogIsOpen, SetItems } from '../store/cart';
+import { AddItem, IOrderItemCountSelector, SetDialogIsOpen, SetItems, itemsSelector } from '../store/cart';
 import { Button, Card, Chip, Grid, Select, Tooltip, Typography } from '@material-ui/core';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { IConfig, InventoryRecord } from '../common/types';
+import { IConfig, IOrderItem, InventoryRecord } from '../common/types';
 import { SetIsDonationRequest } from '../store/checkout';
 import { formatCurrency } from '../common/format';
 import { getImageUrl } from '../common/utils';
 import { reverse } from '../common/router';
+import { useContent } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
@@ -26,16 +27,18 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
   const [short, setShort] = useState<boolean>(true);
   const [quantity, setQuantity] = useState<number>(1);
   const dispatch = useDispatch();
-  const { id, name, description, price, locations, addOn } = product;
+  const { id, category, name, description, price, locations, addOn } = product;
   const history = useHistory();
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const { paymentEnabled, waitlistEnabled, stockByLocation } = config;
+  const { paymentEnabled, waitlistEnabled, stockByLocation, singleCategoryCartEnabled } = config;
   const orderItemCount = useSelector<IAppState, number>(IOrderItemCountSelector);
+  const cartItems = useSelector<IAppState, IOrderItem[]>(itemsSelector);
+  const contentDisabledHelpText = useContent('disabled_add_cart_help_text');
 
   function addToCart() {
     dispatch(
       CompoundAction([
-        AddItem.create({ addOn, id, quantity }),
+        AddItem.create({ addOn, category, id, quantity }),
         SetDialogIsOpen.create(true),
         SetIsDonationRequest.create(false),
       ]),
@@ -45,6 +48,25 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
   function addToWaitlist() {
     dispatch(CompoundAction([SetItems.create([{ id, quantity: 1 }]), SetIsDonationRequest.create(true)]));
     history.push(reverse('checkout', { waitlist: true }));
+  }
+
+  const addOnShouldDisable = orderItemCount === 0 && addOn;
+
+  // If single category cart is enabled, we disable the Add to Cart button if the item's category
+  // doesn't match the category of the first item in the cart
+  const singleCategoryShouldDisable =
+    singleCategoryCartEnabled &&
+    orderItemCount > 0 &&
+    // Either category is the string 'no_category', an empty array, or array with a single item
+    category.toString() !== (cartItems[0].category && cartItems[0].category.toString());
+
+  const shouldDisableAddToChart = addOnShouldDisable || singleCategoryShouldDisable;
+
+  let disabledHelpText = '';
+  if (addOnShouldDisable) {
+    disabledHelpText = 'This is an add-on item. Add another item to your cart to include this item';
+  } else if (singleCategoryShouldDisable) {
+    disabledHelpText = contentDisabledHelpText || 'You can only add items from a single category';
   }
 
   return (
@@ -91,7 +113,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
                   value={quantity}
                   inputProps={{ name: 'quantity' }}
                   onChange={(e: ChangeEvent<any>) => setQuantity(parseInt(e.target.value))}
-                  disabled={addOn && orderItemCount === 0}
+                  disabled={shouldDisableAddToChart}
                 >
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((q) => (
                     <option key={q} value={q}>
@@ -100,13 +122,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
                   ))}
                 </Select>
               </div>
-              <Tooltip
-                title={
-                  addOn && orderItemCount === 0
-                    ? 'This is an add-on item. Add another item to your cart to include this item'
-                    : ''
-                }
-              >
+              <Tooltip title={disabledHelpText}>
                 <span>
                   {/* Tooltips don't appear if their immediate child is disabled, so this is wrapped in a <span> as buffer */}
                   <Button
@@ -115,7 +131,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
                     color="primary"
                     size="large"
                     onClick={addToCart}
-                    disabled={addOn && orderItemCount === 0}
+                    disabled={shouldDisableAddToChart}
                   >
                     <Content id="products_purchase_button_label" />
                   </Button>

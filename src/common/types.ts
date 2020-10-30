@@ -15,6 +15,7 @@ export interface IConfig {
   deliveryPreferences: boolean;
   deliveryOptionsOnCheckout: boolean;
   cartEnabled: boolean;
+  singleCategoryCartEnabled: boolean;
   payUponPickupEnabled: boolean;
   payUponDeliveryEnabled: boolean;
   embeddedViewEnabled: boolean;
@@ -106,6 +107,7 @@ export interface IOrderItem {
   id: string;
   quantity: number;
   addOn?: boolean;
+  category?: string;
 }
 
 export interface IAddress {
