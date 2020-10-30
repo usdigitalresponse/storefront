@@ -37,7 +37,7 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
   const discountDollarAmounts = useSelector<IAppState, Record<string, number>>(discountDollarAmountsSelector);
   const discountCodes = useSelector<IAppState, IDiscountCode[]>((state) => state.checkout.discountCodes);
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const { taxRate, tippingEnabled } = config;
+  const { taxRate, tippingEnabled, deliveryFee } = config;
   const tipPercentage = useSelector<IAppState, number>((state) => state.checkout.tipPercentage);
   const tax = useSelector<IAppState, number>(taxSelector);
   const tip = useSelector<IAppState, number>(tipSelector);
@@ -124,7 +124,11 @@ const OrderSummary: React.FC<Props> = ({ className, showLineItems, editable, ord
               <Content id="order_summary_delivery_fee" defaultText="Delivery Fee" />
             </Typography>
             <Typography variant="body1" className={styles.value}>
-              <Content id="order_summary_delivery_fee_free" defaultText="FREE" />
+              {deliveryFee > 0 ? (
+                formatCurrency(deliveryFee)
+              ) : (
+                <Content id="order_summary_delivery_fee_free" defaultText="FREE" />
+              )}
             </Typography>
           </div>
         )}
