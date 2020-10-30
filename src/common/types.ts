@@ -14,6 +14,7 @@ export interface IConfig {
   deliveryEnabled: boolean;
   deliveryPreferences: boolean;
   deliveryOptionsOnCheckout: boolean;
+  deliveryFee: number;
   cartEnabled: boolean;
   singleCategoryCartEnabled: boolean;
   payUponPickupEnabled: boolean;

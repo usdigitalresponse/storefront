@@ -42,7 +42,7 @@ export class AirtableService {
           SetCategories.create(records.categories),
           SetConfig.create({
             languages: records.config.languages.split(','),
-            taxRate: records.config.tax_rate,
+            taxRate: records.config.tax_rate ? parseFloat(records.config.tax_rate) : 0,
             projectName: records.config.project_name,
             defaultState: records.config.default_state,
             themeColor: records.config.theme_color,
@@ -56,6 +56,7 @@ export class AirtableService {
             deliveryEnabled: deliveryEnabled,
             deliveryPreferences: records.config.delivery_preferences === 'false' ? false : true,
             deliveryOptionsOnCheckout: records.config.delivery_options_on_checkout === 'true' ? true : false,
+            deliveryFee: records.config.delivery_fee ? parseFloat(records.config.delivery_fee) : 0,
             cartEnabled: records.config.cart_enabled === 'false' ? false : true,
             singleCategoryCartEnabled: records.config.single_category_cart_enabled === 'true' ? true : false,
             payUponPickupEnabled: records.config.pay_upon_pickup_enabled === 'false' ? false : true,
