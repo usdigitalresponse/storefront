@@ -5,6 +5,7 @@
 }
 
 .container {
+  position: relative;
   margin-bottom: spacing(6);
   padding-bottom: spacing(4);
 
@@ -15,6 +16,12 @@
   p {
     margin: 0;
   }
+}
+
+.anchor {
+  position: absolute;
+  visibility: hidden;
+  top: -100px;
 }
 
 .container.small {
