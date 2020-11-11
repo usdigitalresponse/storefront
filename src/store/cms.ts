@@ -220,7 +220,10 @@ export const productByCategorySelector = Reselect.createSelector(
           id: category.id,
           name: category.strings[language].category,
           description: category.strings[language].description,
-          inventory: category.inventory.map((productId) => productsById[productId.toString()]),
+          inventory: category.inventory
+            // productsById[productId.toString() is occasionally undefined
+            .filter((productId) => productsById[productId.toString()])
+            .map((productId) => productsById[productId.toString()]),
         });
       }
     });
