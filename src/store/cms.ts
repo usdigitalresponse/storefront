@@ -221,7 +221,8 @@ export const productByCategorySelector = Reselect.createSelector(
           name: category.strings[language].category,
           description: category.strings[language].description,
           inventory: category.inventory
-            // productsById[productId.toString() is occasionally undefined
+            // There seems to be cases where categories inventory contains a productId that's not in our products list,
+            // resulting in productsById[productId.toString() being undefined. This filters those out
             .filter((productId) => productsById[productId.toString()])
             .map((productId) => productsById[productId.toString()]),
         });
