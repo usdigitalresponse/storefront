@@ -1611,10 +1611,10 @@
   resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-7.2.1.tgz#2ad4e844175a3738cb9e7064be5ea070b8863a1c"
   integrity sha512-oZ0Ib5I4Z2pUEcoo95cT1cr6slco9WY7yiPpG+RGNkj8YcYgJnM7pXmYmorNOReh8MIGcKSqXyeGjxnr8YiZbA==
 
-"@types/airtable@^0.5.7":
-  version "0.5.7"
-  resolved "https://registry.yarnpkg.com/@types/airtable/-/airtable-0.5.7.tgz#4814b9409074170a9ff5bd33e8729ab9634093e1"
-  integrity sha512-543WbJuqxMahUeHCBe80CedSn3xXRvH2MIGU4iK3ovj5ea3O9mkyBWujzzgVPyQVxRlUr8r2fJxh5gZlpLa8wg==
+"@types/airtable@^0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@types/airtable/-/airtable-0.8.1.tgz#c142822041a059e384693b4e647816a666db4546"
+  integrity sha512-kYdqZHoie1KAw06QC4Pp+wEqsJKrc2ZTnIp5sMAjcF27YJ38d6tp+RctfZt4LZE98c90Kis8K/kSnyvKHbXdWg==
 
 "@types/babel__core@^7.1.0":
   version "7.1.6"
