@@ -1661,10 +1661,10 @@
   resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.2.10.tgz#cc658ca319b6355399efc1f5b9e818f1a24bf999"
   integrity sha512-1UzDldn9GfYYEsWWnn/P4wkTlkZDH7lDb0wBMGbtIQc9zXEQq7FlKBdZUn6OBqD8sKZZ2RQO2mAjGpXiDGoRmQ==
 
-"@types/cleave.js@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@types/cleave.js/-/cleave.js-1.4.1.tgz#1eaa12dcbd1f2187fc580f0bf84dbc9f8834e333"
-  integrity sha512-53CbLKtK58uTfOCFOT1FMVKF5Zt1Onpk5sm37hY5cO3Uy4DfXzhQaU1PNMf53S7DJpEq1hWxZ+d2uN/W6YZh5w==
+"@types/cleave.js@^1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@types/cleave.js/-/cleave.js-1.4.4.tgz#66f0ee5218283f2c9623c49074eb3f34333952ac"
+  integrity sha512-uYFjWMPSBGBfbgfPna6yDenevtDSgqfkDXb/3dct6DXHiFs3InI3fpw51wb94zW8kHcNh1MUadboN55RAvSLEw==
   dependencies:
     "@types/react" "*"
 
