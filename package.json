@@ -56,7 +56,7 @@
     "react-markdown": "^4.3.1",
     "react-redux": "^7.2.0",
     "react-scripts": "3.4.3",
-    "redoodle": "^2.3.2",
+    "redoodle": "^2.5.1",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
