@@ -15,7 +15,7 @@
     "@testing-library/user-event": "^7.1.2",
     "@types/airtable": "^0.5.7",
     "@types/classnames": "^2.2.10",
-    "@types/cleave.js": "^1.4.1",
+    "@types/cleave.js": "^1.4.4",
     "@types/jest": "^24.0.0",
     "@types/node": "^12.19.7",
     "@types/numeral": "^0.0.27",
