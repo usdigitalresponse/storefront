@@ -6418,10 +6418,10 @@ internal-slot@^1.0.2:
     has "^1.0.3"
     side-channel "^1.0.2"
 
-interweave@^12.5.0:
-  version "12.5.0"
-  resolved "https://registry.yarnpkg.com/interweave/-/interweave-12.5.0.tgz#c1c6cbda55e3d2864c94eeed8e86f4159111f493"
-  integrity sha512-R6PE+FkhexspBwBS9wa+w0ZHORsXpFgDoLTKt+kazZRZVlO9+b0bpOcimMQ77hY+UwcE3eppGqhsNUVi3EfQmQ==
+interweave@^12.6.0:
+  version "12.6.0"
+  resolved "https://registry.yarnpkg.com/interweave/-/interweave-12.6.0.tgz#dc0cb10e4c11aa103626eeaf478da5d800ebb78a"
+  integrity sha512-sRvVxtwGl/ayOyr/Zb3zxnFHLQvSlKE7fQ/Lkgv9FIdZMzbImfankyonj+Ybi93PvvJZSMpKmJw8Mw9pLBRoig==
   dependencies:
     "@types/react" "*"
     escape-html "^1.0.3"
