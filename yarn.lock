@@ -11758,10 +11758,10 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-redoodle@^2.5.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/redoodle/-/redoodle-2.5.1.tgz#436f0411ab0d81ba59fbd75861f3e7b132d22072"
-  integrity sha512-oMyOGSHDGMBP1WQLQpIRxVXHJydq19XFyF16GUDRNVlSoiCepo8cPRps50AeVLqeYpys76TKY7im/Dp4pl5g5Q==
+redoodle@^2.5.2:
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/redoodle/-/redoodle-2.5.2.tgz#50c9bfc25c8efb174c0bfaee3eb8c40cc2adc558"
+  integrity sha512-UmfFDB+QrqUkcd/5v6blPCoI7fUcbIgVeGhfVBYkS7S/GoGsZTS2R2YuEeQuwwK3T6Xdqjf6fsiioeNY+G4a1g==
   dependencies:
     tslib "^1.8.1"
 
