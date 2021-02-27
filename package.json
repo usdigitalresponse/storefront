@@ -9,7 +9,7 @@
     "@now/node": "^1.8.5",
     "@sendgrid/mail": "^7.4.1",
     "@stripe/react-stripe-js": "^1.2.0",
-    "@stripe/stripe-js": "^1.11.0",
+    "@stripe/stripe-js": "^1.12.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
