@@ -33,6 +33,8 @@ const ConfirmationPage: React.FC<Props> = () => {
   const confirmationCopyAll =
     useContent('confirmation_copy_all') || `We've sent an email confirmation to {customer-email}`;
   const confirmationCopyOrder = useContent('confirmation_copy_order');
+  const confirmationCopyContactEmail = useContent('contact_email');
+  const confirmationCopyContactPhone = useContent('contact_phone');
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
   const zipcodeSchedules = useSelector<IAppState, ZipcodeScheduleMap>(zipcodeSchedulesSelector);
   const pickupLocation =
@@ -61,6 +63,15 @@ const ConfirmationPage: React.FC<Props> = () => {
         : 'Order Placed!'
       : 'Thank you!';
 
+  let contactInfoCopy = '';
+  if (confirmationCopyContactEmail && confirmationCopyContactPhone) {
+    contactInfoCopy = `If you have any questions, please email ${confirmationCopyContactEmail} or call ${confirmationCopyContactPhone}.`;
+  } else if (confirmationCopyContactEmail) {
+    contactInfoCopy = `If you have any questions, please email ${confirmationCopyContactEmail}.`;
+  } else if (confirmationCopyContactPhone) {
+    contactInfoCopy = `If you have any questions, please call ${confirmationCopyContactPhone}.`;
+  }
+
   return (
     <BaseLayout
       title={title}
@@ -75,7 +86,7 @@ const ConfirmationPage: React.FC<Props> = () => {
           ) : (
             ' '
           )}
-          If you have any questions, please email <Content id="contact_email" /> or call <Content id="contact_phone" />.
+          {contactInfoCopy}
         </Typography>
       }
     >
