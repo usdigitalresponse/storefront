@@ -14,7 +14,7 @@ interface Props {
 
 const Content: React.FC<Props> = ({ id, markdown = false, className, text, defaultText, allowParagraphs = false }) => {
   const cmsContent = useContent(id);
-  const content = text || cmsContent || defaultText;
+  const content = text || cmsContent || defaultText || "No CMS content, check API";
 
   return markdown ? (
     <ReactMarkdown
