@@ -124,6 +124,7 @@ exports.handler = async (event, context) => {
         options: optionsString ? optionsString.split(',').map((v) => v.trim()) : null,
         waitlistOnly: row.fields['Waitlist Only'],
         required: row.fields['Required'],
+        turnOff: row.fields['Turn Off'] || false,
       };
     });
 

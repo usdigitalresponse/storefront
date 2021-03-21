@@ -325,6 +325,7 @@ interface IQuestionBase {
   type: QuestionType;
   required: boolean;
   waitlistOnly: boolean;
+  turnOff: boolean;
 }
 
 export interface ITextInputQuestion extends IQuestionBase {

@@ -151,7 +151,7 @@ export const questionsSelector = Reselect.createSelector(
   (state: IAppState) => state.checkout.isDonationRequest,
   (questions: Question[], selectedLanguage: string, languages: string[], isDonationRequest: boolean) => {
     return (languages.length > 1 ? questionForLanguage(questions, selectedLanguage) : questions).filter(
-      (question) => isDonationRequest || (!isDonationRequest && !question.waitlistOnly),
+      (question) => { console.log("question", question); return ((isDonationRequest || (!isDonationRequest && !question.waitlistOnly)) && !question.turnOff === true) },
     );
   },
 );
