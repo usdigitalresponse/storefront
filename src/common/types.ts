@@ -27,6 +27,7 @@ export interface IConfig {
   stripeAPIKeyDonation?: string;
   tippingEnabled: boolean;
   sequentialDiscountCode?: string;
+  prescreenOrders: boolean;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
