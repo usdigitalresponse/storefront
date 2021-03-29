@@ -27,6 +27,7 @@ export interface IConfig {
   stripeAPIKeyDonation?: string;
   tippingEnabled: boolean;
   sequentialDiscountCode?: string;
+  prescreenOrders: boolean;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
@@ -325,6 +326,8 @@ interface IQuestionBase {
   type: QuestionType;
   required: boolean;
   waitlistOnly: boolean;
+  turnOff: boolean;
+  preScreen: boolean;
 }
 
 export interface ITextInputQuestion extends IQuestionBase {

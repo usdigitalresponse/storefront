@@ -97,7 +97,10 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
   const requiresEligibility = !!useContent('checkout_donation_confirm_eligibility');
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
-  const questions = useSelector<IAppState, Question[]>(questionsSelector);
+  const allQuestions = useSelector<IAppState, Question[]>(questionsSelector);
+  const questions = allQuestions.map((question) => {
+    if (question.preScreen !== true) return question
+  })
   const selectedLocationId = selectedLocation?.id;
   const history = useHistory();
   const location = useLocation();
@@ -207,7 +210,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                     inputRef={register({ required: contentFieldIsRequired || 'Email is required' })}
                   />
                   {questions.length !== 0 && (
-                    <Questions register={register} errors={errors} questionClassName={styles.field} />
+                    <Questions register={register} errors={errors} questionClassName={styles.field} questions={questions} />
                   )}
                   {!isDonationRequest && <OptInView className={styles.optIn} inputRef={register} />}
                   {isDonationRequest && (

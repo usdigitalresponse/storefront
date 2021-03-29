@@ -6,6 +6,7 @@ import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
 import BaseLayout from '../layouts/BaseLayout';
 import CategoryHeader from '../components/CategoryHeader';
+import PrescreenQuestions from '../components/PrescreenQuestions';
 import ProductDetail from '../components/ProductDetail';
 import ProductSummary from '../components/ProductSummary';
 import React from 'react';
@@ -16,11 +17,22 @@ const ProductsPage: React.FC = () => {
   const productList = useSelector(productListSelector);
   const productByCategoryList = useSelector(productByCategorySelector);
   const ordersEnabled = useSelector((state: IAppState) => state.cms.config.ordersEnabled);
+  const prescreenOrders = useSelector((state: IAppState) => state.cms.config.prescreenOrders);
   const isSmall = useIsSmall();
   const title = useContent('products_page_title');
   const description = useContent('products_page_subtitle');
+  const prescreenTitle = useContent('prescreen_questionaire_title');
+  const prescreenDescription = useContent('prescreen_questionaire_subtitle');
   const renderSummaries = productList.length > 4;
   const renderByCategory = Object.keys(productByCategoryList).length > 1;
+
+  if (prescreenOrders) {
+    return <>
+      <BaseLayout title={prescreenTitle} description={prescreenDescription}>
+        <PrescreenQuestions/>
+      </BaseLayout>
+    </>
+  }
 
   const productListItems = (productList: InventoryRecord[]) => {
     return (
