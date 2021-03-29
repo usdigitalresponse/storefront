@@ -98,8 +98,11 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const requiresEligibility = !!useContent('checkout_donation_confirm_eligibility');
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
   const allQuestions = useSelector<IAppState, Question[]>(questionsSelector);
-  const questions = allQuestions.map((question) => {
-    if (question.preScreen !== true) return question
+  const questions: Question[] = []
+  allQuestions.forEach((question) => {
+    if (question.preScreen !== true) {
+      questions.push(question)
+    }
   })
   const selectedLocationId = selectedLocation?.id;
   const history = useHistory();
