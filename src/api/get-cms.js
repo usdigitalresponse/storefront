@@ -17,7 +17,7 @@ exports.handler = async (event, context) => {
 
     // create languages array
     const languages = config.languages.split(',');
-    
+
     // Inventory
     const inventoryRecords = await fetchTable('Inventory', { view: DEFAULT_VIEW });
     const inventory = inventoryRecords
@@ -46,7 +46,7 @@ exports.handler = async (event, context) => {
           stockZipcodes: row.fields['Stock Zipcodes'] ? row.fields['Stock Zipcodes'].split(',') : null,
         };
       });
-    
+
     // Inventory categories
     const categoryRecords = await fetchTable('Inventory Categories', { view: DEFAULT_VIEW });
     const categories = categoryRecords.map((row) => {
@@ -125,10 +125,7 @@ exports.handler = async (event, context) => {
         waitlistOnly: row.fields['Waitlist Only'],
         required: row.fields['Required'],
         turnOff: row.fields['Turn Off'] || false,
-<<<<<<< HEAD
         preScreen: row.fields['Pre-Screen'] || false,
-=======
->>>>>>> be477918b9a9e875bc4fc89a8e277582cbaaf6ec
       };
     });
 

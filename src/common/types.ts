@@ -327,10 +327,7 @@ interface IQuestionBase {
   required: boolean;
   waitlistOnly: boolean;
   turnOff: boolean;
-<<<<<<< HEAD
   preScreen: boolean;
-=======
->>>>>>> be477918b9a9e875bc4fc89a8e277582cbaaf6ec
 }
 
 export interface ITextInputQuestion extends IQuestionBase {
