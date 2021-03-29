@@ -125,7 +125,10 @@ exports.handler = async (event, context) => {
         waitlistOnly: row.fields['Waitlist Only'],
         required: row.fields['Required'],
         turnOff: row.fields['Turn Off'] || false,
+<<<<<<< HEAD
         preScreen: row.fields['Pre-Screen'] || false,
+=======
+>>>>>>> be477918b9a9e875bc4fc89a8e277582cbaaf6ec
       };
     });
 

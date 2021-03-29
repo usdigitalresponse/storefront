@@ -14,7 +14,6 @@ import {
   Typography,
 } from '@material-ui/core';
 
-
 import { CheckoutFormField, IConfig, IOrderItem, IPrescreenFormData, Question } from '../common/types';
 import { IAppState } from '../store/app';
 import { itemsSelector } from '../store/cart';
