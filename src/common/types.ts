@@ -353,3 +353,8 @@ export enum PayState {
   NOW = 'now',
   LATER = 'later',
 }
+
+
+export interface IPrescreenFormData {
+  zip: string;
+}
