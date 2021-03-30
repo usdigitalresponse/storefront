@@ -8441,10 +8441,10 @@ internal-slot@^1.0.2:
     has "^1.0.3"
     side-channel "^1.0.2"
 
-interweave@^12.7.0:
-  version "12.7.0"
-  resolved "https://registry.yarnpkg.com/interweave/-/interweave-12.7.0.tgz#a4b7d7c116bdd54fc882eb2271844a1180b506cb"
-  integrity sha512-B26CWAIFST2ld+f0w1nhjsnEHXQWGRsiJdh8on34RYn5SPAjYnCi2rl2Rzxuz5Mqm2FWWxzIeQK6Fb1MPYzKqg==
+interweave@^12.7.1:
+  version "12.7.1"
+  resolved "https://registry.yarnpkg.com/interweave/-/interweave-12.7.1.tgz#efeaa2daff2c52d6390f26dd7fae6ad296e5c28c"
+  integrity sha512-CxBwsU7Tr4sOr2z2dbMc4qBlp6RPe69YC4mLGzVuqMWVGU0QZ9bX80zRBl/xH1vg1FjbmyqyAE9KrRAXoxXfIQ==
   dependencies:
     escape-html "^1.0.3"
 
