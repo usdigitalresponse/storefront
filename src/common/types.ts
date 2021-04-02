@@ -1,3 +1,5 @@
+import { FieldError, NestDataObject } from "react-hook-form/dist/types";
+
 export interface IConfig {
   languages: string[];
   taxRate: number;
@@ -354,7 +356,17 @@ export enum PayState {
   LATER = 'later',
 }
 
+export type PrescreenFormField =
+  | 'eligible'
+  | 'street1'
+  | 'street2'
+  | 'zip';
+
 
 export interface IPrescreenFormData {
+  eligible: any[],
+  street1: string,
+  street2: string,
   zip: string;
+  errors: NestDataObject<PrescreenFormField, FieldError>;
 }
