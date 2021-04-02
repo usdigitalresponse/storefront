@@ -9,7 +9,7 @@ import CategoryHeader from '../components/CategoryHeader';
 import PrescreenQuestions from '../components/PrescreenQuestions';
 import ProductDetail from '../components/ProductDetail';
 import ProductSummary from '../components/ProductSummary';
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import styles from './ProductsPage.module.scss';
 
@@ -26,12 +26,18 @@ const ProductsPage: React.FC = () => {
   const renderSummaries = productList.length > 4;
   const renderByCategory = Object.keys(productByCategoryList).length > 1;
 
-  if (prescreenOrders) {
+  let [finishedPrescreen, setFinishedPrescreen] = useState(false)
+
+  if (prescreenOrders && finishedPrescreen === false) {
     return <>
       <BaseLayout title={prescreenTitle} description={prescreenDescription}>
-        <PrescreenQuestions/>
+        <PrescreenQuestions setFinishedPrescreen={setFinishedPrescreen}/>
       </BaseLayout>
     </>
+  }
+
+  if (!ordersEnabled) {
+    return <Redirect to="/" />;
   }
 
   const productListItems = (productList: InventoryRecord[]) => {

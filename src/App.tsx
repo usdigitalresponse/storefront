@@ -15,6 +15,7 @@ import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import LocationsDialog from './components/LocationsDialog';
 import MuiThemeWrapper from './components/MuiThemeWrapper';
+import NotEligiblePage from './pages/NotEligiblePage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProductPage from './pages/ProductPage';
 import ProductsPage from './pages/ProductsPage';
@@ -36,6 +37,7 @@ const routeComponents: Record<string, React.FC> = {
   checkout: CheckoutPage,
   confirmation: ConfirmationPage,
   schema: SchemaPage,
+  noteligible: NotEligiblePage,
 };
 
 function App() {
