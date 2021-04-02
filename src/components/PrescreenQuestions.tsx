@@ -14,10 +14,10 @@ import {
   Typography,
 } from '@material-ui/core';
 
-import { CheckoutFormField, IConfig, IOrderItem, IPrescreenFormData, Question } from '../common/types';
 import { IAppState } from '../store/app';
+import { IConfig, IOrderItem, IPrescreenFormData, PrescreenFormField, Question } from '../common/types';
 import { itemsSelector } from '../store/cart';
-import { questionsSelector, useContent } from '../store/cms';
+import { questionsSelector, useContent, zipcodeListSelector } from '../store/cms';
 import { reverse } from '../common/router';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
@@ -27,17 +27,18 @@ import { useSelector } from 'react-redux';
 import Content from './Content';
 import LanguageSelector from './LanguageSelector';
 import Questions from './Questions';
-import React from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import styles from './PrescreenQuestions.module.scss';
 
 interface Props {
   className?: string;
   textClassName?: string;
+  setFinishedPrescreen: (finished: boolean) => any;
 }
 
-const PrescreenQuestions: React.FC<Props> = ({ className, textClassName }) => {
-  const { register, watch, handleSubmit, errors, clearError } = useForm<IPrescreenFormData>();
+const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, setFinishedPrescreen }) => {
+  const { register, watch, handleSubmit, errors, clearError, getValues, formState } = useForm<IPrescreenFormData>();
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const hasErrors = Object.keys(errors).length > 0;
   const history = useHistory();
@@ -70,29 +71,69 @@ const PrescreenQuestions: React.FC<Props> = ({ className, textClassName }) => {
   const contentFieldNameFirstLastRequired = useContent('checkout_field_name_first_last_required');
   const contentFieldPhoneNumber = useContent('checkout_field_phone_number');
   const contentFieldEmail = useContent('checkout_field_email');
-  const contentFieldAddressStreet1 = useContent('checkout_field_address_street_1');
-  const contentFieldAddressStreet2 = useContent('checkout_field_address_street_2');
-  const contentFieldAddressCity = useContent('checkout_field_address_city');
-  const contentFieldAddressState = useContent('checkout_field_address_state');
-  const contentFieldAddressZipcode = useContent('checkout_field_address_zipcode');
+  const contentFieldPrescreenStreet1 = useContent('checkout_field_prescreen_street_1');
+  const contentFieldPrescreenStreet2 = useContent('checkout_field_prescreen_street_2');
+  const contentFieldPrescreenCity = useContent('checkout_field_prescreen_city');
+  const contentFieldPrescreenState = useContent('checkout_field_prescreen_state');
+  const contentFieldPrescreenZipcode = useContent('checkout_field_prescreen_zipcode');
   const contentLocationOptionChange = useContent('checkout_location_option_change');
   const contentLocationOptionChoose = useContent('checkout_location_option_choose');
 
   const isSmall = useIsSmall();
 
+  const zipcodeList = useSelector<IAppState, string[]>(zipcodeListSelector);
 
-  async function onSubmit(data: IPrescreenFormData) {
+  console.log("contentFieldPrescreenStreet1",contentFieldPrescreenStreet1)
+
+  useEffect(() => {
+    console.log("effect errors", formState)
+    // if (formState.errors.firstName) {
+    //   // do the your logic here
+    // }
+  }, [formState]);
+
+  async function onSubmit(data: IPrescreenFormData, e: any) {
+    //dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
+    e.preventDefault()
+
+   console.log("onSubmit formState", formState)
+    console.log("onSubmit zipcodeList", zipcodeList)
+   console.log("onSubmit data", data)
+   console.log("onSubmit e", e)
+
+  let status = "Stop";
+   if( formState.isValid ) {
+     let cleanZip = data.zip.split("-")[0].trim()
+
+      zipcodeList.forEach((zip) => {
+        console.log(zip, cleanZip)
+
+        if (zip === cleanZip ) {
+          status = "Continue"
+        }
+      })
+   }
+    if (status === "Continue") {
+      setFinishedPrescreen(true)
+    } else {
+      history.push(reverse('noteligible'))
+    }
+  }
+
+  async function onError(errors: any, e: any) {
     //dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
 
+    console.log("onError errors", errors)
+    console.log("onError e", e)
+
     const status = "Continue";
-    if (status === "Continue") {
+    if (status !== "Continue") {
       history.push(reverse('checkout'));
     }
   }
 
-  function textFieldProps(label: string, name: CheckoutFormField, placeholder?: string): TextFieldProps {
-    //const error = errors[name];
-    const error = {message: "Test error"}
+  function textFieldProps(label: string, name: PrescreenFormField, placeholder?: string): TextFieldProps {
+    const error = errors[name];
 
     return {
       label,
@@ -118,40 +159,42 @@ const PrescreenQuestions: React.FC<Props> = ({ className, textClassName }) => {
                 <Typography variant="h3" className={styles.title}>
                   <Content id="checkout_personal_info_header" defaultText="Your Eligibility" />
                 </Typography>
-                <Grid item md={8} xs={12}>
-                  {/* <TextField
-                    {...textFieldProps(
-                      contentFieldName || 'Zip',
-                      'zip',
-                      contentFieldNameFirstLast || 'Zip',
-                    )}
-                    inputRef={register({
-                      required: contentFieldIsRequired || 'Zip is required',
-                      pattern: {
-                        value: /[\w-']+ [\w-'][\w-']+/,
-                        message: contentFieldNameFirstLastRequired || 'Zip required',
-                      },
-                    })}
-                    autoCorrect="off"
-                  /> */}
+                <Grid item md={12} xs={12}>
                   <>
                     Select a language (English/Español) (Por favor, escoge su idioma):
                   </><br/>
                   <LanguageSelector />
+                  <hr/>
                   {questions.length !== 0 && (
                     <Questions register={register} errors={errors} questionClassName={styles.field} questions={questions}/>
                   )}
-                  {/*}
-                  {!isDonationRequest && <OptInView className={styles.optIn} inputRef={register} />}
-                  {isDonationRequest && (
-                    <ConfirmEligibilityView
-                      className={styles.optIn}
-                      inputRef={register({ required: requiresEligibility ? 'Eligiblity required' : false })}
-                      errors={errors}
-                    />
-                  )} */}
+                    <Grid item md={8} xs={12}>
+                      <TextField
+                        {...textFieldProps(contentFieldPrescreenStreet1 || 'Street 1', 'street1', '123 Main St.')}
+                        inputRef={register({ required: contentFieldIsRequired || 'Street 1 is required' })}
+                      />
+                      <TextField
+                        {...textFieldProps(
+                          contentFieldPrescreenStreet2 || 'Street 2',
+                          'street2',
+                          'Apt 4B, Floor 2, etc.',
+                        )}
+                        inputRef={register}
+                      />
+
+                      <TextField
+                        {...textFieldProps(contentFieldPrescreenZipcode || 'Zip Code', 'zip')}
+                        inputRef={register({
+                          required: 'Zip code is required',
+                          pattern: {
+                            value: /^\d{5}(>?-\d{4}){0,1}$/, message: 'Please enter a valid Zip Code'}
+                        })}
+                      />
+
+
+                      </Grid>
                 </Grid>
-                <Grid item md={4} xs={12} container className={styles.right}>
+                <Grid item md={12} xs={12} container className={styles.right}>
                   <div className={!isSmall ? styles.sidebar : undefined}>
                     <br/>
                     {/* <OrderSummary className={styles.summary} showLineItems editable={!isDonationRequest} showTip /> */}
@@ -173,6 +216,7 @@ const PrescreenQuestions: React.FC<Props> = ({ className, textClassName }) => {
                         {/* {paymentError || (
                           <Content id="checkout_error_please_fix" defaultText="Please fix the errors in your form" />
                         )} */}
+                        <Content id="prescreen_error_please_fix" defaultText="Please fix the errors and submit again" />
                       </Typography>
                     )}
                     {/* {items.length === 0 && (
