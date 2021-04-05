@@ -27,7 +27,7 @@ import { useSelector } from 'react-redux';
 import Content from './Content';
 import LanguageSelector from './LanguageSelector';
 import Questions from './Questions';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import styles from './PrescreenQuestions.module.scss';
 
@@ -38,7 +38,7 @@ interface Props {
 }
 
 const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, setFinishedPrescreen }) => {
-  const { register, watch, handleSubmit, errors, clearError, getValues, formState } = useForm<IPrescreenFormData>();
+  const { register, watch, handleSubmit, triggerValidation, errors, clearError, getValues, formState, setError } = useForm<IPrescreenFormData>({ reValidateMode: "onChange"});
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const hasErrors = Object.keys(errors).length > 0;
   const history = useHistory();
@@ -83,26 +83,56 @@ const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, setFini
 
   const zipcodeList = useSelector<IAppState, string[]>(zipcodeListSelector);
 
+  let [noProgramSelected, setNoProgramSelected] = useState(false)
+  let [formSubmitted, setFormSubmitted] = useState(false)
+
   console.log("contentFieldPrescreenStreet1",contentFieldPrescreenStreet1)
+
+  let formIsValid = formState.isValid
 
   useEffect(() => {
     console.log("effect errors", formState)
     // if (formState.errors.firstName) {
     //   // do the your logic here
     // }
-  }, [formState]);
+  }, [formState, formIsValid]);
 
   async function onSubmit(data: IPrescreenFormData, e: any) {
     //dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
     e.preventDefault()
 
+    setFormSubmitted(true)
+   let valid = await triggerValidation()
+   console.log("valid", valid)
    console.log("onSubmit formState", formState)
+    console.log("onSubmit formIsValid", formIsValid)
+
     console.log("onSubmit zipcodeList", zipcodeList)
    console.log("onSubmit data", data)
    console.log("onSubmit e", e)
 
+   let selected = false
+   let errorField = ""
+  Object.keys(data).forEach((key: string) => {
+    if( key.indexOf("question") === 0 ) {
+      selected = selected || (data as any)[key]
+      if( key.indexOf("None of these") ) {
+        errorField = key
+      }
+    }
+  })
+
+  console.log("selected", selected)
+  console.log("errorField", errorField)
+  if( !selected ) {
+    setNoProgramSelected(true)
+    setError(errorField, {type: "manual"})
+
+    valid = false
+  }
+
   let status = "Stop";
-   if( formState.isValid ) {
+   if( valid ) {
      let cleanZip = data.zip.split("-")[0].trim()
 
       zipcodeList.forEach((zip) => {
@@ -112,11 +142,12 @@ const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, setFini
           status = "Continue"
         }
       })
-   }
-    if (status === "Continue") {
-      setFinishedPrescreen(true)
-    } else {
-      history.push(reverse('noteligible'))
+     if (status === "Continue") {
+       setFinishedPrescreen(true)
+     } else {
+       history.push(reverse('noteligible'))
+     }
+
     }
   }
 
@@ -147,8 +178,6 @@ const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, setFini
     };
   }
 
-  const disableSubmit = hasErrors //|| !items.length;
-
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.container, { [styles.small]: isSmall })}>
@@ -165,9 +194,15 @@ const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, setFini
                   </><br/>
                   <LanguageSelector />
                   <hr/>
+                  {noProgramSelected && formSubmitted && <p style={{ color: "rgb(244, 67, 54)",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "12px"}}>
+                      Please select an option below. If none apply, please select the None option.
+                    </p>}
                   {questions.length !== 0 && (
                     <Questions register={register} errors={errors} questionClassName={styles.field} questions={questions}/>
                   )}
+
                     <Grid item md={8} xs={12}>
                       <TextField
                         {...textFieldProps(contentFieldPrescreenStreet1 || 'Street 1', 'street1', '123 Main St.')}
@@ -205,7 +240,6 @@ const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, setFini
                       color="primary"
                       size="large"
                       type="submit"
-                      disabled={disableSubmit}
                     >
                       <Content id="prescreen_submit_button_label" defaultText="Check Eligibility" />
                       {/* {isPaying && <CircularProgress size={26} className={styles.spinner} />}
