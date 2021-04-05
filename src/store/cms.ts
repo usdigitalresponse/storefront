@@ -105,6 +105,7 @@ export const initialCmsState: ICmsState = {
     stockByLocation: false,
     tippingEnabled: false,
     prescreenOrders: false,
+    forceBasketItem: ""
   },
   content: {},
   inventory: [],

@@ -70,6 +70,7 @@ export class AirtableService {
             tippingEnabled: records.config.tipping_enabled === 'true' ? true : false,
             sequentialDiscountCode: records.config.sequential_discount_code,
             prescreenOrders: records.config.prescreen_orders === "true" ? true : false,
+            forceBasketItem: records.config.force_basket_item,
           }),
           SetOrderType.create(
             deliveryEnabled ? records.config.default_order_type || OrderType.DELIVERY : OrderType.PICKUP,

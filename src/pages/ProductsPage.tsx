@@ -16,6 +16,7 @@ import styles from './ProductsPage.module.scss';
 const ProductsPage: React.FC = () => {
   const productList = useSelector(productListSelector);
   const productByCategoryList = useSelector(productByCategorySelector);
+  const forceBasketItem = useSelector((state: IAppState) => state.cms.config.forceBasketItem)
   const ordersEnabled = useSelector((state: IAppState) => state.cms.config.ordersEnabled);
   const prescreenOrders = useSelector((state: IAppState) => state.cms.config.prescreenOrders);
   const isSmall = useIsSmall();
@@ -47,16 +48,12 @@ const ProductsPage: React.FC = () => {
           renderSummaries ? (
             <ProductSummary key={item.id} product={item} className={styles.productSummary} />
           ) : (
-            <ProductDetail key={item.id} product={item} className={styles.productDetail} card={true} />
+            <ProductDetail key={item.id} product={item} className={styles.productDetail} card={true} forceBasketItem={forceBasketItem}/>
           ),
         )}
       </div>
     );
   };
-
-  if (!ordersEnabled) {
-    return <Redirect to="/" />;
-  }
 
   if (renderByCategory) {
     return (

@@ -20,9 +20,10 @@ interface Props {
   product: InventoryRecord;
   card?: boolean;
   className?: string;
+  forceBasketItem?: string;
 }
 
-const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
+const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketItem }) => {
   const isSmall = useIsSmall();
   const [short, setShort] = useState<boolean>(true);
   const [quantity, setQuantity] = useState<number>(1);
@@ -67,6 +68,19 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
     disabledHelpText = 'This is an add-on item. Add another item to your cart to include this item';
   } else if (singleCategoryShouldDisable) {
     disabledHelpText = contentDisabledHelpText || 'You can only add items from a single category';
+  }
+
+  console.log("forceBasketItem", forceBasketItem)
+  console.log("product", product)
+  if( forceBasketItem && forceBasketItem === product.id.toString()) {
+    addToWaitlist()
+    // dispatch(
+    //   CompoundAction([
+    //     AddItem.create({ addOn, category, id, quantity }),
+    //     SetIsDonationRequest.create(false),
+    //   ]),
+    // );
+    history.push(reverse('checkout', { forcedItem: true }));
   }
 
   return (

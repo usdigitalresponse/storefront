@@ -30,6 +30,7 @@ export interface IConfig {
   tippingEnabled: boolean;
   sequentialDiscountCode?: string;
   prescreenOrders: boolean;
+  forceBasketItem: string;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
