@@ -29,7 +29,7 @@ const ProductsPage: React.FC = () => {
 
   let [finishedPrescreen, setFinishedPrescreen] = useState(false)
 
-  if (prescreenOrders && finishedPrescreen === false) {
+  if (prescreenOrders && finishedPrescreen === false ) {
     return <>
       <BaseLayout title={prescreenTitle} description={prescreenDescription}>
         <PrescreenQuestions setFinishedPrescreen={setFinishedPrescreen}/>
@@ -37,7 +37,7 @@ const ProductsPage: React.FC = () => {
     </>
   }
 
-  if (!ordersEnabled) {
+  if (!ordersEnabled && window.location.search.indexOf("preOrder") === -1 ) {
     return <Redirect to="/" />;
   }
 

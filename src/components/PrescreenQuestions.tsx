@@ -81,7 +81,8 @@ const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, setFini
 
   const isSmall = useIsSmall();
 
-  const zipcodeList = useSelector<IAppState, string[]>(zipcodeListSelector);
+  const zipcodeList = useSelector((state: IAppState) => state.cms.validZipcodes);
+  console.log("top level zipcodeList", zipcodeList)
 
   let [noProgramSelected, setNoProgramSelected] = useState(false)
   let [formSubmitted, setFormSubmitted] = useState(false)
@@ -138,7 +139,7 @@ const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, setFini
       zipcodeList.forEach((zip) => {
         console.log(zip, cleanZip)
 
-        if (zip === cleanZip ) {
+        if (zip.zipcode === cleanZip ) {
           status = "Continue"
         }
       })
