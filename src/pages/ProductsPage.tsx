@@ -28,6 +28,7 @@ const ProductsPage: React.FC = () => {
   const renderByCategory = Object.keys(productByCategoryList).length > 1;
 
   let [finishedPrescreen, setFinishedPrescreen] = useState(false)
+  let [preOrderMode, setPreOrderMode] = useState(window.location.search.toLowerCase().indexOf("preorder") > -1)
 
   if (prescreenOrders && finishedPrescreen === false ) {
     return <>
@@ -37,8 +38,11 @@ const ProductsPage: React.FC = () => {
     </>
   }
 
-  if (!ordersEnabled && window.location.search.indexOf("preOrder") === -1 ) {
+  console.log("enabled?", ordersEnabled, preOrderMode)
+  if (!ordersEnabled && !preOrderMode) {
     return <Redirect to="/" />;
+  } else {
+    console.log("skip redirect")
   }
 
   const productListItems = (productList: InventoryRecord[]) => {

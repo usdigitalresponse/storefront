@@ -80,7 +80,12 @@ const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketI
     //     SetIsDonationRequest.create(false),
     //   ]),
     // );
-    history.push(reverse('checkout', { forcedItem: true }));
+    let params: {forcedItem: boolean, preOrder?: boolean} = { forcedItem: true }
+    if( window.location.search.toLowerCase().indexOf("prerder") > -1 ) {
+      params.preOrder = true
+    }
+    console.log("params", params)
+    history.push(reverse('checkout', params));
   }
 
   return (

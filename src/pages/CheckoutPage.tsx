@@ -423,7 +423,9 @@ export default function CheckoutPage() {
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const { ordersEnabled } = config;
 
-  if (!ordersEnabled) {
+  let preOrderMode = window.location.search.toLowerCase().indexOf("preorder") > -1
+
+  if (!ordersEnabled && !preOrderMode ) {
     return <Redirect to="/" />;
   }
 
