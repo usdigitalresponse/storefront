@@ -18,154 +18,27 @@ const HomePage: React.FC<Props> = () => {
   const isSmall = useIsSmall();
   const theme = useTheme();
   const primaryColor: any = theme.palette.primary;
-  const bannerImage = useContentImage('banner_image');
-  const bannerLogo = useContentImage('banner_logo');
-  const introImage = useContentImage('introduction_image');
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const { embeddedViewName, embeddedViewEnabled, donationEnabled, ordersEnabled } = config;
 
+  // const contentNotEligibleTitle = useContent('not_eligible_title');
+  // const contentLocationOptionChange = useContent('checkout_location_option_change');
+  // const contentLocationOptionChoose = useContent('checkout_location_option_choose');
+
+
   return (
     <BaseLayout padding={0} maxWidth="unset">
-      <div className={classNames(styles.home, { [styles.small]: isSmall })}>
-        <Grid
-          container
-          justify="center"
-          className={classNames(styles.hero, { [styles.hasLogo]: !!bannerLogo })}
-          style={{ backgroundImage: `url(${bannerImage.url})` }}
-        >
-          <Grid item container justify="flex-start" className={styles.content}>
-            {bannerLogo && isSmall && (
-              <Grid item md={6} xs={12} className={styles.logo}>
-                <img src={bannerLogo.url} alt={bannerLogo.alt} className={styles.logoImg} />
-              </Grid>
-            )}
-            <Grid item md={6} xs={12}>
-              <Typography variant="h1" className={styles.heroTitle}>
-                <Content id="banner_title" markdown />
-              </Typography>
-              <Typography variant="body1" className={styles.heroDescription}>
-                <Content id="banner_copy" markdown />
-              </Typography>
-              <div className={styles.cta}>
-                {ordersEnabled && (
-                  <Button
-                    className={styles.ctaButton}
-                    size="large"
-                    color="primary"
-                    variant="contained"
-                    component={Link}
-                    href={reverse('products')}
-                  >
-                    <Content id="purchase_button_label" />
-                  </Button>
-                )}
-                {donationEnabled && (
-                  <Button
-                    className={styles.ctaButton}
-                    size="large"
-                    color="primary"
-                    variant="contained"
-                    component={Link}
-                    href={reverse('donate')}
-                  >
-                    <Content id="donate_button_label" />
-                  </Button>
-                )}
-                {embeddedViewEnabled && (
-                  <Button
-                    className={styles.ctaButton}
-                    size="large"
-                    color="primary"
-                    variant="contained"
-                    component={Link}
-                    href={embeddedViewName ? `/${embeddedViewName}` : reverse('drivers')}
-                  >
-                    <Content id="drive_button_label" />
-                  </Button>
-                )}
-              </div>
-            </Grid>
-            {bannerLogo && !isSmall && (
-              <Grid item md={6} xs={12} className={styles.logo}>
-                <img src={bannerLogo.url} alt={bannerLogo.alt} className={styles.logoImg} />
-              </Grid>
-            )}
-          </Grid>
-        </Grid>
-        <Grid container justify="center" className={styles.section}>
-          <Grid item className={styles.content}>
-            <Typography variant="h2" className={styles.sectionTitle}>
-              <Content id="introduction_title" />
-            </Typography>
-            <Content id="introduction_copy" markdown />
-            {introImage && <img src={introImage.url} alt={introImage.alt} className={styles.introImg} />}
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          justify="center"
-          className={classNames(styles.section, styles.sectionImage)}
-          style={{ backgroundColor: `${primaryColor[50]}80` }}
-        >
-          <Grid item className={styles.content}>
-            <Typography variant="h2" className={styles.sectionTitle}>
-              <Content id="purchase_title" />
-            </Typography>
-            <Content id="purchase_copy" markdown allowParagraphs />
-            {ordersEnabled && (
-              <Button
-                className={styles.ctaButton}
-                size="large"
-                color="primary"
-                variant="contained"
-                component={Link}
-                href={reverse('products')}
-              >
-                <Content id="purchase_button_label" />
-              </Button>
-            )}
-          </Grid>
-        </Grid>
-        <Grid container justify="center" className={styles.section}>
-          <Grid item container justify="center" className={styles.content}>
-            {donationEnabled && (
-              <Grid item md={embeddedViewEnabled ? 6 : 12} xs={12} className={styles.sectionHalf}>
-                <Typography variant="h2" className={styles.sectionTitle}>
-                  <Content id="donate_title" />
-                </Typography>
-                <Content id="donate_copy" markdown allowParagraphs />
-                <Button
-                  className={styles.ctaButton}
-                  size="large"
-                  color="primary"
-                  variant="contained"
-                  component={Link}
-                  href={reverse('donate')}
-                >
-                  <Content id="donate_button_label" />
-                </Button>
-              </Grid>
-            )}
-            {embeddedViewEnabled && (
-              <Grid item md={donationEnabled ? 6 : 12} xs={12} className={styles.sectionHalf}>
-                <Typography variant="h2" className={styles.sectionTitle}>
-                  <Content id="drive_title" />
-                </Typography>
-                <Content id="drive_copy" markdown allowParagraphs />
-                <Button
-                  className={styles.ctaButton}
-                  size="large"
-                  color="primary"
-                  variant="contained"
-                  component={Link}
-                  href={embeddedViewName ? `/${embeddedViewName}` : reverse('drivers')}
-                >
-                  <Content id="drive_button_label" />
-                </Button>
-              </Grid>
-            )}
-          </Grid>
-        </Grid>
+      <div style={{margin: "0 auto", width: "80%", maxWidth: "1000px"}}>
+        <Typography variant="h3" className={styles.title}>
+          <Content id="not_eligible_title" defaultText="Not Eligibile Title" />
+        </Typography>
+        <br/>
+        <Typography variant="h5" className={styles.title}>
+          <Content id="not_eligible_subtitle" defaultText="Not Eligibile Sub" />
+        </Typography>
+        <br/>
+
+        <Content id="not_eligible_copy" defaultText="Not Eligibile Copy"/>
       </div>
     </BaseLayout>
   );
