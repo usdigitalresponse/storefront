@@ -33,6 +33,7 @@ const ConfirmationPage: React.FC<Props> = () => {
   const confirmationCopyAll =
     useContent('confirmation_copy_all') || `We've sent an email confirmation to {customer-email}`;
   const confirmationCopyOrder = useContent('confirmation_copy_order');
+  const confirmationHeader = useContent('confirmation_header_all');
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
   const zipcodeSchedules = useSelector<IAppState, ZipcodeScheduleMap>(zipcodeSchedulesSelector);
   const pickupLocation =
@@ -54,11 +55,13 @@ const ConfirmationPage: React.FC<Props> = () => {
         : '',
     );
 
+
+  const fal = false
   const title =
     type === 'order'
       ? (confirmation as IOrderSummary).status === OrderStatus.WAITLIST
         ? 'On the waitlist!'
-        : 'Order Placed!'
+        : confirmationHeader || 'Order Placed!'
       : 'Thank you!';
 
   return (

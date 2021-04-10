@@ -32,12 +32,17 @@ import classNames from 'classnames';
 import styles from './PrescreenQuestions.module.scss';
 
 interface Props {
-  className?: string;
   textClassName?: string;
+  className?: string;
+  dacl: boolean;
+  deliveryOnly: boolean;
+  communitySite: string | undefined;
   setFinishedPrescreen: (finished: boolean) => any;
 }
 
-const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, setFinishedPrescreen }) => {
+const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, dacl, deliveryOnly, communitySite, setFinishedPrescreen }) => {
+  console.log("dacl, deliveryOnly, communitySite", dacl, deliveryOnly, communitySite)
+
   const { register, watch, handleSubmit, triggerValidation, errors, clearError, getValues, formState, setError } = useForm<IPrescreenFormData>({ reValidateMode: "onChange"});
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const hasErrors = Object.keys(errors).length > 0;
@@ -47,11 +52,32 @@ const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, setFini
   let questions: Question[] = []
 
   allQuestions.forEach((question) => {
-    console.log("question", question.preScreen)
+    console.log("question", question)
     if( question ) {
-    if (question.preScreen === true) {
-      questions.push(question)
-    }
+      if (question.preScreen === true) {
+
+        if( dacl && deliveryOnly &&  question.daclDelivery ) {
+          console.log("dacl delivery", question)
+          questions.push(question)
+        }
+
+        if (dacl && !deliveryOnly && question.daclPickup) {
+          console.log("dacl pickup", question)
+          questions.push(question)
+        }
+
+        if ( communitySite && question.communitySite ) {
+          console.log("community site", question)
+          questions.push(question)
+        }
+
+        if( !dacl && !deliveryOnly && !communitySite ) {
+          if( question.webEnrollment ) {
+            console.log("web enrollment", question)
+            questions.push(question)
+          }
+        }
+      }
     }
   })
 
@@ -187,7 +213,7 @@ const PrescreenQuestions: React.FC<Props> = ({ className, textClassName, setFini
             <Card elevation={2} className={styles.form}>
               <Grid container className={styles.section}>
                 <Typography variant="h3" className={styles.title}>
-                  <Content id="checkout_personal_info_header" defaultText="Your Eligibility" />
+                  <Content id="checkout_personal_info_header" defaultText="Applicant Eligibility" />
                 </Typography>
                 <Grid item md={12} xs={12}>
                   <>

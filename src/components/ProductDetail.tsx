@@ -14,6 +14,7 @@ import { useIsSmall } from '../common/hooks';
 import Content from './Content';
 import React, { ChangeEvent, useState } from 'react';
 import classNames from 'classnames';
+import qs from 'qs';
 import styles from './ProductDetail.module.scss';
 
 interface Props {
@@ -73,19 +74,12 @@ const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketI
   console.log("forceBasketItem", forceBasketItem)
   console.log("product", product)
   if( forceBasketItem && forceBasketItem === product.id.toString()) {
-    addToWaitlist()
-    // dispatch(
-    //   CompoundAction([
-    //     AddItem.create({ addOn, category, id, quantity }),
-    //     SetIsDonationRequest.create(false),
-    //   ]),
-    // );
-    let params: {forcedItem: boolean, preOrder?: boolean} = { forcedItem: true }
-    if( window.location.search.toLowerCase().indexOf("prerder") > -1 ) {
-      params.preOrder = true
-    }
-    console.log("params", params)
-    history.push(reverse('checkout', params));
+    dispatch(CompoundAction([SetItems.create([{ id, quantity: 1 }]), SetIsDonationRequest.create(true)]));
+
+    let query = qs.parse(window.location.search.toLowerCase().substring(1))
+    query.forcedItem="true"
+    console.log("query", query)
+    history.push(reverse('checkout', query));
   }
 
   return (

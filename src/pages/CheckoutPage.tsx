@@ -37,6 +37,7 @@ import {
 } from '../store/checkout';
 import {
   SetLocationsDialogIsOpen,
+  SetSelectedLocation,
   itemsSelector,
   selectedLocationSelector,
   subtotalWithDiscountSelector,
@@ -97,6 +98,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
   const requiresEligibility = !!useContent('checkout_donation_confirm_eligibility');
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
+
   const allQuestions = useSelector<IAppState, Question[]>(questionsSelector);
   const questions: Question[] = []
   allQuestions.forEach((question) => {
@@ -104,6 +106,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
       questions.push(question)
     }
   })
+
   const selectedLocationId = selectedLocation?.id;
   const history = useHistory();
   const location = useLocation();
@@ -134,6 +137,17 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     (orderType === OrderType.PICKUP && payUponPickupEnabled) ||
     (orderType === OrderType.DELIVERY && payUponDeliveryEnabled);
 
+  let locationLocked = false
+  let query = qs.parse(window.location.search.toLowerCase().substring(1))
+  console.log("query", query)
+
+  if( query.communitysite ) {
+    locationLocked = true
+    let id = query.communitysite?.toString()
+    console.log("dispatching SetSelectedLocation", id)
+    dispatch(SetSelectedLocation.create(id));
+  }
+
   useEffect(() => {
     const isWaitlist = !!qs.parse(location.search.slice(1))?.waitlist;
     if (isWaitlist) {
@@ -142,6 +156,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   }, [dispatch, location.search]);
 
   useEffect(() => {
+    console.log("selectedLocationID effect", selectedLocationId)
     if (selectedLocationId) {
       clearError('pickupLocationId');
     }
@@ -173,10 +188,27 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
   const disableSubmit = hasErrors || !items.length;
 
+  console.log("selectedLocation", selectedLocation, selectedLocationId, query.communitysite, orderType)
+
   return (
     <BaseLayout>
       <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.container, { [styles.small]: isSmall })}>
         <Grid container spacing={2}>
+          {locationLocked &&
+            <Grid item md={8} xs={12}>
+              <Typography variant="h3" className={styles.title}>
+                <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
+              </Typography>
+              {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
+              <Input
+                type="hidden"
+                name="pickupLocationId"
+                value={selectedLocationId || ''}
+                inputRef={register({ required: orderType === OrderType.PICKUP })}
+              />
+            </Grid>
+          }
+
           <Grid item md={8} xs={12}>
             {deliveryOptionsOnCheckout && <OrderTypeSelector className={styles.orderType} />}
             {!deliveryOptionsOnCheckout && deliveryEnabled && <OrderTypeView className={styles.orderType} />}
@@ -225,23 +257,25 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                   )}
                 </Grid>
               </Grid>
-              {orderType === OrderType.PICKUP && (
+              {!locationLocked &&  orderType === OrderType.PICKUP && (
                 <Grid container className={styles.section}>
                   <Typography variant="h3" className={styles.title}>
                     <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
                   </Typography>
                   <Grid item md={8} xs={12}>
                     {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
-                    <Button
-                      className={classNames(styles.locationButton, { [styles.error]: !!errors.pickupLocationId })}
-                      color="primary"
-                      onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
-                    >
-                      {selectedLocation
-                        ? contentLocationOptionChange || 'Change'
-                        : contentLocationOptionChoose || 'Choose'}{' '}
-                      location...
-                    </Button>
+                    { ! locationLocked &&
+                      <Button
+                        className={classNames(styles.locationButton, { [styles.error]: !!errors.pickupLocationId })}
+                        color="primary"
+                        onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
+                      >
+                        {selectedLocation
+                          ? contentLocationOptionChange || 'Change'
+                          : contentLocationOptionChoose || 'Choose'}{' '}
+                        location...
+                      </Button>
+                    }
                     <Input
                       type="hidden"
                       name="pickupLocationId"

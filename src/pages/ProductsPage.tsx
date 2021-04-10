@@ -11,6 +11,7 @@ import ProductDetail from '../components/ProductDetail';
 import ProductSummary from '../components/ProductSummary';
 import React, { useState } from 'react';
 import classNames from 'classnames';
+import qs from 'qs';
 import styles from './ProductsPage.module.scss';
 
 const ProductsPage: React.FC = () => {
@@ -30,12 +31,24 @@ const ProductsPage: React.FC = () => {
   let [finishedPrescreen, setFinishedPrescreen] = useState(false)
   let [preOrderMode, setPreOrderMode] = useState(window.location.search.toLowerCase().indexOf("preorder") > -1)
 
-  if (prescreenOrders && finishedPrescreen === false ) {
-    return <>
-      <BaseLayout title={prescreenTitle} description={prescreenDescription}>
-        <PrescreenQuestions setFinishedPrescreen={setFinishedPrescreen}/>
-      </BaseLayout>
-    </>
+  let communitySite = undefined
+  let dacl = false
+  let deliveryOnly = false
+
+  if (prescreenOrders) {
+    let query = qs.parse(window.location.search.toLowerCase().substring(1))
+    console.log("query", query)
+    communitySite = query.communitysite?.toString()
+    dacl = query.dacl !== undefined
+    deliveryOnly = query.deliveryOnly !== undefined
+
+    if( finishedPrescreen === false ) {
+      return <>
+        <BaseLayout title={prescreenTitle} description={prescreenDescription}>
+          <PrescreenQuestions setFinishedPrescreen={setFinishedPrescreen} communitySite={communitySite} dacl={dacl} deliveryOnly={deliveryOnly}/>
+        </BaseLayout>
+      </>
+    }
   }
 
   console.log("enabled?", ordersEnabled, preOrderMode)

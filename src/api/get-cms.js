@@ -129,6 +129,10 @@ exports.handler = async (event, context) => {
         required: row.fields['Required'],
         turnOff: row.fields['Turn Off'] || false,
         preScreen: row.fields['Pre-Screen'] || false,
+        webEnrollment: row.fields['Web Enrollment'] || false,
+        daclPickup: row.fields['DACL Pickup'] || false,
+        daclDelivery: row.fields['DACL Delivery'] || false,
+        communitySite: row.fields['Community Site'] || false,
       };
     });
 

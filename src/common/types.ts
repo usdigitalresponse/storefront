@@ -331,6 +331,10 @@ interface IQuestionBase {
   waitlistOnly: boolean;
   turnOff: boolean;
   preScreen: boolean;
+  daclDelivery: boolean;
+  daclPickup: boolean;
+  communitySite: boolean;
+  webEnrollment: boolean;
 }
 
 export interface ITextInputQuestion extends IQuestionBase {
