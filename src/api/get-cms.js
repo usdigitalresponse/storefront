@@ -111,6 +111,9 @@ exports.handler = async (event, context) => {
     const questions = questionsRecords.map((row) => {
       const optionsString = row.fields['Options'];
       const label = row.fields['Label'];
+
+      //console.log("row", row.fields['Web Enrollment'], row.fields['Label'])
+
       return {
         id: row.id,
         label: label ? label.trim() : label,
