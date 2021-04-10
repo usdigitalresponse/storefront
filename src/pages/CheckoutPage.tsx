@@ -100,12 +100,12 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
 
   const allQuestions = useSelector<IAppState, Question[]>(questionsSelector);
-  const questions: Question[] = []
+  const questions: Question[] = [];
   allQuestions.forEach((question) => {
     if (question.preScreen !== true) {
-      questions.push(question)
+      questions.push(question);
     }
-  })
+  });
 
   const selectedLocationId = selectedLocation?.id;
   const history = useHistory();
@@ -137,14 +137,14 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     (orderType === OrderType.PICKUP && payUponPickupEnabled) ||
     (orderType === OrderType.DELIVERY && payUponDeliveryEnabled);
 
-  let locationLocked = false
-  let query = qs.parse(window.location.search.toLowerCase().substring(1))
-  console.log("query", query)
+  let locationLocked = false;
+  let query = qs.parse(window.location.search.toLowerCase().substring(1));
+  console.log('query', query);
 
-  if( query.communitysite ) {
-    locationLocked = true
-    let id = query.communitysite?.toString()
-    console.log("dispatching SetSelectedLocation", id)
+  if (query.communitysite) {
+    locationLocked = true;
+    let id = query.communitysite?.toString();
+    console.log('dispatching SetSelectedLocation', id);
     dispatch(SetSelectedLocation.create(id));
   }
 
@@ -156,7 +156,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   }, [dispatch, location.search]);
 
   useEffect(() => {
-    console.log("selectedLocationID effect", selectedLocationId)
+    console.log('selectedLocationID effect', selectedLocationId);
     if (selectedLocationId) {
       clearError('pickupLocationId');
     }
@@ -188,13 +188,13 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
   const disableSubmit = hasErrors || !items.length;
 
-  console.log("selectedLocation", selectedLocation, selectedLocationId, query.communitysite, orderType)
+  console.log('selectedLocation', selectedLocation, selectedLocationId, query.communitysite, orderType);
 
   return (
     <BaseLayout>
       <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.container, { [styles.small]: isSmall })}>
         <Grid container spacing={2}>
-          {locationLocked &&
+          {locationLocked && (
             <Grid item md={8} xs={12}>
               <Typography variant="h3" className={styles.title}>
                 <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
@@ -207,7 +207,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                 inputRef={register({ required: orderType === OrderType.PICKUP })}
               />
             </Grid>
-          }
+          )}
 
           <Grid item md={8} xs={12}>
             {deliveryOptionsOnCheckout && <OrderTypeSelector className={styles.orderType} />}
@@ -245,7 +245,12 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                     inputRef={register({ required: contentFieldIsRequired || 'Email is required' })}
                   />
                   {questions.length !== 0 && (
-                    <Questions register={register} errors={errors} questionClassName={styles.field} questions={questions} />
+                    <Questions
+                      register={register}
+                      errors={errors}
+                      questionClassName={styles.field}
+                      questions={questions}
+                    />
                   )}
                   {!isDonationRequest && <OptInView className={styles.optIn} inputRef={register} />}
                   {isDonationRequest && (
@@ -257,14 +262,14 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                   )}
                 </Grid>
               </Grid>
-              {!locationLocked &&  orderType === OrderType.PICKUP && (
+              {!locationLocked && orderType === OrderType.PICKUP && (
                 <Grid container className={styles.section}>
                   <Typography variant="h3" className={styles.title}>
                     <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
                   </Typography>
                   <Grid item md={8} xs={12}>
                     {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
-                    { ! locationLocked &&
+                    {!locationLocked && (
                       <Button
                         className={classNames(styles.locationButton, { [styles.error]: !!errors.pickupLocationId })}
                         color="primary"
@@ -275,7 +280,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                           : contentLocationOptionChoose || 'Choose'}{' '}
                         location...
                       </Button>
-                    }
+                    )}
                     <Input
                       type="hidden"
                       name="pickupLocationId"
@@ -457,9 +462,9 @@ export default function CheckoutPage() {
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const { ordersEnabled } = config;
 
-  let preOrderMode = window.location.search.toLowerCase().indexOf("preorder") > -1
+  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
 
-  if (!ordersEnabled && !preOrderMode ) {
+  if (!ordersEnabled && !preOrderMode) {
     return <Redirect to="/" />;
   }
 

@@ -105,7 +105,7 @@ export const initialCmsState: ICmsState = {
     stockByLocation: false,
     tippingEnabled: false,
     prescreenOrders: false,
-    forceBasketItem: ""
+    forceBasketItem: '',
   },
   content: {},
   inventory: [],
@@ -152,11 +152,10 @@ export const questionsSelector = Reselect.createSelector(
   (state: IAppState) => state.cms.config.languages,
   (state: IAppState) => state.checkout.isDonationRequest,
   (questions: Question[], selectedLanguage: string, languages: string[], isDonationRequest: boolean) => {
-    return (languages.length > 1 ? questionForLanguage(questions, selectedLanguage) : questions).filter(
-      (question) => {
-        console.log("question", question);
-        return ((isDonationRequest || (!isDonationRequest && !question.waitlistOnly)) && !question.turnOff === true) },
-    );
+    return (languages.length > 1 ? questionForLanguage(questions, selectedLanguage) : questions).filter((question) => {
+      console.log('question', question);
+      return (isDonationRequest || (!isDonationRequest && !question.waitlistOnly)) && !question.turnOff === true;
+    });
   },
 );
 

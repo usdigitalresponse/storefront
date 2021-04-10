@@ -17,7 +17,7 @@ import styles from './ProductsPage.module.scss';
 const ProductsPage: React.FC = () => {
   const productList = useSelector(productListSelector);
   const productByCategoryList = useSelector(productByCategorySelector);
-  const forceBasketItem = useSelector((state: IAppState) => state.cms.config.forceBasketItem)
+  const forceBasketItem = useSelector((state: IAppState) => state.cms.config.forceBasketItem);
   const ordersEnabled = useSelector((state: IAppState) => state.cms.config.ordersEnabled);
   const prescreenOrders = useSelector((state: IAppState) => state.cms.config.prescreenOrders);
   const isSmall = useIsSmall();
@@ -28,34 +28,41 @@ const ProductsPage: React.FC = () => {
   const renderSummaries = productList.length > 4;
   const renderByCategory = Object.keys(productByCategoryList).length > 1;
 
-  let [finishedPrescreen, setFinishedPrescreen] = useState(false)
-  let [preOrderMode, setPreOrderMode] = useState(window.location.search.toLowerCase().indexOf("preorder") > -1)
+  let [finishedPrescreen, setFinishedPrescreen] = useState(false);
+  let [preOrderMode, setPreOrderMode] = useState(window.location.search.toLowerCase().indexOf('preorder') > -1);
 
-  let communitySite = undefined
-  let dacl = false
-  let deliveryOnly = false
+  let communitySite = undefined;
+  let dacl = false;
+  let deliveryOnly = false;
 
   if (prescreenOrders) {
-    let query = qs.parse(window.location.search.toLowerCase().substring(1))
-    console.log("query", query)
-    communitySite = query.communitysite?.toString()
-    dacl = query.dacl !== undefined
-    deliveryOnly = query.deliveryOnly !== undefined
+    let query = qs.parse(window.location.search.toLowerCase().substring(1));
+    console.log('query', query);
+    communitySite = query.communitysite?.toString();
+    dacl = query.dacl !== undefined;
+    deliveryOnly = query.deliveryOnly !== undefined;
 
-    if( finishedPrescreen === false ) {
-      return <>
-        <BaseLayout title={prescreenTitle} description={prescreenDescription}>
-          <PrescreenQuestions setFinishedPrescreen={setFinishedPrescreen} communitySite={communitySite} dacl={dacl} deliveryOnly={deliveryOnly}/>
-        </BaseLayout>
-      </>
+    if (finishedPrescreen === false) {
+      return (
+        <>
+          <BaseLayout title={prescreenTitle} description={prescreenDescription}>
+            <PrescreenQuestions
+              setFinishedPrescreen={setFinishedPrescreen}
+              communitySite={communitySite}
+              dacl={dacl}
+              deliveryOnly={deliveryOnly}
+            />
+          </BaseLayout>
+        </>
+      );
     }
   }
 
-  console.log("enabled?", ordersEnabled, preOrderMode)
+  console.log('enabled?', ordersEnabled, preOrderMode);
   if (!ordersEnabled && !preOrderMode) {
     return <Redirect to="/" />;
   } else {
-    console.log("skip redirect")
+    console.log('skip redirect');
   }
 
   const productListItems = (productList: InventoryRecord[]) => {
@@ -65,7 +72,13 @@ const ProductsPage: React.FC = () => {
           renderSummaries ? (
             <ProductSummary key={item.id} product={item} className={styles.productSummary} />
           ) : (
-            <ProductDetail key={item.id} product={item} className={styles.productDetail} card={true} forceBasketItem={forceBasketItem}/>
+            <ProductDetail
+              key={item.id}
+              product={item}
+              className={styles.productDetail}
+              card={true}
+              forceBasketItem={forceBasketItem}
+            />
           ),
         )}
       </div>

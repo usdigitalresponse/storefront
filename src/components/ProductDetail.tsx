@@ -71,14 +71,14 @@ const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketI
     disabledHelpText = contentDisabledHelpText || 'You can only add items from a single category';
   }
 
-  console.log("forceBasketItem", forceBasketItem)
-  console.log("product", product)
-  if( forceBasketItem && forceBasketItem === product.id.toString()) {
+  console.log('forceBasketItem', forceBasketItem);
+  console.log('product', product);
+  if (forceBasketItem && forceBasketItem === product.id.toString()) {
     dispatch(CompoundAction([SetItems.create([{ id, quantity: 1 }]), SetIsDonationRequest.create(true)]));
 
-    let query = qs.parse(window.location.search.toLowerCase().substring(1))
-    query.forcedItem="true"
-    console.log("query", query)
+    let query = qs.parse(window.location.search.toLowerCase().substring(1));
+    query.forcedItem = 'true';
+    console.log('query', query);
     history.push(reverse('checkout', query));
   }
 

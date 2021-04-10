@@ -22,7 +22,7 @@ export const routePaths: Record<string, string> = {
   checkout: '/checkout',
   confirmation: '/confirmation',
   schema: '/schema',
-  noteligible: '/noteligible'
+  noteligible: '/noteligible',
 };
 
 export function reverse(routeId: RouteId, params?: Record<string, any>): string {

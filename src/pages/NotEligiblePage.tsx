@@ -25,20 +25,19 @@ const HomePage: React.FC<Props> = () => {
   // const contentLocationOptionChange = useContent('checkout_location_option_change');
   // const contentLocationOptionChoose = useContent('checkout_location_option_choose');
 
-
   return (
     <BaseLayout padding={0} maxWidth="unset">
-      <div style={{margin: "0 auto", width: "80%", maxWidth: "1000px"}}>
+      <div style={{ margin: '0 auto', width: '80%', maxWidth: '1000px' }}>
         <Typography variant="h3" className={styles.title}>
           <Content id="not_eligible_title" defaultText="Not Eligibile Title" />
         </Typography>
-        <br/>
+        <br />
         <Typography variant="h5" className={styles.title}>
           <Content id="not_eligible_subtitle" defaultText="Not Eligibile Sub" />
         </Typography>
-        <br/>
+        <br />
 
-        <Content id="not_eligible_copy" defaultText="Not Eligibile Copy"/>
+        <Content id="not_eligible_copy" defaultText="Not Eligibile Copy" />
       </div>
     </BaseLayout>
   );
