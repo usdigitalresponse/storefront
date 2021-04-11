@@ -5,6 +5,7 @@ import {
   IOrderSummary,
   IPickupLocation,
   OrderStatus,
+  OrderType,
   ZipcodeScheduleMap,
   isDonationSummary,
   isOrderSummary,
@@ -122,7 +123,7 @@ const ConfirmationPage: React.FC<Props> = () => {
                   {confirmation.email}
                 </Typography>
               </Grid>
-              {isOrderSummary(confirmation) && confirmation.deliveryAddress && (
+              {isOrderSummary(confirmation) && confirmation.type === OrderType.DELIVERY && confirmation.deliveryAddress && (
                 <Grid item md={4} xs={12} className={styles.info}>
                   <Typography variant="overline" className={styles.label}>
                     Delivery Address

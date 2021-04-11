@@ -19,6 +19,7 @@ import {
   IConfig,
   IOrderItem,
   IPickupLocation,
+  IPrescreenFormData,
   InventoryRecord,
   OrderType,
   PayState,
@@ -190,7 +191,12 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
     dispatch(CompoundAction([SetItems.create(cartItems), SetIsDonationRequest.create(true)]));
 
-    console.log("before pay items", items, data)
+    console.log("before push data", JSON.stringify(data))
+    if( pushQuestions ) {
+      Object.assign(data, pushQuestions)
+    }
+    console.log("before pay data", JSON.stringify(data))
+    console.log("before pay items", JSON.stringify(items))
 
     const status = await StripeService.pay(data, stripe, elements);
 
@@ -241,6 +247,8 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   let [finishedPrescreen, setFinishedPrescreen] = useState(false);
   let [cartConverted, setCartConverted] = useState(false);
   let [locationsSelected, setLocationsSelected] = useState(communitySite ? true : false);
+  let [pushQuestions, setPushQuestions] = useState<IPrescreenFormData>();
+
   let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
 
   if (prescreenOrders) {
@@ -260,12 +268,14 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
         <>
           <BaseLayout title={prescreenTitle} description={prescreenDescription}>
             <PrescreenQuestions
-              setFinishedPrescreen={setFinishedPrescreen}
               communitySite={communitySite}
               dacl={dacl}
               deliveryOnly={deliveryOnly}
               orderType={orderType}
               selectedLocation={selectedLocation}
+              setPushQuestions={setPushQuestions}
+              setFinishedPrescreen={setFinishedPrescreen}
+
             />
           </BaseLayout>
         </>

@@ -13,7 +13,7 @@ import Content from './Content';
 import LanguageSelector from './LanguageSelector';
 import Location from './Location';
 import Questions from './Questions';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import styles from './PrescreenQuestions.module.scss';
 
@@ -23,10 +23,11 @@ interface Props {
   communitySite: string | undefined;
   selectedLocation: IPickupLocation | undefined
   orderType: OrderType
+  setPushQuestions: (Dispatch<SetStateAction<IPrescreenFormData | undefined>>);
   setFinishedPrescreen: (finished: boolean) => any;
 }
 
-const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite, selectedLocation, orderType, setFinishedPrescreen }) => {
+const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite, selectedLocation, orderType, setPushQuestions, setFinishedPrescreen }) => {
   console.log('dacl, deliveryOnly, communitySite, selectedLocation, orderType', dacl, deliveryOnly, communitySite, selectedLocation, orderType);
 
   const { register, handleSubmit, triggerValidation, errors, formState, setError } = useForm<IPrescreenFormData>({
@@ -127,6 +128,9 @@ const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite
         }
       }
     });
+
+    console.log("forwardQuestions", data)
+    setPushQuestions(data)
 
     console.log('selected', selected);
     console.log('errorField', errorField);
