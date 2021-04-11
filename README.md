@@ -34,7 +34,7 @@ There are two Stripe API keys, a main Stripe key and a donation Stripe key. Both
 
 #### 3. Get SendGrid API keys if you're testing emails
 
-Check the Netlify config for the site you're working on to get the SENDGRID_API_KEY
+Check the Netlify config for the site you're working on to get the SENDGRID_API_KEY. [More Details](#sending-emails-in-dev)
 
 #### 4. Create `.env`
 
