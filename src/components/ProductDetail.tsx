@@ -76,7 +76,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketI
   if (forceBasketItem && forceBasketItem === product.id.toString()) {
     dispatch(CompoundAction([SetItems.create([{ id, quantity: 1 }]), SetIsDonationRequest.create(true)]));
 
-    let query = qs.parse(window.location.search.toLowerCase().substring(1));
+    let query = qs.parse(window.location.search.substring(1));
     query.forcedItem = 'true';
     console.log('query', query);
     history.push(reverse('checkout', query));

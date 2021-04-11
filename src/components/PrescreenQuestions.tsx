@@ -1,7 +1,7 @@
 import { Button, Card, Grid, TextField, TextFieldProps, Typography } from '@material-ui/core';
 
 import { IAppState } from '../store/app';
-import { IPickupLocation, IPrescreenFormData, IStockLocation, PrescreenFormField, Question } from '../common/types';
+import { IPickupLocation, IPrescreenFormData, IStockLocation, OrderType, PrescreenFormField, Question } from '../common/types';
 import { questionsSelector, useContent } from '../store/cms';
 import { reverse } from '../common/router';
 import { useForm } from 'react-hook-form';
@@ -22,11 +22,12 @@ interface Props {
   deliveryOnly: boolean;
   communitySite: string | undefined;
   selectedLocation: IPickupLocation | undefined
+  orderType: OrderType
   setFinishedPrescreen: (finished: boolean) => any;
 }
 
-const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite, selectedLocation, setFinishedPrescreen }) => {
-  console.log('dacl, deliveryOnly, communitySite, selectedLocation', dacl, deliveryOnly, communitySite, selectedLocation);
+const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite, selectedLocation, orderType, setFinishedPrescreen }) => {
+  console.log('dacl, deliveryOnly, communitySite, selectedLocation, orderType', dacl, deliveryOnly, communitySite, selectedLocation, orderType);
 
   const { register, handleSubmit, triggerValidation, errors, formState, setError } = useForm<IPrescreenFormData>({
     reValidateMode: 'onChange',
@@ -53,7 +54,7 @@ const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite
           return
         }
 
-        if (communitySite && question.communitySite) {
+        if (communitySite && !deliveryOnly && question.communitySite) {
           console.log('community site', question);
           questions.push(question);
           return
@@ -174,14 +175,22 @@ const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite
     <>
       <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.container, { [styles.small]: isSmall })}>
         <Grid container spacing={2}>
-          {selectedLocation && (
+          { orderType === OrderType.PICKUP ? <>
+            {selectedLocation && (
+              <Grid item md={8} xs={12}>
+                <Typography variant="h3" className={styles.title}>
+                  <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
+                </Typography>
+                {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
+              </Grid>
+            )}
+          </> : <>
             <Grid item md={8} xs={12}>
               <Typography variant="h3" className={styles.title}>
-                <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
+                <Content id="checkout_pickup_location_header" defaultText="Delivery Order" />
               </Typography>
-              {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
             </Grid>
-          )}
+          </>}
 
           <Grid item md={8} xs={12}>
             <Card elevation={2} className={styles.form}>

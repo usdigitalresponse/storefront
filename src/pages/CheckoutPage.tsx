@@ -39,6 +39,7 @@ import {
 import {
   SetItems,
   SetLocationsDialogIsOpen,
+  SetOrderType,
   SetSelectedLocation,
   itemsSelector,
   selectedLocationSelector,
@@ -144,7 +145,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
   let selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
   let locationLocked = false;
-  let query = qs.parse(window.location.search.toLowerCase().substring(1));
+  let query = qs.parse(window.location.search.substring(1));
   console.log('query', query);
 
   if (query.communitysite) {
@@ -186,9 +187,6 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     console.log("onSubmit items", items, data)
 
     const cartItems = items
-    if( cartItems.length === 1 ) {
-      cartItems.push({ id: forceBasketItem, quantity: 1 })
-    }
 
     dispatch(CompoundAction([SetItems.create(cartItems), SetIsDonationRequest.create(true)]));
 
@@ -226,11 +224,18 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   let dacl = false;
   let deliveryOnly = false;
   if (prescreenOrders) {
-    let query = qs.parse(window.location.search.toLowerCase().substring(1));
+    let query = qs.parse(window.location.search.substring(1));
     console.log('query', query);
     communitySite = query.communitysite?.toString();
     dacl = query.dacl !== undefined;
     deliveryOnly = query.deliveryOnly !== undefined;
+
+    console.log("communitySite, dacl, deliveryOnly, orderType", communitySite, dacl, deliveryOnly, orderType)
+
+    if( deliveryOnly ) {
+      dispatch(SetOrderType.create(OrderType.DELIVERY))
+    }
+    console.log("after force delivery orderType", orderType)
   }
 
   let [finishedPrescreen, setFinishedPrescreen] = useState(false);
@@ -239,13 +244,16 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
 
   if (prescreenOrders) {
-    let query = qs.parse(window.location.search.toLowerCase().substring(1));
-    console.log('query', query);
-    communitySite = query.communitysite?.toString();
-    dacl = query.dacl !== undefined;
-    deliveryOnly = query.deliveryOnly !== undefined;
-
     console.log('cartConverted', cartConverted, dacl);
+
+    if( !selectedLocation ) {
+      return <>
+        <BaseLayout title={prescreenTitle} description={prescreenDescription}>
+          <h3>Error with Application</h3>
+          The link you tried to use has an error in it. Please contact DC Greens.
+        </BaseLayout>
+      </>
+    }
 
     if (finishedPrescreen === false) {
       return (
@@ -256,6 +264,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
               communitySite={communitySite}
               dacl={dacl}
               deliveryOnly={deliveryOnly}
+              orderType={orderType}
               selectedLocation={selectedLocation}
             />
           </BaseLayout>
@@ -267,7 +276,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
         let convertItem: string | null = null
         inventory.some((item) => {
           console.log("item", item.stockLocation, communitySite, item.name, item)
-          if( item.stockLocation?.toLowerCase() === communitySite ) {
+          if( item.stockLocation === communitySite ) {
             console.log("dacl item?", dacl, item.name.toLowerCase().indexOf("dacl"))
             if( dacl && item.name.toLowerCase().indexOf("dacl") > -1 ) {
               convertItem = item.id
@@ -299,6 +308,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     console.log('skip redirect');
   }
 
+  console.log("errors", errors)
 
   return (
     <BaseLayout>
