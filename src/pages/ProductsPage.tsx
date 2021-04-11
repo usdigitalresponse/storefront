@@ -6,12 +6,10 @@ import { useIsSmall } from '../common/hooks';
 import { useSelector } from 'react-redux';
 import BaseLayout from '../layouts/BaseLayout';
 import CategoryHeader from '../components/CategoryHeader';
-import PrescreenQuestions from '../components/PrescreenQuestions';
 import ProductDetail from '../components/ProductDetail';
 import ProductSummary from '../components/ProductSummary';
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
-import qs from 'qs';
 import styles from './ProductsPage.module.scss';
 
 const ProductsPage: React.FC = () => {
@@ -19,46 +17,15 @@ const ProductsPage: React.FC = () => {
   const productByCategoryList = useSelector(productByCategorySelector);
   const forceBasketItem = useSelector((state: IAppState) => state.cms.config.forceBasketItem);
   const ordersEnabled = useSelector((state: IAppState) => state.cms.config.ordersEnabled);
-  const prescreenOrders = useSelector((state: IAppState) => state.cms.config.prescreenOrders);
   const isSmall = useIsSmall();
   const title = useContent('products_page_title');
   const description = useContent('products_page_subtitle');
-  const prescreenTitle = useContent('prescreen_questionaire_title');
-  const prescreenDescription = useContent('prescreen_questionaire_subtitle');
   const renderSummaries = productList.length > 4;
   const renderByCategory = Object.keys(productByCategoryList).length > 1;
 
-  let [finishedPrescreen, setFinishedPrescreen] = useState(false);
-  let [preOrderMode, setPreOrderMode] = useState(window.location.search.toLowerCase().indexOf('preorder') > -1);
+  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1
 
-  let communitySite = undefined;
-  let dacl = false;
-  let deliveryOnly = false;
-
-  if (prescreenOrders) {
-    let query = qs.parse(window.location.search.toLowerCase().substring(1));
-    console.log('query', query);
-    communitySite = query.communitysite?.toString();
-    dacl = query.dacl !== undefined;
-    deliveryOnly = query.deliveryOnly !== undefined;
-
-    if (finishedPrescreen === false) {
-      return (
-        <>
-          <BaseLayout title={prescreenTitle} description={prescreenDescription}>
-            <PrescreenQuestions
-              setFinishedPrescreen={setFinishedPrescreen}
-              communitySite={communitySite}
-              dacl={dacl}
-              deliveryOnly={deliveryOnly}
-            />
-          </BaseLayout>
-        </>
-      );
-    }
-  }
-
-  console.log('enabled?', ordersEnabled, preOrderMode);
+  console.log('enabled?', ordersEnabled, preOrderMode, forceBasketItem, renderByCategory);
   if (!ordersEnabled && !preOrderMode) {
     return <Redirect to="/" />;
   } else {
@@ -69,7 +36,7 @@ const ProductsPage: React.FC = () => {
     return (
       <div className={classNames(styles.container, { [styles.summary]: renderSummaries, [styles.small]: isSmall })}>
         {productList.map((item) =>
-          renderSummaries ? (
+          renderSummaries && !forceBasketItem ? (
             <ProductSummary key={item.id} product={item} className={styles.productSummary} />
           ) : (
             <ProductDetail

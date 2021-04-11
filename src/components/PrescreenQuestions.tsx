@@ -1,7 +1,7 @@
 import { Button, Card, Grid, TextField, TextFieldProps, Typography } from '@material-ui/core';
 
 import { IAppState } from '../store/app';
-import { IPickupLocation, IPrescreenFormData, PrescreenFormField, Question } from '../common/types';
+import { IPickupLocation, IPrescreenFormData, IStockLocation, PrescreenFormField, Question } from '../common/types';
 import { questionsSelector, useContent } from '../store/cms';
 import { reverse } from '../common/router';
 import { useForm } from 'react-hook-form';
@@ -21,11 +21,12 @@ interface Props {
   dacl: boolean;
   deliveryOnly: boolean;
   communitySite: string | undefined;
+  selectedLocation: IPickupLocation | undefined
   setFinishedPrescreen: (finished: boolean) => any;
 }
 
-const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite, setFinishedPrescreen }) => {
-  console.log('dacl, deliveryOnly, communitySite', dacl, deliveryOnly, communitySite);
+const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite, selectedLocation, setFinishedPrescreen }) => {
+  console.log('dacl, deliveryOnly, communitySite, selectedLocation', dacl, deliveryOnly, communitySite, selectedLocation);
 
   const { register, handleSubmit, triggerValidation, errors, formState, setError } = useForm<IPrescreenFormData>({
     reValidateMode: 'onChange',
@@ -43,22 +44,26 @@ const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite
         if (dacl && deliveryOnly && question.daclDelivery) {
           console.log('dacl delivery', question);
           questions.push(question);
+          return
         }
 
         if (dacl && !deliveryOnly && question.daclPickup) {
           console.log('dacl pickup', question);
           questions.push(question);
+          return
         }
 
         if (communitySite && question.communitySite) {
           console.log('community site', question);
           questions.push(question);
+          return
         }
 
         if (!dacl && !deliveryOnly && !communitySite) {
           if (question.webEnrollment) {
             console.log('web enrollment', question);
             questions.push(question);
+            return
           }
         }
       }
@@ -85,7 +90,6 @@ const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite
 
   let [noProgramSelected, setNoProgramSelected] = useState(false);
   let [formSubmitted, setFormSubmitted] = useState(false);
-  let [selectedLocation] = useState<IPickupLocation>();
 
   console.log('contentFieldPrescreenStreet1', contentFieldPrescreenStreet1);
 

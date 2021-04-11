@@ -19,6 +19,7 @@ import {
   IConfig,
   IOrderItem,
   IPickupLocation,
+  InventoryRecord,
   OrderType,
   PayState,
   PaymentStatus,
@@ -36,6 +37,7 @@ import {
   requiresPaymentSelector,
 } from '../store/checkout';
 import {
+  SetItems,
   SetLocationsDialogIsOpen,
   SetSelectedLocation,
   itemsSelector,
@@ -60,8 +62,10 @@ import OrderSummary from '../components/OrderSummary';
 import OrderTypeSelector from '../components/OrderTypeSelector';
 import OrderTypeView from '../components/OrderTypeView';
 import PhoneField from '../components/PhoneField';
+import PrescreenQuestions from '../components/PrescreenQuestions';
+
 import Questions from '../components/Questions';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import StateField from '../components/StateField';
 import StripeCardField from '../components/StripeCardField';
 import StripeElementsWrapper from '../components/StripeElementsWrapper';
@@ -93,21 +97,17 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const isSmall = useIsSmall();
   const hasErrors = Object.keys(errors).length > 0;
   const items = useSelector<IAppState, IOrderItem[]>(itemsSelector);
+  const ordersEnabled = useSelector((state: IAppState) => state.cms.config.ordersEnabled);
   const paymentStatus = useSelector<IAppState, PaymentStatus>(paymentStatusSelector);
   const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
   const requiresEligibility = !!useContent('checkout_donation_confirm_eligibility');
-  const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
 
   const allQuestions = useSelector<IAppState, Question[]>(questionsSelector);
   const questions: Question[] = [];
-  allQuestions.forEach((question) => {
-    if (question.preScreen !== true) {
-      questions.push(question);
-    }
-  });
 
-  const selectedLocationId = selectedLocation?.id;
+  const prescreenOrders = useSelector((state: IAppState) => state.cms.config.prescreenOrders);
+
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -115,6 +115,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const requiresPayment = useSelector<IAppState, boolean>(requiresPaymentSelector);
   const payState = useSelector<IAppState, PayState>((state) => state.checkout.payState);
   const orderAmount = useSelector<IAppState, number>(subtotalWithDiscountSelector);
+  const inventory = useSelector<IAppState, InventoryRecord[]>((state) => state.cms.inventory);
 
   // Content
   const contentPayNowOptionLabel = useContent('pay_now_option_label');
@@ -132,11 +133,16 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const contentFieldAddressZipcode = useContent('checkout_field_address_zipcode');
   const contentLocationOptionChange = useContent('checkout_location_option_change');
   const contentLocationOptionChoose = useContent('checkout_location_option_choose');
+  const prescreenTitle = useContent('prescreen_questionaire_title');
+  const prescreenDescription = useContent('prescreen_questionaire_subtitle');
+
+  const forceBasketItem = useSelector((state: IAppState) => state.cms.config.forceBasketItem);
 
   const showPaymentOptions =
     (orderType === OrderType.PICKUP && payUponPickupEnabled) ||
     (orderType === OrderType.DELIVERY && payUponDeliveryEnabled);
 
+  let selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
   let locationLocked = false;
   let query = qs.parse(window.location.search.toLowerCase().substring(1));
   console.log('query', query);
@@ -147,6 +153,18 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     console.log('dispatching SetSelectedLocation', id);
     dispatch(SetSelectedLocation.create(id));
   }
+
+  if (prescreenOrders) {
+    allQuestions.forEach((question) => {
+      if (question.preScreen !== true) {
+        questions.push(question);
+      }
+    });
+  } else {
+    questions.push(...allQuestions)
+  }
+
+  const selectedLocationId = selectedLocation?.id;
 
   useEffect(() => {
     const isWaitlist = !!qs.parse(location.search.slice(1))?.waitlist;
@@ -165,7 +183,21 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   async function onSubmit(data: ICheckoutFormData) {
     dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
 
+    console.log("onSubmit items", items, data)
+
+    const cartItems = items
+    if( cartItems.length === 1 ) {
+      cartItems.push({ id: forceBasketItem, quantity: 1 })
+    }
+
+    dispatch(CompoundAction([SetItems.create(cartItems), SetIsDonationRequest.create(true)]));
+
+    console.log("before pay items", items, data)
+
     const status = await StripeService.pay(data, stripe, elements);
+
+    console.log("done pay items", items, data)
+
     if (status === PaymentStatus.SUCCEEDED) {
       history.push(reverse('confirmation'));
     }
@@ -189,6 +221,84 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const disableSubmit = hasErrors || !items.length;
 
   console.log('selectedLocation', selectedLocation, selectedLocationId, query.communitysite, orderType);
+
+  let communitySite: string | undefined = undefined;
+  let dacl = false;
+  let deliveryOnly = false;
+  if (prescreenOrders) {
+    let query = qs.parse(window.location.search.toLowerCase().substring(1));
+    console.log('query', query);
+    communitySite = query.communitysite?.toString();
+    dacl = query.dacl !== undefined;
+    deliveryOnly = query.deliveryOnly !== undefined;
+  }
+
+  let [finishedPrescreen, setFinishedPrescreen] = useState(false);
+  let [cartConverted, setCartConverted] = useState(false);
+  let [locationsSelected, setLocationsSelected] = useState(communitySite ? true : false);
+  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
+
+  if (prescreenOrders) {
+    let query = qs.parse(window.location.search.toLowerCase().substring(1));
+    console.log('query', query);
+    communitySite = query.communitysite?.toString();
+    dacl = query.dacl !== undefined;
+    deliveryOnly = query.deliveryOnly !== undefined;
+
+    console.log('cartConverted', cartConverted, dacl);
+
+    if (finishedPrescreen === false) {
+      return (
+        <>
+          <BaseLayout title={prescreenTitle} description={prescreenDescription}>
+            <PrescreenQuestions
+              setFinishedPrescreen={setFinishedPrescreen}
+              communitySite={communitySite}
+              dacl={dacl}
+              deliveryOnly={deliveryOnly}
+              selectedLocation={selectedLocation}
+            />
+          </BaseLayout>
+        </>
+      );
+    } else {
+      if( cartConverted === false && locationsSelected ) {
+        console.log("inventory", inventory)
+        let convertItem: string | null = null
+        inventory.some((item) => {
+          console.log("item", item.stockLocation, communitySite, item.name, item)
+          if( item.stockLocation?.toLowerCase() === communitySite ) {
+            console.log("dacl item?", dacl, item.name.toLowerCase().indexOf("dacl"))
+            if( dacl && item.name.toLowerCase().indexOf("dacl") > -1 ) {
+              convertItem = item.id
+              console.log("converting to dacl item", convertItem)
+            }
+            if( !dacl && item.name.toLowerCase().indexOf("dacl") === -1 ) {
+              convertItem = item.id
+              console.log("converting to non-dacl item", convertItem)
+            }
+            if (convertItem ) {
+              console.log("converting Cart", convertItem)
+              dispatch(CompoundAction([SetItems.create([{ id: convertItem, quantity: 1 }]), SetIsDonationRequest.create(true)]));
+              setCartConverted(true)
+              return true
+            }
+          }
+        })
+      } else {
+        console.log("post conversion items", items)
+      }
+
+    }
+  }
+
+  console.log('enabled?', ordersEnabled, preOrderMode);
+  if (!ordersEnabled && !preOrderMode) {
+    return <Redirect to="/" />;
+  } else {
+    console.log('skip redirect');
+  }
+
 
   return (
     <BaseLayout>

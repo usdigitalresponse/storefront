@@ -72,7 +72,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketI
   }
 
   console.log('forceBasketItem', forceBasketItem);
-  console.log('product', product);
+  console.log('product', product.id.toString(), product);
   if (forceBasketItem && forceBasketItem === product.id.toString()) {
     dispatch(CompoundAction([SetItems.create([{ id, quantity: 1 }]), SetIsDonationRequest.create(true)]));
 
