@@ -86,7 +86,12 @@ export class StripeService {
     }
   }
 
-  public static async pay(formData: ICheckoutFormData, stripe: Stripe | null, elements: StripeElements | null, locationPrefs?: ILocationPreference) {
+  public static async pay(
+    formData: ICheckoutFormData,
+    stripe: Stripe | null,
+    elements: StripeElements | null,
+    locationPrefs?: ILocationPreference,
+  ) {
     const state = StripeService.store.getState();
     const subtotal = subtotalSelector(state);
     const discount = discountTotalSelector(state);
@@ -119,8 +124,8 @@ export class StripeService {
       items,
     };
 
-    if(lotteryEnabled && locationPrefs) {
-      orderIntent.items = adjustOrderItemsForLottery(orderIntent, productList, locationPrefs)
+    if (lotteryEnabled && locationPrefs) {
+      orderIntent.items = adjustOrderItemsForLottery(orderIntent, productList, locationPrefs);
     }
 
     if (stockByLocation) {
@@ -174,8 +179,8 @@ export class StripeService {
           SetItems.create([]),
           SetDiscountCode.create(undefined),
           SetDiscountCodeMultiple.create(undefined),
-          SetLocationPreferences.create(({} as ILocationPreference)),
-          SetSelectedLocation.create(""),
+          SetLocationPreferences.create({} as ILocationPreference),
+          SetSelectedLocation.create(''),
         ]),
       );
       return PaymentStatus.SUCCEEDED;

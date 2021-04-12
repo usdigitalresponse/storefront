@@ -20,8 +20,8 @@ const Content: React.FC<Props> = ({ id, markdown = false, className, text, defau
 
   const configParagraphs = useSelector((state: IAppState) => state.cms.config.defaultAllowParagraphs);
 
-  if( allowParagraphs === null ) {
-    allowParagraphs = configParagraphs
+  if (allowParagraphs === null) {
+    allowParagraphs = configParagraphs;
   }
 
   return markdown ? (

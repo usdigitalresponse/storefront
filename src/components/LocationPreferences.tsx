@@ -44,30 +44,46 @@ const LocationPreferences: React.FC<Props> = ({ locationPrefs }) => {
   });
 
   if (!locationPrefs.location1) {
-    return <>
-      <a href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home" target="_blank" rel="noreferrer">Learn about Pickup Site Locations</a>
-    </>;
+    return (
+      <>
+        <a
+          href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Learn about Pickup Site Locations
+        </a>
+      </>
+    );
   } else {
-    return <>
-      <a href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home" target="_blank" rel="noreferrer">Learn about Pickup Site Locations</a>
-      <ul>
-        {location1 && (
-          <li>
-            <Location location={location1} />
-          </li>
-        )}
-        {location2 && (
-          <li>
-            <Location location={location2} />
-          </li>
-        )}
-        {location3 && (
-          <li>
-            <Location location={location3} />
-          </li>
-        )}
-      </ul>
-    </>
+    return (
+      <>
+        <a
+          href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Learn about Pickup Site Locations
+        </a>
+        <ul>
+          {location1 && (
+            <li>
+              <Location location={location1} />
+            </li>
+          )}
+          {location2 && (
+            <li>
+              <Location location={location2} />
+            </li>
+          )}
+          {location3 && (
+            <li>
+              <Location location={location3} />
+            </li>
+          )}
+        </ul>
+      </>
+    );
   }
 };
 

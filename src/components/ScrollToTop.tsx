@@ -1,5 +1,5 @@
 import { useHistory } from 'react-router-dom';
-import React, { useEffect} from 'react';
+import React, { useEffect } from 'react';
 
 // Component that attaches scroll to top hanler on router change
 // renders nothing, just attaches side effects
@@ -11,7 +11,7 @@ const ScrollToTop = () => {
 
   // just run the effect on pathname and/or search change
   useEffect(() => {
-    console.log("should scroll", pathname, search)
+    console.log('should scroll', pathname, search);
     try {
       // trying to use new API - https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollTo
       window.scroll({
@@ -29,4 +29,4 @@ const ScrollToTop = () => {
   return null;
 };
 
-export default ScrollToTop
+export default ScrollToTop;

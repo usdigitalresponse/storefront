@@ -15,23 +15,22 @@ interface Props {
 const CheckboxesQuestion: React.FC<Props> = ({ question, inputRef, className }) => {
   const isSmall = useIsSmall();
 
-  console.log("question", question)
+  console.log('question', question);
 
   return (
     <div className={classNames(styles.container, className, { [styles.small]: isSmall })}>
       <Typography variant="body1" className={styles.note}>
-        {question.markdownLabel ?
-        <>
+        {question.markdownLabel ? (
+          <>
             <ReactMarkdown
               unwrapDisallowed={false}
               renderers={{ link: Link, linkReference: Link }}
               source={question.markdownLabel}
             />
-        </>
-        : <>
-          {question.label}:
-        </>
-        }
+          </>
+        ) : (
+          <>{question.label}:</>
+        )}
       </Typography>
       {question.options.map((option) => (
         <FormControlLabel

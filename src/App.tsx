@@ -21,7 +21,7 @@ import ProductPage from './pages/ProductPage';
 import ProductsPage from './pages/ProductsPage';
 import React from 'react';
 import SchemaPage from './pages/SchemaPage';
-import ScrollToTop from './components/ScrollToTop'
+import ScrollToTop from './components/ScrollToTop';
 
 const store = configureStore();
 AirtableService.init(store);
@@ -56,7 +56,7 @@ function App() {
           </Switch>
           <CartDialog />
           <LocationsDialog />
-          <ScrollToTop/>
+          <ScrollToTop />
         </Router>
       </MuiThemeWrapper>
     </Provider>

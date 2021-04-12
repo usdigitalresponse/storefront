@@ -28,17 +28,18 @@ import styles from './ConfirmationPage.module.scss';
 interface Props {}
 
 const ConfirmationPage: React.FC<Props> = () => {
-  let query = qs.parse(window.location.search)
-  console.log("query", query)
+  let query = qs.parse(window.location.search);
+  console.log('query', query);
 
   const confirmation = useSelector<IAppState, IOrderSummary | IDonationSummary>(
     (state) => state.checkout.confirmation!,
   );
   const isSmall = useIsSmall();
-  const copy = useContent('confirmation_copy_all')
-  const copyEnrolled = useContent('confirmation_copy_enrolled')
-  const confirmationCopyAll =
-    !query.communitysite ? copy : copyEnrolled || `We've sent an email confirmation to {customer-email}`;
+  const copy = useContent('confirmation_copy_all');
+  const copyEnrolled = useContent('confirmation_copy_enrolled');
+  const confirmationCopyAll = !query.communitysite
+    ? copy
+    : copyEnrolled || `We've sent an email confirmation to {customer-email}`;
   const confirmationCopyOrder = useContent('confirmation_copy_order');
   const confirmationHeader = useContent('confirmation_header_all');
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
@@ -62,37 +63,36 @@ const ConfirmationPage: React.FC<Props> = () => {
         : '',
     );
 
-  console.log("copy", copy)
-  console.log("copyEnrolled", copyEnrolled)
-  console.log("confirmationCopy", confirmationCopy)
+  console.log('copy', copy);
+  console.log('copyEnrolled', copyEnrolled);
+  console.log('confirmationCopy', confirmationCopy);
 
-  const title =
-    !query.communitysite ?
-      type === 'order'
-        ? (confirmation as IOrderSummary).status === OrderStatus.WAITLIST
-          ? 'On the waitlist!'
-          : confirmationHeader || 'Order Placed!'
-        : 'Thank you!'
-      : "Enrollment Confirmed!"
-      ;
+  const title = !query.communitysite
+    ? type === 'order'
+      ? (confirmation as IOrderSummary).status === OrderStatus.WAITLIST
+        ? 'On the waitlist!'
+        : confirmationHeader || 'Order Placed!'
+      : 'Thank you!'
+    : 'Enrollment Confirmed!';
 
   return (
     <BaseLayout
       title={title}
       description={
         <>
-        <Content text={confirmationCopy} markdown />
-        <Typography variant="body1" className={styles.description}>
-          {isSmall ? (
-            <>
-              <br />
-              <br />
-            </>
-          ) : (
-            ' '
-          )}
-          If you have any questions, please email <Content id="contact_email" /> or call <Content id="contact_phone" />.
-        </Typography>
+          <Content text={confirmationCopy} markdown />
+          <Typography variant="body1" className={styles.description}>
+            {isSmall ? (
+              <>
+                <br />
+                <br />
+              </>
+            ) : (
+              ' '
+            )}
+            If you have any questions, please email <Content id="contact_email" /> or call{' '}
+            <Content id="contact_phone" />.
+          </Typography>
         </>
       }
     >

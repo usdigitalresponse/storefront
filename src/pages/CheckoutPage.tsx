@@ -162,14 +162,14 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   let [cartConverted, setCartConverted] = useState(false);
   let [pushQuestions, setPushQuestions] = useState<IPrescreenFormData>();
 
-  useEffect(()=>{
-    if( finishedPrescreen && ! query.screened ) {
-      query.screened = 'true'
+  useEffect(() => {
+    if (finishedPrescreen && !query.screened) {
+      query.screened = 'true';
       history.push(reverse('checkout', query));
     }
-  }, [finishedPrescreen])
+  }, [finishedPrescreen]);
 
-  console.log("prescreenOrders", prescreenOrders)
+  console.log('prescreenOrders', prescreenOrders);
 
   let communitySite: string | undefined = undefined;
   let dacl = false;
@@ -193,41 +193,39 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
   let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
 
-
   if (prescreenOrders) {
     allQuestions.forEach((question) => {
       console.log('finishedPrescreen, preScreen, question', finishedPrescreen, question.preScreen, question);
-    if (question.preScreen !== finishedPrescreen) {
-      if (dacl && deliveryOnly && question.daclDelivery) {
-        console.log('dacl delivery', question);
-        questions.push(question);
-        return;
-      }
-
-      if (dacl && !deliveryOnly && question.daclPickup) {
-        console.log('dacl pickup', question);
-        questions.push(question);
-        return;
-      }
-
-      if (communitySite && !deliveryOnly && question.communitySite) {
-        console.log('community site', question);
-        questions.push(question);
-        return;
-      }
-
-      if (!dacl && !deliveryOnly && !communitySite) {
-        if (question.webEnrollment) {
-          console.log('web enrollment', question);
+      if (question.preScreen !== finishedPrescreen) {
+        if (dacl && deliveryOnly && question.daclDelivery) {
+          console.log('dacl delivery', question);
           questions.push(question);
           return;
         }
-      }
-    }
-    });
 
+        if (dacl && !deliveryOnly && question.daclPickup) {
+          console.log('dacl pickup', question);
+          questions.push(question);
+          return;
+        }
+
+        if (communitySite && !deliveryOnly && question.communitySite) {
+          console.log('community site', question);
+          questions.push(question);
+          return;
+        }
+
+        if (!dacl && !deliveryOnly && !communitySite) {
+          if (question.webEnrollment) {
+            console.log('web enrollment', question);
+            questions.push(question);
+            return;
+          }
+        }
+      }
+    });
   } else {
-    console.log("not prescreen")
+    console.log('not prescreen');
     questions.push(...allQuestions);
   }
 
@@ -443,6 +441,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                   <Grid item md={8} xs={12}>
                     {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
                     <LocationPreferences locationPrefs={locationPreferences} />
+
                     <Button
                       className={classNames(styles.locationButton, { [styles.error]: !!errors.pickupLocationId })}
                       color="primary"

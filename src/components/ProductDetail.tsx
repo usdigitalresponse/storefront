@@ -1,4 +1,12 @@
-import { AddItem, IOrderItemCountSelector, SetDialogIsOpen, SetItems, SetLocationPreferences, SetSelectedLocation, itemsSelector } from '../store/cart';
+import {
+  AddItem,
+  IOrderItemCountSelector,
+  SetDialogIsOpen,
+  SetItems,
+  SetLocationPreferences,
+  SetSelectedLocation,
+  itemsSelector,
+} from '../store/cart';
 import { Button, Card, Chip, Grid, Select, Tooltip, Typography } from '@material-ui/core';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
@@ -74,12 +82,14 @@ const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketI
   console.log('forceBasketItem', forceBasketItem);
   console.log('product', product.id.toString(), product);
   if (forceBasketItem && forceBasketItem === product.id.toString()) {
-    dispatch(CompoundAction([
-      SetItems.create([{ id, quantity: 1 }]),
-      SetIsDonationRequest.create(true),
-      SetSelectedLocation.create(""),
-      SetLocationPreferences.create({} as ILocationPreference)
-    ]));
+    dispatch(
+      CompoundAction([
+        SetItems.create([{ id, quantity: 1 }]),
+        SetIsDonationRequest.create(true),
+        SetSelectedLocation.create(''),
+        SetLocationPreferences.create({} as ILocationPreference),
+      ]),
+    );
 
     let query = qs.parse(window.location.search.substring(1));
     query.forcedItem = 'true';

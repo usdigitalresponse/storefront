@@ -13,7 +13,12 @@ import {
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
 import { ILocationPreference, IPickupLocation, IStockLocation } from '../common/types';
-import { SetLocationPreferences, SetLocationsDialogIsOpen, SetSelectedLocation, locationPreferencesSelector } from '../store/cart';
+import {
+  SetLocationPreferences,
+  SetLocationsDialogIsOpen,
+  SetSelectedLocation,
+  locationPreferencesSelector,
+} from '../store/cart';
 import { pickupLocationsSelector } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
@@ -38,7 +43,6 @@ const LocationsDialog: React.FC<Props> = () => {
   const selectedLocation = useSelector<IAppState, string | undefined>((state) => state.cart.selectedLocation);
   const lotteryEnabled = useSelector((state: IAppState) => state.cms.config.lotteryEnabled);
   const locationPreferences = useSelector<IAppState, ILocationPreference>(locationPreferencesSelector);
-
 
   const publicLocations: IPickupLocation[] = [];
   pickupLocations.forEach((location) => {
@@ -82,7 +86,9 @@ const LocationsDialog: React.FC<Props> = () => {
   let locations = publicLocations.map((location) => (
     <MenuItem key={location.id} value={location.id}>
       <>
-        {location.name}{' '}{location.address.street1}{' '}<ScheduleView variant="body2" schedules={location.resolvedSchedules} className={styles.schedules} />      </>
+        {location.name} {location.address.street1}{' '}
+        <ScheduleView variant="body2" schedules={location.resolvedSchedules} className={styles.schedules} />{' '}
+      </>
     </MenuItem>
   ));
 
@@ -133,8 +139,14 @@ const LocationsDialog: React.FC<Props> = () => {
           </List>
         ) : (
           <>
-            <a href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home" target="_blank" rel="noreferrer">Learn about Pickup Site Locations</a>
-            <br/>
+            <a
+              href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Learn about Pickup Site Locations
+            </a>
+            <br />
             <form onSubmit={handleSubmit}>
               <ReactHookFormSelect
                 id="location-select-1"

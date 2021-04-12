@@ -76,12 +76,12 @@ export function getEmailBody(order) {
           the waitlist.</p><p>If our availability changes we will contact you. In the
           meantime, please do not submit another order.</p>`;
       } else {
-        let emailContent = content.email_order_confirmation_body
-        console.dir({order})
-        if( order.pickupName ) {
-          emailContent = content.email_order_confirmation_body_enrolled
+        let emailContent = content.email_order_confirmation_body;
+        console.dir({ order });
+        if (order.pickupName) {
+          emailContent = content.email_order_confirmation_body_enrolled;
         }
-        console.dir({ emailContent })
+        console.dir({ emailContent });
         emailBody = emailContent
           ? markdown
               .render(getRecordValueForLanguage(emailContent, 'en'))
