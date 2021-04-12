@@ -17,6 +17,7 @@ import {
   CheckoutFormField,
   ICheckoutFormData,
   IConfig,
+  ILocationPreference,
   IOrderItem,
   IPickupLocation,
   IPrescreenFormData,
@@ -43,6 +44,7 @@ import {
   SetOrderType,
   SetSelectedLocation,
   itemsSelector,
+  locationPreferencesSelector,
   selectedLocationSelector,
   subtotalWithDiscountSelector,
 } from '../store/cart';
@@ -59,6 +61,7 @@ import ConfirmEligibilityView from '../components/ConfirmEligibilityView';
 import Content from '../components/Content';
 import DeliveryPreferences from '../components/DeliveryPreferences';
 import Location from '../components/Location';
+import LocationPreferences from '../components/LocationPreferences';
 import OptInView from '../components/OptInView';
 import OrderSummary from '../components/OrderSummary';
 import OrderTypeSelector from '../components/OrderTypeSelector';
@@ -86,20 +89,10 @@ interface Props {
 const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) => {
   const { register, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const {
-    defaultState,
-    deliveryPreferences,
-    deliveryEnabled,
-    deliveryOptionsOnCheckout,
-    payUponDeliveryEnabled,
-    payUponPickupEnabled,
-    tippingEnabled,
-  } = config;
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const isSmall = useIsSmall();
   const hasErrors = Object.keys(errors).length > 0;
   const items = useSelector<IAppState, IOrderItem[]>(itemsSelector);
-  const ordersEnabled = useSelector((state: IAppState) => state.cms.config.ordersEnabled);
   const paymentStatus = useSelector<IAppState, PaymentStatus>(paymentStatusSelector);
   const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
@@ -138,13 +131,22 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const prescreenTitle = useContent('prescreen_questionaire_title');
   const prescreenDescription = useContent('prescreen_questionaire_subtitle');
 
-  const forceBasketItem = useSelector((state: IAppState) => state.cms.config.forceBasketItem);
-
+  let selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
+  const {
+    defaultState,
+    deliveryPreferences,
+    deliveryEnabled,
+    deliveryOptionsOnCheckout,
+    payUponDeliveryEnabled,
+    payUponPickupEnabled,
+    tippingEnabled,
+    ordersEnabled,
+  } = config;
   const showPaymentOptions =
     (orderType === OrderType.PICKUP && payUponPickupEnabled) ||
     (orderType === OrderType.DELIVERY && payUponDeliveryEnabled);
+  const locationPreferences = useSelector<IAppState, ILocationPreference>(locationPreferencesSelector);
 
-  let selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
   let locationLocked = false;
   let query = qs.parse(window.location.search.substring(1));
   console.log('query', query);
@@ -186,11 +188,6 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
 
     console.log("onSubmit items", items, data)
-
-    const cartItems = items
-
-    dispatch(CompoundAction([SetItems.create(cartItems), SetIsDonationRequest.create(true)]));
-
     console.log("before push data", JSON.stringify(data))
     if( pushQuestions ) {
       Object.assign(data, pushQuestions)
@@ -254,7 +251,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   if (prescreenOrders) {
     console.log('cartConverted', cartConverted, dacl);
 
-    if( !selectedLocation ) {
+    if( !selectedLocation && query.communitysite ) {
       return <>
         <BaseLayout title={prescreenTitle} description={prescreenDescription}>
           <h3>Error with Application</h3>
@@ -304,7 +301,9 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
             }
           }
         })
-      } else {
+      }
+
+      if( cartConverted)  {
         console.log("post conversion items", items)
       }
 
@@ -399,18 +398,18 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                   </Typography>
                   <Grid item md={8} xs={12}>
                     {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
-                    {!locationLocked && (
-                      <Button
-                        className={classNames(styles.locationButton, { [styles.error]: !!errors.pickupLocationId })}
-                        color="primary"
-                        onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
-                      >
-                        {selectedLocation
-                          ? contentLocationOptionChange || 'Change'
-                          : contentLocationOptionChoose || 'Choose'}{' '}
+                    <LocationPreferences locationPrefs={locationPreferences} />
+                    <Button
+                      className={classNames(styles.locationButton, { [styles.error]: !!errors.pickupLocationId })}
+                      color="primary"
+                      onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
+                    >
+
+                      {selectedLocation || locationPreferences.location1
+                        ? contentLocationOptionChange || 'Change'
+                        : contentLocationOptionChoose || 'Choose'}{' '}
                         location...
-                      </Button>
-                    )}
+                    </Button>
                     <Input
                       type="hidden"
                       name="pickupLocationId"

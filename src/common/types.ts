@@ -31,6 +31,7 @@ export interface IConfig {
   sequentialDiscountCode?: string;
   prescreenOrders: boolean;
   forceBasketItem: string;
+  lotteryEnabled: boolean;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
@@ -264,6 +265,7 @@ export interface IPickupLocation {
   schedules: string[];
   resolvedSchedules?: ISchedule[];
   waitlistOnly?: boolean;
+  communitySite?: boolean;
 }
 
 export interface IStockLocation extends IPickupLocation {
@@ -370,3 +372,9 @@ export interface IPrescreenFormData {
   zip: string;
   errors: NestDataObject<PrescreenFormField, FieldError>;
 }
+
+export interface ILocationPreference {
+  location1: string,
+  location2: string,
+  location3: string
+};

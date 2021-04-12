@@ -81,6 +81,7 @@ exports.handler = async (event, context) => {
         },
         schedules: row.fields['Schedules'],
         waitlistOnly: row.fields['Waitlist Only'],
+        communitySite: row.fields['Community Site'] !== undefined,
       };
     });
 

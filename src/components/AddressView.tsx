@@ -13,28 +13,32 @@ interface Props {
 }
 
 const AddressView: React.FC<Props> = ({ address, variant = 'body1', className, textClassName }) => {
-  const { street1, street2, city, state, zip } = address;
+  if( address ) {
+    const { street1, street2, city, state, zip } = address;
 
-  return (
-    <div className={classNames(styles.container, className)}>
-      {street1 && (
-        <Typography className={textClassName} variant={variant}>
-          {street1}
-        </Typography>
-      )}
-      {street2 && (
-        <Typography className={textClassName} variant={variant}>
-          {street2}
-        </Typography>
-      )}
-      {(city || state || zip) && (
-        <Typography className={textClassName} variant={variant}>
-          {city}
-          {city && state ? ',' : ''} {state} {zip}
-        </Typography>
-      )}
-    </div>
-  );
+    return (
+      <div className={classNames(styles.container, className)}>
+        {street1 && (
+          <Typography className={textClassName} variant={variant}>
+            {street1}
+          </Typography>
+        )}
+        {street2 && (
+          <Typography className={textClassName} variant={variant}>
+            {street2}
+          </Typography>
+        )}
+        {(city || state || zip) && (
+          <Typography className={textClassName} variant={variant}>
+            {city}
+            {city && state ? ',' : ''} {state} {zip}
+          </Typography>
+        )}
+      </div>
+    );
+  } else {
+    return <>No Address specified</>
+  }
 };
 
 export default AddressView;

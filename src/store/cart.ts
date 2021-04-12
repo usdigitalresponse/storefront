@@ -2,6 +2,7 @@ import * as Reselect from 'reselect';
 import {
   DiscountCodeType,
   IDiscountCode,
+  ILocationPreference,
   IOrderItem,
   IPickupLocation,
   InventoryRecord,
@@ -21,6 +22,7 @@ export interface ICartState {
   orderType: OrderType;
   lastAdded?: IOrderItem;
   taxRate: number;
+  locationPreferences: ILocationPreference;
 }
 
 // actions
@@ -31,6 +33,7 @@ export const UpdateItem = TypedAction.define('APP/CART/UPDATE_ITEM')<IOrderItem>
 export const SetDialogIsOpen = TypedAction.define('APP/CART/SET_DIALOG_IS_OPEN')<boolean>();
 export const SetSelectedLocation = TypedAction.define('APP/CART/SET_SELECTED_LOCATION')<string>();
 export const SetLocationsDialogIsOpen = TypedAction.define('APP/CART/SET_LOCATIONS_DIALOG_IS_OPEN')<boolean>();
+export const SetLocationPreferences = TypedAction.define('APP/CART/SET_LOCATIONS_PERFERENCES')<ILocationPreference>();
 export const SetOrderType = TypedAction.define('APP/CART/SET_ORDER_TYPE')<OrderType>();
 
 // reducer
@@ -69,6 +72,9 @@ export const cartReducer: any = TypedReducer.builder<ICartState>()
     setWith(state, { locationsDialogIsOpen }),
   )
   .withHandler(SetOrderType.TYPE, (state, orderType) => setWith(state, { orderType }))
+  .withHandler(SetLocationPreferences.TYPE, (state, locationPreferences) =>
+    setWith(state, {locationPreferences})
+  )
   .withDefaultHandler((state) => (state ? state : initialCartState))
   .build();
 
@@ -80,6 +86,7 @@ export const initialCartState: ICartState = {
   locationsDialogIsOpen: false,
   orderType: OrderType.DELIVERY,
   taxRate: 0.085,
+  locationPreferences: {} as ILocationPreference
 };
 
 // selectors
@@ -175,3 +182,9 @@ export const selectedLocationSelector = Reselect.createSelector(
       : pickupLocations.find((location) => selectedLocation === location.id);
   },
 );
+
+export const locationPreferencesSelector = Reselect.createSelector(
+  (state: IAppState) => state.cart.locationPreferences,
+  (locations: ILocationPreference) => locations
+);
+
