@@ -158,13 +158,69 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     dispatch(SetSelectedLocation.create(id));
   }
 
+  let [finishedPrescreen, setFinishedPrescreen] = useState(false);
+  let [cartConverted, setCartConverted] = useState(false);
+  let [pushQuestions, setPushQuestions] = useState<IPrescreenFormData>();
+
+  console.log("prescreenOrders", prescreenOrders)
+
+  let communitySite: string | undefined = undefined;
+  let dacl = false;
+  let deliveryOnly = false;
+  if (prescreenOrders) {
+    let query = qs.parse(window.location.search.substring(1));
+    console.log('query', query);
+    communitySite = query.communitysite?.toString();
+    dacl = query.dacl !== undefined;
+    deliveryOnly = query.deliveryOnly !== undefined;
+
+    console.log('communitySite, dacl, deliveryOnly, orderType', communitySite, dacl, deliveryOnly, orderType);
+
+    if (deliveryOnly) {
+      dispatch(SetOrderType.create(OrderType.DELIVERY));
+    }
+    console.log('after force delivery orderType', orderType);
+  }
+
+  let [locationsSelected, setLocationsSelected] = useState(communitySite ? true : false);
+
+  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
+
+
   if (prescreenOrders) {
     allQuestions.forEach((question) => {
-      if (question.preScreen !== true) {
+      console.log('finishedPrescreen, preScreen, question', finishedPrescreen, question.preScreen, question);
+    if (question.preScreen !== finishedPrescreen) {
+      if (dacl && deliveryOnly && question.daclDelivery) {
+        console.log('dacl delivery', question);
         questions.push(question);
+        return;
       }
+
+      if (dacl && !deliveryOnly && question.daclPickup) {
+        console.log('dacl pickup', question);
+        questions.push(question);
+        return;
+      }
+
+      if (communitySite && !deliveryOnly && question.communitySite) {
+        console.log('community site', question);
+        questions.push(question);
+        return;
+      }
+
+      if (!dacl && !deliveryOnly && !communitySite) {
+        if (question.webEnrollment) {
+          console.log('web enrollment', question);
+          questions.push(question);
+          return;
+        }
+      }
+    }
     });
+
   } else {
+    console.log("not prescreen")
     questions.push(...allQuestions);
   }
 
@@ -223,31 +279,6 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
   console.log('selectedLocation', selectedLocation, selectedLocationId, query.communitysite, orderType);
 
-  let communitySite: string | undefined = undefined;
-  let dacl = false;
-  let deliveryOnly = false;
-  if (prescreenOrders) {
-    let query = qs.parse(window.location.search.substring(1));
-    console.log('query', query);
-    communitySite = query.communitysite?.toString();
-    dacl = query.dacl !== undefined;
-    deliveryOnly = query.deliveryOnly !== undefined;
-
-    console.log('communitySite, dacl, deliveryOnly, orderType', communitySite, dacl, deliveryOnly, orderType);
-
-    if (deliveryOnly) {
-      dispatch(SetOrderType.create(OrderType.DELIVERY));
-    }
-    console.log('after force delivery orderType', orderType);
-  }
-
-  let [finishedPrescreen, setFinishedPrescreen] = useState(false);
-  let [cartConverted, setCartConverted] = useState(false);
-  let [locationsSelected, setLocationsSelected] = useState(communitySite ? true : false);
-  let [pushQuestions, setPushQuestions] = useState<IPrescreenFormData>();
-
-  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
-
   if (prescreenOrders) {
     console.log('cartConverted', cartConverted, dacl);
 
@@ -255,7 +286,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
       return (
         <>
           <BaseLayout title={prescreenTitle} description={prescreenDescription}>
-            <h3>Error with Application</h3>
+            <h3>Error with Application Link</h3>
             The link you tried to use has an error in it. Please contact DC Greens.
           </BaseLayout>
         </>
@@ -272,6 +303,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
               deliveryOnly={deliveryOnly}
               orderType={orderType}
               selectedLocation={selectedLocation}
+              questions={questions}
               setPushQuestions={setPushQuestions}
               setFinishedPrescreen={setFinishedPrescreen}
             />

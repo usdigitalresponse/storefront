@@ -30,6 +30,7 @@ interface Props {
   communitySite: string | undefined;
   selectedLocation: IPickupLocation | undefined;
   orderType: OrderType;
+  questions: Question[];
   setPushQuestions: Dispatch<SetStateAction<IPrescreenFormData | undefined>>;
   setFinishedPrescreen: (finished: boolean) => any;
 }
@@ -40,6 +41,7 @@ const PrescreenQuestions: React.FC<Props> = ({
   communitySite,
   selectedLocation,
   orderType,
+  questions,
   setPushQuestions,
   setFinishedPrescreen,
 }) => {
@@ -58,47 +60,10 @@ const PrescreenQuestions: React.FC<Props> = ({
   const hasErrors = Object.keys(errors).length > 0;
   const history = useHistory();
 
-  const allQuestions = useSelector<IAppState, Question[]>(questionsSelector);
-  let questions: Question[] = [];
-
-  allQuestions.forEach((question) => {
-    console.log('question', question);
-    if (question) {
-      if (question.preScreen === true) {
-        if (dacl && deliveryOnly && question.daclDelivery) {
-          console.log('dacl delivery', question);
-          questions.push(question);
-          return;
-        }
-
-        if (dacl && !deliveryOnly && question.daclPickup) {
-          console.log('dacl pickup', question);
-          questions.push(question);
-          return;
-        }
-
-        if (communitySite && !deliveryOnly && question.communitySite) {
-          console.log('community site', question);
-          questions.push(question);
-          return;
-        }
-
-        if (!dacl && !deliveryOnly && !communitySite) {
-          if (question.webEnrollment) {
-            console.log('web enrollment', question);
-            questions.push(question);
-            return;
-          }
-        }
-      }
-    }
-  });
-
   if (questions.length === 1 && questions[0] === undefined) {
     questions = [];
   }
 
-  console.log('all', allQuestions);
   console.log('pre', questions);
 
   // Content
