@@ -69,7 +69,7 @@ export class AirtableService {
             stripeAPIKeyDonation: records.config.stripe_donation_public_api_key,
             tippingEnabled: records.config.tipping_enabled === 'true' ? true : false,
             sequentialDiscountCode: records.config.sequential_discount_code,
-            prescreenOrders: records.config.prescreen_orders === "true" ? true : false,
+            prescreenOrders: records.config.prescreen_orders === 'true' ? true : false,
             forceBasketItem: records.config.force_basket_item,
             lotteryEnabled: records.config.lottery_enabled,
           }),

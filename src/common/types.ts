@@ -374,7 +374,7 @@ export interface IPrescreenFormData {
 }
 
 export interface ILocationPreference {
-  location1: string,
-  location2: string,
-  location3: string
-};
+  location1: string;
+  location2: string;
+  location3: string;
+}

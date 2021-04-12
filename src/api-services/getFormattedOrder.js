@@ -31,7 +31,7 @@ export function getFormattedOrder(orderId, view) {
       const config = airTableRowsAsKey(configList);
       order.notificationEmail = config.email_notification_address?.value;
 
-      console.log("order['Pickup Location']", order['Pickup Location'])
+      console.log("order['Pickup Location']", order['Pickup Location']);
       if (order['Type'] === 'Pickup' && order['Pickup Location'] && order['Pickup Location'].length) {
         const pickupLocation = await findRecord('Pickup Locations', order['Pickup Location'][0]);
 

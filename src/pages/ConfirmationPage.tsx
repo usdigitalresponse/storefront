@@ -56,8 +56,6 @@ const ConfirmationPage: React.FC<Props> = () => {
         : '',
     );
 
-
-  const fal = false
   const title =
     type === 'order'
       ? (confirmation as IOrderSummary).status === OrderStatus.WAITLIST
@@ -123,28 +121,30 @@ const ConfirmationPage: React.FC<Props> = () => {
                   {confirmation.email}
                 </Typography>
               </Grid>
-              {isOrderSummary(confirmation) && confirmation.type === OrderType.DELIVERY && confirmation.deliveryAddress && (
-                <Grid item md={4} xs={12} className={styles.info}>
-                  <Typography variant="overline" className={styles.label}>
-                    Delivery Address
-                  </Typography>
-                  <AddressView address={confirmation.deliveryAddress} />
-                  {zipcodeSchedules[confirmation.deliveryAddress?.zip] && (
-                    <ScheduleView
-                      variant="body2"
-                      schedules={zipcodeSchedules[confirmation.deliveryAddress.zip]}
-                      className={styles.schedules}
-                    />
-                  )}
-                  {confirmation.deliveryPreferences && (
-                    <div className={styles.preferences}>
-                      {confirmation.deliveryPreferences.map((pref) => (
-                        <Chip key={pref} size="small" variant="outlined" label={pref} className={styles.preference} />
-                      ))}
-                    </div>
-                  )}
-                </Grid>
-              )}
+              {isOrderSummary(confirmation) &&
+                confirmation.type === OrderType.DELIVERY &&
+                confirmation.deliveryAddress && (
+                  <Grid item md={4} xs={12} className={styles.info}>
+                    <Typography variant="overline" className={styles.label}>
+                      Delivery Address
+                    </Typography>
+                    <AddressView address={confirmation.deliveryAddress} />
+                    {zipcodeSchedules[confirmation.deliveryAddress?.zip] && (
+                      <ScheduleView
+                        variant="body2"
+                        schedules={zipcodeSchedules[confirmation.deliveryAddress.zip]}
+                        className={styles.schedules}
+                      />
+                    )}
+                    {confirmation.deliveryPreferences && (
+                      <div className={styles.preferences}>
+                        {confirmation.deliveryPreferences.map((pref) => (
+                          <Chip key={pref} size="small" variant="outlined" label={pref} className={styles.preference} />
+                        ))}
+                      </div>
+                    )}
+                  </Grid>
+                )}
               {pickupLocation && (
                 <Grid item md={4} xs={12} className={styles.info}>
                   <Typography variant="overline" className={styles.label}>

@@ -1,7 +1,14 @@
 import { Button, Card, Grid, TextField, TextFieldProps, Typography } from '@material-ui/core';
 
 import { IAppState } from '../store/app';
-import { IPickupLocation, IPrescreenFormData, IStockLocation, OrderType, PrescreenFormField, Question } from '../common/types';
+import {
+  IPickupLocation,
+  IPrescreenFormData,
+  IStockLocation,
+  OrderType,
+  PrescreenFormField,
+  Question,
+} from '../common/types';
 import { questionsSelector, useContent } from '../store/cms';
 import { reverse } from '../common/router';
 import { useForm } from 'react-hook-form';
@@ -21,14 +28,29 @@ interface Props {
   dacl: boolean;
   deliveryOnly: boolean;
   communitySite: string | undefined;
-  selectedLocation: IPickupLocation | undefined
-  orderType: OrderType
-  setPushQuestions: (Dispatch<SetStateAction<IPrescreenFormData | undefined>>);
+  selectedLocation: IPickupLocation | undefined;
+  orderType: OrderType;
+  setPushQuestions: Dispatch<SetStateAction<IPrescreenFormData | undefined>>;
   setFinishedPrescreen: (finished: boolean) => any;
 }
 
-const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite, selectedLocation, orderType, setPushQuestions, setFinishedPrescreen }) => {
-  console.log('dacl, deliveryOnly, communitySite, selectedLocation, orderType', dacl, deliveryOnly, communitySite, selectedLocation, orderType);
+const PrescreenQuestions: React.FC<Props> = ({
+  dacl,
+  deliveryOnly,
+  communitySite,
+  selectedLocation,
+  orderType,
+  setPushQuestions,
+  setFinishedPrescreen,
+}) => {
+  console.log(
+    'dacl, deliveryOnly, communitySite, selectedLocation, orderType',
+    dacl,
+    deliveryOnly,
+    communitySite,
+    selectedLocation,
+    orderType,
+  );
 
   const { register, handleSubmit, triggerValidation, errors, formState, setError } = useForm<IPrescreenFormData>({
     reValidateMode: 'onChange',
@@ -46,26 +68,26 @@ const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite
         if (dacl && deliveryOnly && question.daclDelivery) {
           console.log('dacl delivery', question);
           questions.push(question);
-          return
+          return;
         }
 
         if (dacl && !deliveryOnly && question.daclPickup) {
           console.log('dacl pickup', question);
           questions.push(question);
-          return
+          return;
         }
 
         if (communitySite && !deliveryOnly && question.communitySite) {
           console.log('community site', question);
           questions.push(question);
-          return
+          return;
         }
 
         if (!dacl && !deliveryOnly && !communitySite) {
           if (question.webEnrollment) {
             console.log('web enrollment', question);
             questions.push(question);
-            return
+            return;
           }
         }
       }
@@ -129,8 +151,8 @@ const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite
       }
     });
 
-    console.log("forwardQuestions", data)
-    setPushQuestions(data)
+    console.log('forwardQuestions', data);
+    setPushQuestions(data);
 
     console.log('selected', selected);
     console.log('errorField', errorField);
@@ -179,22 +201,26 @@ const PrescreenQuestions: React.FC<Props> = ({ dacl, deliveryOnly, communitySite
     <>
       <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.container, { [styles.small]: isSmall })}>
         <Grid container spacing={2}>
-          { orderType === OrderType.PICKUP ? <>
-            {selectedLocation && (
+          {orderType === OrderType.PICKUP ? (
+            <>
+              {selectedLocation && (
+                <Grid item md={8} xs={12}>
+                  <Typography variant="h3" className={styles.title}>
+                    <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
+                  </Typography>
+                  {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
+                </Grid>
+              )}
+            </>
+          ) : (
+            <>
               <Grid item md={8} xs={12}>
                 <Typography variant="h3" className={styles.title}>
-                  <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
+                  <Content id="checkout_pickup_location_header" defaultText="Delivery Order" />
                 </Typography>
-                {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
               </Grid>
-            )}
-          </> : <>
-            <Grid item md={8} xs={12}>
-              <Typography variant="h3" className={styles.title}>
-                <Content id="checkout_pickup_location_header" defaultText="Delivery Order" />
-              </Typography>
-            </Grid>
-          </>}
+            </>
+          )}
 
           <Grid item md={8} xs={12}>
             <Card elevation={2} className={styles.form}>

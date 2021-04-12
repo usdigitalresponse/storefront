@@ -97,7 +97,7 @@ export class StripeService {
     const type = state.cart.orderType;
     const items = itemsSelector(state);
 
-    console.log("pay items", items, stockByLocation)
+    console.log('pay items', items, stockByLocation);
 
     const orderIntent: IOrderIntent = {
       ...formData,
@@ -116,7 +116,7 @@ export class StripeService {
     if (stockByLocation) {
       orderIntent.items = getOrderItemsForOrderIntent(orderIntent, productList);
 
-      console.log("orderIntent.items", orderIntent.items)
+      console.log('orderIntent.items', orderIntent.items);
       if (!waitlistConfirmed) {
         await AirtableService.fetchInventory();
         const newState = StripeService.store.getState();

@@ -72,9 +72,7 @@ export const cartReducer: any = TypedReducer.builder<ICartState>()
     setWith(state, { locationsDialogIsOpen }),
   )
   .withHandler(SetOrderType.TYPE, (state, orderType) => setWith(state, { orderType }))
-  .withHandler(SetLocationPreferences.TYPE, (state, locationPreferences) =>
-    setWith(state, {locationPreferences})
-  )
+  .withHandler(SetLocationPreferences.TYPE, (state, locationPreferences) => setWith(state, { locationPreferences }))
   .withDefaultHandler((state) => (state ? state : initialCartState))
   .build();
 
@@ -86,7 +84,7 @@ export const initialCartState: ICartState = {
   locationsDialogIsOpen: false,
   orderType: OrderType.DELIVERY,
   taxRate: 0.085,
-  locationPreferences: {} as ILocationPreference
+  locationPreferences: {} as ILocationPreference,
 };
 
 // selectors
@@ -185,6 +183,5 @@ export const selectedLocationSelector = Reselect.createSelector(
 
 export const locationPreferencesSelector = Reselect.createSelector(
   (state: IAppState) => state.cart.locationPreferences,
-  (locations: ILocationPreference) => locations
+  (locations: ILocationPreference) => locations,
 );
-

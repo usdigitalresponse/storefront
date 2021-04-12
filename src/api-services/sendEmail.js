@@ -4,7 +4,7 @@ const sgMail = require('@sendgrid/mail');
 export async function sendEmail(email) {
   return new Promise(async (resolve, reject) => {
     try {
-      var Airtable = require('airtable');
+      let Airtable = require('airtable');
       const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
       const configRecords = await base('Config')
         .select({ view: 'Grid view' })

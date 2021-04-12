@@ -165,7 +165,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
       }
     });
   } else {
-    questions.push(...allQuestions)
+    questions.push(...allQuestions);
   }
 
   const selectedLocationId = selectedLocation?.id;
@@ -187,17 +187,17 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   async function onSubmit(data: ICheckoutFormData) {
     dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
 
-    console.log("onSubmit items", items, data)
-    console.log("before push data", JSON.stringify(data))
-    if( pushQuestions ) {
-      Object.assign(data, pushQuestions)
+    console.log('onSubmit items', items, data);
+    console.log('before push data', JSON.stringify(data));
+    if (pushQuestions) {
+      Object.assign(data, pushQuestions);
     }
-    console.log("before pay data", JSON.stringify(data))
-    console.log("before pay items", JSON.stringify(items))
+    console.log('before pay data', JSON.stringify(data));
+    console.log('before pay items', JSON.stringify(items));
 
     const status = await StripeService.pay(data, stripe, elements);
 
-    console.log("done pay items", items, data)
+    console.log('done pay items', items, data);
 
     if (status === PaymentStatus.SUCCEEDED) {
       history.push(reverse('confirmation'));
@@ -233,12 +233,12 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     dacl = query.dacl !== undefined;
     deliveryOnly = query.deliveryOnly !== undefined;
 
-    console.log("communitySite, dacl, deliveryOnly, orderType", communitySite, dacl, deliveryOnly, orderType)
+    console.log('communitySite, dacl, deliveryOnly, orderType', communitySite, dacl, deliveryOnly, orderType);
 
-    if( deliveryOnly ) {
-      dispatch(SetOrderType.create(OrderType.DELIVERY))
+    if (deliveryOnly) {
+      dispatch(SetOrderType.create(OrderType.DELIVERY));
     }
-    console.log("after force delivery orderType", orderType)
+    console.log('after force delivery orderType', orderType);
   }
 
   let [finishedPrescreen, setFinishedPrescreen] = useState(false);
@@ -251,13 +251,15 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   if (prescreenOrders) {
     console.log('cartConverted', cartConverted, dacl);
 
-    if( !selectedLocation && query.communitysite ) {
-      return <>
-        <BaseLayout title={prescreenTitle} description={prescreenDescription}>
-          <h3>Error with Application</h3>
-          The link you tried to use has an error in it. Please contact DC Greens.
-        </BaseLayout>
-      </>
+    if (!selectedLocation && query.communitysite) {
+      return (
+        <>
+          <BaseLayout title={prescreenTitle} description={prescreenDescription}>
+            <h3>Error with Application</h3>
+            The link you tried to use has an error in it. Please contact DC Greens.
+          </BaseLayout>
+        </>
+      );
     }
 
     if (finishedPrescreen === false) {
@@ -272,41 +274,44 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
               selectedLocation={selectedLocation}
               setPushQuestions={setPushQuestions}
               setFinishedPrescreen={setFinishedPrescreen}
-
             />
           </BaseLayout>
         </>
       );
     } else {
-      if( cartConverted === false && locationsSelected ) {
-        console.log("inventory", inventory)
-        let convertItem: string | null = null
+      if (cartConverted === false && locationsSelected) {
+        console.log('inventory', inventory);
+        let convertItem: string | null = null;
         inventory.some((item) => {
-          console.log("item", item.stockLocation, communitySite, item.name, item)
-          if( item.stockLocation === communitySite ) {
-            console.log("dacl item?", dacl, item.name.toLowerCase().indexOf("dacl"))
-            if( dacl && item.name.toLowerCase().indexOf("dacl") > -1 ) {
-              convertItem = item.id
-              console.log("converting to dacl item", convertItem)
+          console.log('item', item.stockLocation, communitySite, item.name, item);
+          if (item.stockLocation === communitySite) {
+            console.log('dacl item?', dacl, item.name.toLowerCase().indexOf('dacl'));
+            if (dacl && item.name.toLowerCase().indexOf('dacl') > -1) {
+              convertItem = item.id;
+              console.log('converting to dacl item', convertItem);
             }
-            if( !dacl && item.name.toLowerCase().indexOf("dacl") === -1 ) {
-              convertItem = item.id
-              console.log("converting to non-dacl item", convertItem)
+            if (!dacl && item.name.toLowerCase().indexOf('dacl') === -1) {
+              convertItem = item.id;
+              console.log('converting to non-dacl item', convertItem);
             }
-            if (convertItem ) {
-              console.log("converting Cart", convertItem)
-              dispatch(CompoundAction([SetItems.create([{ id: convertItem, quantity: 1 }]), SetIsDonationRequest.create(true)]));
-              setCartConverted(true)
-              return true
+            if (convertItem) {
+              console.log('converting Cart', convertItem);
+              dispatch(
+                CompoundAction([
+                  SetItems.create([{ id: convertItem, quantity: 1 }]),
+                  SetIsDonationRequest.create(true),
+                ]),
+              );
+              setCartConverted(true);
+              return true;
             }
           }
-        })
+        });
       }
 
-      if( cartConverted)  {
-        console.log("post conversion items", items)
+      if (cartConverted) {
+        console.log('post conversion items', items);
       }
-
     }
   }
 
@@ -317,7 +322,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     console.log('skip redirect');
   }
 
-  console.log("errors", errors)
+  console.log('errors', errors);
 
   return (
     <BaseLayout>
@@ -404,11 +409,10 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                       color="primary"
                       onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
                     >
-
                       {selectedLocation || locationPreferences.location1
                         ? contentLocationOptionChange || 'Change'
                         : contentLocationOptionChoose || 'Choose'}{' '}
-                        location...
+                      location...
                     </Button>
                     <Input
                       type="hidden"

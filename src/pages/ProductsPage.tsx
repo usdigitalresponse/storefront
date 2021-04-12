@@ -23,7 +23,7 @@ const ProductsPage: React.FC = () => {
   const renderSummaries = productList.length > 4;
   const renderByCategory = Object.keys(productByCategoryList).length > 1;
 
-  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1
+  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
 
   console.log('enabled?', ordersEnabled, preOrderMode, forceBasketItem, renderByCategory);
   if (!ordersEnabled && !preOrderMode) {

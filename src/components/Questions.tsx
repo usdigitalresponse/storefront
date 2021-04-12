@@ -13,7 +13,7 @@ interface Props {
   register: any;
   errors: NestDataObject<any, FieldError>;
   questionClassName?: string;
-  questions: (any)[];
+  questions: any[];
 }
 
 const Questions: React.FC<Props> = ({ register, errors, questionClassName, questions }) => {

@@ -13,7 +13,7 @@ interface Props {
 }
 
 const AddressView: React.FC<Props> = ({ address, variant = 'body1', className, textClassName }) => {
-  if( address ) {
+  if (address) {
     const { street1, street2, city, state, zip } = address;
 
     return (
@@ -37,7 +37,7 @@ const AddressView: React.FC<Props> = ({ address, variant = 'body1', className, t
       </div>
     );
   } else {
-    return <>No Address specified</>
+    return <>No Address specified</>;
   }
 };
 

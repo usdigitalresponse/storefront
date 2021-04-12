@@ -16,18 +16,17 @@ import { ILocationPreference, IPickupLocation, IStockLocation } from '../common/
 import { SetLocationPreferences, SetLocationsDialogIsOpen, SetSelectedLocation } from '../store/cart';
 import { pickupLocationsSelector } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 import { useIsSmall } from '../common/hooks';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { Dispatch, FormEvent, SetStateAction } from 'react';
-import ReactHookFormSelect from './ReactHookFormSelect'
+import ReactHookFormSelect from './ReactHookFormSelect';
 // import SearchIcon from '@material-ui/icons/Search';
 import Location from './Location';
 import classNames from 'classnames';
 import styles from './LocationsDialog.module.scss';
 
-interface Props {
-}
+interface Props {}
 
 const LocationsDialog: React.FC<Props> = () => {
   const { register, control, setError, errors, clearError } = useForm();
@@ -38,11 +37,10 @@ const LocationsDialog: React.FC<Props> = () => {
   const selectedLocation = useSelector<IAppState, string | undefined>((state) => state.cart.selectedLocation);
   const lotteryEnabled = useSelector((state: IAppState) => state.cms.config.lotteryEnabled);
 
-  const publicLocations: IPickupLocation[] = []
+  const publicLocations: IPickupLocation[] = [];
   pickupLocations.forEach((location) => {
-    if( ! location.communitySite )
-    publicLocations.push(location)
-  })
+    if (!location.communitySite) publicLocations.push(location);
+  });
 
   function onClose() {
     dispatch(SetLocationsDialogIsOpen.create(false));
@@ -56,24 +54,24 @@ const LocationsDialog: React.FC<Props> = () => {
   }
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    clearError()
-    const values = (control.getValues() as ILocationPreference)
-    console.log("values", values)
-    console.log(values.location2 === values.location1 )
+    e.preventDefault();
+    clearError();
+    const values = control.getValues() as ILocationPreference;
+    console.log('values', values);
+    console.log(values.location2 === values.location1);
     let errors = false;
-    if( values.location2 === values.location1 ) {
-      setError("location2", "manual", "Cannot select the same location twice")
-      console.log("setting location2 error")
-      errors = true
+    if (values.location2 === values.location1) {
+      setError('location2', 'manual', 'Cannot select the same location twice');
+      console.log('setting location2 error');
+      errors = true;
     }
     if (values.location3 === values.location1 || values.location3 === values.location2) {
-      setError("location3", "manual", "Cannot select the same location twice")
-      console.log("setting location3 error")
-      errors = true
+      setError('location3', 'manual', 'Cannot select the same location twice');
+      console.log('setting location3 error');
+      errors = true;
     }
 
-    if( !errors ) {
+    if (!errors) {
       dispatch(CompoundAction([SetLocationPreferences.create(values), SetLocationsDialogIsOpen.create(false)]));
     }
   }
@@ -82,10 +80,10 @@ const LocationsDialog: React.FC<Props> = () => {
     <MenuItem key={location.id} value={location.id}>
       {location.name}
     </MenuItem>
-  ))
+  ));
 
-  console.log("control", control)
-  console.log("getValues", control.getValues())
+  console.log('control', control);
+  console.log('getValues', control.getValues());
 
   return (
     <Dialog
@@ -98,7 +96,7 @@ const LocationsDialog: React.FC<Props> = () => {
       <DialogTitle className={styles.title} disableTypography>
         <div className={styles.titleTop}>
           <Typography variant="h2" className={styles.titleText}>
-            {!lotteryEnabled ? "Select a location" : "Pick three locations in order of your preference"}
+            {!lotteryEnabled ? 'Select a location' : 'Pick three locations in order of your preference'}
           </Typography>
           <IconButton aria-label="close" onClick={onClose}>
             <CloseIcon className={styles.closeIcon} />
@@ -115,7 +113,7 @@ const LocationsDialog: React.FC<Props> = () => {
         </div> */}
       </DialogTitle>
       <DialogContent dividers className={styles.content}>
-        {!lotteryEnabled ?
+        {!lotteryEnabled ? (
           <List className={styles.list}>
             {pickupLocations.map((location) => (
               <ListItem
@@ -129,54 +127,54 @@ const LocationsDialog: React.FC<Props> = () => {
               </ListItem>
             ))}
           </List>
-        : <>
-          <form onSubmit={handleSubmit}>
-            <ReactHookFormSelect
-              id="location-select-1"
-              name="location1"
-              label="First Choice Location"
-              defaultValue=""
-              control={control}
-              errors={errors}
-            >
-              {locations}
-            </ReactHookFormSelect>
-            <ReactHookFormSelect
-              id="location-select-2"
-              name="location2"
-              label="Second Choice Location"
-              defaultValue=""
-              control={control}
-              errors={errors}
-            >
-              {locations}
-            </ReactHookFormSelect>
-            <ReactHookFormSelect
-              id="location-select-3"
-              name="location3"
-              label="Third Choice Location"
-              defaultValue=""
-              control={control}
-              errors={errors}
-            >
-              {locations}
-            </ReactHookFormSelect>
+        ) : (
+          <>
+            <form onSubmit={handleSubmit}>
+              <ReactHookFormSelect
+                id="location-select-1"
+                name="location1"
+                label="First Choice Location"
+                defaultValue=""
+                control={control}
+                errors={errors}
+              >
+                {locations}
+              </ReactHookFormSelect>
+              <ReactHookFormSelect
+                id="location-select-2"
+                name="location2"
+                label="Second Choice Location"
+                defaultValue=""
+                control={control}
+                errors={errors}
+              >
+                {locations}
+              </ReactHookFormSelect>
+              <ReactHookFormSelect
+                id="location-select-3"
+                name="location3"
+                label="Third Choice Location"
+                defaultValue=""
+                control={control}
+                errors={errors}
+              >
+                {locations}
+              </ReactHookFormSelect>
 
-            <Button
-              className={classNames()}
-              fullWidth
-              variant="contained"
-              color="primary"
-              size="large"
-              type="submit"
-              style={{width: "80%", margin: "10px"}}
-            >
-              Continue
-            </Button>
+              <Button
+                className={classNames()}
+                fullWidth
+                variant="contained"
+                color="primary"
+                size="large"
+                type="submit"
+                style={{ width: '80%', margin: '10px' }}
+              >
+                Continue
+              </Button>
             </form>
-
-        </>
-        }
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
