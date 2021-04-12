@@ -158,9 +158,16 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     dispatch(SetSelectedLocation.create(id));
   }
 
-  let [finishedPrescreen, setFinishedPrescreen] = useState(false);
+  let [finishedPrescreen, setFinishedPrescreen] = useState(query.screened === 'true');
   let [cartConverted, setCartConverted] = useState(false);
   let [pushQuestions, setPushQuestions] = useState<IPrescreenFormData>();
+
+  useEffect(()=>{
+    if( finishedPrescreen && ! query.screened ) {
+      query.screened = 'true'
+      history.push(reverse('checkout', query));
+    }
+  }, [finishedPrescreen])
 
   console.log("prescreenOrders", prescreenOrders)
 
@@ -182,7 +189,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     console.log('after force delivery orderType', orderType);
   }
 
-  let [locationsSelected, setLocationsSelected] = useState(communitySite ? true : false);
+  let [communitySitePassed, setCommunitySitePassed] = useState(communitySite ? true : false);
 
   let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
 
@@ -311,7 +318,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
         </>
       );
     } else {
-      if (cartConverted === false && locationsSelected) {
+      if (cartConverted === false && communitySitePassed) {
         console.log('inventory', inventory);
         let convertItem: string | null = null;
         inventory.some((item) => {
@@ -450,7 +457,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                       type="hidden"
                       name="pickupLocationId"
                       value={selectedLocationId || ''}
-                      inputRef={register({ required: orderType === OrderType.PICKUP })}
+                      inputRef={register({ required: !config.lotteryEnabled && orderType === OrderType.PICKUP })}
                     />
                     {errors.pickupLocationId && (
                       <FormHelperText error>
