@@ -174,6 +174,8 @@ export class StripeService {
           SetItems.create([]),
           SetDiscountCode.create(undefined),
           SetDiscountCodeMultiple.create(undefined),
+          SetLocationPreferences.create(({} as ILocationPreference)),
+          SetSelectedLocation.create(""),
         ]),
       );
       return PaymentStatus.SUCCEEDED;

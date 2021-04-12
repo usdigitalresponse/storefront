@@ -32,7 +32,7 @@ interface Props {
   orderType: OrderType;
   questions: Question[];
   setPushQuestions: Dispatch<SetStateAction<IPrescreenFormData | undefined>>;
-  setFinishedPrescreen: (finished: boolean) => any;
+  setFinishedPrescreen: Dispatch<SetStateAction<any>>;
 }
 
 const PrescreenQuestions: React.FC<Props> = ({
