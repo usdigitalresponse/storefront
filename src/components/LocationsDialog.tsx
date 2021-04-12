@@ -13,7 +13,7 @@ import {
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
 import { ILocationPreference, IPickupLocation, IStockLocation } from '../common/types';
-import { SetLocationPreferences, SetLocationsDialogIsOpen, SetSelectedLocation } from '../store/cart';
+import { SetLocationPreferences, SetLocationsDialogIsOpen, SetSelectedLocation, locationPreferencesSelector } from '../store/cart';
 import { pickupLocationsSelector } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
@@ -36,6 +36,8 @@ const LocationsDialog: React.FC<Props> = () => {
   const pickupLocations = useSelector<IAppState, Array<IPickupLocation | IStockLocation>>(pickupLocationsSelector);
   const selectedLocation = useSelector<IAppState, string | undefined>((state) => state.cart.selectedLocation);
   const lotteryEnabled = useSelector((state: IAppState) => state.cms.config.lotteryEnabled);
+  const locationPreferences = useSelector<IAppState, ILocationPreference>(locationPreferencesSelector);
+
 
   const publicLocations: IPickupLocation[] = [];
   pickupLocations.forEach((location) => {
@@ -129,12 +131,14 @@ const LocationsDialog: React.FC<Props> = () => {
           </List>
         ) : (
           <>
+            <a href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home" target="_blank" rel="noreferrer">Learn about Pickup Site Locations</a>
+            <br/>
             <form onSubmit={handleSubmit}>
               <ReactHookFormSelect
                 id="location-select-1"
                 name="location1"
                 label="First Choice Location"
-                defaultValue=""
+                defaultValue={locationPreferences.location1}
                 control={control}
                 errors={errors}
               >
@@ -144,7 +148,7 @@ const LocationsDialog: React.FC<Props> = () => {
                 id="location-select-2"
                 name="location2"
                 label="Second Choice Location"
-                defaultValue=""
+                defaultValue={locationPreferences.location2}
                 control={control}
                 errors={errors}
               >
@@ -154,7 +158,7 @@ const LocationsDialog: React.FC<Props> = () => {
                 id="location-select-3"
                 name="location3"
                 label="Third Choice Location"
-                defaultValue=""
+                defaultValue={locationPreferences.location3}
                 control={control}
                 errors={errors}
               >

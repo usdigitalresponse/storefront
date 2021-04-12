@@ -44,9 +44,12 @@ const LocationPreferences: React.FC<Props> = ({ locationPrefs }) => {
   });
 
   if (!locationPrefs.location1) {
-    return <></>;
+    return <>
+      <a href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home" target="_blank" rel="noreferrer">Learn about Pickup Site Locations</a>
+    </>;
   } else {
-    return (
+    return <>
+      <a href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home" target="_blank" rel="noreferrer">Learn about Pickup Site Locations</a>
       <ul>
         {location1 && (
           <li>
@@ -64,7 +67,7 @@ const LocationPreferences: React.FC<Props> = ({ locationPrefs }) => {
           </li>
         )}
       </ul>
-    );
+    </>
   }
 };
 
