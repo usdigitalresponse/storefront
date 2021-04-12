@@ -112,16 +112,17 @@ exports.handler = async (event, context) => {
     const questions = questionsRecords.map((row) => {
       const optionsString = row.fields['Options'];
       const label = row.fields['Label'];
-
       //console.log("row", row.fields['Web Enrollment'], row.fields['Label'])
 
       return {
         id: row.id,
         label: label ? label.trim() : label,
+        markdownLabel: row.fields['Markdown Label'] ,
         strings: languages.reduce((acc, language) => {
           const label = language === 'en' ? row.fields['Label'] : row.fields[`Label_${language}`];
           const optionsString = language === 'en' ? row.fields['Options'] : row.fields[`Options_${language}`];
-          acc[language] = { label: label ? label.trim() : label, options: optionsString ? optionsString.split(',').map((v) => v.trim()) : null }
+          const markdownLabel = language === 'en' ? row.fields['Markdown Label'] : row.fields[`Markdown Label_${language}`];
+          acc[language] = { label: label ? label.trim() : label, markdownLabel: markdownLabel, options: optionsString ? optionsString.split(',').map((v) => v.trim()) : null }
           return acc;
         }, {}),
         type: row.fields['Type'],

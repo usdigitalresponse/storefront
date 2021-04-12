@@ -321,6 +321,7 @@ export type QuestionType = 'Single Checkbox' | 'Multiple Checkboxes' | 'Text Inp
 
 export interface IQuestionStrings {
   label: string;
+  markdownLabel: string;
   options: string[];
 }
 
@@ -337,6 +338,7 @@ interface IQuestionBase {
   daclPickup: boolean;
   communitySite: boolean;
   webEnrollment: boolean;
+  markdownLabel: string;
 }
 
 export interface ITextInputQuestion extends IQuestionBase {

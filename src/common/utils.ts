@@ -78,13 +78,23 @@ export function inventoryForLanguage(inventory: InventoryRecord[], language: str
 }
 
 export function questionForLanguage(questions: Question[], language: string): Question[] {
-  return questions.map((question) => ({
+  return questions.map((question) => {
+    if( question.markdownLabel?.length > 0 ) {
+      let text
+      if( question && question.strings ) {
+        text = question.strings[language]
+      }
+      console.log("language, question", language, question.strings)
+      console.log("text", text)
+    }
+    return {
     ...question,
-    ...(question.strings && question.strings[language] && question.strings[language].label
-      ? { label: question.strings[language].label }
+      ...(question.strings && question.strings[language] && (question.strings[language].label || question.strings[language].markdownLabel )
+        ? { label: question.strings[language].label, markdownLabel: question.strings[language].markdownLabel }
       : {}),
     ...(question.strings && question.strings[language] && question.strings[language].options
       ? { options: question.strings[language].options }
       : {}),
-  }));
+    }
+  });
 }
