@@ -23,6 +23,7 @@ import React, { Dispatch, FormEvent, SetStateAction } from 'react';
 import ReactHookFormSelect from './ReactHookFormSelect';
 // import SearchIcon from '@material-ui/icons/Search';
 import Location from './Location';
+import ScheduleView from './ScheduleView';
 import classNames from 'classnames';
 import styles from './LocationsDialog.module.scss';
 
@@ -80,7 +81,8 @@ const LocationsDialog: React.FC<Props> = () => {
 
   let locations = publicLocations.map((location) => (
     <MenuItem key={location.id} value={location.id}>
-      {location.name}
+      <>
+        {location.name}{' '}{location.address.street1}{' '}<ScheduleView variant="body2" schedules={location.resolvedSchedules} className={styles.schedules} />      </>
     </MenuItem>
   ));
 
