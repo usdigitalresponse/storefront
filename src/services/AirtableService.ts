@@ -71,7 +71,8 @@ export class AirtableService {
             sequentialDiscountCode: records.config.sequential_discount_code,
             prescreenOrders: records.config.prescreen_orders === 'true' ? true : false,
             forceBasketItem: records.config.force_basket_item,
-            lotteryEnabled: records.config.lottery_enabled,
+            lotteryEnabled: records.config.lottery_enabled === 'true' ? true : false,
+            defaultAllowParagraphs: records.config.default_allow_paragraphs === 'true' ? true : false,
           }),
           SetOrderType.create(
             deliveryEnabled ? records.config.default_order_type || OrderType.DELIVERY : OrderType.PICKUP,

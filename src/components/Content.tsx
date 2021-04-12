@@ -1,4 +1,6 @@
+import { IAppState } from '../store/app';
 import { useContent } from '../store/cms';
+import { useSelector } from 'react-redux';
 import Link from './Link';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -12,9 +14,15 @@ interface Props {
   allowParagraphs?: boolean;
 }
 
-const Content: React.FC<Props> = ({ id, markdown = false, className, text, defaultText, allowParagraphs = false }) => {
+const Content: React.FC<Props> = ({ id, markdown = false, className, text, defaultText, allowParagraphs = null }) => {
   const cmsContent = useContent(id);
   const content = text || cmsContent || defaultText || '';
+
+  const configParagraphs = useSelector((state: IAppState) => state.cms.config.defaultAllowParagraphs);
+
+  if( allowParagraphs === null ) {
+    allowParagraphs = configParagraphs
+  }
 
   return markdown ? (
     <ReactMarkdown

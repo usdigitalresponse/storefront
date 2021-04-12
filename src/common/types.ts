@@ -32,6 +32,7 @@ export interface IConfig {
   prescreenOrders: boolean;
   forceBasketItem: string;
   lotteryEnabled: boolean;
+  defaultAllowParagraphs: boolean;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
