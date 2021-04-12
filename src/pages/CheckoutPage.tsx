@@ -251,12 +251,12 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     console.log('before pay data', JSON.stringify(data));
     console.log('before pay items', JSON.stringify(items));
 
-    const status = await StripeService.pay(data, stripe, elements);
+    const status = await StripeService.pay(data, stripe, elements, locationPreferences);
 
     console.log('done pay items', items, data);
 
     if (status === PaymentStatus.SUCCEEDED) {
-      history.push(reverse('confirmation'));
+      history.push(reverse('confirmation', query));
     }
   }
 
