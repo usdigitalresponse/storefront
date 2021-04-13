@@ -41,7 +41,7 @@ const ReactHookFormSelect: React.FC<Props> = ({
         }
         name={name}
         control={control}
-        defaultValue={defaultValue}
+        defaultValue={defaultValue || ''}
       />
       {error && <FormHelperText error>{error.message}</FormHelperText>}
     </FormControl>

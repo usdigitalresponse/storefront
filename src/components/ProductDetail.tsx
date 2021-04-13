@@ -81,7 +81,18 @@ const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketI
 
   console.log('forceBasketItem', forceBasketItem);
   console.log('product', product.id.toString(), product);
-  if (forceBasketItem && forceBasketItem === product.id.toString()) {
+  let forceBasketItems = forceBasketItem?.split('|')
+  let query = qs.parse(window.location.search.substring(1));
+
+  let forceItem
+  if( forceBasketItems ) {
+    forceItem = forceBasketItems[0]
+    if (query.dacl) {
+      forceItem = forceBasketItems[1]
+    }
+  }
+
+  if (forceItem && forceItem === product.id.toString()) {
     dispatch(
       CompoundAction([
         SetItems.create([{ id, quantity: 1 }]),
@@ -91,7 +102,6 @@ const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketI
       ]),
     );
 
-    let query = qs.parse(window.location.search.substring(1));
     query.forcedItem = 'true';
     console.log('query', query);
     history.push(reverse('checkout', query));

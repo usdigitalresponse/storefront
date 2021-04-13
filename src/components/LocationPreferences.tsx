@@ -1,4 +1,4 @@
-import { Button, Card, Grid, TextField, TextFieldProps, Typography } from '@material-ui/core';
+import { Button, Card, FormHelperText, Grid, TextField, TextFieldProps, Typography } from '@material-ui/core';
 
 import { IAppState } from '../store/app';
 import {
@@ -23,15 +23,16 @@ import classNames from 'classnames';
 
 interface Props {
   locationPrefs: ILocationPreference;
+  errors: any
 }
 
-const LocationPreferences: React.FC<Props> = ({ locationPrefs }) => {
-  console.log('locationPrefs', locationPrefs);
+const LocationPreferences: React.FC<Props> = ({ locationPrefs, errors }) => {
+  //console.log('locationPrefs', locationPrefs);
   const pickupLocations = useSelector<IAppState, Array<IPickupLocation | IStockLocation>>(pickupLocationsSelector);
 
   let location1, location2, location3;
   pickupLocations.forEach((location) => {
-    console.log('location', location.id, location);
+    //console.log('location', location.id, location);
     if (location.id === locationPrefs.location1) {
       location1 = location;
     }
@@ -53,6 +54,7 @@ const LocationPreferences: React.FC<Props> = ({ locationPrefs }) => {
         >
           Learn about Pickup Site Locations
         </a>
+        <br/>
       </>
     );
   } else {
@@ -82,6 +84,9 @@ const LocationPreferences: React.FC<Props> = ({ locationPrefs }) => {
             </li>
           )}
         </ul>
+
+        <FormHelperText error>{errors['locationPreference'] || !locationPrefs && errors['locationPreference'].message}</FormHelperText>
+
       </>
     );
   }

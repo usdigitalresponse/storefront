@@ -1,4 +1,5 @@
-import { Checkbox, FormControlLabel, Link, Typography } from '@material-ui/core';
+import { Checkbox, FormControlLabel, FormHelperText, Link, Typography } from '@material-ui/core';
+import { FieldError, NestDataObject } from 'react-hook-form';
 import { ICheckboxesQuestion } from '../common/types';
 import { useIsSmall } from '../common/hooks';
 import React from 'react';
@@ -10,12 +11,15 @@ interface Props {
   question: ICheckboxesQuestion;
   inputRef: any;
   className?: string;
+  contentFieldIsRequired: string;
+  errors: NestDataObject<any, FieldError>;
 }
 
-const CheckboxesQuestion: React.FC<Props> = ({ question, inputRef, className }) => {
+const CheckboxesQuestion: React.FC<Props> = ({ question, inputRef, className, contentFieldIsRequired, errors }) => {
   const isSmall = useIsSmall();
+  const error = errors[`question-${question.id}`];
 
-  console.log('question', question);
+  console.log('question', question, error);
 
   return (
     <div className={classNames(styles.container, className, { [styles.small]: isSmall })}>
@@ -39,6 +43,7 @@ const CheckboxesQuestion: React.FC<Props> = ({ question, inputRef, className }) 
           label={option}
         />
       ))}
+      <FormHelperText error>{error && error.message}</FormHelperText>
     </div>
   );
 };

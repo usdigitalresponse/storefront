@@ -124,6 +124,11 @@ export class StripeService {
       items,
     };
 
+    if (lotteryEnabled && formData.pickupLocationId && !locationPrefs?.location1 ) {
+      locationPrefs = locationPrefs || {} as ILocationPreference
+      locationPrefs.location1 = formData.pickupLocationId
+    }
+
     if (lotteryEnabled && locationPrefs) {
       orderIntent.items = adjustOrderItemsForLottery(orderIntent, productList, locationPrefs);
     }
