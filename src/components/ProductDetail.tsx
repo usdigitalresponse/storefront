@@ -1,8 +1,16 @@
-import { AddItem, IOrderItemCountSelector, SetDialogIsOpen, SetItems, itemsSelector } from '../store/cart';
+import {
+  AddItem,
+  IOrderItemCountSelector,
+  SetDialogIsOpen,
+  SetItems,
+  SetLocationPreferences,
+  SetSelectedLocation,
+  itemsSelector,
+} from '../store/cart';
 import { Button, Card, Chip, Grid, Select, Tooltip, Typography } from '@material-ui/core';
 import { CompoundAction } from 'redoodle';
 import { IAppState } from '../store/app';
-import { IConfig, IOrderItem, InventoryRecord } from '../common/types';
+import { IConfig, ILocationPreference, IOrderItem, InventoryRecord } from '../common/types';
 import { SetIsDonationRequest } from '../store/checkout';
 import { formatCurrency } from '../common/format';
 import { getImageUrl } from '../common/utils';
@@ -14,15 +22,17 @@ import { useIsSmall } from '../common/hooks';
 import Content from './Content';
 import React, { ChangeEvent, useState } from 'react';
 import classNames from 'classnames';
+import qs from 'qs';
 import styles from './ProductDetail.module.scss';
 
 interface Props {
   product: InventoryRecord;
   card?: boolean;
   className?: string;
+  forceBasketItem?: string;
 }
 
-const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
+const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketItem }) => {
   const isSmall = useIsSmall();
   const [short, setShort] = useState<boolean>(true);
   const [quantity, setQuantity] = useState<number>(1);
@@ -67,6 +77,24 @@ const ProductDetail: React.FC<Props> = ({ card, product, className }) => {
     disabledHelpText = 'This is an add-on item. Add another item to your cart to include this item';
   } else if (singleCategoryShouldDisable) {
     disabledHelpText = contentDisabledHelpText || 'You can only add items from a single category';
+  }
+
+  console.log('forceBasketItem', forceBasketItem);
+  console.log('product', product.id.toString(), product);
+  if (forceBasketItem && forceBasketItem === product.id.toString()) {
+    dispatch(
+      CompoundAction([
+        SetItems.create([{ id, quantity: 1 }]),
+        SetIsDonationRequest.create(true),
+        SetSelectedLocation.create(''),
+        SetLocationPreferences.create({} as ILocationPreference),
+      ]),
+    );
+
+    let query = qs.parse(window.location.search.substring(1));
+    query.forcedItem = 'true';
+    console.log('query', query);
+    history.push(reverse('checkout', query));
   }
 
   return (

@@ -1,6 +1,6 @@
 import { FieldError, NestDataObject } from 'react-hook-form';
 import { IAppState } from '../store/app';
-import { Question } from '../common/types';
+import { Question, QuestionType } from '../common/types';
 import { questionsSelector, useContent } from '../store/cms';
 import { useSelector } from 'react-redux';
 import CheckboxQuestion from './CheckboxQuestion';
@@ -13,10 +13,10 @@ interface Props {
   register: any;
   errors: NestDataObject<any, FieldError>;
   questionClassName?: string;
+  questions: any[];
 }
 
-const Questions: React.FC<Props> = ({ register, errors, questionClassName }) => {
-  const questions = useSelector<IAppState, Question[]>(questionsSelector);
+const Questions: React.FC<Props> = ({ register, errors, questionClassName, questions }) => {
   const contentFieldIsRequired = useContent('checkout_field_is_required');
 
   return (

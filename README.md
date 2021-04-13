@@ -32,7 +32,11 @@ The app ID begins with `app`. You can either grab the ID from the url `https://a
 
 There are two Stripe API keys, a main Stripe key and a donation Stripe key. Both are located in the `Config` table of any USDR Food Airtable base under the `stripe_donation_public_api_key` and `stripe_main_public_api_key` fields.
 
-#### 3. Create `.env`
+#### 3. Get SendGrid API keys if you're testing emails
+
+Check the Netlify config for the site you're working on to get the SENDGRID_API_KEY. [More Details](#sending-emails-in-dev)
+
+#### 4. Create `.env`
 
 Create a `.env` file in the repo's root directory using a copy of [`.example.env`](https://github.com/usdigitalresponse/storefront/blob/master/.example.env) and add your keys:
 
@@ -41,6 +45,7 @@ AIRTABLE_API_KEY=
 AIRTABLE_BASE_ID=
 STRIPE_MAIN_PRIVATE_API_KEY=
 STRIPE_DONATION_PRIVATE_API_KEY=
+SENDGRID_API_KEY=
 ```
 
 These keys will be used when you run `yarn start:api` in the next section.

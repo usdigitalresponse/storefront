@@ -6,6 +6,7 @@ import {
   ICheckoutFormData,
   IDonationFormData,
   IDonationSummary,
+  ILocationPreference,
   IOrderIntent,
   OrderStatus,
   PaymentStatus,
@@ -22,8 +23,11 @@ import {
 } from '../store/checkout';
 import {
   SetItems,
+  SetLocationPreferences,
+  SetSelectedLocation,
   discountTotalSelector,
   itemsSelector,
+  locationPreferencesSelector,
   subtotalSelector,
   taxSelector,
   tipSelector,
@@ -31,8 +35,9 @@ import {
 } from '../store/cart';
 import { Store } from 'redux';
 import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
-import { getOrderItemsForOrderIntent, getProduct } from '../common/utils';
+import { adjustOrderItemsForLottery, getOrderItemsForOrderIntent, getProduct } from '../common/utils';
 import { makeContentValueSelector, productListSelector } from '../store/cms';
+import { useSelector } from 'react-redux';
 
 export class StripeService {
   public static store: Store<IAppState>;
@@ -81,7 +86,12 @@ export class StripeService {
     }
   }
 
-  public static async pay(formData: ICheckoutFormData, stripe: Stripe | null, elements: StripeElements | null) {
+  public static async pay(
+    formData: ICheckoutFormData,
+    stripe: Stripe | null,
+    elements: StripeElements | null,
+    locationPrefs?: ILocationPreference,
+  ) {
     const state = StripeService.store.getState();
     const subtotal = subtotalSelector(state);
     const discount = discountTotalSelector(state);
@@ -94,8 +104,11 @@ export class StripeService {
     const discountCodes = state.checkout.discountCodes.map((discountCode) => discountCode.code);
     const isDonationRequest = state.checkout.isDonationRequest;
     const stockByLocation = state.cms.config.stockByLocation;
+    const lotteryEnabled = state.cms.config.lotteryEnabled;
     const type = state.cart.orderType;
     const items = itemsSelector(state);
+
+    console.log('pay items', items, stockByLocation);
 
     const orderIntent: IOrderIntent = {
       ...formData,
@@ -111,9 +124,14 @@ export class StripeService {
       items,
     };
 
+    if (lotteryEnabled && locationPrefs) {
+      orderIntent.items = adjustOrderItemsForLottery(orderIntent, productList, locationPrefs);
+    }
+
     if (stockByLocation) {
       orderIntent.items = getOrderItemsForOrderIntent(orderIntent, productList);
 
+      console.log('orderIntent.items', orderIntent.items);
       if (!waitlistConfirmed) {
         await AirtableService.fetchInventory();
         const newState = StripeService.store.getState();
@@ -161,6 +179,8 @@ export class StripeService {
           SetItems.create([]),
           SetDiscountCode.create(undefined),
           SetDiscountCodeMultiple.create(undefined),
+          SetLocationPreferences.create({} as ILocationPreference),
+          SetSelectedLocation.create(''),
         ]),
       );
       return PaymentStatus.SUCCEEDED;

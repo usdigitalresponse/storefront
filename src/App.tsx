@@ -15,11 +15,13 @@ import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import LocationsDialog from './components/LocationsDialog';
 import MuiThemeWrapper from './components/MuiThemeWrapper';
+import NotEligiblePage from './pages/NotEligiblePage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProductPage from './pages/ProductPage';
 import ProductsPage from './pages/ProductsPage';
 import React from 'react';
 import SchemaPage from './pages/SchemaPage';
+import ScrollToTop from './components/ScrollToTop';
 
 const store = configureStore();
 AirtableService.init(store);
@@ -36,6 +38,7 @@ const routeComponents: Record<string, React.FC> = {
   checkout: CheckoutPage,
   confirmation: ConfirmationPage,
   schema: SchemaPage,
+  noteligible: NotEligiblePage,
 };
 
 function App() {
@@ -53,6 +56,7 @@ function App() {
           </Switch>
           <CartDialog />
           <LocationsDialog />
+          <ScrollToTop />
         </Router>
       </MuiThemeWrapper>
     </Provider>

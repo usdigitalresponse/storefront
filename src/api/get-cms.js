@@ -17,7 +17,7 @@ exports.handler = async (event, context) => {
 
     // create languages array
     const languages = config.languages.split(',');
-    
+
     // Inventory
     const inventoryRecords = await fetchTable('Inventory', { view: DEFAULT_VIEW });
     const inventory = inventoryRecords
@@ -46,7 +46,7 @@ exports.handler = async (event, context) => {
           stockZipcodes: row.fields['Stock Zipcodes'] ? row.fields['Stock Zipcodes'].split(',') : null,
         };
       });
-    
+
     // Inventory categories
     const categoryRecords = await fetchTable('Inventory Categories', { view: DEFAULT_VIEW });
     const categories = categoryRecords.map((row) => {
@@ -81,6 +81,7 @@ exports.handler = async (event, context) => {
         },
         schedules: row.fields['Schedules'],
         waitlistOnly: row.fields['Waitlist Only'],
+        communitySite: row.fields['Community Site'] !== undefined,
       };
     });
 
@@ -111,19 +112,29 @@ exports.handler = async (event, context) => {
     const questions = questionsRecords.map((row) => {
       const optionsString = row.fields['Options'];
       const label = row.fields['Label'];
+      //console.log("row", row.fields['Web Enrollment'], row.fields['Label'])
+
       return {
         id: row.id,
         label: label ? label.trim() : label,
+        markdownLabel: row.fields['Markdown Label'] ,
         strings: languages.reduce((acc, language) => {
           const label = language === 'en' ? row.fields['Label'] : row.fields[`Label_${language}`];
           const optionsString = language === 'en' ? row.fields['Options'] : row.fields[`Options_${language}`];
-          acc[language] = { label: label ? label.trim() : label, options: optionsString ? optionsString.split(',').map((v) => v.trim()) : null }
+          const markdownLabel = language === 'en' ? row.fields['Markdown Label'] : row.fields[`Markdown Label_${language}`];
+          acc[language] = { label: label ? label.trim() : label, markdownLabel: markdownLabel, options: optionsString ? optionsString.split(',').map((v) => v.trim()) : null }
           return acc;
         }, {}),
         type: row.fields['Type'],
         options: optionsString ? optionsString.split(',').map((v) => v.trim()) : null,
         waitlistOnly: row.fields['Waitlist Only'],
         required: row.fields['Required'],
+        turnOff: row.fields['Turn Off'] || false,
+        preScreen: row.fields['Pre-Screen'] || false,
+        webEnrollment: row.fields['Web Enrollment'] || false,
+        daclPickup: row.fields['DACL Pickup'] || false,
+        daclDelivery: row.fields['DACL Delivery'] || false,
+        communitySite: row.fields['Community Site'] || false,
       };
     });
 

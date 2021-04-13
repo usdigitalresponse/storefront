@@ -15,6 +15,7 @@ import styles from './ProductsPage.module.scss';
 const ProductsPage: React.FC = () => {
   const productList = useSelector(productListSelector);
   const productByCategoryList = useSelector(productByCategorySelector);
+  const forceBasketItem = useSelector((state: IAppState) => state.cms.config.forceBasketItem);
   const ordersEnabled = useSelector((state: IAppState) => state.cms.config.ordersEnabled);
   const isSmall = useIsSmall();
   const title = useContent('products_page_title');
@@ -22,23 +23,34 @@ const ProductsPage: React.FC = () => {
   const renderSummaries = productList.length > 4;
   const renderByCategory = Object.keys(productByCategoryList).length > 1;
 
+  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
+
+  console.log('enabled?', ordersEnabled, preOrderMode, forceBasketItem, renderByCategory);
+  if (!ordersEnabled && !preOrderMode) {
+    return <Redirect to="/" />;
+  } else {
+    console.log('skip redirect');
+  }
+
   const productListItems = (productList: InventoryRecord[]) => {
     return (
       <div className={classNames(styles.container, { [styles.summary]: renderSummaries, [styles.small]: isSmall })}>
         {productList.map((item) =>
-          renderSummaries ? (
+          renderSummaries && !forceBasketItem ? (
             <ProductSummary key={item.id} product={item} className={styles.productSummary} />
           ) : (
-            <ProductDetail key={item.id} product={item} className={styles.productDetail} card={true} />
+            <ProductDetail
+              key={item.id}
+              product={item}
+              className={styles.productDetail}
+              card={true}
+              forceBasketItem={forceBasketItem}
+            />
           ),
         )}
       </div>
     );
   };
-
-  if (!ordersEnabled) {
-    return <Redirect to="/" />;
-  }
 
   if (renderByCategory) {
     return (

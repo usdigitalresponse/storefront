@@ -17,8 +17,11 @@ import {
   CheckoutFormField,
   ICheckoutFormData,
   IConfig,
+  ILocationPreference,
   IOrderItem,
   IPickupLocation,
+  IPrescreenFormData,
+  InventoryRecord,
   OrderType,
   PayState,
   PaymentStatus,
@@ -36,8 +39,12 @@ import {
   requiresPaymentSelector,
 } from '../store/checkout';
 import {
+  SetItems,
   SetLocationsDialogIsOpen,
+  SetOrderType,
+  SetSelectedLocation,
   itemsSelector,
+  locationPreferencesSelector,
   selectedLocationSelector,
   subtotalWithDiscountSelector,
 } from '../store/cart';
@@ -54,13 +61,16 @@ import ConfirmEligibilityView from '../components/ConfirmEligibilityView';
 import Content from '../components/Content';
 import DeliveryPreferences from '../components/DeliveryPreferences';
 import Location from '../components/Location';
+import LocationPreferences from '../components/LocationPreferences';
 import OptInView from '../components/OptInView';
 import OrderSummary from '../components/OrderSummary';
 import OrderTypeSelector from '../components/OrderTypeSelector';
 import OrderTypeView from '../components/OrderTypeView';
 import PhoneField from '../components/PhoneField';
+import PrescreenQuestions from '../components/PrescreenQuestions';
+
 import Questions from '../components/Questions';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import StateField from '../components/StateField';
 import StripeCardField from '../components/StripeCardField';
 import StripeElementsWrapper from '../components/StripeElementsWrapper';
@@ -79,15 +89,6 @@ interface Props {
 const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) => {
   const { register, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const {
-    defaultState,
-    deliveryPreferences,
-    deliveryEnabled,
-    deliveryOptionsOnCheckout,
-    payUponDeliveryEnabled,
-    payUponPickupEnabled,
-    tippingEnabled,
-  } = config;
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const isSmall = useIsSmall();
   const hasErrors = Object.keys(errors).length > 0;
@@ -96,9 +97,12 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const paymentError = useSelector<IAppState, string | undefined>((state) => state.checkout.error);
   const isPaying = paymentStatus === PaymentStatus.IN_PROGRESS;
   const requiresEligibility = !!useContent('checkout_donation_confirm_eligibility');
-  const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
-  const questions = useSelector<IAppState, Question[]>(questionsSelector);
-  const selectedLocationId = selectedLocation?.id;
+
+  const allQuestions = useSelector<IAppState, Question[]>(questionsSelector);
+  const questions: Question[] = [];
+
+  const prescreenOrders = useSelector((state: IAppState) => state.cms.config.prescreenOrders);
+
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -106,6 +110,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const requiresPayment = useSelector<IAppState, boolean>(requiresPaymentSelector);
   const payState = useSelector<IAppState, PayState>((state) => state.checkout.payState);
   const orderAmount = useSelector<IAppState, number>(subtotalWithDiscountSelector);
+  const inventory = useSelector<IAppState, InventoryRecord[]>((state) => state.cms.inventory);
 
   // Content
   const contentPayNowOptionLabel = useContent('pay_now_option_label');
@@ -123,10 +128,108 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const contentFieldAddressZipcode = useContent('checkout_field_address_zipcode');
   const contentLocationOptionChange = useContent('checkout_location_option_change');
   const contentLocationOptionChoose = useContent('checkout_location_option_choose');
+  const prescreenTitle = useContent('prescreen_questionaire_title');
+  const prescreenDescription = useContent('prescreen_questionaire_subtitle');
 
+  let selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
+  const {
+    defaultState,
+    deliveryPreferences,
+    deliveryEnabled,
+    deliveryOptionsOnCheckout,
+    payUponDeliveryEnabled,
+    payUponPickupEnabled,
+    tippingEnabled,
+    ordersEnabled,
+  } = config;
   const showPaymentOptions =
     (orderType === OrderType.PICKUP && payUponPickupEnabled) ||
     (orderType === OrderType.DELIVERY && payUponDeliveryEnabled);
+  const locationPreferences = useSelector<IAppState, ILocationPreference>(locationPreferencesSelector);
+
+  let locationLocked = false;
+  let query = qs.parse(window.location.search.substring(1));
+  console.log('query', query);
+
+  if (query.communitysite) {
+    locationLocked = true;
+    let id = query.communitysite?.toString();
+    console.log('dispatching SetSelectedLocation', id);
+    dispatch(SetSelectedLocation.create(id));
+  }
+
+  let [finishedPrescreen, setFinishedPrescreen] = useState(query.screened === 'true');
+  let [cartConverted, setCartConverted] = useState(false);
+  let [pushQuestions, setPushQuestions] = useState<IPrescreenFormData>();
+
+  useEffect(() => {
+    if (finishedPrescreen && !query.screened) {
+      query.screened = 'true';
+      history.push(reverse('checkout', query));
+    }
+  }, [finishedPrescreen]);
+
+  console.log('prescreenOrders', prescreenOrders);
+
+  let communitySite: string | undefined = undefined;
+  let dacl = false;
+  let deliveryOnly = false;
+  if (prescreenOrders) {
+    let query = qs.parse(window.location.search.substring(1));
+    console.log('query', query);
+    communitySite = query.communitysite?.toString();
+    dacl = query.dacl !== undefined;
+    deliveryOnly = query.deliveryOnly !== undefined;
+
+    console.log('communitySite, dacl, deliveryOnly, orderType', communitySite, dacl, deliveryOnly, orderType);
+
+    if (deliveryOnly) {
+      dispatch(SetOrderType.create(OrderType.DELIVERY));
+    }
+    console.log('after force delivery orderType', orderType);
+  }
+
+  let [communitySitePassed, setCommunitySitePassed] = useState(communitySite ? true : false);
+
+  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
+
+  if (prescreenOrders) {
+    allQuestions.forEach((question) => {
+      console.log('finishedPrescreen, preScreen, question', finishedPrescreen, question.preScreen, question);
+      if (question.preScreen !== finishedPrescreen) {
+        if (dacl && deliveryOnly && question.daclDelivery) {
+          console.log('dacl delivery', question);
+          questions.push(question);
+          return;
+        }
+
+        if (dacl && !deliveryOnly && question.daclPickup) {
+          console.log('dacl pickup', question);
+          questions.push(question);
+          return;
+        }
+
+        if (communitySite && !deliveryOnly && question.communitySite) {
+          console.log('community site', question);
+          questions.push(question);
+          return;
+        }
+
+        if (!dacl && !deliveryOnly && !communitySite) {
+          if (question.webEnrollment) {
+            console.log('web enrollment', question);
+            questions.push(question);
+            return;
+          }
+        }
+      }
+    });
+  } else {
+    console.log('not prescreen');
+    questions.push(...allQuestions);
+  }
+
+  const selectedLocationId = selectedLocation?.id;
 
   useEffect(() => {
     const isWaitlist = !!qs.parse(location.search.slice(1))?.waitlist;
@@ -136,6 +239,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   }, [dispatch, location.search]);
 
   useEffect(() => {
+    console.log('selectedLocationID effect', selectedLocationId);
     if (selectedLocationId) {
       clearError('pickupLocationId');
     }
@@ -144,9 +248,20 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   async function onSubmit(data: ICheckoutFormData) {
     dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
 
-    const status = await StripeService.pay(data, stripe, elements);
+    console.log('onSubmit items', items, data);
+    console.log('before push data', JSON.stringify(data));
+    if (pushQuestions) {
+      Object.assign(data, pushQuestions);
+    }
+    console.log('before pay data', JSON.stringify(data));
+    console.log('before pay items', JSON.stringify(items));
+
+    const status = await StripeService.pay(data, stripe, elements, locationPreferences);
+
+    console.log('done pay items', items, data);
+
     if (status === PaymentStatus.SUCCEEDED) {
-      history.push(reverse('confirmation'));
+      history.push(reverse('confirmation', query));
     }
   }
 
@@ -167,10 +282,104 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
   const disableSubmit = hasErrors || !items.length;
 
+  console.log('selectedLocation', selectedLocation, selectedLocationId, query.communitysite, orderType);
+
+  if (prescreenOrders) {
+    console.log('cartConverted', cartConverted, dacl);
+
+    if (!selectedLocation && query.communitysite) {
+      return (
+        <>
+          <BaseLayout title={prescreenTitle} description={prescreenDescription}>
+            <h3>Error with Application Link</h3>
+            The link you tried to use has an error in it. Please contact DC Greens.
+          </BaseLayout>
+        </>
+      );
+    }
+
+    if (finishedPrescreen === false) {
+      return (
+        <>
+          <BaseLayout title={prescreenTitle} description={prescreenDescription}>
+            <PrescreenQuestions
+              communitySite={communitySite}
+              dacl={dacl}
+              deliveryOnly={deliveryOnly}
+              orderType={orderType}
+              selectedLocation={selectedLocation}
+              questions={questions}
+              setPushQuestions={setPushQuestions}
+              setFinishedPrescreen={setFinishedPrescreen}
+            />
+          </BaseLayout>
+        </>
+      );
+    } else {
+      if (cartConverted === false && communitySitePassed) {
+        console.log('inventory', inventory);
+        let convertItem: string | null = null;
+        inventory.some((item) => {
+          console.log('item', item.stockLocation, communitySite, item.name, item);
+          if (item.stockLocation === communitySite) {
+            console.log('dacl item?', dacl, item.name.toLowerCase().indexOf('dacl'));
+            if (dacl && item.name.toLowerCase().indexOf('dacl') > -1) {
+              convertItem = item.id;
+              console.log('converting to dacl item', convertItem);
+            }
+            if (!dacl && item.name.toLowerCase().indexOf('dacl') === -1) {
+              convertItem = item.id;
+              console.log('converting to non-dacl item', convertItem);
+            }
+            if (convertItem) {
+              console.log('converting Cart', convertItem);
+              dispatch(
+                CompoundAction([
+                  SetItems.create([{ id: convertItem, quantity: 1 }]),
+                  SetIsDonationRequest.create(true),
+                ]),
+              );
+              setCartConverted(true);
+              return true;
+            }
+          }
+        });
+      }
+
+      if (cartConverted) {
+        console.log('post conversion items', items);
+      }
+    }
+  }
+
+  console.log('enabled?', ordersEnabled, preOrderMode);
+  if (!ordersEnabled && !preOrderMode) {
+    return <Redirect to="/" />;
+  } else {
+    console.log('skip redirect');
+  }
+
+  console.log('errors', errors);
+
   return (
     <BaseLayout>
       <form onSubmit={handleSubmit(onSubmit)} className={classNames(styles.container, { [styles.small]: isSmall })}>
         <Grid container spacing={2}>
+          {locationLocked && (
+            <Grid item md={8} xs={12}>
+              <Typography variant="h3" className={styles.title}>
+                <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
+              </Typography>
+              {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
+              <Input
+                type="hidden"
+                name="pickupLocationId"
+                value={selectedLocationId || ''}
+                inputRef={register({ required: orderType === OrderType.PICKUP })}
+              />
+            </Grid>
+          )}
+
           <Grid item md={8} xs={12}>
             {deliveryOptionsOnCheckout && <OrderTypeSelector className={styles.orderType} />}
             {!deliveryOptionsOnCheckout && deliveryEnabled && <OrderTypeView className={styles.orderType} />}
@@ -207,7 +416,12 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                     inputRef={register({ required: contentFieldIsRequired || 'Email is required' })}
                   />
                   {questions.length !== 0 && (
-                    <Questions register={register} errors={errors} questionClassName={styles.field} />
+                    <Questions
+                      register={register}
+                      errors={errors}
+                      questionClassName={styles.field}
+                      questions={questions}
+                    />
                   )}
                   {!isDonationRequest && <OptInView className={styles.optIn} inputRef={register} />}
                   {isDonationRequest && (
@@ -219,19 +433,21 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                   )}
                 </Grid>
               </Grid>
-              {orderType === OrderType.PICKUP && (
+              {!locationLocked && orderType === OrderType.PICKUP && (
                 <Grid container className={styles.section}>
                   <Typography variant="h3" className={styles.title}>
                     <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
                   </Typography>
                   <Grid item md={8} xs={12}>
                     {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
+                    <LocationPreferences locationPrefs={locationPreferences} />
+
                     <Button
                       className={classNames(styles.locationButton, { [styles.error]: !!errors.pickupLocationId })}
                       color="primary"
                       onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
                     >
-                      {selectedLocation
+                      {selectedLocation || locationPreferences.location1
                         ? contentLocationOptionChange || 'Change'
                         : contentLocationOptionChoose || 'Choose'}{' '}
                       location...
@@ -240,7 +456,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                       type="hidden"
                       name="pickupLocationId"
                       value={selectedLocationId || ''}
-                      inputRef={register({ required: orderType === OrderType.PICKUP })}
+                      inputRef={register({ required: !config.lotteryEnabled && orderType === OrderType.PICKUP })}
                     />
                     {errors.pickupLocationId && (
                       <FormHelperText error>
@@ -417,7 +633,9 @@ export default function CheckoutPage() {
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const { ordersEnabled } = config;
 
-  if (!ordersEnabled) {
+  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
+
+  if (!ordersEnabled && !preOrderMode) {
     return <Redirect to="/" />;
   }
 

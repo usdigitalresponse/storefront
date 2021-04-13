@@ -1,3 +1,5 @@
+import { FieldError, NestDataObject } from 'react-hook-form/dist/types';
+
 export interface IConfig {
   languages: string[];
   taxRate: number;
@@ -27,6 +29,10 @@ export interface IConfig {
   stripeAPIKeyDonation?: string;
   tippingEnabled: boolean;
   sequentialDiscountCode?: string;
+  prescreenOrders: boolean;
+  forceBasketItem: string;
+  lotteryEnabled: boolean;
+  defaultAllowParagraphs: boolean;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
@@ -260,6 +266,7 @@ export interface IPickupLocation {
   schedules: string[];
   resolvedSchedules?: ISchedule[];
   waitlistOnly?: boolean;
+  communitySite?: boolean;
 }
 
 export interface IStockLocation extends IPickupLocation {
@@ -315,6 +322,7 @@ export type QuestionType = 'Single Checkbox' | 'Multiple Checkboxes' | 'Text Inp
 
 export interface IQuestionStrings {
   label: string;
+  markdownLabel: string;
   options: string[];
 }
 
@@ -325,6 +333,13 @@ interface IQuestionBase {
   type: QuestionType;
   required: boolean;
   waitlistOnly: boolean;
+  turnOff: boolean;
+  preScreen: boolean;
+  daclDelivery: boolean;
+  daclPickup: boolean;
+  communitySite: boolean;
+  webEnrollment: boolean;
+  markdownLabel: string;
 }
 
 export interface ITextInputQuestion extends IQuestionBase {
@@ -349,4 +364,20 @@ export type Question = ITextInputQuestion | ICheckboxQuestion | ICheckboxesQuest
 export enum PayState {
   NOW = 'now',
   LATER = 'later',
+}
+
+export type PrescreenFormField = 'eligible' | 'street1' | 'street2' | 'zip';
+
+export interface IPrescreenFormData {
+  eligible: any[];
+  street1: string;
+  street2: string;
+  zip: string;
+  errors: NestDataObject<PrescreenFormField, FieldError>;
+}
+
+export interface ILocationPreference {
+  location1: string;
+  location2: string;
+  location3: string;
 }
