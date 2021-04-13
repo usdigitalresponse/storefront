@@ -22,7 +22,7 @@ const TextInputQuestion: React.FC<Props> = ({ question, inputRef, errors, classN
       fullWidth: true,
       variant: 'outlined',
       autoComplete: 'off',
-    };
+    }
   }
 
   return (

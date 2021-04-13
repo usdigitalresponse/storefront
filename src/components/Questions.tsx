@@ -13,11 +13,11 @@ interface Props {
   register: any;
   errors: NestDataObject<any, FieldError>;
   questionClassName?: string;
-  questions: any[];
+  questions: Question[];
 }
 
 const Questions: React.FC<Props> = ({ register, errors, questionClassName, questions }) => {
-  const contentFieldIsRequired = useContent('checkout_field_is_required');
+  const contentFieldIsRequired = useContent('checkout_field_is_required') || "Required field";
 
   return (
     <>
@@ -29,7 +29,7 @@ const Questions: React.FC<Props> = ({ register, errors, questionClassName, quest
                 key={question.id}
                 question={question}
                 errors={errors}
-                inputRef={register({ required: question.required ? contentFieldIsRequired : undefined })}
+                inputRef={register({ required: question.required ? contentFieldIsRequired.replace(/{name}/g, question.label) : undefined })}
                 className={questionClassName}
               />
             );
@@ -39,7 +39,7 @@ const Questions: React.FC<Props> = ({ register, errors, questionClassName, quest
                 key={question.id}
                 question={question}
                 errors={errors}
-                inputRef={register({ required: question.required ? contentFieldIsRequired : undefined })}
+                inputRef={register({ required: question.required ? contentFieldIsRequired.replace(/{name}/g, question.label) : undefined })}
                 className={questionClassName}
               />
             );
@@ -48,8 +48,10 @@ const Questions: React.FC<Props> = ({ register, errors, questionClassName, quest
               <CheckboxesQuestion
                 key={question.id}
                 question={question}
+                errors={errors}
                 inputRef={register}
                 className={questionClassName}
+                contentFieldIsRequired={contentFieldIsRequired.replace(/{name}/g, question.label)}
               />
             );
           case 'Select':
@@ -57,7 +59,7 @@ const Questions: React.FC<Props> = ({ register, errors, questionClassName, quest
               <SelectQuestion
                 key={question.id}
                 question={question}
-                inputRef={register({ required: question.required ? contentFieldIsRequired : undefined })}
+                inputRef={register({ required: question.required ? contentFieldIsRequired.replace(/{name}/g, question.label) : undefined })}
                 errors={errors}
                 className={questionClassName}
               />

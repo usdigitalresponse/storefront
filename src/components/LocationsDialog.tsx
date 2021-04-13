@@ -67,6 +67,16 @@ const LocationsDialog: React.FC<Props> = () => {
     console.log('values', values);
     console.log(values.location2 === values.location1);
     let errors = false;
+
+    if (!values.location2) {
+      setError('location2', 'manual', 'Must select 3 locations');
+      errors = true;
+    }
+    if (!values.location3 ) {
+      setError('location3', 'manual', 'Must select 3 locations');
+      errors = true;
+    }
+
     if (values.location2 === values.location1) {
       setError('location2', 'manual', 'Cannot select the same location twice');
       console.log('setting location2 error');
@@ -143,6 +153,7 @@ const LocationsDialog: React.FC<Props> = () => {
               href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home"
               target="_blank"
               rel="noreferrer"
+              style={{marginLeft: "20px"}}
             >
               Learn about Pickup Site Locations
             </a>

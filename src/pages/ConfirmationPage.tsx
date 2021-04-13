@@ -1,6 +1,7 @@
 import { Card, Chip, Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
 import {
+  IConfig,
   IDonationSummary,
   IOrderSummary,
   IPickupLocation,
@@ -28,6 +29,7 @@ import styles from './ConfirmationPage.module.scss';
 interface Props {}
 
 const ConfirmationPage: React.FC<Props> = () => {
+  const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   let query = qs.parse(window.location.search);
   console.log('query', query);
 
@@ -37,9 +39,9 @@ const ConfirmationPage: React.FC<Props> = () => {
   const isSmall = useIsSmall();
   const copy = useContent('confirmation_copy_all');
   const copyEnrolled = useContent('confirmation_copy_enrolled');
-  const confirmationCopyAll = !query.communitysite
+  const confirmationCopyAll = (!query.communitysite
     ? copy
-    : copyEnrolled || `We've sent an email confirmation to {customer-email}`;
+    : copyEnrolled) || `We've sent an email confirmation to {customer-email}`;
   const confirmationCopyOrder = useContent('confirmation_copy_order');
   const confirmationHeader = useContent('confirmation_header_all');
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
@@ -57,6 +59,7 @@ const ConfirmationPage: React.FC<Props> = () => {
 
   const confirmationCopy = confirmationCopyAll
     .replace('{customer-email}', `**${confirmation.email}**`)
+    .replace(/\{pickupLocationName\}/, `**${pickupLocation ? pickupLocation?.name : ''}**`)
     .concat(
       isOrderSummary(confirmation)
         ? ` ${confirmationCopyOrder.replace('{delivery|pickup}', confirmation.type.toLowerCase())}`
@@ -177,12 +180,14 @@ const ConfirmationPage: React.FC<Props> = () => {
             </Grid>
           </Card>
         </Grid>
-        <Grid item md={4} xs={12} className={styles.column}>
-          {isOrderSummary(confirmation) && (
-            <OrderSummary showLineItems orderSummary={confirmation} className={styles.card} />
-          )}
-          {isDonationSummary(confirmation) && <DonationSummary amount={confirmation.total} className={styles.card} />}
-        </Grid>
+        {!config.lotteryEnabled &&
+          <Grid item md={4} xs={12} className={styles.column}>
+            {isOrderSummary(confirmation) && (
+              <OrderSummary showLineItems orderSummary={confirmation} className={styles.card} />
+            )}
+            {isDonationSummary(confirmation) && <DonationSummary amount={confirmation.total} className={styles.card} />}
+          </Grid>
+        }
       </Grid>
     </BaseLayout>
   );

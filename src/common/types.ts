@@ -146,6 +146,7 @@ export interface ICheckoutFormDataDelivery extends ICheckoutFormBase {
   deliveryPref_mornings: boolean;
   deliveryPref_afternoons: boolean;
   deliveryPref_evenings: boolean;
+  locationPreference: any
 }
 
 export interface ICheckoutFormDataPickup extends ICheckoutFormBase {

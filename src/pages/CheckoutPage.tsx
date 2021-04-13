@@ -87,7 +87,7 @@ interface Props {
 }
 
 const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) => {
-  const { register, watch, handleSubmit, errors, clearError } = useForm<ICheckoutFormData>();
+  const { register, watch, handleSubmit, formState, errors, clearError, setError } = useForm<ICheckoutFormData>();
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const isSmall = useIsSmall();
@@ -111,6 +111,8 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const payState = useSelector<IAppState, PayState>((state) => state.checkout.payState);
   const orderAmount = useSelector<IAppState, number>(subtotalWithDiscountSelector);
   const inventory = useSelector<IAppState, InventoryRecord[]>((state) => state.cms.inventory);
+  const locationsDialogIsOpen = useSelector<IAppState, boolean>((state) => state.cart.locationsDialogIsOpen);
+
 
   // Content
   const contentPayNowOptionLabel = useContent('pay_now_option_label');
@@ -195,29 +197,29 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
   if (prescreenOrders) {
     allQuestions.forEach((question) => {
-      console.log('finishedPrescreen, preScreen, question', finishedPrescreen, question.preScreen, question);
+      //console.log('finishedPrescreen, preScreen, question', finishedPrescreen, question.preScreen, question);
       if (question.preScreen !== finishedPrescreen) {
         if (dacl && deliveryOnly && question.daclDelivery) {
-          console.log('dacl delivery', question);
+          //console.log('dacl delivery', question);
           questions.push(question);
           return;
         }
 
         if (dacl && !deliveryOnly && question.daclPickup) {
-          console.log('dacl pickup', question);
+          //console.log('dacl pickup', question);
           questions.push(question);
           return;
         }
 
         if (communitySite && !deliveryOnly && question.communitySite) {
-          console.log('community site', question);
+          //console.log('community site', question);
           questions.push(question);
           return;
         }
 
         if (!dacl && !deliveryOnly && !communitySite) {
           if (question.webEnrollment) {
-            console.log('web enrollment', question);
+            //console.log('web enrollment', question);
             questions.push(question);
             return;
           }
@@ -225,7 +227,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
       }
     });
   } else {
-    console.log('not prescreen');
+    //console.log('not prescreen');
     questions.push(...allQuestions);
   }
 
@@ -239,6 +241,11 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   }, [dispatch, location.search]);
 
   useEffect(() => {
+    clearError("locationPreference")
+  }, [locationsDialogIsOpen, clearError]);
+
+
+  useEffect(() => {
     console.log('selectedLocationID effect', selectedLocationId);
     if (selectedLocationId) {
       clearError('pickupLocationId');
@@ -246,15 +253,26 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   }, [clearError, selectedLocationId]);
 
   async function onSubmit(data: ICheckoutFormData) {
-    dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
-
     console.log('onSubmit items', items, data);
     console.log('before push data', JSON.stringify(data));
     if (pushQuestions) {
       Object.assign(data, pushQuestions);
     }
+
+    console.log("formState", formState)
+    console.log("onSubmit errors", errors)
+
+    console.log("locationPreferences", locationPreferences)
+    if(! query.communitysite && (! locationPreferences.location1 || ! locationPreferences.location2 || ! locationPreferences.location3) ) {
+      console.log("setting locationPreference error")
+      setError("locationPreference", "validation", "Must select 3, unique locations in order of preference")
+      return
+    }
+
     console.log('before pay data', JSON.stringify(data));
     console.log('before pay items', JSON.stringify(items));
+
+    dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
 
     const status = await StripeService.pay(data, stripe, elements, locationPreferences);
 
@@ -263,6 +281,8 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     if (status === PaymentStatus.SUCCEEDED) {
       history.push(reverse('confirmation', query));
     }
+
+    return
   }
 
   function textFieldProps(label: string, name: CheckoutFormField, placeholder?: string): TextFieldProps {
@@ -317,33 +337,34 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
       );
     } else {
       if (cartConverted === false && communitySitePassed) {
-        console.log('inventory', inventory);
-        let convertItem: string | null = null;
-        inventory.some((item) => {
-          console.log('item', item.stockLocation, communitySite, item.name, item);
-          if (item.stockLocation === communitySite) {
-            console.log('dacl item?', dacl, item.name.toLowerCase().indexOf('dacl'));
-            if (dacl && item.name.toLowerCase().indexOf('dacl') > -1) {
-              convertItem = item.id;
-              console.log('converting to dacl item', convertItem);
-            }
-            if (!dacl && item.name.toLowerCase().indexOf('dacl') === -1) {
-              convertItem = item.id;
-              console.log('converting to non-dacl item', convertItem);
-            }
-            if (convertItem) {
-              console.log('converting Cart', convertItem);
-              dispatch(
-                CompoundAction([
-                  SetItems.create([{ id: convertItem, quantity: 1 }]),
-                  SetIsDonationRequest.create(true),
-                ]),
-              );
-              setCartConverted(true);
-              return true;
-            }
-          }
-        });
+        console.log("skipping cartConvert for later")
+        // console.log('inventory', inventory);
+        // let convertItem: string | null = null;
+        // inventory.some((item) => {
+        //   console.log('item', item.stockLocation, communitySite, item.name, item);
+        //   if (item.stockLocation === communitySite) {
+        //     console.log('dacl item?', dacl, item.name.toLowerCase().indexOf('dacl'));
+        //     if (dacl && item.name.toLowerCase().indexOf('dacl') > -1) {
+        //       convertItem = item.id;
+        //       console.log('converting to dacl item', convertItem);
+        //     }
+        //     if (!dacl && item.name.toLowerCase().indexOf('dacl') === -1) {
+        //       convertItem = item.id;
+        //       console.log('converting to non-dacl item', convertItem);
+        //     }
+        //     if (convertItem) {
+        //       console.log('converting Cart', convertItem);
+        //       dispatch(
+        //         CompoundAction([
+        //           SetItems.create([{ id: convertItem, quantity: 1 }]),
+        //           SetIsDonationRequest.create(true),
+        //         ]),
+        //       );
+        //       setCartConverted(true);
+        //       return true;
+        //     }
+        //   }
+        // });
       }
 
       if (cartConverted) {
@@ -440,18 +461,25 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                   </Typography>
                   <Grid item md={8} xs={12}>
                     {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
-                    <LocationPreferences locationPrefs={locationPreferences} />
-
+                    <LocationPreferences locationPrefs={locationPreferences} errors={errors}/>
                     <Button
                       className={classNames(styles.locationButton, { [styles.error]: !!errors.pickupLocationId })}
                       color="primary"
                       onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
                     >
-                      {selectedLocation || locationPreferences.location1
+                      { ! config.lotteryEnabled ? <>
+                        {selectedLocation || locationPreferences.location1
+                          ? contentLocationOptionChange || 'Change'
+                          : contentLocationOptionChoose || 'Choose'}{' '}
+                        location...
+                      </>:<> {selectedLocation || locationPreferences.location1
                         ? contentLocationOptionChange || 'Change'
                         : contentLocationOptionChoose || 'Choose'}{' '}
-                      location...
+                        location preference...
+                      </>}
                     </Button>
+                    <FormHelperText error>{errors["locationPreference"] && errors["locationPreference"].messsage}</FormHelperText>
+
                     <Input
                       type="hidden"
                       name="pickupLocationId"
@@ -585,7 +613,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
           </Grid>
           <Grid item md={4} xs={12} container className={styles.right}>
             <div className={!isSmall ? styles.sidebar : undefined}>
-              <OrderSummary className={styles.summary} showLineItems editable={!isDonationRequest} showTip />
+              {!config.lotteryEnabled && <OrderSummary className={styles.summary} showLineItems editable={!isDonationRequest} showTip />}
               <Button
                 className={classNames({ [styles.readOnly]: isPaying })}
                 fullWidth
