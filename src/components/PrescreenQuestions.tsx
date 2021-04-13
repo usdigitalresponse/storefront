@@ -107,18 +107,32 @@ const PrescreenQuestions: React.FC<Props> = ({
 
     let selected: { [index: string]: boolean } = {};
     let fields: { [index: string]: boolean } = {};
+    let programEligiblityQuestion: string
+    let programEligible = ""
     Object.keys(data).forEach((key: string) => {
       if (key.indexOf('question') === 0) {
         let nameParts = key.split("_")
         let fieldName = nameParts[0]
+        let answer = nameParts[1]
 
         let val = (data as any)[key]
-        console.log("key, nameParts, fieldName, val", key, nameParts, fieldName, val)
+        console.log("key, nameParts, fieldName, val, answer", key, nameParts, fieldName, val, answer)
 
         fields[fieldName] = true
         if( ! selected[fieldName] ) {
           selected[fieldName] = false
         }
+
+        if( answer === "SNAP" ) {
+          programEligiblityQuestion = fieldName
+        }
+
+        if( programEligiblityQuestion === fieldName ) {
+          if( answer.toLowerCase().indexOf("none") > -1 ) {
+            programEligible = "No"
+          }
+        }
+
         if( Array.isArray(val) ) {
           //single answer multi checkboxes, (for long text with a short "I accept" checkbox) for some reason come as val with type array with "" as the real true/false checked value
           selected[fieldName] = selected[fieldName] || (val as any)[""];
@@ -127,6 +141,9 @@ const PrescreenQuestions: React.FC<Props> = ({
         }
       }
     });
+    if( programEligible === "" ) {
+      programEligible = "Yes"
+    }
 
     console.log("fields, selected", fields, selected)
     Object.keys(fields).forEach((fieldName) => {
@@ -161,6 +178,11 @@ const PrescreenQuestions: React.FC<Props> = ({
           status = 'Continue';
         }
       });
+
+      if( programEligible === "No"  ) {
+        status="InEligible"
+      }
+
       if (status === 'Continue') {
         console.log('forwardQuestions', data);
         setPushQuestions(data);
