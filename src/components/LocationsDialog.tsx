@@ -152,7 +152,7 @@ const LocationsDialog: React.FC<Props> = () => {
                 id="location-select-1"
                 name="location1"
                 label="First Choice Location"
-                defaultValue={locationPreferences.location1}
+                defaultValue={locationPreferences?.location1 || ''}
                 control={control}
                 errors={errors}
               >
@@ -162,7 +162,7 @@ const LocationsDialog: React.FC<Props> = () => {
                 id="location-select-2"
                 name="location2"
                 label="Second Choice Location"
-                defaultValue={locationPreferences.location2}
+                defaultValue={locationPreferences?.location2 || ''}
                 control={control}
                 errors={errors}
               >
@@ -172,7 +172,7 @@ const LocationsDialog: React.FC<Props> = () => {
                 id="location-select-3"
                 name="location3"
                 label="Third Choice Location"
-                defaultValue={locationPreferences.location3}
+                defaultValue={locationPreferences?.location3 || ''}
                 control={control}
                 errors={errors}
               >
