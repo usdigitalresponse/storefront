@@ -127,18 +127,23 @@ const PrescreenQuestions: React.FC<Props> = ({
           programEligiblityQuestion = fieldName
         }
 
-        if( programEligiblityQuestion === fieldName ) {
-          if( answer.toLowerCase().indexOf("none") > -1 ) {
+        let fixedVal = val
+        if( Array.isArray(val) ) {
+          //single answer multi checkboxes, (for long text with a short "I accept" checkbox) for some reason come as val with type array with "" as the real true/false checked value
+          fixedVal = (val as any)[""];
+        }
+
+        if (programEligiblityQuestion === fieldName) {
+          console.log("answer none and true?", answer, fixedVal)
+
+          if (answer.toLowerCase().indexOf("none") > -1
+          && fixedVal === true
+          ) {
             programEligible = "No"
           }
         }
 
-        if( Array.isArray(val) ) {
-          //single answer multi checkboxes, (for long text with a short "I accept" checkbox) for some reason come as val with type array with "" as the real true/false checked value
-          selected[fieldName] = selected[fieldName] || (val as any)[""];
-        } else {
-          selected[fieldName] = selected[fieldName] || val;
-        }
+        selected[fieldName] = selected[fieldName] || fixedVal;
       }
     });
     if( programEligible === "" ) {
@@ -183,6 +188,7 @@ const PrescreenQuestions: React.FC<Props> = ({
         status="InEligible"
       }
 
+      console.log("status", status)
       if (status === 'Continue') {
         console.log('forwardQuestions', data);
         setPushQuestions(data);
