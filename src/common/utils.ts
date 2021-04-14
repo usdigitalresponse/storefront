@@ -93,7 +93,9 @@ export function adjustOrderItemsForLottery(
   if (placeholder !== null) {
     console.group('productList');
     for (const item of productList) {
-      if (item.name === (placeholder as InventoryRecord).name.replace(' (Placeholder)', '')) {
+      let placeholderName = (placeholder as InventoryRecord).name.replace(' (Placeholder)', '').trim()
+      console.log("placeholderName, item.name", placeholderName, item.name)
+      if (item.name.trim() === placeholderName) {
         console.log('item', item.stockLocation, item);
         if (
           item.stockLocation === locationPrefs.location1 ||
