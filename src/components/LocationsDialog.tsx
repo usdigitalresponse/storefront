@@ -46,7 +46,7 @@ const LocationsDialog: React.FC<Props> = () => {
 
   const publicLocations: IPickupLocation[] = [];
   pickupLocations.forEach((location) => {
-    if (!location.communitySite) publicLocations.push(location);
+    if (!location.communitySite && location.name && location.name?.trim() !== "") publicLocations.push(location);
   });
 
   function onClose() {

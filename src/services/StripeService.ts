@@ -124,6 +124,7 @@ export class StripeService {
       items,
     };
 
+    console.log("lotteryEnabled && formData.pickupLocationId && !locationPrefs?.location1", lotteryEnabled, formData.pickupLocationId, !locationPrefs?.location1)
     if (lotteryEnabled && formData.pickupLocationId && !locationPrefs?.location1 ) {
       locationPrefs = locationPrefs || {} as ILocationPreference
       locationPrefs.location1 = formData.pickupLocationId

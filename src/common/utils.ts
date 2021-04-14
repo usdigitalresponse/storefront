@@ -110,6 +110,10 @@ export function adjustOrderItemsForLottery(
     throw new Error("Couldn't match placeholder");
   }
 
+  if( locationPrefs ) {
+    orderIntent.locationIds = `${locationPrefs.location1 || ""}|${locationPrefs.location2 || ""}|${locationPrefs.location3 || ""}`
+  }
+
   console.log('adjusted items', newItems);
 
   console.groupEnd();
