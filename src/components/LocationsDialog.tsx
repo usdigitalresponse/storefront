@@ -150,7 +150,7 @@ const LocationsDialog: React.FC<Props> = () => {
         ) : (
           <>
             <a
-              href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home"
+              href="https://sites.google.com/dcgreens.org/produceplusvendors/home"
               target="_blank"
               rel="noreferrer"
               style={{marginLeft: "20px"}}
