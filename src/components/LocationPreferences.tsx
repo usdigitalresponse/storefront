@@ -48,7 +48,7 @@ const LocationPreferences: React.FC<Props> = ({ locationPrefs, errors }) => {
     return (
       <>
         <a
-          href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home"
+          href="https://sites.google.com/dcgreens.org/produceplusvendors/home"
           target="_blank"
           rel="noreferrer"
         >
@@ -61,7 +61,7 @@ const LocationPreferences: React.FC<Props> = ({ locationPrefs, errors }) => {
     return (
       <>
         <a
-          href="https://sites.google.com/dcgreens.org/produce-plus-direct-vendor-pro/home"
+          href="https://sites.google.com/dcgreens.org/produceplusvendors/home"
           target="_blank"
           rel="noreferrer"
         >
