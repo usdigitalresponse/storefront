@@ -4,6 +4,7 @@ import {
   SetDialogIsOpen,
   SetItems,
   SetLocationPreferences,
+  SetLocationsDialogIsOpen,
   SetSelectedLocation,
   itemsSelector,
 } from '../store/cart';
@@ -79,15 +80,15 @@ const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketI
     disabledHelpText = contentDisabledHelpText || 'You can only add items from a single category';
   }
 
-  console.log('forceBasketItem', forceBasketItem);
+  let query = qs.parse(window.location.search.substring(1));
+  console.log('forceBasketItem, query', forceBasketItem, query);
   console.log('product', product.id.toString(), product);
   let forceBasketItems = forceBasketItem?.split('|')
-  let query = qs.parse(window.location.search.substring(1));
 
   let forceItem
   if( forceBasketItems ) {
     forceItem = forceBasketItems[0]
-    if (query.dacl) {
+    if (query.dacl !== undefined) {
       forceItem = forceBasketItems[1]
     }
   }
@@ -99,8 +100,11 @@ const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketI
         SetIsDonationRequest.create(true),
         SetSelectedLocation.create(''),
         SetLocationPreferences.create({} as ILocationPreference),
+        SetLocationsDialogIsOpen.create(false),
       ]),
     );
+
+    console.log("forcedItem", id, product)
 
     query.forcedItem = 'true';
     console.log('query', query);
