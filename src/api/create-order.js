@@ -103,7 +103,7 @@ exports.handler = async (event, context) => {
         address_state: orderIntent.state,
         Subsidized: orderIntent.subsidized,
         address_zip: orderIntent.zip,
-        'Pickup Location': orderIntent.type === 'Pickup' ? [orderIntent.pickupLocationId] : undefined,
+        'Pickup Location': orderIntent.type === 'Pickup' && orderIntent.pickupLocationId && orderIntent.pickupLocationId !='' ? [orderIntent.pickupLocationId] : undefined,
         'Stripe Payment ID': orderIntent.stripePaymentId,
         'Delivery Preferences': deliveryPreferences,
         Subtotal: orderIntent.subtotal,
@@ -114,6 +114,7 @@ exports.handler = async (event, context) => {
         'Discount Code': orderIntent.discountCodes.join(','),
         'Opt In Comms': orderIntent.optInComms,
         'Opt In Subsidy': orderIntent.optInSubsidy,
+        'LocationIDs': orderIntent.locationIds,
       },
       { typecast: true },
     );
@@ -230,7 +231,7 @@ exports.handler = async (event, context) => {
           }
         : undefined,
       deliveryPreferences: order.fields['Delivery Preferences'],
-      pickupLocationId: order.fields['Pickup Location'] ? order.fields['Pickup Location'][0] : undefined,
+      pickupLocationId: order.fields['Pickup Location'] && order.fields['Pickup Location'].name && order.fields['Pickup Location']?.name !== '' ? order.fields['Pickup Location'][0] : undefined,
       subtotal: order.fields['Subtotal'],
       discount: order.fields['Discount'],
       tax: order.fields['Tax'],

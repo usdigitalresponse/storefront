@@ -184,6 +184,7 @@ export interface IOrderIntent extends ICheckoutFormData {
   subsidized: boolean;
   discountCodes: string[];
   stripePaymentId?: string;
+  locationIds?: string;
 }
 
 export interface IOrderSummary extends ICheckoutFormBase {

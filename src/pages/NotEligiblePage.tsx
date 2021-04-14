@@ -33,7 +33,7 @@ const HomePage: React.FC<Props> = () => {
         </Typography>
         <br />
         <Typography variant="h5" className={styles.title}>
-          <Content id="not_eligible_subtitle" defaultText="" />
+          <Content id="not_eligible_subtitle" defaultText="" markdown/>
         </Typography>
         <br />
 
