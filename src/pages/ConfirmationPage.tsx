@@ -37,11 +37,6 @@ const ConfirmationPage: React.FC<Props> = () => {
     (state) => state.checkout.confirmation!,
   );
   const isSmall = useIsSmall();
-  const copy = useContent('confirmation_copy_all');
-  const copyEnrolled = useContent('confirmation_copy_enrolled');
-  const confirmationCopyAll = (!query.communitysite
-    ? copy
-    : copyEnrolled) || `We've sent an email confirmation to {customer-email}`;
   const confirmationCopyOrder = useContent('confirmation_copy_order');
   const confirmationHeader = useContent('confirmation_header_all');
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
@@ -50,6 +45,16 @@ const ConfirmationPage: React.FC<Props> = () => {
     isOrderSummary(confirmation) && confirmation.pickupLocationId && pickupLocations
       ? pickupLocations.find((location) => location.id === confirmation.pickupLocationId)
       : undefined;
+
+  console.log("pickup", isOrderSummary(confirmation), isOrderSummary(confirmation) ? confirmation.pickupLocationId :  'not order', isOrderSummary(confirmation) && confirmation.pickupLocationId && pickupLocations ? confirmation.pickupLocationId : "no pickup location" )
+  console.log("confirmation", confirmation)
+
+  const copy = useContent('confirmation_copy_all');
+  const copyEnrolled = useContent('confirmation_copy_enrolled');
+  const confirmationCopyAll = (!query.communitysite
+    ? copy
+    : copyEnrolled).replace(/\{pickupLocationName\}/, pickupLocation?.name || 'your selected site')  || `We've sent an email confirmation to {customer-email}`;
+
 
   const type = isOrderSummary(confirmation) ? 'order' : 'donation';
 
@@ -66,9 +71,9 @@ const ConfirmationPage: React.FC<Props> = () => {
         : '',
     );
 
-  console.log('copy', copy);
-  console.log('copyEnrolled', copyEnrolled);
-  console.log('confirmationCopy', confirmationCopy);
+  //console.log('copy', copy);
+  //console.log('copyEnrolled', copyEnrolled);
+  //console.log('confirmationCopy', confirmationCopy);
 
   const title = !query.communitysite
     ? type === 'order'

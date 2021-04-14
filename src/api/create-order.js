@@ -168,19 +168,37 @@ exports.handler = async (event, context) => {
         return acc;
       }, {});
 
+    //console.log('order.id', order.id, order)
+    // still need questionIds for the length even though we're not looping it via map/forEach now
     const questionIds = Object.keys(questionResponses);
     if (questionIds.length) {
-      await base('Response Items').create(
-        questionIds.map((questionId) => {
-          return {
-            fields: {
-              Question: [questionId],
-              Order: [order.id],
-              Response: questionResponses[questionId],
-            },
-          };
-        }),
-      );
+      let responses = []
+
+      //console.log("questionIds", questionIds)
+      for( questionId in questionResponses) {
+        //console.log("questionId", questionId)
+        let response = {
+          fields: {
+            Question: [questionId],
+            Order: [order.id],
+            Response: questionResponses[questionId],
+          },
+        };
+
+        //console.log(response)
+        responses.push(response)
+        if( responses.length === 10 ) {
+          console.log("pushing response batch", responses.length)
+          await base('Response Items').create(responses);
+          //console.log("response batch done")
+          responses = []
+        }
+      }
+
+      if (responses.length > 0 ) {
+        console.log("final response batch", responses.length)
+        await base('Response Items').create(responses);
+      }
     }
 
     try {
@@ -231,7 +249,7 @@ exports.handler = async (event, context) => {
           }
         : undefined,
       deliveryPreferences: order.fields['Delivery Preferences'],
-      pickupLocationId: order.fields['Pickup Location'] && order.fields['Pickup Location'].name && order.fields['Pickup Location']?.name !== '' ? order.fields['Pickup Location'][0] : undefined,
+      pickupLocationId: order.fields['Pickup Location'] ? order.fields['Pickup Location'][0] : undefined,
       subtotal: order.fields['Subtotal'],
       discount: order.fields['Discount'],
       tax: order.fields['Tax'],
