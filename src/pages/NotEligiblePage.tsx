@@ -37,7 +37,7 @@ const HomePage: React.FC<Props> = () => {
         </Typography>
         <br />
 
-        <Content id="not_eligible_copy" defaultText="Not Eligibile Copy" />
+        <Content id="not_eligible_copy" defaultText="Not Eligibile Copy" markdown />
       </div>
     </BaseLayout>
   );
