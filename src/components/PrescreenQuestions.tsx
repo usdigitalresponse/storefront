@@ -228,7 +228,7 @@ const PrescreenQuestions: React.FC<Props> = ({
                   <Typography variant="h3" className={styles.title}>
                     <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
                   </Typography>
-                  {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
+                  {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} dacl={dacl} />}
                 </Grid>
               )}
             </>
