@@ -44,29 +44,9 @@ const LocationPreferences: React.FC<Props> = ({ locationPrefs, errors }) => {
     }
   });
 
-  if (!locationPrefs.location1) {
     return (
       <>
-        <a
-          href="https://sites.google.com/dcgreens.org/produceplusvendors/home"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Learn about Pickup Site Locations
-        </a>
-        <br/>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <a
-          href="https://sites.google.com/dcgreens.org/produceplusvendors/home"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Learn about Pickup Site Locations
-        </a>
+        {locationPrefs.location1 &&
         <ul>
           {location1 && (
             <li>
@@ -84,12 +64,12 @@ const LocationPreferences: React.FC<Props> = ({ locationPrefs, errors }) => {
             </li>
           )}
         </ul>
+        }
 
         <FormHelperText error>{errors['locationPreference'] || !locationPrefs && errors['locationPreference'].message}</FormHelperText>
 
       </>
     );
-  }
 };
 
 export default LocationPreferences;

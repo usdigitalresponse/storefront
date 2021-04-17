@@ -61,6 +61,7 @@ import ConfirmEligibilityView from '../components/ConfirmEligibilityView';
 import Content from '../components/Content';
 import DeliveryPreferences from '../components/DeliveryPreferences';
 import Location from '../components/Location';
+import LocationPreferenceLinks from '../components/LocationPreferenceLinks';
 import LocationPreferences from '../components/LocationPreferences';
 import OptInView from '../components/OptInView';
 import OrderSummary from '../components/OrderSummary';
@@ -465,21 +466,21 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                     <Button
                       className={classNames(styles.locationButton, { [styles.error]: !!errors.pickupLocationId })}
                       color="primary"
+                      variant="contained"
                       onClick={() => dispatch(SetLocationsDialogIsOpen.create(true))}
                     >
-                      { ! config.lotteryEnabled ? <>
-                        {selectedLocation || locationPreferences.location1
-                          ? contentLocationOptionChange || 'Change'
-                          : contentLocationOptionChoose || 'Choose'}{' '}
-                        location...
-                      </>:<> {selectedLocation || locationPreferences.location1
+                      {selectedLocation || locationPreferences.location1
                         ? contentLocationOptionChange || 'Change'
                         : contentLocationOptionChoose || 'Choose'}{' '}
+                      { ! config.lotteryEnabled ? <>
+                        location...
+                      </>:<>
                         location preference...
                       </>}
                     </Button>
                     <FormHelperText error>{errors["locationPreference"] && errors["locationPreference"].messsage}</FormHelperText>
-
+                    <hr/>
+                    <LocationPreferenceLinks/>
                     <Input
                       type="hidden"
                       name="pickupLocationId"
