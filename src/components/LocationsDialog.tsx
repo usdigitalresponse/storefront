@@ -28,6 +28,7 @@ import React, { Dispatch, FormEvent, SetStateAction } from 'react';
 import ReactHookFormSelect from './ReactHookFormSelect';
 // import SearchIcon from '@material-ui/icons/Search';
 import Location from './Location';
+import LocationPreferenceLinks from './LocationPreferenceLinks';
 import ScheduleView from './ScheduleView';
 import classNames from 'classnames';
 import styles from './LocationsDialog.module.scss';
@@ -149,15 +150,6 @@ const LocationsDialog: React.FC<Props> = () => {
           </List>
         ) : (
           <>
-            <a
-              href="https://sites.google.com/dcgreens.org/produceplusvendors/home"
-              target="_blank"
-              rel="noreferrer"
-              style={{marginLeft: "20px"}}
-            >
-              Learn about Pickup Site Locations
-            </a>
-            <br />
             <form onSubmit={handleSubmit}>
               <ReactHookFormSelect
                 id="location-select-1"
@@ -201,6 +193,10 @@ const LocationsDialog: React.FC<Props> = () => {
               >
                 Continue
               </Button>
+
+              <hr/>
+
+                <LocationPreferenceLinks/>
             </form>
           </>
         )}
