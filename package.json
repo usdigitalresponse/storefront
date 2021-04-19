@@ -31,6 +31,7 @@
     "airtable": "0.10.1",
     "classnames": "^2.2.6",
     "cleave.js": "^1.6.0",
+    "encoding": "^0.1.13",
     "eslint-config-prettier": "^6.15.0",
     "eslint-config-react": "^1.1.7",
     "eslint-config-react-app": "^5.1.0",
