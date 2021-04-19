@@ -51,10 +51,11 @@ const ConfirmationPage: React.FC<Props> = () => {
 
   const copy = useContent('confirmation_copy_all');
   const copyEnrolled = useContent('confirmation_copy_enrolled');
+  const confirmationWaitlistCopyAll = useContent('confirmation_waitlist_copy_all')
+
   const confirmationCopyAll = (!query.communitysite
     ? copy
-    : copyEnrolled).replace(/\{pickupLocationName\}/, pickupLocation?.name || 'your selected site')  || `We've sent an email confirmation to {customer-email}`;
-
+    : copyEnrolled)  || `We've sent an email confirmation to {customer-email}`;
 
   const type = isOrderSummary(confirmation) ? 'order' : 'donation';
 
@@ -62,9 +63,9 @@ const ConfirmationPage: React.FC<Props> = () => {
     return <BaseLayout title="Order not found" description={`Error finding order. Please try again`}></BaseLayout>;
   }
 
-  const confirmationCopy = confirmationCopyAll
-    .replace('{customer-email}', `**${confirmation.email}**`)
-    .replace(/\{pickupLocationName\}/, `**${pickupLocation ? pickupLocation?.name : ''}**`)
+  let displayCopy = ((confirmation as IOrderSummary).status === OrderStatus.WAITLIST ? confirmationWaitlistCopyAll : confirmationCopyAll)
+    .replace(/\{customer-email\}/, `**${confirmation.email}**`)
+    .replace(/\{pickupLocationName\}/, `**${pickupLocation ? pickupLocation?.name : 'your selected site'}**`)
     .concat(
       isOrderSummary(confirmation)
         ? ` ${confirmationCopyOrder.replace('{delivery|pickup}', confirmation.type.toLowerCase())}`
@@ -75,20 +76,18 @@ const ConfirmationPage: React.FC<Props> = () => {
   //console.log('copyEnrolled', copyEnrolled);
   //console.log('confirmationCopy', confirmationCopy);
 
-  const title = !query.communitysite
-    ? type === 'order'
+  const title = type === 'order'
       ? (confirmation as IOrderSummary).status === OrderStatus.WAITLIST
         ? 'On the waitlist!'
-        : confirmationHeader || 'Order Placed!'
-      : 'Thank you!'
-    : 'Enrollment Confirmed!';
+      : !query.communitysite ? confirmationHeader || 'Order Placed!' : 'Enrollment Confirmed!'
+      : 'Thank you!';
 
   return (
     <BaseLayout
       title={title}
       description={
         <>
-          <Content text={confirmationCopy} markdown />
+          <Content text={displayCopy} markdown />
           <Typography variant="body1" className={styles.description}>
             {isSmall ? (
               <>
