@@ -30,7 +30,7 @@ interface Props {}
 
 const ConfirmationPage: React.FC<Props> = () => {
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  let query = qs.parse(window.location.search);
+  let query = qs.parse(window.location.search.substring(1));
   console.log('query', query);
 
   const confirmation = useSelector<IAppState, IOrderSummary | IDonationSummary>(
