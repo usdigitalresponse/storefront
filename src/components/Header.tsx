@@ -38,6 +38,7 @@ const Header: React.FC = () => {
   const navDonate = useContent('nav_donate');
   const navLink = useContent('nav_link');
   const navDrive = useContent('nav_drive');
+  const navFAQ = useContent('nav_faq');
 
   const headerNavItems: INavItem[] = [{ name: 'Home', url: reverse('home') }];
 
@@ -51,6 +52,10 @@ const Header: React.FC = () => {
 
   if (embeddedViewEnabled) {
     headerNavItems.push({ name: navDrive, url: embeddedViewName ? `/${embeddedViewName}` : reverse('drivers') });
+  }
+
+  if (navFAQ && config.navFAQURL) {
+    headerNavItems.push({ name: navFAQ, url: config.navFAQURL, newTab: config.navFAQNewTab });
   }
 
   const location = useLocation();
@@ -84,7 +89,7 @@ const Header: React.FC = () => {
                     </Typography>
                   </ListItem>
                   {headerNavItems.map((item, i) => (
-                    <ListItem key={i} button component={Link} href={item.url}>
+                    <ListItem key={i} button component={Link} href={item.url} newTab={item.newTab}>
                       <ListItemText primary={item.name} />
                     </ListItem>
                   ))}

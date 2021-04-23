@@ -34,6 +34,8 @@ export interface IConfig {
   lotteryEnabled: boolean;
   defaultAllowParagraphs: boolean;
   driverRedirect?: string
+  navFAQURL?: string
+  navFAQNewTab: boolean
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
@@ -109,6 +111,7 @@ export interface IRoute {
 export interface INavItem {
   name: string;
   url: string;
+  newTab?: boolean
 }
 
 export interface IOrderItem {

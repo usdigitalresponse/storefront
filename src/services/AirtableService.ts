@@ -74,6 +74,8 @@ export class AirtableService {
             lotteryEnabled: records.config.lottery_enabled === 'true' ? true : false,
             defaultAllowParagraphs: records.config.default_allow_paragraphs === 'true' ? true : false,
             driverRedirect: records.config.driver_redirect,
+            navFAQURL: records.config.nav_faq_url,
+            navFAQNewTab: records.config.nav_faq_new_tab,
           }),
           SetOrderType.create(
             deliveryEnabled ? records.config.default_order_type || OrderType.DELIVERY : OrderType.PICKUP,
