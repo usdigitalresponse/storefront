@@ -282,7 +282,14 @@ export const pickupLocationsSelector = Reselect.createSelector(
         pickupLocation.resolvedSchedules = resolvedSchedules;
         return pickupLocation;
       })
-      .filter((pickupLocation) => isDonationRequest || (!isDonationRequest && !pickupLocation.waitlistOnly && pickupLocation.name && pickupLocation.name?.trim() !== ''));
+      .filter(
+        (pickupLocation) =>
+          isDonationRequest ||
+          (!isDonationRequest &&
+            !pickupLocation.waitlistOnly &&
+            pickupLocation.name &&
+            pickupLocation.name?.trim() !== ''),
+      );
   },
 );
 

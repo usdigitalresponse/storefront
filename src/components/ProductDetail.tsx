@@ -83,13 +83,13 @@ const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketI
   let query = qs.parse(window.location.search.substring(1));
   console.log('forceBasketItem, query', forceBasketItem, query);
   console.log('product', product.id.toString(), product);
-  let forceBasketItems = forceBasketItem?.split('|')
+  let forceBasketItems = forceBasketItem?.split('|');
 
-  let forceItem
-  if( forceBasketItems ) {
-    forceItem = forceBasketItems[0]
+  let forceItem;
+  if (forceBasketItems) {
+    forceItem = forceBasketItems[0];
     if (query.dacl !== undefined) {
-      forceItem = forceBasketItems[1]
+      forceItem = forceBasketItems[1];
     }
   }
 
@@ -104,7 +104,7 @@ const ProductDetail: React.FC<Props> = ({ card, product, className, forceBasketI
       ]),
     );
 
-    console.log("forcedItem", id, product)
+    console.log('forcedItem', id, product);
 
     query.forcedItem = 'true';
     console.log('query', query);

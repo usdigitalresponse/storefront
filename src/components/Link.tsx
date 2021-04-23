@@ -6,9 +6,9 @@ const Link = React.forwardRef((props: any, ref) => {
   const href = props.href || '';
   const isRelative = /^\//.test(href);
 
-  let target = ""
-  if( props.newTab ) {
-    target = "_new"
+  let target = '';
+  if (props.newTab) {
+    target = '_new';
   }
 
   return isRelative ? (

@@ -15,9 +15,9 @@ const DriversPage: React.FC = () => {
   const { embeddedViewId } = config;
   const [loading, setLoading] = useState<boolean>(true);
 
-  if( config.driverRedirect )   {
+  if (config.driverRedirect) {
     if (typeof window !== 'undefined') {
-      window.location.href = config.driverRedirect
+      window.location.href = config.driverRedirect;
     }
   }
 

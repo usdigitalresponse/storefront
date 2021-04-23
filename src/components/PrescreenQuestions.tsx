@@ -54,7 +54,9 @@ const PrescreenQuestions: React.FC<Props> = ({
     orderType,
   );
 
-  const { register, handleSubmit, triggerValidation, errors, formState, setError, clearError } = useForm<IPrescreenFormData>({
+  const { register, handleSubmit, triggerValidation, errors, formState, setError, clearError } = useForm<
+    IPrescreenFormData
+  >({
     reValidateMode: 'onChange',
   });
   const hasErrors = Object.keys(errors).length > 0;
@@ -107,62 +109,59 @@ const PrescreenQuestions: React.FC<Props> = ({
 
     let selected: { [index: string]: boolean } = {};
     let fields: { [index: string]: boolean } = {};
-    let programEligiblityQuestion: string
-    let programEligible = ""
+    let programEligiblityQuestion: string;
+    let programEligible = '';
     Object.keys(data).forEach((key: string) => {
       if (key.indexOf('question') === 0) {
-        let nameParts = key.split("_")
-        let fieldName = nameParts[0]
-        let answer = nameParts[1]
+        let nameParts = key.split('_');
+        let fieldName = nameParts[0];
+        let answer = nameParts[1];
 
-        let val = (data as any)[key]
-        console.log("key, nameParts, fieldName, val, answer", key, nameParts, fieldName, val, answer)
+        let val = (data as any)[key];
+        console.log('key, nameParts, fieldName, val, answer', key, nameParts, fieldName, val, answer);
 
-        fields[fieldName] = true
-        if( ! selected[fieldName] ) {
-          selected[fieldName] = false
+        fields[fieldName] = true;
+        if (!selected[fieldName]) {
+          selected[fieldName] = false;
         }
 
-        if( answer === "SNAP" ) {
-          programEligiblityQuestion = fieldName
+        if (answer === 'SNAP') {
+          programEligiblityQuestion = fieldName;
         }
 
-        let fixedVal = val
-        if( Array.isArray(val) ) {
+        let fixedVal = val;
+        if (Array.isArray(val)) {
           //single answer multi checkboxes, (for long text with a short "I accept" checkbox) for some reason come as val with type array with "" as the real true/false checked value
-          fixedVal = (val as any)[""];
+          fixedVal = (val as any)[''];
         }
 
         if (programEligiblityQuestion === fieldName) {
-          console.log("answer none and true?", answer, fixedVal)
+          console.log('answer none and true?', answer, fixedVal);
 
-          if (answer.toLowerCase().indexOf("none") > -1
-          && fixedVal === true
-          ) {
-            programEligible = "No"
+          if (answer.toLowerCase().indexOf('none') > -1 && fixedVal === true) {
+            programEligible = 'No';
           }
         }
 
         selected[fieldName] = selected[fieldName] || fixedVal;
       }
     });
-    if( programEligible === "" ) {
-      programEligible = "Yes"
+    if (programEligible === '') {
+      programEligible = 'Yes';
     }
 
-    console.log("fields, selected", fields, selected)
+    console.log('fields, selected', fields, selected);
     Object.keys(fields).forEach((fieldName) => {
-      let fieldSelected = selected[fieldName]
+      let fieldSelected = selected[fieldName];
       console.log('fieldName, fieldSelected', fieldName, fieldSelected);
       if (!fieldSelected) {
         //setNoProgramSelected(true);
-        console.log("setting error", fieldName)
+        console.log('setting error', fieldName);
         setError(fieldName, 'manual', contentFieldIsRequired);
 
         valid = false;
       }
-
-    })
+    });
     // console.log('selected', selected);
     // console.log('errorField', errorField);
     // if (!selected) {
@@ -184,22 +183,22 @@ const PrescreenQuestions: React.FC<Props> = ({
         }
       });
 
-      if( programEligible === "No"  ) {
-        status="InEligible"
+      if (programEligible === 'No') {
+        status = 'InEligible';
       }
 
-      console.log("status", status)
+      console.log('status', status);
       if (status === 'Continue') {
         console.log('forwardQuestions', data);
         setPushQuestions(data);
         setFinishedPrescreen(true);
-        clearError()
+        clearError();
       } else {
         history.push(reverse('noteligible'));
       }
     }
 
-    console.log("errors", errors)
+    console.log('errors', errors);
   }
 
   function textFieldProps(label: string, name: PrescreenFormField, placeholder?: string): TextFieldProps {
@@ -228,7 +227,9 @@ const PrescreenQuestions: React.FC<Props> = ({
                   <Typography variant="h3" className={styles.title}>
                     <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
                   </Typography>
-                  {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} dacl={dacl} />}
+                  {selectedLocation && (
+                    <Location location={selectedLocation} className={styles.selectedLocation} dacl={dacl} />
+                  )}
                 </Grid>
               )}
             </>
