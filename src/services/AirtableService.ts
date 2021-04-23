@@ -73,6 +73,7 @@ export class AirtableService {
             forceBasketItem: records.config.force_basket_item,
             lotteryEnabled: records.config.lottery_enabled === 'true' ? true : false,
             defaultAllowParagraphs: records.config.default_allow_paragraphs === 'true' ? true : false,
+            driverRedirect: records.config.driver_redirect,
           }),
           SetOrderType.create(
             deliveryEnabled ? records.config.default_order_type || OrderType.DELIVERY : OrderType.PICKUP,

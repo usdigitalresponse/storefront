@@ -15,6 +15,12 @@ const DriversPage: React.FC = () => {
   const { embeddedViewId } = config;
   const [loading, setLoading] = useState<boolean>(true);
 
+  if( config.driverRedirect )   {
+    if (typeof window !== 'undefined') {
+      window.location.href = config.driverRedirect
+    }
+  }
+
   return (
     <BaseLayout padding={0} maxWidth="unset">
       <div className={classNames(styles.container, { [styles.small]: isSmall, [styles.loading]: loading })}>

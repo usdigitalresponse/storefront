@@ -33,6 +33,7 @@ export interface IConfig {
   forceBasketItem: string;
   lotteryEnabled: boolean;
   defaultAllowParagraphs: boolean;
+  driverRedirect?: string
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {

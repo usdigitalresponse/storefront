@@ -108,6 +108,7 @@ export const initialCmsState: ICmsState = {
     forceBasketItem: '',
     lotteryEnabled: false,
     defaultAllowParagraphs: false,
+    driverRedirect: undefined
   },
   content: {},
   inventory: [],
