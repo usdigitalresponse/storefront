@@ -39,6 +39,7 @@ const ConfirmationPage: React.FC<Props> = () => {
   const isSmall = useIsSmall();
   const confirmationCopyOrder = useContent('confirmation_copy_order');
   const confirmationHeader = useContent('confirmation_header_all');
+  const donationHeader = useContent('confirmation_header_donation');
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
   const zipcodeSchedules = useSelector<IAppState, ZipcodeScheduleMap>(zipcodeSchedulesSelector);
   const pickupLocation =
@@ -57,6 +58,7 @@ const ConfirmationPage: React.FC<Props> = () => {
   console.log('confirmation', confirmation);
 
   const copy = useContent('confirmation_copy_all');
+  const donationCopy = useContent('confirmation_copy_donation');
   const copyEnrolled = useContent('confirmation_copy_enrolled');
   const confirmationWaitlistCopyAll = useContent('confirmation_waitlist_copy_all');
 
@@ -73,6 +75,12 @@ const ConfirmationPage: React.FC<Props> = () => {
     ? confirmationWaitlistCopyAll
     : confirmationCopyAll
   )
+
+  if( type === "donation" ) {
+    displayCopy = donationCopy || `We've sent an donation confirmation to {customer-email}`
+  }
+
+  displayCopy = displayCopy
     .replace(/\{customer-email\}/, `**${confirmation.email}**`)
     .replace(/\{pickupLocationName\}/, `**${pickupLocation ? pickupLocation?.name : 'your selected site'}**`)
     .concat(
@@ -92,7 +100,7 @@ const ConfirmationPage: React.FC<Props> = () => {
         : !query.communitysite
         ? confirmationHeader || 'Order Placed!'
         : 'Enrollment Confirmed!'
-      : 'Thank you!';
+      : donationHeader || 'Thank you for your donation!';
 
   return (
     <BaseLayout

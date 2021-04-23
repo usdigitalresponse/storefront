@@ -10,9 +10,10 @@ import {
   Typography,
   useTheme,
 } from '@material-ui/core';
+import { CompoundAction } from 'redoodle';
 import { DonationFormField, IDonationFormData, PaymentStatus } from '../common/types';
 import { IAppState } from '../store/app';
-import { SetDonationAmount, makeDonationUnitCountSelector, paymentStatusSelector } from '../store/checkout';
+import { SetDonationAmount, SetError, SetIsPaying, makeDonationUnitCountSelector, paymentStatusSelector } from '../store/checkout';
 import { StripeService } from '../services/StripeService';
 import { formatCurrency } from '../common/format';
 import { reverse } from '../common/router';
@@ -54,6 +55,8 @@ const DonatePageMain: React.FC = () => {
   const donationPresets = [25, 50, 100, 250];
 
   async function onSubmit(data: IDonationFormData) {
+    dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
+
     const status = await StripeService.donate(data, stripe, elements);
 
     if (status === PaymentStatus.SUCCEEDED) {

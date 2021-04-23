@@ -1,3 +1,6 @@
+const { airTableRowsAsKey, fetchTable, DEFAULT_VIEW } = require('../api-services/airtableHelper');
+
+
 const { sendEmail } = require('./sendEmail');
 const numeral = require('numeral');
 const moment = require('moment');
@@ -42,12 +45,20 @@ export const sendOrderConfirmationEmailUser = (order) => {
 
 export const sendDonationConfirmationEmail = (donationSummary) => {
   return new Promise(async (resolve, reject) => {
+    const contentList = await fetchTable('Content', { view: DEFAULT_VIEW });
+    const content = airTableRowsAsKey(contentList);
+
     try {
       if (!donationSummary) {
         throw new Error('No donationSummary specified');
       }
 
       const formattedAmount = numeral(donationSummary.total).format('$0,0.00');
+      console.dir({ emailBody: content.email_donation_confirmation_body })
+      const donationEmailCopy = content.email_donation_confirmation_body.en || '<p>Thank you for your donation.</p>'
+
+      markdown
+        .render(getRecordValueForLanguage(donationEmailCopy, 'en'))
 
       const emailOptions = {
         to: {
@@ -56,13 +67,15 @@ export const sendDonationConfirmationEmail = (donationSummary) => {
         },
         subject: 'Donation Confirmation',
         htmlBody: `
-        <p>Thank you for your donation.</p>
+        ${donationEmailCopy}
         <p>
           <b>Name:</b> ${donationSummary.fullName}<br/>
           <b>Donated Amount:</b> ${formattedAmount}<br/>
         </p>
         `,
       };
+
+      console.dir({emailOptions})
 
       const emailResult = await sendEmail(emailOptions);
 
