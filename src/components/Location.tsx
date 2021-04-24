@@ -23,7 +23,7 @@ const Location: React.FC<Props> = ({ location, className, dacl }) => {
 
   if( config.lotteryEnabled ) {
     //console.group("Location")
-    inventory.forEach((item) =>
+    inventory.some((item) =>
     {
       //console.log("item", item)
       if( item.stockLocation === location.id ) {
@@ -31,8 +31,10 @@ const Location: React.FC<Props> = ({ location, className, dacl }) => {
         if( item.name.indexOf("DACL") > -1 === dacl ) {
           matchedItem = item
           stockRemaining = (matchedItem as InventoryRecord).stockRemaining || -2
+          return true
         }
       }
+      return false
     })
     //console.groupEnd()
     //console.log("matchedItem", matchedItem)
