@@ -31,7 +31,7 @@ export const sendOrderConfirmationEmailUser = (order) => {
         htmlBody: emailBody,
       };
 
-      const emailResult = await sendEmail(emailOptions);
+      const emailResult = await sendEmail(emailOptions, order.items);
 
       return resolve(emailResult[0].statusCode === 202);
     } catch (error) {

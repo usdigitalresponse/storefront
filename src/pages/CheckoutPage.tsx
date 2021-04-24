@@ -305,6 +305,13 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
   console.log('selectedLocation', selectedLocation, selectedLocationId, query.communitysite, orderType);
 
+
+  if (config.lotteryEnabled && items.length === 0) {
+    query.fixEmpty = "1"
+    delete query.screened
+    history.push(reverse("products", query))
+  }
+
   if (prescreenOrders) {
     console.log('cartConverted', cartConverted, dacl);
 
