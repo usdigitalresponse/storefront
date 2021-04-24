@@ -24,6 +24,7 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
 import BaseLayout from '../layouts/BaseLayout';
+import Content from '../components/Content';
 import DonationSummary from '../components/DonationSummary';
 import PhoneField from '../components/PhoneField';
 import React, { useMemo } from 'react';
@@ -185,7 +186,7 @@ const DonatePageMain: React.FC = () => {
                 disabled={hasErrors}
               >
                 {isPaying && <CircularProgress size={26} className={styles.spinner} />}
-                {!isPaying && 'Place Order'}
+                {!isPaying && <Content id='donate_page_submit_button' defaultText='Make Donation'/>}
               </Button>
             </div>
           </Grid>
