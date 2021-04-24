@@ -308,6 +308,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
   if (config.lotteryEnabled && items.length === 0) {
     query.fixEmpty = "1"
+    delete query.screened
     history.push(reverse("products", query))
   }
 
