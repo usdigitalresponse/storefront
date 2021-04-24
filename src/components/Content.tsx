@@ -16,7 +16,13 @@ interface Props {
 
 const Content: React.FC<Props> = ({ id, markdown = false, className, text, defaultText, allowParagraphs = null }) => {
   const cmsContent = useContent(id);
-  const content = text || cmsContent || defaultText || '';
+  let content
+  console.log("id, cmsContent", id, cmsContent)
+  if( cmsContent !== undefined ) {
+    content = cmsContent
+  } else {
+    content = text || defaultText || '';
+  }
 
   const configParagraphs = useSelector((state: IAppState) => state.cms.config.defaultAllowParagraphs);
 

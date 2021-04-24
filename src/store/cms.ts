@@ -355,6 +355,10 @@ export const makeContentValueSelector = () =>
         return '';
       }
 
+      if( value === undefined ) {
+        return undefined
+      }
+
       if (!value) {
         return '';
       }

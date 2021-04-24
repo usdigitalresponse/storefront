@@ -111,7 +111,7 @@ export class AirtableService {
         }
 
         AirtableService.store.dispatch(CompoundAction(actions));
-        document.title = makeContentValueSelector()(AirtableService.store.getState(), 'page_title');
+        document.title = makeContentValueSelector()(AirtableService.store.getState(), 'page_title') || "No copy from CMS";
       });
   }
 

@@ -111,7 +111,7 @@ export interface IRoute {
 }
 
 export interface INavItem {
-  name: string;
+  name?: string;
   url: string;
   newTab?: boolean;
 }

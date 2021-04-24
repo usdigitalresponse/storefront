@@ -37,7 +37,7 @@ const ConfirmationPage: React.FC<Props> = () => {
     (state) => state.checkout.confirmation!,
   );
   const isSmall = useIsSmall();
-  const confirmationCopyOrder = useContent('confirmation_copy_order');
+  const confirmationCopyOrder = useContent('confirmation_copy_order') || "No copy from CMS";
   const confirmationHeader = useContent('confirmation_header_all');
   const donationHeader = useContent('confirmation_header_donation');
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
@@ -80,7 +80,7 @@ const ConfirmationPage: React.FC<Props> = () => {
     displayCopy = donationCopy || `We've sent an donation confirmation to {customer-email}`
   }
 
-  displayCopy = displayCopy
+  displayCopy = displayCopy || "No copy from CMS"
     .replace(/\{customer-email\}/, `**${confirmation.email}**`)
     .replace(/\{pickupLocationName\}/, `**${pickupLocation ? pickupLocation?.name : 'your selected site'}**`)
     .concat(
