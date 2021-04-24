@@ -11,7 +11,8 @@ export type RouteId =
   | 'checkout'
   | 'confirmation'
   | 'schema'
-  | 'noteligible';
+  | 'noteligible'
+  | 'faq';
 export const routePaths: Record<string, string> = {
   home: '/',
   products: '/products',
@@ -23,6 +24,7 @@ export const routePaths: Record<string, string> = {
   confirmation: '/confirmation',
   schema: '/schema',
   noteligible: '/noteligible',
+  faq: '/faq',
 };
 
 export function reverse(routeId: RouteId, params?: Record<string, any>): string {

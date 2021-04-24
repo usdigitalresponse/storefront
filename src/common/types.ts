@@ -34,7 +34,9 @@ export interface IConfig {
   lotteryEnabled: boolean;
   defaultAllowParagraphs: boolean;
   driverRedirect?: string;
-  navFAQURL?: string;
+  faqRedirect?: string;
+  faqEnabled: boolean;
+  faqHomePageButton: boolean;
   navFAQNewTab: boolean;
 }
 

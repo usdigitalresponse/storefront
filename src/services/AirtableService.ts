@@ -74,7 +74,9 @@ export class AirtableService {
             lotteryEnabled: records.config.lottery_enabled === 'true' ? true : false,
             defaultAllowParagraphs: records.config.default_allow_paragraphs === 'true' ? true : false,
             driverRedirect: records.config.driver_redirect,
-            navFAQURL: records.config.nav_faq_url,
+            faqRedirect: records.config.faq_redirect,
+            faqEnabled: records.config.faq_enabled,
+            faqHomePageButton: records.config.faq_homepage_button,
             navFAQNewTab: records.config.nav_faq_new_tab,
           }),
           SetOrderType.create(

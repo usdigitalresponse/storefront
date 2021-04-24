@@ -31,7 +31,7 @@ const Header: React.FC = () => {
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
 
-  const { embeddedViewEnabled, embeddedViewName, donationEnabled, ordersEnabled, cartEnabled } = config;
+  const { embeddedViewEnabled, embeddedViewName, donationEnabled, ordersEnabled, cartEnabled, faqEnabled, navFAQNewTab, faqRedirect } = config;
   const IOrderItemsCount = useSelector<IAppState, number>(IOrderItemCountSelector);
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const navPurchase = useContent('nav_purchase');
@@ -54,8 +54,12 @@ const Header: React.FC = () => {
     headerNavItems.push({ name: navDrive, url: embeddedViewName ? `/${embeddedViewName}` : reverse('drivers') });
   }
 
-  if (navFAQ && config.navFAQURL) {
-    headerNavItems.push({ name: navFAQ, url: config.navFAQURL, newTab: config.navFAQNewTab });
+  if ( faqEnabled ) {
+    if( faqRedirect ) {
+      headerNavItems.push({ name: navFAQ, url: faqRedirect, newTab: navFAQNewTab });
+    } else {
+      headerNavItems.push({ name: navFAQ, url: reverse('faq') });
+    }
   }
 
   const location = useLocation();
