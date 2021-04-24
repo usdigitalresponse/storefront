@@ -75,9 +75,9 @@ export class AirtableService {
             defaultAllowParagraphs: records.config.default_allow_paragraphs === 'true' ? true : false,
             driverRedirect: records.config.driver_redirect,
             faqRedirect: records.config.faq_redirect,
-            faqEnabled: records.config.faq_enabled,
-            faqHomePageButton: records.config.faq_homepage_button,
-            navFAQNewTab: records.config.nav_faq_new_tab,
+            faqEnabled: records.config.faq_enabled === 'true' ? true : false,
+            faqHomePageButton: records.config.faq_homepage_button === 'true' ? true : false,
+            navFAQNewTab: records.config.nav_faq_new_tab === 'true' ? true : false,
           }),
           SetOrderType.create(
             deliveryEnabled ? records.config.default_order_type || OrderType.DELIVERY : OrderType.PICKUP,
