@@ -14,7 +14,7 @@ interface ParseResult {
 }
 
 const main = async () => {
-  const maxBirthYear = 1951
+  const maxBirthYear = 1961
 
   const fileDir = process.argv[2]
 
@@ -162,7 +162,7 @@ function correctnessChecks(orders: ParseResult, pickup: ParseResult, inventory: 
 
 function parseBirthDates(orders: ParseResult) {
   orders.list.some((order) => {
-    let input = order['Birth Year'].trim().replace(/\s/g,"")
+    let input = order['Birth Year'].trim().replace(/\s/g,"").trim()
     if( input.length === 4 ) {
       if( parseInt(input) !== NaN ) {
         order.birthYear = input
