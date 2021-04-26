@@ -108,6 +108,11 @@ export const initialCmsState: ICmsState = {
     forceBasketItem: '',
     lotteryEnabled: false,
     defaultAllowParagraphs: false,
+    driverRedirect: undefined,
+    faqRedirect: undefined,
+    faqEnabled: false,
+    faqHomePageButton: false,
+    navFAQNewTab: true,
   },
   content: {},
   inventory: [],
@@ -279,7 +284,14 @@ export const pickupLocationsSelector = Reselect.createSelector(
         pickupLocation.resolvedSchedules = resolvedSchedules;
         return pickupLocation;
       })
-      .filter((pickupLocation) => isDonationRequest || (!isDonationRequest && !pickupLocation.waitlistOnly && pickupLocation.name && pickupLocation.name?.trim() !== ''));
+      .filter(
+        (pickupLocation) =>
+          isDonationRequest ||
+          (!isDonationRequest &&
+            !pickupLocation.waitlistOnly &&
+            pickupLocation.name &&
+            pickupLocation.name?.trim() !== ''),
+      );
   },
 );
 
@@ -341,6 +353,10 @@ export const makeContentValueSelector = () =>
 
       if (Object.keys(content).length === 0) {
         return '';
+      }
+
+      if( value === undefined ) {
+        return undefined
       }
 
       if (!value) {

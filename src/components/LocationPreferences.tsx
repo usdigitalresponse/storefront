@@ -23,7 +23,7 @@ import classNames from 'classnames';
 
 interface Props {
   locationPrefs: ILocationPreference;
-  errors: any
+  errors: any;
 }
 
 const LocationPreferences: React.FC<Props> = ({ locationPrefs, errors }) => {
@@ -44,9 +44,9 @@ const LocationPreferences: React.FC<Props> = ({ locationPrefs, errors }) => {
     }
   });
 
-    return (
-      <>
-        {locationPrefs.location1 &&
+  return (
+    <>
+      {locationPrefs.location1 && (
         <ul>
           {location1 && (
             <li>
@@ -64,12 +64,13 @@ const LocationPreferences: React.FC<Props> = ({ locationPrefs, errors }) => {
             </li>
           )}
         </ul>
-        }
+      )}
 
-        <FormHelperText error>{errors['locationPreference'] || !locationPrefs && errors['locationPreference'].message}</FormHelperText>
-
-      </>
-    );
+      <FormHelperText error>
+        {errors['locationPreference'] || (!locationPrefs && errors['locationPreference'].message)}
+      </FormHelperText>
+    </>
+  );
 };
 
 export default LocationPreferences;

@@ -22,7 +22,10 @@ const HomePage: React.FC<Props> = () => {
   const bannerLogo = useContentImage('banner_logo');
   const introImage = useContentImage('introduction_image');
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const { embeddedViewName, embeddedViewEnabled, donationEnabled, ordersEnabled } = config;
+  const { embeddedViewName, embeddedViewEnabled, donationEnabled, ordersEnabled, faqHomePageButton } = config;
+  const bottomImage = useContentImage('homepage_bottom_image');
+
+  console.dir({bottomImage})
 
   return (
     <BaseLayout padding={0} maxWidth="unset">
@@ -81,6 +84,18 @@ const HomePage: React.FC<Props> = () => {
                     href={embeddedViewName ? `/${embeddedViewName}` : reverse('drivers')}
                   >
                     <Content id="drive_button_label" />
+                  </Button>
+                )}
+                {faqHomePageButton && (
+                  <Button
+                    className={styles.ctaButton}
+                    size="large"
+                    color="primary"
+                    variant="contained"
+                    component={Link}
+                    href={reverse('faq')}
+                  >
+                    <Content id="faq_button_label" defaultText="FAQ" />
                   </Button>
                 )}
               </div>
@@ -166,6 +181,16 @@ const HomePage: React.FC<Props> = () => {
             )}
           </Grid>
         </Grid>
+
+        {bottomImage && bottomImage.url !== "" && (
+          <Grid container justify="center">
+            <Grid item container justify="center" className={styles.contentCentered}>
+              <Grid item md={12} xs={12} className={styles.sectionHalf}>
+                <img src={bottomImage.url} alt={bottomImage.alt} className={styles.bottomImage} />
+              </Grid>
+            </Grid>
+          </Grid>
+        )}
       </div>
     </BaseLayout>
   );

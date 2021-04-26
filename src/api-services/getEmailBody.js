@@ -79,7 +79,8 @@ export function getEmailBody(order) {
         let emailContent = content.email_order_confirmation_body;
         console.dir({ order });
         if (order.pickupName) {
-          emailContent = content.email_order_confirmation_body_enrolled;
+          if (content.email_order_confirmation_body_enrolled?.trim() || "" !== "" )
+          emailContent = content.email_order_confirmation_body_enrolled || emailContent;
         }
         console.dir({ emailContent });
         emailBody = emailContent

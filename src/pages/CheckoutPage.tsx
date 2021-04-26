@@ -114,7 +114,6 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   const inventory = useSelector<IAppState, InventoryRecord[]>((state) => state.cms.inventory);
   const locationsDialogIsOpen = useSelector<IAppState, boolean>((state) => state.cart.locationsDialogIsOpen);
 
-
   // Content
   const contentPayNowOptionLabel = useContent('pay_now_option_label');
   const contentPayLaterOptionLabel = useContent('pay_later_option_label');
@@ -242,9 +241,8 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   }, [dispatch, location.search]);
 
   useEffect(() => {
-    clearError("locationPreference")
+    clearError('locationPreference');
   }, [locationsDialogIsOpen, clearError]);
-
 
   useEffect(() => {
     console.log('selectedLocationID effect', selectedLocationId);
@@ -260,14 +258,17 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
       Object.assign(data, pushQuestions);
     }
 
-    console.log("formState", formState)
-    console.log("onSubmit errors", errors)
+    console.log('formState', formState);
+    console.log('onSubmit errors', errors);
 
-    console.log("locationPreferences", locationPreferences)
-    if(! query.communitysite && (! locationPreferences.location1 || ! locationPreferences.location2 || ! locationPreferences.location3) ) {
-      console.log("setting locationPreference error")
-      setError("locationPreference", "validation", "Must select 3, unique locations in order of preference")
-      return
+    console.log('locationPreferences', locationPreferences);
+    if (
+      !query.communitysite &&
+      (!locationPreferences.location1 || !locationPreferences.location2 || !locationPreferences.location3)
+    ) {
+      console.log('setting locationPreference error');
+      setError('locationPreference', 'validation', 'Must select 3, unique locations in order of preference');
+      return;
     }
 
     console.log('before pay data', JSON.stringify(data));
@@ -283,7 +284,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
       history.push(reverse('confirmation', query));
     }
 
-    return
+    return;
   }
 
   function textFieldProps(label: string, name: CheckoutFormField, placeholder?: string): TextFieldProps {
@@ -345,7 +346,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
       );
     } else {
       if (cartConverted === false && communitySitePassed) {
-        console.log("skipping cartConvert for later")
+        console.log('skipping cartConvert for later');
         // console.log('inventory', inventory);
         // let convertItem: string | null = null;
         // inventory.some((item) => {
@@ -399,7 +400,9 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
               <Typography variant="h3" className={styles.title}>
                 <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
               </Typography>
-              {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} dacl={dacl} />}
+              {selectedLocation && (
+                <Location location={selectedLocation} className={styles.selectedLocation} dacl={dacl} />
+              )}
               <Input
                 type="hidden"
                 name="pickupLocationId"
@@ -469,7 +472,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                   </Typography>
                   <Grid item md={8} xs={12}>
                     {selectedLocation && <Location location={selectedLocation} className={styles.selectedLocation} />}
-                    <LocationPreferences locationPrefs={locationPreferences} errors={errors}/>
+                    <LocationPreferences locationPrefs={locationPreferences} errors={errors} />
                     <Button
                       className={classNames(styles.locationButton, { [styles.error]: !!errors.pickupLocationId })}
                       color="primary"
@@ -479,15 +482,13 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                       {selectedLocation || locationPreferences.location1
                         ? contentLocationOptionChange || 'Change'
                         : contentLocationOptionChoose || 'Choose'}{' '}
-                      { ! config.lotteryEnabled ? <>
-                        location...
-                      </>:<>
-                        location preference...
-                      </>}
+                      {!config.lotteryEnabled ? <>location...</> : <>location preference...</>}
                     </Button>
-                    <FormHelperText error>{errors["locationPreference"] && errors["locationPreference"].messsage}</FormHelperText>
-                    <hr/>
-                    <LocationPreferenceLinks/>
+                    <FormHelperText error>
+                      {errors['locationPreference'] && errors['locationPreference'].messsage}
+                    </FormHelperText>
+                    <hr />
+                    <LocationPreferenceLinks />
                     <Input
                       type="hidden"
                       name="pickupLocationId"
@@ -621,7 +622,9 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
           </Grid>
           <Grid item md={4} xs={12} container className={styles.right}>
             <div className={!isSmall ? styles.sidebar : undefined}>
-              {!config.lotteryEnabled && <OrderSummary className={styles.summary} showLineItems editable={!isDonationRequest} showTip />}
+              {!config.lotteryEnabled && (
+                <OrderSummary className={styles.summary} showLineItems editable={!isDonationRequest} showTip />
+              )}
               <Button
                 className={classNames({ [styles.readOnly]: isPaying })}
                 fullWidth

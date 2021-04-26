@@ -6,10 +6,15 @@ const Link = React.forwardRef((props: any, ref) => {
   const href = props.href || '';
   const isRelative = /^\//.test(href);
 
+  let target = '';
+  if (props.newTab) {
+    target = '_new';
+  }
+
   return isRelative ? (
     <MaterialLink ref={ref} to={href} component={RouterLink} {...{ ...props }} />
   ) : (
-    <MaterialLink ref={ref} href={href} {...{ ...props }} />
+    <MaterialLink ref={ref} href={href} target={target} {...{ ...props }} />
   );
 });
 

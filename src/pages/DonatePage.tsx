@@ -10,9 +10,10 @@ import {
   Typography,
   useTheme,
 } from '@material-ui/core';
+import { CompoundAction } from 'redoodle';
 import { DonationFormField, IDonationFormData, PaymentStatus } from '../common/types';
 import { IAppState } from '../store/app';
-import { SetDonationAmount, makeDonationUnitCountSelector, paymentStatusSelector } from '../store/checkout';
+import { SetDonationAmount, SetError, SetIsPaying, makeDonationUnitCountSelector, paymentStatusSelector } from '../store/checkout';
 import { StripeService } from '../services/StripeService';
 import { formatCurrency } from '../common/format';
 import { reverse } from '../common/router';
@@ -23,6 +24,7 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useIsSmall } from '../common/hooks';
 import BaseLayout from '../layouts/BaseLayout';
+import Content from '../components/Content';
 import DonationSummary from '../components/DonationSummary';
 import PhoneField from '../components/PhoneField';
 import React, { useMemo } from 'react';
@@ -54,6 +56,8 @@ const DonatePageMain: React.FC = () => {
   const donationPresets = [25, 50, 100, 250];
 
   async function onSubmit(data: IDonationFormData) {
+    dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
+
     const status = await StripeService.donate(data, stripe, elements);
 
     if (status === PaymentStatus.SUCCEEDED) {
@@ -182,7 +186,7 @@ const DonatePageMain: React.FC = () => {
                 disabled={hasErrors}
               >
                 {isPaying && <CircularProgress size={26} className={styles.spinner} />}
-                {!isPaying && 'Place Order'}
+                {!isPaying && <Content id='donate_page_submit_button' defaultText='Make Donation'/>}
               </Button>
             </div>
           </Grid>

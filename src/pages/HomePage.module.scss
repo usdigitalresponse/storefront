@@ -19,12 +19,19 @@
     }
   }
 
-
   .content {
     width: 100%;
     max-width: $maxWidth;
     padding: 0 spacing(8);
   }
+
+  .contentCentered {
+      width: 100%;
+      max-width: $maxWidth;
+      padding: 0 spacing(8);
+      text-align: center;
+    }
+
 
   .heroTitle {
     @include fontSize('lg');
@@ -80,6 +87,10 @@
 
   .sectionHalf {
     padding-right: spacing(4);
+  }
+
+  .bottomImage {
+    max-width: 100%;
   }
 
   &.small {

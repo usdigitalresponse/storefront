@@ -31,13 +31,14 @@ const Header: React.FC = () => {
   const isDonationRequest = useSelector<IAppState, boolean>((state) => state.checkout.isDonationRequest);
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
 
-  const { embeddedViewEnabled, embeddedViewName, donationEnabled, ordersEnabled, cartEnabled } = config;
+  const { embeddedViewEnabled, embeddedViewName, donationEnabled, ordersEnabled, cartEnabled, faqEnabled, navFAQNewTab, faqRedirect } = config;
   const IOrderItemsCount = useSelector<IAppState, number>(IOrderItemCountSelector);
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const navPurchase = useContent('nav_purchase');
   const navDonate = useContent('nav_donate');
   const navLink = useContent('nav_link');
   const navDrive = useContent('nav_drive');
+  const navFAQ = useContent('nav_faq');
 
   const headerNavItems: INavItem[] = [{ name: 'Home', url: reverse('home') }];
 
@@ -51,6 +52,14 @@ const Header: React.FC = () => {
 
   if (embeddedViewEnabled) {
     headerNavItems.push({ name: navDrive, url: embeddedViewName ? `/${embeddedViewName}` : reverse('drivers') });
+  }
+
+  if ( faqEnabled ) {
+    if( faqRedirect ) {
+      headerNavItems.push({ name: navFAQ, url: faqRedirect, newTab: navFAQNewTab });
+    } else {
+      headerNavItems.push({ name: navFAQ, url: reverse('faq') });
+    }
   }
 
   const location = useLocation();
@@ -84,7 +93,7 @@ const Header: React.FC = () => {
                     </Typography>
                   </ListItem>
                   {headerNavItems.map((item, i) => (
-                    <ListItem key={i} button component={Link} href={item.url}>
+                    <ListItem key={i} button component={Link} href={item.url} newTab={item.newTab}>
                       <ListItemText primary={item.name} />
                     </ListItem>
                   ))}

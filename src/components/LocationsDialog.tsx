@@ -47,7 +47,7 @@ const LocationsDialog: React.FC<Props> = () => {
 
   const publicLocations: IPickupLocation[] = [];
   pickupLocations.forEach((location) => {
-    if (!location.communitySite && location.name && location.name?.trim() !== "") publicLocations.push(location);
+    if (!location.communitySite && location.name && location.name?.trim() !== '') publicLocations.push(location);
   });
 
   function onClose() {
@@ -73,7 +73,7 @@ const LocationsDialog: React.FC<Props> = () => {
       setError('location2', 'manual', 'Must select 3 locations');
       errors = true;
     }
-    if (!values.location3 ) {
+    if (!values.location3) {
       setError('location3', 'manual', 'Must select 3 locations');
       errors = true;
     }
@@ -194,9 +194,9 @@ const LocationsDialog: React.FC<Props> = () => {
                 Continue
               </Button>
 
-              <hr/>
+              <hr />
 
-                <LocationPreferenceLinks/>
+              <LocationPreferenceLinks />
             </form>
           </>
         )}

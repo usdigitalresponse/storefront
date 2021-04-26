@@ -37,8 +37,9 @@ const ConfirmationPage: React.FC<Props> = () => {
     (state) => state.checkout.confirmation!,
   );
   const isSmall = useIsSmall();
-  const confirmationCopyOrder = useContent('confirmation_copy_order');
+  const confirmationCopyOrder = useContent('confirmation_copy_order') || "No copy from CMS";
   const confirmationHeader = useContent('confirmation_header_all');
+  const donationHeader = useContent('confirmation_header_donation');
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
   const zipcodeSchedules = useSelector<IAppState, ZipcodeScheduleMap>(zipcodeSchedulesSelector);
   const pickupLocation =
@@ -46,16 +47,23 @@ const ConfirmationPage: React.FC<Props> = () => {
       ? pickupLocations.find((location) => location.id === confirmation.pickupLocationId)
       : undefined;
 
-  console.log("pickup", isOrderSummary(confirmation), isOrderSummary(confirmation) ? confirmation.pickupLocationId :  'not order', isOrderSummary(confirmation) && confirmation.pickupLocationId && pickupLocations ? confirmation.pickupLocationId : "no pickup location" )
-  console.log("confirmation", confirmation)
+  console.log(
+    'pickup',
+    isOrderSummary(confirmation),
+    isOrderSummary(confirmation) ? confirmation.pickupLocationId : 'not order',
+    isOrderSummary(confirmation) && confirmation.pickupLocationId && pickupLocations
+      ? confirmation.pickupLocationId
+      : 'no pickup location',
+  );
+  console.log('confirmation', confirmation);
 
   const copy = useContent('confirmation_copy_all');
+  const donationCopy = useContent('confirmation_copy_donation');
   const copyEnrolled = useContent('confirmation_copy_enrolled');
-  const confirmationWaitlistCopyAll = useContent('confirmation_waitlist_copy_all')
+  const confirmationWaitlistCopyAll = useContent('confirmation_waitlist_copy_all');
 
-  const confirmationCopyAll = (!query.communitysite
-    ? copy
-    : copyEnrolled)  || `We've sent an email confirmation to {customer-email}`;
+  const confirmationCopyAll =
+    (!query.communitysite ? copy : copyEnrolled) || `We've sent an email confirmation to {customer-email}`;
 
   const type = isOrderSummary(confirmation) ? 'order' : 'donation';
 
@@ -63,7 +71,16 @@ const ConfirmationPage: React.FC<Props> = () => {
     return <BaseLayout title="Order not found" description={`Error finding order. Please try again`}></BaseLayout>;
   }
 
-  let displayCopy = ((confirmation as IOrderSummary).status === OrderStatus.WAITLIST ? confirmationWaitlistCopyAll : confirmationCopyAll)
+  let displayCopy = ((confirmation as IOrderSummary).status === OrderStatus.WAITLIST
+    ? confirmationWaitlistCopyAll
+    : confirmationCopyAll
+  )
+
+  if( type === "donation" ) {
+    displayCopy = donationCopy || `We've sent an donation confirmation to {customer-email}`
+  }
+
+  displayCopy = displayCopy || "No copy from CMS"
     .replace(/\{customer-email\}/, `**${confirmation.email}**`)
     .replace(/\{pickupLocationName\}/, `**${pickupLocation ? pickupLocation?.name : 'your selected site'}**`)
     .concat(
@@ -76,11 +93,14 @@ const ConfirmationPage: React.FC<Props> = () => {
   //console.log('copyEnrolled', copyEnrolled);
   //console.log('confirmationCopy', confirmationCopy);
 
-  const title = type === 'order'
+  const title =
+    type === 'order'
       ? (confirmation as IOrderSummary).status === OrderStatus.WAITLIST
         ? 'On the waitlist!'
-      : !query.communitysite ? confirmationHeader || 'Order Placed!' : 'Enrollment Confirmed!'
-      : 'Thank you!';
+        : !query.communitysite
+        ? confirmationHeader || 'Order Placed!'
+        : 'Enrollment Confirmed!'
+      : donationHeader || 'Thank you for your donation!';
 
   return (
     <BaseLayout
@@ -184,14 +204,14 @@ const ConfirmationPage: React.FC<Props> = () => {
             </Grid>
           </Card>
         </Grid>
-        {!config.lotteryEnabled &&
+        {!config.lotteryEnabled && (
           <Grid item md={4} xs={12} className={styles.column}>
             {isOrderSummary(confirmation) && (
               <OrderSummary showLineItems orderSummary={confirmation} className={styles.card} />
             )}
             {isDonationSummary(confirmation) && <DonationSummary amount={confirmation.total} className={styles.card} />}
           </Grid>
-        }
+        )}
       </Grid>
     </BaseLayout>
   );

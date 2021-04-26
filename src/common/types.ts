@@ -33,6 +33,11 @@ export interface IConfig {
   forceBasketItem: string;
   lotteryEnabled: boolean;
   defaultAllowParagraphs: boolean;
+  driverRedirect?: string;
+  faqRedirect?: string;
+  faqEnabled: boolean;
+  faqHomePageButton: boolean;
+  navFAQNewTab: boolean;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
@@ -106,8 +111,9 @@ export interface IRoute {
 }
 
 export interface INavItem {
-  name: string;
+  name?: string;
   url: string;
+  newTab?: boolean;
 }
 
 export interface IOrderItem {
@@ -146,7 +152,7 @@ export interface ICheckoutFormDataDelivery extends ICheckoutFormBase {
   deliveryPref_mornings: boolean;
   deliveryPref_afternoons: boolean;
   deliveryPref_evenings: boolean;
-  locationPreference: any
+  locationPreference: any;
 }
 
 export interface ICheckoutFormDataPickup extends ICheckoutFormBase {

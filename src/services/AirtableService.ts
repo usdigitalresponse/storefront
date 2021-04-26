@@ -73,6 +73,11 @@ export class AirtableService {
             forceBasketItem: records.config.force_basket_item,
             lotteryEnabled: records.config.lottery_enabled === 'true' ? true : false,
             defaultAllowParagraphs: records.config.default_allow_paragraphs === 'true' ? true : false,
+            driverRedirect: records.config.driver_redirect,
+            faqRedirect: records.config.faq_redirect,
+            faqEnabled: records.config.faq_enabled === 'true' ? true : false,
+            faqHomePageButton: records.config.faq_homepage_button === 'true' ? true : false,
+            navFAQNewTab: records.config.nav_faq_new_tab === 'true' ? true : false,
           }),
           SetOrderType.create(
             deliveryEnabled ? records.config.default_order_type || OrderType.DELIVERY : OrderType.PICKUP,
@@ -106,7 +111,7 @@ export class AirtableService {
         }
 
         AirtableService.store.dispatch(CompoundAction(actions));
-        document.title = makeContentValueSelector()(AirtableService.store.getState(), 'page_title');
+        document.title = makeContentValueSelector()(AirtableService.store.getState(), 'page_title') || "No copy from CMS";
       });
   }
 
