@@ -52,7 +52,13 @@ export function getEmailBody(order) {
 
       const orderDetails = `
         <p style="margin-top: 0px;"></p>
-        <b>${isDelivery ? 'Delivery Address' : 'Pickup Location'}:</b>
+
+        <p><b>Order Number:</b> {order.orderID}
+        </p>
+
+        <p>This is a ${isDelivery ? "delivery" : "pickup"} order.
+        </p>
+        <b>${isDelivery ? 'Your Delivery Address' : 'Your Pickup Location'}:</b>
         <p style="white-space: pre-wrap; margin-top: 0px;">${
           isDelivery ? order['Delivery Address'] : order.pickupAddress
         }</p>
@@ -72,6 +78,7 @@ export function getEmailBody(order) {
               .render(getRecordValueForLanguage(content.email_waitlist_confirmation_body, 'en'))
               .replace('{orderDetails}', orderDetails)
               .replace('{pickupLocationName}', pickupLocationName || 'The vendor')
+              .replace('{pickupOrDeliveryLanguage}', isDelivery ? 'for delivery' : `for pickup${pickupLocationName ? ` at ${pickupLocationName}` : ''}`)
           : `<p>Thank you for your order. Due to the high demand, you have been added to
           the waitlist.</p><p>If our availability changes we will contact you. In the
           meantime, please do not submit another order.</p>`;
@@ -79,7 +86,7 @@ export function getEmailBody(order) {
         let emailContent = content.email_order_confirmation_body;
         console.dir({ order });
         if (order.pickupName) {
-          if (content.email_order_confirmation_body_enrolled?.trim() || "" !== "" )
+          if ((content.email_order_confirmation_body_enrolled || "").trim() !== "" )
           emailContent = content.email_order_confirmation_body_enrolled || emailContent;
         }
         console.dir({ emailContent });
@@ -88,6 +95,7 @@ export function getEmailBody(order) {
               .render(getRecordValueForLanguage(emailContent, 'en'))
               .replace('{orderDetails}', orderDetails)
               .replace('{pickupLocationName}', pickupLocationName || 'The vendor')
+              .replace('{pickupOrDeliveryLanguage}', isDelivery ? 'for delivery' : `for pickup${pickupLocationName ? ` at ${pickupLocationName}` : ''}`)
           : `<p>Thank you for your order.</p>
         ${orderDetails}`;
       }

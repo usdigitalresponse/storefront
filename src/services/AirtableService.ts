@@ -110,6 +110,14 @@ export class AirtableService {
           );
         }
 
+        if (typeof records.config.stripe_test_public_api_key === 'string') {
+          actions.push(
+            SetStripePromise.create({
+              test: records.config.stripe_test_public_api_key,
+            }),
+          );
+        }
+
         AirtableService.store.dispatch(CompoundAction(actions));
         document.title = makeContentValueSelector()(AirtableService.store.getState(), 'page_title') || "No copy from CMS";
       });

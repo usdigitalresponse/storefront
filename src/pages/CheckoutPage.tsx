@@ -261,14 +261,16 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     console.log('formState', formState);
     console.log('onSubmit errors', errors);
 
-    console.log('locationPreferences', locationPreferences);
-    if (
-      !query.communitysite &&
-      (!locationPreferences.location1 || !locationPreferences.location2 || !locationPreferences.location3)
-    ) {
-      console.log('setting locationPreference error');
-      setError('locationPreference', 'validation', 'Must select 3, unique locations in order of preference');
-      return;
+    if( config.lotteryEnabled ) {
+      console.log('locationPreferences', locationPreferences);
+      if (
+        !query.communitysite &&
+        (!locationPreferences.location1 || !locationPreferences.location2 || !locationPreferences.location3)
+      ) {
+        console.log('setting locationPreference error');
+        setError('locationPreference', 'validation', 'Must select 3, unique locations in order of preference');
+        return;
+      }
     }
 
     console.log('before pay data', JSON.stringify(data));
@@ -458,7 +460,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                   )}
                 </Grid>
               </Grid>
-              {!locationLocked && orderType === OrderType.PICKUP && (
+              {!locationLocked && orderType === OrderType.PICKUP && deliveryOptionsOnCheckout === false && (
                 <Grid container className={styles.section}>
                   <Typography variant="h3" className={styles.title}>
                     <Content id="checkout_pickup_location_header" defaultText="Pickup Location" />
@@ -558,6 +560,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                     </Grid>
                   </Grid>
                 )}
+
               {(requiresPayment || (payState === PayState.LATER && showPaymentOptions)) && (
                 <Grid container className={styles.section}>
                   <Typography variant="h3" className={classNames(styles.title, styles.payment)}>
@@ -671,8 +674,10 @@ export default function CheckoutPage() {
     return <Redirect to="/" />;
   }
 
+  const testCard = window.location.search.toLowerCase().indexOf("testcard") > -1
+
   return config.stripeAPIKeyMain ? (
-    <StripeElementsWrapper type="main">
+    <StripeElementsWrapper type={testCard ? "test" : "donation"}>
       <CheckoutPageWithStripe />
     </StripeElementsWrapper>
   ) : (

@@ -324,7 +324,7 @@ export interface IDiscountCode {
   type: DiscountCodeType;
 }
 
-export type PaymentType = 'main' | 'donation';
+export type PaymentType = 'main' | 'donation' | 'test';
 
 export type QuestionType = 'Single Checkbox' | 'Multiple Checkboxes' | 'Text Input' | 'Select';
 

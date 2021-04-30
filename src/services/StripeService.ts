@@ -52,12 +52,15 @@ export class StripeService {
     amount: number,
     stripe: Stripe,
     elements: StripeElements,
+    testCard?: boolean
   ) {
     const errorMessage = makeContentValueSelector()(StripeService.store.getState(), 'error_payment');
 
+    const testCardArg = testCard ? '&testcard' : ''
+
     try {
       const clientSecretResult = await fetch(
-        `/.netlify/functions/stripe-payment?amountCents=${Math.round(amount * 100)}&paymentType=${paymentType}`,
+        `/.netlify/functions/stripe-payment?amountCents=${Math.round(amount * 100)}&paymentType=${paymentType}${testCardArg}`,
       ).then((res) => res.json());
 
       if (!clientSecretResult || !clientSecretResult.client_secret) {
@@ -214,8 +217,10 @@ export class StripeService {
 
       StripeService.store.dispatch(CompoundAction([SetConfirmation.create(confirmation), SetIsPaying.create(false)]));
 
-      return PaymentStatus.SUCCEEDED;
+       return PaymentStatus.SUCCEEDED;
     }
+
+    return PaymentStatus.FAILED;
   }
 
   private constructor(store: Store) {

@@ -197,8 +197,11 @@ const DonatePageMain: React.FC = () => {
 };
 
 export default function DonatePage() {
+
+  const testCard = window.location.search.toLowerCase().indexOf("testcard") > -1
+
   return (
-    <StripeElementsWrapper type="donation">
+    <StripeElementsWrapper type={testCard ? "test": "donation"}>
       <DonatePageMain />
     </StripeElementsWrapper>
   );

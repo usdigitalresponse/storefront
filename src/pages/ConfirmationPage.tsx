@@ -40,6 +40,8 @@ const ConfirmationPage: React.FC<Props> = () => {
   const confirmationCopyOrder = useContent('confirmation_copy_order') || "No copy from CMS";
   const confirmationHeader = useContent('confirmation_header_all');
   const donationHeader = useContent('confirmation_header_donation');
+  const contactEmail = useContent('contact_email');
+  const contactPhone = useContent('contact_phone');
   const pickupLocations = useSelector<IAppState, IPickupLocation[] | undefined>(pickupLocationsSelector);
   const zipcodeSchedules = useSelector<IAppState, ZipcodeScheduleMap>(zipcodeSchedulesSelector);
   const pickupLocation =
@@ -117,8 +119,14 @@ const ConfirmationPage: React.FC<Props> = () => {
             ) : (
               ' '
             )}
-            If you have any questions, please email <Content id="contact_email" /> or call{' '}
-            <Content id="contact_phone" />.
+            { (contactEmail || contactPhone) &&
+            <>
+              If you have any questions, please{' '}
+              {contactEmail && <>email <a href={`mailto:${contactEmail}`}></a><Content id="contact_email" /></>}
+              {contactEmail && contactPhone ? 'or' : ''}
+              {contactPhone && <>call <Content id="contact_phone" /></>}
+              .
+            </>}
           </Typography>
         </>
       }

@@ -31,6 +31,7 @@ export interface ICmsState {
   stripeObjects: {
     main: Promise<Stripe | null> | null;
     donation: Promise<Stripe | null> | null;
+    test: Promise<Stripe | null> | null;
   };
   pickupLocations: IPickupLocation[];
   schedules: ISchedule[];
@@ -119,6 +120,7 @@ export const initialCmsState: ICmsState = {
   stripeObjects: {
     main: null,
     donation: null,
+    test: null,
   },
   language: 'en',
   pickupLocations: [],
@@ -145,7 +147,7 @@ export const appIsReadySelector = Reselect.createSelector(
   },
 );
 
-export const stripePromiseSelector = (type: 'donation' | 'main') =>
+export const stripePromiseSelector = (type: 'donation' | 'main' | 'test') =>
   Reselect.createSelector(
     (state: IAppState) => state.cms.stripeObjects[type],
     (stripePromise: Promise<Stripe | null> | null) => {
