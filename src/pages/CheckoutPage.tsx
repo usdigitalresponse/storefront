@@ -194,7 +194,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
   let [communitySitePassed, setCommunitySitePassed] = useState(communitySite ? true : false);
 
-  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
+  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1 || window.location.search.toLowerCase().indexOf('communitysite') > -1;
 
   if (prescreenOrders) {
     allQuestions.forEach((question) => {
@@ -669,7 +669,7 @@ export default function CheckoutPage() {
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const { ordersEnabled } = config;
 
-  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1;
+  let preOrderMode = window.location.search.toLowerCase().indexOf('preorder') > -1 || window.location.search.toLowerCase().indexOf('communitysite') > -1;
 
   if (!ordersEnabled && !preOrderMode) {
     return <Redirect to="/" />;
