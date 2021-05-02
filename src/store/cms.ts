@@ -1,6 +1,7 @@
 import * as Reselect from 'reselect';
 import {
   CategoryRecord,
+  Farmer,
   IConfig,
   IContentRecord,
   IInventoryCategory,
@@ -17,7 +18,7 @@ import { IAppState } from './app';
 import { NO_CATEGORY } from '../common/constants';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
-import { getPickupLocation, getProduct, inventoryForLanguage, questionForLanguage } from '../common/utils';
+import { farmerForLanguage, getPickupLocation, getProduct, inventoryForLanguage, questionForLanguage } from '../common/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -37,6 +38,7 @@ export interface ICmsState {
   schedules: ISchedule[];
   validZipcodes: IValidZipcode[];
   questions: Question[];
+  farmers: Farmer[];
 }
 
 // actions
@@ -50,6 +52,7 @@ export const SetValidZipcodes = TypedAction.define('APP/CMS/SET_VALID_ZIPCODES')
 export const SetQuestions = TypedAction.define('APP/CMS/SET_QUESTIONS')<any>();
 export const SetStripePromise = TypedAction.define('APP/CMS/SET_STRIPE_PROMISE')<any>();
 export const SetLanguage = TypedAction.define('APP/CMS/SET_LANGUAGE')<string>();
+export const SetFarmers = TypedAction.define('APP/CMS/SET_FARMERS')<any>();
 
 // reducer
 export const cmsReducer: any = TypedReducer.builder<ICmsState>()
@@ -61,6 +64,7 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
   .withHandler(SetValidZipcodes.TYPE, (state, validZipcodes) => setWith(state, { validZipcodes }))
   .withHandler(SetQuestions.TYPE, (state, questions) => setWith(state, { questions }))
   .withHandler(SetPickupLocations.TYPE, (state, pickupLocations) => setWith(state, { pickupLocations }))
+  .withHandler(SetFarmers.TYPE, (state, farmers) => setWith(state, { farmers }))
   .withHandler(SetStripePromise.TYPE, (state, keys) =>
     setWith(state, {
       stripeObjects: {
@@ -127,6 +131,7 @@ export const initialCmsState: ICmsState = {
   schedules: [],
   validZipcodes: [],
   questions: [],
+  farmers: [],
 };
 
 // selectors
@@ -138,6 +143,16 @@ export const inventorySelector = Reselect.createSelector(
     return languages.length > 1 ? inventoryForLanguage(inventory, selectedLanguage) : inventory;
   },
 );
+
+export const farmerListSelector = Reselect.createSelector(
+  (state: IAppState) => state.cms.farmers,
+  (state: IAppState) => state.cms.language,
+  (state: IAppState) => state.cms.config.languages,
+  (farmers: Farmer[], selectedLanguage: string, languages: string[]) => {
+    return languages.length > 1 ? farmerForLanguage(farmers, selectedLanguage) : farmers;
+  },
+);
+
 
 export const appIsReadySelector = Reselect.createSelector(
   (state: IAppState) => state.cms.content,

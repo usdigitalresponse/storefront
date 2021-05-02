@@ -38,6 +38,7 @@ export interface IConfig {
   faqEnabled: boolean;
   faqHomePageButton: boolean;
   navFAQNewTab: boolean;
+  farmersHomePageButton: boolean;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
@@ -49,6 +50,11 @@ export interface IContentRecord extends Record<string, string | AirtableImage[]>
 export interface InventoryStrings {
   name: string;
   description: string;
+}
+
+export interface FarmerStrings {
+  name: string;
+  bio: string;
 }
 
 export interface InventoryRecord {
@@ -65,6 +71,15 @@ export interface InventoryRecord {
   stockZipcodes?: string[];
   locations?: IStockLocation[];
   zipcodes?: IStockZipcodes[];
+}
+
+export interface Farmer {
+  id: string;
+  name: string;
+  state: string;
+  bio: string;
+  photo: AirtableImage[];
+  strings?: Record<string, FarmerStrings>;
 }
 
 export interface CategoryStrings {

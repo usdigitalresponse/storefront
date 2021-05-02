@@ -5,6 +5,7 @@ import {
   SetCategories,
   SetConfig,
   SetContent,
+  SetFarmers,
   SetInventory,
   SetPickupLocations,
   SetQuestions,
@@ -88,7 +89,10 @@ export class AirtableService {
           SetValidZipcodes.create(records.validZipcodes),
           SetQuestions.create(records.questions),
           SetPickupLocations.create(records.pickupLocations),
+          SetFarmers.create(records.farmers)
         ];
+        console.log("records.farmers", records.farmers)
+        console.log("records", records)
 
         if (records.pickupLocations.length === 1) {
           actions.push(SetSelectedLocation.create(records.pickupLocations[0].id));
