@@ -42,7 +42,7 @@ const routeComponents: Record<string, React.FC> = {
   schema: SchemaPage,
   noteligible: NotEligiblePage,
   faq: FAQPage,
-  farmers: FarmersPage
+  farmers: FarmersPage,
 };
 
 function App() {

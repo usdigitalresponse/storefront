@@ -16,10 +16,10 @@ interface Props {
 
 const Content: React.FC<Props> = ({ id, markdown = false, className, text, defaultText, allowParagraphs = null }) => {
   const cmsContent = useContent(id);
-  let content
-  console.log("id, cmsContent", id, cmsContent)
-  if( cmsContent !== undefined ) {
-    content = cmsContent
+  let content;
+  console.log('id, cmsContent', id, cmsContent);
+  if (cmsContent !== undefined) {
+    content = cmsContent;
   } else {
     content = text || defaultText || '';
   }

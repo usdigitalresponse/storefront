@@ -37,7 +37,7 @@ const ConfirmationPage: React.FC<Props> = () => {
     (state) => state.checkout.confirmation!,
   );
   const isSmall = useIsSmall();
-  const confirmationCopyOrder = useContent('confirmation_copy_order') || "No copy from CMS";
+  const confirmationCopyOrder = useContent('confirmation_copy_order') || 'No copy from CMS';
   const confirmationHeader = useContent('confirmation_header_all');
   const donationHeader = useContent('confirmation_header_donation');
   const contactEmail = useContent('contact_email');
@@ -73,23 +73,23 @@ const ConfirmationPage: React.FC<Props> = () => {
     return <BaseLayout title="Order not found" description={`Error finding order. Please try again`}></BaseLayout>;
   }
 
-  let displayCopy = ((confirmation as IOrderSummary).status === OrderStatus.WAITLIST
-    ? confirmationWaitlistCopyAll
-    : confirmationCopyAll
-  )
+  let displayCopy =
+    (confirmation as IOrderSummary).status === OrderStatus.WAITLIST ? confirmationWaitlistCopyAll : confirmationCopyAll;
 
-  if( type === "donation" ) {
-    displayCopy = donationCopy || `We've sent an donation confirmation to {customer-email}`
+  if (type === 'donation') {
+    displayCopy = donationCopy || `We've sent an donation confirmation to {customer-email}`;
   }
 
-  displayCopy = displayCopy || "No copy from CMS"
-    .replace(/\{customer-email\}/, `**${confirmation.email}**`)
-    .replace(/\{pickupLocationName\}/, `**${pickupLocation ? pickupLocation?.name : 'your selected site'}**`)
-    .concat(
-      isOrderSummary(confirmation)
-        ? ` ${confirmationCopyOrder.replace('{delivery|pickup}', confirmation.type.toLowerCase())}`
-        : '',
-    );
+  displayCopy =
+    displayCopy ||
+    'No copy from CMS'
+      .replace(/\{customer-email\}/, `**${confirmation.email}**`)
+      .replace(/\{pickupLocationName\}/, `**${pickupLocation ? pickupLocation?.name : 'your selected site'}**`)
+      .concat(
+        isOrderSummary(confirmation)
+          ? ` ${confirmationCopyOrder.replace('{delivery|pickup}', confirmation.type.toLowerCase())}`
+          : '',
+      );
 
   //console.log('copy', copy);
   //console.log('copyEnrolled', copyEnrolled);
@@ -119,14 +119,24 @@ const ConfirmationPage: React.FC<Props> = () => {
             ) : (
               ' '
             )}
-            { (contactEmail || contactPhone) &&
-            <>
-              If you have any questions, please{' '}
-              {contactEmail && <>email <a href={`mailto:${contactEmail}`}></a><Content id="contact_email" /></>}
-              {contactEmail && contactPhone ? 'or' : ''}
-              {contactPhone && <>call <Content id="contact_phone" /></>}
-              .
-            </>}
+            {(contactEmail || contactPhone) && (
+              <>
+                If you have any questions, please{' '}
+                {contactEmail && (
+                  <>
+                    email <a href={`mailto:${contactEmail}`}></a>
+                    <Content id="contact_email" />
+                  </>
+                )}
+                {contactEmail && contactPhone ? 'or' : ''}
+                {contactPhone && (
+                  <>
+                    call <Content id="contact_phone" />
+                  </>
+                )}
+                .
+              </>
+            )}
           </Typography>
         </>
       }

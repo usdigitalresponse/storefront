@@ -148,7 +148,6 @@ export function farmerForLanguage(farmer: Farmer[], language: string): Farmer[] 
   }));
 }
 
-
 export function questionForLanguage(questions: Question[], language: string): Question[] {
   return questions.map((question) => {
     // if( question.markdownLabel?.length > 0 ) {

@@ -18,7 +18,13 @@ import { IAppState } from './app';
 import { NO_CATEGORY } from '../common/constants';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
-import { farmerForLanguage, getPickupLocation, getProduct, inventoryForLanguage, questionForLanguage } from '../common/utils';
+import {
+  farmerForLanguage,
+  getPickupLocation,
+  getProduct,
+  inventoryForLanguage,
+  questionForLanguage,
+} from '../common/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -153,7 +159,6 @@ export const farmerListSelector = Reselect.createSelector(
     return languages.length > 1 ? farmerForLanguage(farmers, selectedLanguage) : farmers;
   },
 );
-
 
 export const appIsReadySelector = Reselect.createSelector(
   (state: IAppState) => state.cms.content,
@@ -373,8 +378,8 @@ export const makeContentValueSelector = () =>
         return '';
       }
 
-      if( value === undefined ) {
-        return undefined
+      if (value === undefined) {
+        return undefined;
       }
 
       if (!value) {

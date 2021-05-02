@@ -261,7 +261,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     console.log('formState', formState);
     console.log('onSubmit errors', errors);
 
-    if( config.lotteryEnabled ) {
+    if (config.lotteryEnabled) {
       console.log('locationPreferences', locationPreferences);
       if (
         !query.communitysite &&
@@ -674,10 +674,10 @@ export default function CheckoutPage() {
     return <Redirect to="/" />;
   }
 
-  const testCard = window.location.search.toLowerCase().indexOf("testcard") > -1
+  const testCard = window.location.search.toLowerCase().indexOf('testcard') > -1;
 
   return config.stripeAPIKeyMain ? (
-    <StripeElementsWrapper type={testCard ? "test" : "donation"}>
+    <StripeElementsWrapper type={testCard ? 'test' : 'donation'}>
       <CheckoutPageWithStripe />
     </StripeElementsWrapper>
   ) : (

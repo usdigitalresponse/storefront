@@ -19,11 +19,7 @@ const DriversPage: React.FC = () => {
     if (typeof window !== 'undefined') {
       window.location.href = config.driverRedirect;
     }
-    return (
-      <div style={{margin: "auto", padding: "100px", textAlign: "center"}}>
-        Redirecting you to our site...
-      </div>
-    )
+    return <div style={{ margin: 'auto', padding: '100px', textAlign: 'center' }}>Redirecting you to our site...</div>;
   }
 
   return (

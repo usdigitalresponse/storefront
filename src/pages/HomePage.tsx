@@ -22,10 +22,17 @@ const HomePage: React.FC<Props> = () => {
   const bannerLogo = useContentImage('banner_logo');
   const introImage = useContentImage('introduction_image');
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
-  const { embeddedViewName, embeddedViewEnabled, donationEnabled, ordersEnabled, faqHomePageButton, farmersHomePageButton } = config;
+  const {
+    embeddedViewName,
+    embeddedViewEnabled,
+    donationEnabled,
+    ordersEnabled,
+    faqHomePageButton,
+    farmersHomePageButton,
+  } = config;
   const bottomImage = useContentImage('homepage_bottom_image');
 
-  console.dir({bottomImage})
+  console.dir({ bottomImage });
 
   return (
     <BaseLayout padding={0} maxWidth="unset">
@@ -194,7 +201,7 @@ const HomePage: React.FC<Props> = () => {
           </Grid>
         </Grid>
 
-        {bottomImage && bottomImage.url !== "" && (
+        {bottomImage && bottomImage.url !== '' && (
           <Grid container justify="center">
             <Grid item container justify="center" className={styles.contentCentered}>
               <Grid item md={12} xs={12} className={styles.sectionHalf}>

@@ -90,10 +90,10 @@ export class AirtableService {
           SetValidZipcodes.create(records.validZipcodes),
           SetQuestions.create(records.questions),
           SetPickupLocations.create(records.pickupLocations),
-          SetFarmers.create(records.farmers)
+          SetFarmers.create(records.farmers),
         ];
-        console.log("records.farmers", records.farmers)
-        console.log("records", records)
+        console.log('records.farmers', records.farmers);
+        console.log('records', records);
 
         if (records.pickupLocations.length === 1) {
           actions.push(SetSelectedLocation.create(records.pickupLocations[0].id));
@@ -124,7 +124,8 @@ export class AirtableService {
         }
 
         AirtableService.store.dispatch(CompoundAction(actions));
-        document.title = makeContentValueSelector()(AirtableService.store.getState(), 'page_title') || "No copy from CMS";
+        document.title =
+          makeContentValueSelector()(AirtableService.store.getState(), 'page_title') || 'No copy from CMS';
       });
   }
 

@@ -26,7 +26,7 @@ export const routePaths: Record<string, string> = {
   schema: '/schema',
   noteligible: '/noteligible',
   faq: '/faq',
-  farmers: '/farmers'
+  farmers: '/farmers',
 };
 
 export function reverse(routeId: RouteId, params?: Record<string, any>): string {
