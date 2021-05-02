@@ -79,6 +79,7 @@ export class AirtableService {
             faqEnabled: records.config.faq_enabled === 'true' ? true : false,
             faqHomePageButton: records.config.faq_homepage_button === 'true' ? true : false,
             navFAQNewTab: records.config.nav_faq_new_tab === 'true' ? true : false,
+            farmersHomePageButton: records.config.farmers_homepage_button === 'true' ? true : false,
           }),
           SetOrderType.create(
             deliveryEnabled ? records.config.default_order_type || OrderType.DELIVERY : OrderType.PICKUP,

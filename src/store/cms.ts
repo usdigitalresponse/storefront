@@ -118,6 +118,7 @@ export const initialCmsState: ICmsState = {
     faqEnabled: false,
     faqHomePageButton: false,
     navFAQNewTab: true,
+    farmersHomePageButton: false,
   },
   content: {},
   inventory: [],
