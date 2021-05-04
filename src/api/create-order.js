@@ -25,19 +25,21 @@ exports.handler = async (event, context) => {
       throw new Error('Invalid Order Intent');
     }
 
+    console.dir({orderIntent})
+
     const requiredFields = ['type', 'fullName', 'phone', 'email', 'subtotal', 'tax', 'total', 'items'];
     const requiredDeliveryFields = requiredFields.concat(['street1', 'city', 'state', 'zip']);
     const requiredPickupFields = requiredFields.concat(['pickupLocationId']);
 
     if (orderIntent.type === 'Delivery') {
       requiredDeliveryFields.forEach((field) => {
-        if (orderIntent[field] == null) {
+        if (!orderIntent[field]) {
           throw new Error('Invalid Order Intent: ' + field + ' not set');
         }
       });
     } else if (orderIntent.type === 'Pickup') {
       requiredPickupFields.forEach((field) => {
-        if (!orderIntent[field] == null) {
+        if (!orderIntent[field]) {
           throw new Error('Invalid Order Intent: ' + field + ' not set');
         }
       });
@@ -188,7 +190,7 @@ exports.handler = async (event, context) => {
         //console.log(response)
         responses.push(response)
         if( responses.length === 10 ) {
-          console.log("pushing response batch", responses.length)
+          //console.log("pushing response batch", responses.length)
           await base('Response Items').create(responses);
           //console.log("response batch done")
           responses = []
@@ -196,7 +198,7 @@ exports.handler = async (event, context) => {
       }
 
       if (responses.length > 0 ) {
-        console.log("final response batch", responses.length)
+        //console.log("final response batch", responses.length)
         await base('Response Items').create(responses);
       }
     }

@@ -260,6 +260,8 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
     console.log('formState', formState);
     console.log('onSubmit errors', errors);
+    console.log('locationPreferences', locationPreferences);
+    console.log('selectedLocatio, selectedLocationId', selectedLocation, selectedLocationId);
 
     if (config.lotteryEnabled) {
       console.log('locationPreferences', locationPreferences);
@@ -272,6 +274,8 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
         return;
       }
     }
+
+    data.pickupLocationId = selectedLocationId
 
     console.log('before pay data', JSON.stringify(data));
     console.log('before pay items', JSON.stringify(items));

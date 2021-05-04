@@ -124,14 +124,15 @@ const ConfirmationPage: React.FC<Props> = () => {
                 If you have any questions, please{' '}
                 {contactEmail && (
                   <>
-                    email <a href={`mailto:${contactEmail}`}></a>
-                    <Content id="contact_email" />
+                    email <a href={`mailto:${contactEmail}`}>
+                      <Content id="contact_email" />
+                    </a>
                   </>
                 )}
-                {contactEmail && contactPhone ? 'or' : ''}
+                {contactEmail && contactPhone ? ' or' : ''}
                 {contactPhone && (
                   <>
-                    call <Content id="contact_phone" />
+                    {' '}call <Content id="contact_phone" />
                   </>
                 )}
                 .

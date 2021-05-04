@@ -53,7 +53,7 @@ export function getEmailBody(order) {
       const orderDetails = `
         <p style="margin-top: 0px;"></p>
 
-        <p><b>Order Number:</b> {order.orderID}
+        <p><b>Order Number:</b> ${order['Order ID']}
         </p>
 
         <p>This is a ${isDelivery ? 'delivery' : 'pickup'} order.
@@ -89,8 +89,10 @@ export function getEmailBody(order) {
         let emailContent = content.email_order_confirmation_body;
         console.dir({ order });
         if (order.pickupName) {
-          if ((content.email_order_confirmation_body_enrolled || '').trim() !== '')
-            emailContent = content.email_order_confirmation_body_enrolled || emailContent;
+          let enrolledContent = getRecordValueForLanguage(content.email_order_confirmation_body_enrolled, 'en')
+          console.dir({enrolledContent, type: typeof enrolledContent, trim: enrolledContent.trim})
+          if (enrolledContent && enrolledContent.trim() !== '')
+            emailContent = enrolledContent || emailContent;
         }
         console.dir({ emailContent });
         emailBody = emailContent
