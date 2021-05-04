@@ -75,13 +75,14 @@ export function getEmailBody(order) {
       if (order['Order Status'] === 'Waitlist') {
         emailBody = content.email_waitlist_confirmation_body
           ? markdown
-              .render(getRecordValueForLanguage(content.email_waitlist_confirmation_body, 'en'))
+              .render(getRecordValueForLanguage(content.email_waitlist_confirmation_body, 'en')
               .replace('{orderDetails}', orderDetails)
-              .replace('{pickupLocationName}', pickupLocationName || 'The vendor')
+              .replace(/\{pickupLocationName\}/g, pickupLocationName || 'The vendor')
               .replace(
-                '{pickupOrDeliveryLanguage}',
+                /\{pickupOrDeliveryLanguage\}/g,
                 isDelivery ? 'for delivery' : `for pickup${pickupLocationName ? ` at ${pickupLocationName}` : ''}`,
               )
+            )
           : `<p>Thank you for your order. Due to the high demand, you have been added to
           the waitlist.</p><p>If our availability changes we will contact you. In the
           meantime, please do not submit another order.</p>`;
@@ -99,9 +100,9 @@ export function getEmailBody(order) {
           ? markdown
               .render(getRecordValueForLanguage(emailContent, 'en'))
               .replace('{orderDetails}', orderDetails)
-              .replace('{pickupLocationName}', pickupLocationName || 'The vendor')
+              .replace(/\{pickupLocationName\}/g, pickupLocationName || 'The vendor')
               .replace(
-                '{pickupOrDeliveryLanguage}',
+                /\{pickupOrDeliveryLanguage\}/g,
                 isDelivery ? 'for delivery' : `for pickup${pickupLocationName ? ` at ${pickupLocationName}` : ''}`,
               )
           : `<p>Thank you for your order.</p>

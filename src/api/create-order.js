@@ -33,19 +33,20 @@ exports.handler = async (event, context) => {
 
     if (orderIntent.type === 'Delivery') {
       requiredDeliveryFields.forEach((field) => {
-        if (!orderIntent[field]) {
+        if (orderIntent[field] == null) {
           throw new Error('Invalid Order Intent: ' + field + ' not set');
         }
       });
     } else if (orderIntent.type === 'Pickup') {
       requiredPickupFields.forEach((field) => {
-        if (!orderIntent[field]) {
+        if (orderIntent[field] == null) {
+          console.log("orderIntent field", field, orderIntent[field])
           throw new Error('Invalid Order Intent: ' + field + ' not set');
         }
       });
     } else {
       requiredFields.forEach((field) => {
-        if (!orderIntent[field]) {
+        if (orderIntent[field] == null) {
           throw new Error('Invalid Order Intent: ' + field + ' not set');
         }
       });

@@ -139,30 +139,37 @@ exports.handler = async (event, context) => {
     });
 
     // Farmers
-    const farmersRecords = await fetchTable('Farmers', { view: DEFAULT_VIEW });
-    const farmers = farmersRecords
-      .filter((row) => row.fields['Name'] )
-      .map((row) => {
-        return {
-          id: row.id,
-          name: row.fields['Name'],
-          bio: row.fields['Bio'],
-          strings: languages.reduce((acc, language) => {
-            acc[language] = language === 'en' ? {
-              name: row.fields['Name'],
-              bio: row.fields['Bio'],
-            } : {
-              name: row.fields[`Name_${language}`],
-                bio: row.fields[`Bio_${language}`],
-            };
-            return acc;
-          }, {}),
-          photo: row.fields['Photo'],
-          state: row.fields['State'],
+    let farmers = []
+    try {
+      const farmersRecords = await fetchTable('Farmers', { view: DEFAULT_VIEW });
+      farmers = farmersRecords
+        .filter((row) => row.fields['Name'] )
+        .map((row) => {
+          return {
+            id: row.id,
+            name: row.fields['Name'],
+            bio: row.fields['Bio'],
+            strings: languages.reduce((acc, language) => {
+              acc[language] = language === 'en' ? {
+                name: row.fields['Name'],
+                bio: row.fields['Bio'],
+              } : {
+                name: row.fields[`Name_${language}`],
+                  bio: row.fields[`Bio_${language}`],
+              };
+              return acc;
+            }, {}),
+            photo: row.fields['Photo'],
+            state: row.fields['State'],
 
-        };
-      });
-
+          };
+        });
+      } catch(e) {
+        if( e.statusCode !== 404) {
+          console.error("e", e)
+          throw(e)
+        }
+      }
     return successResponse({
       config,
       content,
