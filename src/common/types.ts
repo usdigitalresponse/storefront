@@ -206,6 +206,7 @@ export interface IOrderIntent extends ICheckoutFormData {
   discountCodes: string[];
   stripePaymentId?: string;
   locationIds?: string;
+  testCard?: boolean;
 }
 
 export interface IOrderSummary extends ICheckoutFormBase {
@@ -248,6 +249,7 @@ export interface IDonationFormData {
 export interface IDonationIntent extends IDonationFormData {
   amount: number;
   stripePaymentId: string;
+  testCard?: boolean;
 }
 
 export interface IDonationSummary {

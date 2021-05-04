@@ -245,23 +245,23 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   }, [locationsDialogIsOpen, clearError]);
 
   useEffect(() => {
-    console.log('selectedLocationID effect', selectedLocationId);
+    //console.log('selectedLocationID effect', selectedLocationId);
     if (selectedLocationId) {
       clearError('pickupLocationId');
     }
   }, [clearError, selectedLocationId]);
 
   async function onSubmit(data: ICheckoutFormData) {
-    console.log('onSubmit items', items, data);
-    console.log('before push data', JSON.stringify(data));
+    //console.log('onSubmit items', items, data);
+    //console.log('before push data', JSON.stringify(data));
     if (pushQuestions) {
       Object.assign(data, pushQuestions);
     }
 
-    console.log('formState', formState);
-    console.log('onSubmit errors', errors);
-    console.log('locationPreferences', locationPreferences);
-    console.log('selectedLocatio, selectedLocationId', selectedLocation, selectedLocationId);
+    //console.log('formState', formState);
+    //console.log('onSubmit errors', errors);
+    //console.log('locationPreferences', locationPreferences);
+    //console.log('selectedLocation, selectedLocationId', selectedLocation, selectedLocationId);
 
     if (config.lotteryEnabled) {
       console.log('locationPreferences', locationPreferences);
@@ -277,14 +277,14 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
 
     data.pickupLocationId = selectedLocationId
 
-    console.log('before pay data', JSON.stringify(data));
-    console.log('before pay items', JSON.stringify(items));
+    //console.log('before pay data', JSON.stringify(data));
+    //console.log('before pay items', JSON.stringify(items));
 
     dispatch(CompoundAction([SetIsPaying.create(true), SetError.create(undefined)]));
 
     const status = await StripeService.pay(data, stripe, elements, locationPreferences);
 
-    console.log('done pay items', items, data);
+    //console.log('done pay items', items, data);
 
     if (status === PaymentStatus.SUCCEEDED) {
       history.push(reverse('confirmation', query));

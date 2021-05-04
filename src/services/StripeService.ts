@@ -83,7 +83,7 @@ export class StripeService {
       }
 
       if (result.paymentIntent.status === 'succeeded') {
-        return result.paymentIntent.id;
+        return {stripePaymentId: result.paymentIntent.id, testCard};
       }
     } catch (error) {
       console.log('Stripe payment error', error);
@@ -167,16 +167,21 @@ export class StripeService {
 
     // process payment
     let stripePaymentId: string | undefined;
+    let testCard = false
     if (requiresPayment) {
       if (!stripe || !elements) {
         StripeService.store.dispatch(SetError.create('Stripe or elements object missing.'));
         return PaymentStatus.FAILED;
       }
 
-      stripePaymentId = await StripeService.processPayment('main', total, stripe, elements);
+      let stripeResult = await StripeService.processPayment('main', total, stripe, elements);
+      stripePaymentId = stripeResult?.stripePaymentId
+      testCard = stripeResult?.testCard || false
+
       if (stripePaymentId) {
         orderIntent.status = OrderStatus.PAID;
         orderIntent.stripePaymentId = stripePaymentId;
+        orderIntent.testCard = testCard ? true : undefined
       } else {
         StripeService.store.dispatch(SetError.create('Payment could not be processed.'));
         return PaymentStatus.FAILED;
@@ -208,13 +213,19 @@ export class StripeService {
 
     const state = StripeService.store.getState();
     const amount = formData.otherAmount ? parseInt(formData.otherAmount) : state.checkout.donationAmount;
-    const stripePaymentId = await StripeService.processPayment('donation', amount, stripe, elements);
+    let stripePaymentId: string | undefined;
+    let testCard = false
+
+    let stripeResult = await StripeService.processPayment('donation', amount, stripe, elements);
+    stripePaymentId = stripeResult?.stripePaymentId
+    testCard = stripeResult?.testCard || false
 
     if (stripePaymentId) {
       const confirmation: IDonationSummary = await AirtableService.createDonation({
         ...formData,
         amount,
         stripePaymentId,
+        testCard
       });
 
       StripeService.store.dispatch(CompoundAction([SetConfirmation.create(confirmation), SetIsPaying.create(false)]));

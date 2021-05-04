@@ -31,8 +31,10 @@ exports.handler = async (event, context) => {
         ? process.env.STRIPE_DONATION_PRIVATE_API_KEY
         : process.env.STRIPE_MAIN_PRIVATE_API_KEY;
 
+    let testCard = false
     if( event.queryStringParameters.testcard ) {
       apiKey = process.env.STRIPE_TEST_PRIVATE_API_KEY
+      testCard = true
     }
 
     if (!apiKey) {

@@ -117,6 +117,7 @@ exports.handler = async (event, context) => {
         'Opt In Comms': orderIntent.optInComms,
         'Opt In Subsidy': orderIntent.optInSubsidy,
         'LocationIDs': orderIntent.locationIds,
+        'Test Card': orderIntent.testCard
       },
       { typecast: true },
     );
