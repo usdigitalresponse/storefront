@@ -88,7 +88,10 @@ interface Props {
 }
 
 const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) => {
-  const { register, watch, handleSubmit, formState, errors, clearError, setError } = useForm<ICheckoutFormData>();
+  const { register, watch, handleSubmit, formState, errors, clearError, setError, triggerValidation } = useForm<ICheckoutFormData>({
+    reValidateMode: 'onChange',
+  });
+
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const isSmall = useIsSmall();
@@ -236,7 +239,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
   useEffect(() => {
     const isWaitlist = !!qs.parse(location.search.slice(1))?.waitlist;
     if (isWaitlist) {
-      dispatch(SetIsDonationRequest.create(true));
+      dispatch(CompoundAction([SetIsDonationRequest.create(true), SetOrderType.create(OrderType.PICKUP)]));
     }
   }, [dispatch, location.search]);
 
@@ -251,12 +254,86 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
     }
   }, [clearError, selectedLocationId]);
 
+  let formIsValid = formState.isValid;
+
+  useEffect(() => {
+    console.log('effect errors', formState);
+    // if (formState.errors.firstName) {
+    //   // do the your logic here
+    // }
+  }, [formState, formIsValid]);
+
   async function onSubmit(data: ICheckoutFormData) {
     //console.log('onSubmit items', items, data);
     //console.log('before push data', JSON.stringify(data));
     if (pushQuestions) {
       Object.assign(data, pushQuestions);
     }
+
+    let valid = await triggerValidation();
+    //console.log('valid', valid);
+    //console.log('onSubmit formState', formState);
+    //console.log('onSubmit formIsValid', formIsValid);
+
+    //console.log('onSubmit zipcodeList', zipcodeList);
+    //console.log('onSubmit data', data);
+    //console.log('onSubmit e', e);
+
+    let selected: { [index: string]: boolean } = {};
+    let fields: { [index: string]: boolean } = {};
+    let programEligiblityQuestion: string;
+    let programEligible = '';
+    Object.keys(data).forEach((key: string) => {
+      if (key.indexOf('question') === 0) {
+        let nameParts = key.split('_');
+        let fieldName = nameParts[0];
+        let answer = nameParts[1];
+
+        let val = (data as any)[key];
+        console.log('key, nameParts, fieldName, val, answer', key, nameParts, fieldName, val, answer);
+
+        fields[fieldName] = true;
+        if (!selected[fieldName]) {
+          selected[fieldName] = false;
+        }
+
+        if (answer === 'SNAP') {
+          programEligiblityQuestion = fieldName;
+        }
+
+        let fixedVal = val;
+        if (Array.isArray(val)) {
+          //single answer multi checkboxes, (for long text with a short "I accept" checkbox) for some reason come as val with type array with "" as the real true/false checked value
+          fixedVal = (val as any)[''];
+        }
+
+        if (programEligiblityQuestion === fieldName) {
+          console.log('answer none and true?', answer, fixedVal);
+
+          if (answer.toLowerCase().indexOf('none') > -1 && fixedVal === true) {
+            programEligible = 'No';
+          }
+        }
+
+        selected[fieldName] = selected[fieldName] || fixedVal;
+      }
+    });
+    if (programEligible === '') {
+      programEligible = 'Yes';
+    }
+
+    console.log('fields, selected', fields, selected);
+    Object.keys(fields).forEach((fieldName) => {
+      let fieldSelected = selected[fieldName];
+      console.log('fieldName, fieldSelected', fieldName, fieldSelected);
+      if (!fieldSelected) {
+        //setNoProgramSelected(true);
+        console.log('setting error', fieldName);
+        setError(fieldName, 'manual', contentFieldIsRequired || "Field is required");
+
+        valid = false;
+      }
+    });
 
     //console.log('formState', formState);
     //console.log('onSubmit errors', errors);
@@ -273,6 +350,17 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
         setError('locationPreference', 'validation', 'Must select 3, unique locations in order of preference');
         return;
       }
+    } else {
+      if( orderType === OrderType.PICKUP ) {
+        if( ! selectedLocationId ) {
+          setError('pickupLocationId', 'validation', 'Must select a pickup location')
+          return;
+        }
+      }
+    }
+
+    if( ! valid ) {
+      return
     }
 
     data.pickupLocationId = selectedLocationId
@@ -412,7 +500,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
           )}
 
           <Grid item md={8} xs={12}>
-            {deliveryOptionsOnCheckout && <OrderTypeSelector className={styles.orderType} />}
+            {deliveryOptionsOnCheckout && <OrderTypeSelector className={styles.orderType} errors={errors} />}
             {!deliveryOptionsOnCheckout && deliveryEnabled && <OrderTypeView className={styles.orderType} />}
             <Card elevation={2} className={styles.form}>
               <Grid container className={styles.section}>
@@ -452,6 +540,7 @@ const CheckoutPageMain: React.FC<Props> = ({ stripe = null, elements = null }) =
                       errors={errors}
                       questionClassName={styles.field}
                       questions={questions}
+                      clearError={clearError}
                     />
                   )}
                   {!isDonationRequest && <OptInView className={styles.optIn} inputRef={register} />}

@@ -1,8 +1,8 @@
 import { Checkbox, FormControlLabel, FormHelperText, Link, Typography } from '@material-ui/core';
-import { FieldError, NestDataObject } from 'react-hook-form';
-import { ICheckboxesQuestion } from '../common/types';
+import { FieldError, NestDataObject, useForm } from 'react-hook-form';
+import { ICheckboxesQuestion, ICheckoutFormData } from '../common/types';
 import { useIsSmall } from '../common/hooks';
-import React from 'react';
+import React, {MouseEvent} from 'react';
 import ReactMarkdown from 'react-markdown';
 import classNames from 'classnames';
 import styles from './CheckboxesQuestion.module.scss';
@@ -13,13 +13,22 @@ interface Props {
   className?: string;
   contentFieldIsRequired: string;
   errors: NestDataObject<any, FieldError>;
+  clearError: (name?: string | string[] | undefined) => void
 }
 
-const CheckboxesQuestion: React.FC<Props> = ({ question, inputRef, className, contentFieldIsRequired, errors }) => {
+const CheckboxesQuestion: React.FC<Props> = ({ question, inputRef, className, contentFieldIsRequired, errors, clearError }) => {
   const isSmall = useIsSmall();
-  const error = errors[`question-${question.id}`];
+  const questionId = `question-${question.id}`
+  const error = errors[questionId];
 
   console.log('question', question, error);
+
+  const handleClick = async (event: MouseEvent ) => {
+    console.log("event", event)
+    //let valid = await triggerValidation();
+    clearError(questionId)
+
+  }
 
   return (
     <div className={classNames(styles.container, className, { [styles.small]: isSmall })}>
@@ -39,7 +48,7 @@ const CheckboxesQuestion: React.FC<Props> = ({ question, inputRef, className, co
       {question.options.map((option) => (
         <FormControlLabel
           key={option}
-          control={<Checkbox color="primary" inputRef={inputRef} name={`question-${question.id}_${option}`} />}
+          control={<Checkbox color="primary" inputRef={inputRef} name={`question-${question.id}_${option}`} onClick={handleClick} />}
           label={option}
         />
       ))}

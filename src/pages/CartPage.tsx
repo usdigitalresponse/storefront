@@ -1,6 +1,6 @@
 import { Button, Card, Grid, Typography } from '@material-ui/core';
 import { IAppState } from '../store/app';
-import { IOrderItem } from '../common/types';
+import { ICheckoutFormData, IOrderItem } from '../common/types';
 import { Redirect } from 'react-router-dom';
 import { itemsSelector } from '../store/cart';
 import { reverse } from '../common/router';
