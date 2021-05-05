@@ -27,9 +27,11 @@ const OrderTypeSelector: React.FC<Props> = ({ className }) => {
   const zipcodeList = useSelector<IAppState, string[]>(zipcodeListSelector);
   const { deliveryEnabled, pickupEnabled, stockByLocation } = config;
 
+  const forceWaitlist = window.location.search.toLowerCase().indexOf("waitlist") > -1
+
   return (
     <Grid container spacing={2} alignItems={isSmall ? undefined : 'stretch'} className={className}>
-      {deliveryEnabled && (
+      {deliveryEnabled && forceWaitlist === false && (
         <Grid item md={deliveryEnabled && pickupEnabled ? 6 : 12} xs={12} className={styles.column}>
           <Card elevation={2} className={classNames(styles.option, { [styles.small]: isSmall })}>
             <CardActionArea onClick={() => dispatch(SetOrderType.create(OrderType.DELIVERY))} disabled={!pickupEnabled}>
