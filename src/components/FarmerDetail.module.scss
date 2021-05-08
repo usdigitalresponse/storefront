@@ -1,0 +1,173 @@
+@import '../common/variables';
+
+.container {
+  display: flex;
+  padding-bottom: spacing(4);
+
+  &.large:not(:last-child) {
+    @include shadowBorder('bottom');
+  }
+
+  .content {
+    flex-grow: 1;
+    padding: 0 spacing(4) spacing(6);
+  }
+
+  .imageContainer {
+    width: 275px;
+    flex-shrink: 0;
+    margin-right: spacing(2);
+
+    .image {
+      max-width: 275px;
+      max-height: 275px;
+    }
+  }
+
+  .title {
+    @include fontSize('xl');
+    margin-bottom: spacing(1);
+  }
+
+  .description, .ctaDescription {
+    text-align: justify;
+  }
+
+  .locations {
+    margin: spacing(2) 0 spacing(4);
+
+    .locationList {
+      margin: spacing(1) 0 0;
+      padding-left: 18px;
+
+      .soldout {
+        text-decoration: line-through;
+        margin-right: spacing(1);
+      }
+    }
+  }
+
+  .cta {
+    margin-top: spacing(4);
+  }
+
+  .ctaTitle {
+    @include fontSize('md');
+    font-weight: 500;
+  }
+
+  .ctaAction {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .ctaAccessories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+
+    @media screen and (max-width: 1066px) {
+      margin-top:-(spacing(3));
+    }
+  }
+
+  .ctaButton {
+    min-width: 140px;
+  }
+
+  .quantity {
+    margin-right: spacing(2);
+    height: $buttonLargeHeight;
+
+    > select {
+      height: $buttonLargeHeight !important;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .addon {
+    margin-left: spacing(1);
+  }
+
+  h5.price {
+    @include fontSize('md');
+    margin-right: spacing(2);
+  }
+
+  &.small {
+    flex-direction: column;
+    padding-bottom: 0;
+
+    .content {
+      padding: 0 spacing(2) spacing(2);
+    }
+
+    .title {
+      @include fontSize('lg');
+    }
+
+    .description {
+      margin-bottom: spacing(2);
+      white-space: pre-wrap;
+
+      &.short {
+        display: block;
+        display: -webkit-box;
+        max-width: 100%;
+        max-height: 48px;
+        margin: 0 auto;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+      }
+    }
+
+    .ctaTitle {
+      @include fontSize('md');
+      margin-bottom: spacing(0.5);
+    }
+
+    .ctaDescription {
+      margin-bottom: spacing(2);
+    }
+
+    .ctaAction {
+      flex-direction: column;
+    }
+
+    .ctaButton {
+      align-self: stretch;
+    }
+
+    .ctaAccessories {
+      align-self: stretch;
+      justify-content: flex-end;
+      flex-direction: row-reverse;
+      margin-bottom: spacing(1);
+
+      @media screen and (max-width: 1066px) {
+        margin-top: 0;
+      }
+    }
+
+    .imageContainer {
+      height: unset;
+      padding: spacing(2);
+
+      .image {
+        max-width: 300px;
+        max-height: 300px;
+      }
+    }
+
+    .description, .ctaDescription {
+      text-align: left;
+    }
+  }
+
+}

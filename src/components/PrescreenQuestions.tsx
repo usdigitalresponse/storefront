@@ -99,13 +99,13 @@ const PrescreenQuestions: React.FC<Props> = ({
 
     setFormSubmitted(true);
     let valid = await triggerValidation();
-    console.log('valid', valid);
-    console.log('onSubmit formState', formState);
-    console.log('onSubmit formIsValid', formIsValid);
+    //console.log('valid', valid);
+    //console.log('onSubmit formState', formState);
+    //console.log('onSubmit formIsValid', formIsValid);
 
-    console.log('onSubmit zipcodeList', zipcodeList);
-    console.log('onSubmit data', data);
-    console.log('onSubmit e', e);
+    //console.log('onSubmit zipcodeList', zipcodeList);
+    //console.log('onSubmit data', data);
+    //console.log('onSubmit e', e);
 
     let selected: { [index: string]: boolean } = {};
     let fields: { [index: string]: boolean } = {};
@@ -189,7 +189,7 @@ const PrescreenQuestions: React.FC<Props> = ({
 
       console.log('status', status);
       if (status === 'Continue') {
-        console.log('forwardQuestions', data);
+        //console.log('forwardQuestions', data);
         setPushQuestions(data);
         setFinishedPrescreen(true);
         clearError();
@@ -271,6 +271,8 @@ const PrescreenQuestions: React.FC<Props> = ({
                       errors={errors}
                       questionClassName={styles.field}
                       questions={questions}
+                      clearError={clearError}
+
                     />
                   )}
 

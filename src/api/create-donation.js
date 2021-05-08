@@ -34,6 +34,7 @@ exports.handler = async (event, context) => {
         'Phone Number': donationIntent.phone,
         'Stripe Payment ID': donationIntent.stripePaymentId,
         Amount: donationIntent.amount,
+        'Test Card': donationIntent.testCard
       },
       { typecast: true },
     );

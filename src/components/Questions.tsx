@@ -14,9 +14,10 @@ interface Props {
   errors: NestDataObject<any, FieldError>;
   questionClassName?: string;
   questions: Question[];
+  clearError: (name?: string | string[] | undefined) => void
 }
 
-const Questions: React.FC<Props> = ({ register, errors, questionClassName, questions }) => {
+const Questions: React.FC<Props> = ({ register, errors, questionClassName, questions, clearError }) => {
   const contentFieldIsRequired = useContent('checkout_field_is_required') || 'Required field';
 
   return (
@@ -56,6 +57,7 @@ const Questions: React.FC<Props> = ({ register, errors, questionClassName, quest
                 inputRef={register}
                 className={questionClassName}
                 contentFieldIsRequired={contentFieldIsRequired.replace(/{name}/g, question.label)}
+                clearError={clearError}
               />
             );
           case 'Select':

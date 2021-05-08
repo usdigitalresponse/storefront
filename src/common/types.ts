@@ -38,6 +38,7 @@ export interface IConfig {
   faqEnabled: boolean;
   faqHomePageButton: boolean;
   navFAQNewTab: boolean;
+  farmersHomePageButton: boolean;
 }
 
 export interface IContentRecord extends Record<string, string | AirtableImage[]> {
@@ -49,6 +50,11 @@ export interface IContentRecord extends Record<string, string | AirtableImage[]>
 export interface InventoryStrings {
   name: string;
   description: string;
+}
+
+export interface FarmerStrings {
+  name: string;
+  bio: string;
 }
 
 export interface InventoryRecord {
@@ -65,6 +71,15 @@ export interface InventoryRecord {
   stockZipcodes?: string[];
   locations?: IStockLocation[];
   zipcodes?: IStockZipcodes[];
+}
+
+export interface Farmer {
+  id: string;
+  name: string;
+  state: string;
+  bio: string;
+  photo: AirtableImage[];
+  strings?: Record<string, FarmerStrings>;
 }
 
 export interface CategoryStrings {
@@ -191,6 +206,7 @@ export interface IOrderIntent extends ICheckoutFormData {
   discountCodes: string[];
   stripePaymentId?: string;
   locationIds?: string;
+  testCard?: boolean;
 }
 
 export interface IOrderSummary extends ICheckoutFormBase {
@@ -233,6 +249,7 @@ export interface IDonationFormData {
 export interface IDonationIntent extends IDonationFormData {
   amount: number;
   stripePaymentId: string;
+  testCard?: boolean;
 }
 
 export interface IDonationSummary {
@@ -324,7 +341,7 @@ export interface IDiscountCode {
   type: DiscountCodeType;
 }
 
-export type PaymentType = 'main' | 'donation';
+export type PaymentType = 'main' | 'donation' | 'test';
 
 export type QuestionType = 'Single Checkbox' | 'Multiple Checkboxes' | 'Text Input' | 'Select';
 

@@ -40,6 +40,7 @@ export function getFormattedOrder(orderId, view) {
           order.notificationEmail = pickupLocation.fields['Email'];
           order.pickupName = pickupLocation.fields['Name'];
         }
+        console.log("order, pickupLocation", order, pickupLocation);
       }
 
       resolve(order);

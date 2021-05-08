@@ -1,5 +1,6 @@
 import {
   AirtableImage,
+  Farmer,
   ILocationPreference,
   IOrderIntent,
   IOrderItem,
@@ -131,6 +132,18 @@ export function inventoryForLanguage(inventory: InventoryRecord[], language: str
       : {}),
     ...(item.strings && item.strings[language] && item.strings[language].description
       ? { description: item.strings[language].description }
+      : {}),
+  }));
+}
+
+export function farmerForLanguage(farmer: Farmer[], language: string): Farmer[] {
+  return farmer.map((item) => ({
+    ...item,
+    ...(item.strings && item.strings[language] && item.strings[language].name
+      ? { name: item.strings[language].name }
+      : {}),
+    ...(item.strings && item.strings[language] && item.strings[language].bio
+      ? { bio: item.strings[language].bio }
       : {}),
   }));
 }

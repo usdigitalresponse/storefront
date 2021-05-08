@@ -12,6 +12,7 @@ import DonatePage from './pages/DonatePage';
 import DriverRoute from './components/DriverRoute';
 import DriversPage from './pages/DriversPage';
 import FAQPage from './pages/FAQPage';
+import FarmersPage from './pages/FarmersPage';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import LocationsDialog from './components/LocationsDialog';
@@ -41,6 +42,7 @@ const routeComponents: Record<string, React.FC> = {
   schema: SchemaPage,
   noteligible: NotEligiblePage,
   faq: FAQPage,
+  farmers: FarmersPage,
 };
 
 function App() {

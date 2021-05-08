@@ -21,7 +21,7 @@ const BaseLayout: React.FC<Props> = ({ children, title, description, padding, ma
   useScrollToTop();
   const isSmall = useIsSmall();
   const appIsReady = useSelector<IAppState, boolean>(appIsReadySelector);
-  document.title = useContent('page_title') || "Storefront";
+  document.title = useContent('page_title') || 'Storefront';
 
   return (
     <div className={styles.container}>

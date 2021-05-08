@@ -8,7 +8,7 @@ import Loading from './Loading';
 import React from 'react';
 
 interface Props {
-  type: 'donation' | 'main';
+  type: 'donation' | 'main' | 'test';
 }
 
 const StripeElementsWrapper: React.FC<Props> = ({ children, type }) => {

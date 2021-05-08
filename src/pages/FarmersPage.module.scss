@@ -1,0 +1,39 @@
+@import '../common/variables';
+
+.container {
+  .productDetail {
+    margin-bottom: spacing(6);
+  }
+
+  &.summary {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-bottom: spacing(8);
+
+    .productSummary {
+      border-radius: $borderRadius;
+      padding: spacing(2);
+      margin: spacing(2) spacing(1) spacing(4);
+    }
+  }
+
+  &.small {
+    .productDetail {
+      margin-bottom: spacing(4);
+    }
+
+    &.summary {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding-bottom: spacing(4);
+
+      .productSummary {
+        margin: spacing(2) spacing(1);
+      }
+    }
+  }
+}
+
+

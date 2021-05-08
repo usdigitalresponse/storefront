@@ -26,10 +26,16 @@ exports.handler = async (event, context) => {
       throw new Error('Invalid amountCents');
     }
 
-    const apiKey =
+    let apiKey =
       paymentType === 'donation'
         ? process.env.STRIPE_DONATION_PRIVATE_API_KEY
         : process.env.STRIPE_MAIN_PRIVATE_API_KEY;
+
+    let testCard = false
+    if( event.queryStringParameters.testcard ) {
+      apiKey = process.env.STRIPE_TEST_PRIVATE_API_KEY
+      testCard = true
+    }
 
     if (!apiKey) {
       throw new Error('Stripe api key not set');

@@ -1,6 +1,7 @@
 import * as Reselect from 'reselect';
 import {
   CategoryRecord,
+  Farmer,
   IConfig,
   IContentRecord,
   IInventoryCategory,
@@ -17,7 +18,13 @@ import { IAppState } from './app';
 import { NO_CATEGORY } from '../common/constants';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 import { TypedAction, TypedReducer, setWith } from 'redoodle';
-import { getPickupLocation, getProduct, inventoryForLanguage, questionForLanguage } from '../common/utils';
+import {
+  farmerForLanguage,
+  getPickupLocation,
+  getProduct,
+  inventoryForLanguage,
+  questionForLanguage,
+} from '../common/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -31,11 +38,13 @@ export interface ICmsState {
   stripeObjects: {
     main: Promise<Stripe | null> | null;
     donation: Promise<Stripe | null> | null;
+    test: Promise<Stripe | null> | null;
   };
   pickupLocations: IPickupLocation[];
   schedules: ISchedule[];
   validZipcodes: IValidZipcode[];
   questions: Question[];
+  farmers: Farmer[];
 }
 
 // actions
@@ -49,6 +58,7 @@ export const SetValidZipcodes = TypedAction.define('APP/CMS/SET_VALID_ZIPCODES')
 export const SetQuestions = TypedAction.define('APP/CMS/SET_QUESTIONS')<any>();
 export const SetStripePromise = TypedAction.define('APP/CMS/SET_STRIPE_PROMISE')<any>();
 export const SetLanguage = TypedAction.define('APP/CMS/SET_LANGUAGE')<string>();
+export const SetFarmers = TypedAction.define('APP/CMS/SET_FARMERS')<any>();
 
 // reducer
 export const cmsReducer: any = TypedReducer.builder<ICmsState>()
@@ -60,6 +70,7 @@ export const cmsReducer: any = TypedReducer.builder<ICmsState>()
   .withHandler(SetValidZipcodes.TYPE, (state, validZipcodes) => setWith(state, { validZipcodes }))
   .withHandler(SetQuestions.TYPE, (state, questions) => setWith(state, { questions }))
   .withHandler(SetPickupLocations.TYPE, (state, pickupLocations) => setWith(state, { pickupLocations }))
+  .withHandler(SetFarmers.TYPE, (state, farmers) => setWith(state, { farmers }))
   .withHandler(SetStripePromise.TYPE, (state, keys) =>
     setWith(state, {
       stripeObjects: {
@@ -113,18 +124,21 @@ export const initialCmsState: ICmsState = {
     faqEnabled: false,
     faqHomePageButton: false,
     navFAQNewTab: true,
+    farmersHomePageButton: false,
   },
   content: {},
   inventory: [],
   stripeObjects: {
     main: null,
     donation: null,
+    test: null,
   },
   language: 'en',
   pickupLocations: [],
   schedules: [],
   validZipcodes: [],
   questions: [],
+  farmers: [],
 };
 
 // selectors
@@ -137,6 +151,15 @@ export const inventorySelector = Reselect.createSelector(
   },
 );
 
+export const farmerListSelector = Reselect.createSelector(
+  (state: IAppState) => state.cms.farmers,
+  (state: IAppState) => state.cms.language,
+  (state: IAppState) => state.cms.config.languages,
+  (farmers: Farmer[], selectedLanguage: string, languages: string[]) => {
+    return languages.length > 1 ? farmerForLanguage(farmers, selectedLanguage) : farmers;
+  },
+);
+
 export const appIsReadySelector = Reselect.createSelector(
   (state: IAppState) => state.cms.content,
   inventorySelector,
@@ -145,7 +168,7 @@ export const appIsReadySelector = Reselect.createSelector(
   },
 );
 
-export const stripePromiseSelector = (type: 'donation' | 'main') =>
+export const stripePromiseSelector = (type: 'donation' | 'main' | 'test') =>
   Reselect.createSelector(
     (state: IAppState) => state.cms.stripeObjects[type],
     (stripePromise: Promise<Stripe | null> | null) => {
@@ -355,8 +378,8 @@ export const makeContentValueSelector = () =>
         return '';
       }
 
-      if( value === undefined ) {
-        return undefined
+      if (value === undefined) {
+        return undefined;
       }
 
       if (!value) {

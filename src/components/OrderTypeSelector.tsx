@@ -1,6 +1,7 @@
-import { Button, Card, CardActionArea, CardActions, Grid, Typography } from '@material-ui/core';
+import { Button, Card, CardActionArea, CardActions, FormHelperText, Grid, Typography } from '@material-ui/core';
+import { FieldError, NestDataObject } from 'react-hook-form';
 import { IAppState } from '../store/app';
-import { IConfig, IPickupLocation, OrderType } from '../common/types';
+import { ICheckoutFormData, IConfig, IPickupLocation, OrderType } from '../common/types';
 import { SetLocationsDialogIsOpen, SetOrderType, selectedLocationSelector } from '../store/cart';
 import { pickupLocationsSelector, zipcodeListSelector } from '../store/cms';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,9 +16,10 @@ import styles from './OrderTypeSelector.module.scss';
 
 interface Props {
   className?: string;
+  errors?: NestDataObject<ICheckoutFormData, FieldError>
 }
 
-const OrderTypeSelector: React.FC<Props> = ({ className }) => {
+const OrderTypeSelector: React.FC<Props> = ({ className, errors }) => {
   const isSmall = useIsSmall();
   const dispatch = useDispatch();
   const selectedLocation = useSelector<IAppState, IPickupLocation | undefined>(selectedLocationSelector);
@@ -25,7 +27,13 @@ const OrderTypeSelector: React.FC<Props> = ({ className }) => {
   const orderType = useSelector<IAppState, OrderType>((state) => state.cart.orderType);
   const config = useSelector<IAppState, IConfig>((state) => state.cms.config);
   const zipcodeList = useSelector<IAppState, string[]>(zipcodeListSelector);
-  const { deliveryEnabled, pickupEnabled, stockByLocation } = config;
+  const { pickupEnabled, stockByLocation } = config;
+
+
+  const forceWaitlist = window.location.search.toLowerCase().indexOf("waitlist") > -1
+  const deliveryEnabled = config.deliveryEnabled && !forceWaitlist
+
+  const error = errors ? errors['pickupLocationId'] : undefined;
 
   return (
     <Grid container spacing={2} alignItems={isSmall ? undefined : 'stretch'} className={className}>
@@ -83,6 +91,7 @@ const OrderTypeSelector: React.FC<Props> = ({ className }) => {
                 >
                   {selectedLocation ? 'Change' : 'Choose'} location...
                 </Button>
+                <FormHelperText error>{error && error.message}</FormHelperText>
               </CardActions>
             )}
           </Card>

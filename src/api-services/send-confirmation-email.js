@@ -1,9 +1,14 @@
-const { airTableRowsAsKey, fetchTable, DEFAULT_VIEW } = require('../api-services/airtableHelper');
-
+const {
+  airTableRowsAsKey,
+  fetchTable,
+  getRecordValueForLanguage,
+  DEFAULT_VIEW,
+} = require('../api-services/airtableHelper');
 
 const { sendEmail } = require('./sendEmail');
-const numeral = require('numeral');
+let markdown = require('markdown-it')();
 const moment = require('moment');
+const numeral = require('numeral');
 
 const { getEmailBody } = require('./getEmailBody');
 const { getFormattedOrder } = require('./getFormattedOrder');
@@ -54,11 +59,32 @@ export const sendDonationConfirmationEmail = (donationSummary) => {
       }
 
       const formattedAmount = numeral(donationSummary.total).format('$0,0.00');
-      console.dir({ emailBody: content.email_donation_confirmation_body })
-      const donationEmailCopy = content.email_donation_confirmation_body.en || '<p>Thank you for your donation.</p>'
+      console.dir({ emailContent: content.email_donation_confirmation_body });
+      const donationEmailCopy =
+        getRecordValueForLanguage(content.email_donation_confirmation_body, 'en') ||
+        '<p>Thank you for your donation.</p>';
+      console.dir({ donationEmailCopy });
 
-      markdown
-        .render(getRecordValueForLanguage(donationEmailCopy, 'en'))
+      let htmlTemplate;
+
+      if (donationEmailCopy.indexOf(`{formattedAmount}`) === -1) {
+        htmlTemplate = `
+          ${donationEmailCopy}
+          <p>
+            <b>Name:</b> ${donationSummary.fullName}<br/>
+            <b>Donated Amount:</b> ${formattedAmount}<br/>
+          </p>
+          `;
+      } else {
+        htmlTemplate = donationEmailCopy
+          .replace(/\{formattedAmount\}/g, formattedAmount)
+          .replace(/\{fullName\}/g, donationSummary.fullName);
+      }
+      console.dir({ htmlTemplate });
+
+      const htmlBody = markdown.render(htmlTemplate);
+
+      console.dir({ htmlBody });
 
       const emailOptions = {
         to: {
@@ -66,21 +92,17 @@ export const sendDonationConfirmationEmail = (donationSummary) => {
           name: donationSummary.fullName,
         },
         subject: 'Donation Confirmation',
-        htmlBody: `
-        ${donationEmailCopy}
-        <p>
-          <b>Name:</b> ${donationSummary.fullName}<br/>
-          <b>Donated Amount:</b> ${formattedAmount}<br/>
-        </p>
-        `,
+
+        htmlBody: htmlBody,
       };
 
-      console.dir({emailOptions})
+      console.dir({ emailOptions });
 
       const emailResult = await sendEmail(emailOptions);
 
       return resolve(emailResult[0].statusCode === 202);
     } catch (error) {
+      console.error(error);
       return reject(error.message);
     }
   });

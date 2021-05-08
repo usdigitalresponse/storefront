@@ -13,7 +13,13 @@ import {
 import { CompoundAction } from 'redoodle';
 import { DonationFormField, IDonationFormData, PaymentStatus } from '../common/types';
 import { IAppState } from '../store/app';
-import { SetDonationAmount, SetError, SetIsPaying, makeDonationUnitCountSelector, paymentStatusSelector } from '../store/checkout';
+import {
+  SetDonationAmount,
+  SetError,
+  SetIsPaying,
+  makeDonationUnitCountSelector,
+  paymentStatusSelector,
+} from '../store/checkout';
 import { StripeService } from '../services/StripeService';
 import { formatCurrency } from '../common/format';
 import { reverse } from '../common/router';
@@ -186,7 +192,7 @@ const DonatePageMain: React.FC = () => {
                 disabled={hasErrors}
               >
                 {isPaying && <CircularProgress size={26} className={styles.spinner} />}
-                {!isPaying && <Content id='donate_page_submit_button' defaultText='Make Donation'/>}
+                {!isPaying && <Content id="donate_page_submit_button" defaultText="Make Donation" />}
               </Button>
             </div>
           </Grid>
@@ -197,8 +203,10 @@ const DonatePageMain: React.FC = () => {
 };
 
 export default function DonatePage() {
+  const testCard = window.location.search.toLowerCase().indexOf('testcard') > -1;
+
   return (
-    <StripeElementsWrapper type="donation">
+    <StripeElementsWrapper type={testCard ? 'test' : 'donation'}>
       <DonatePageMain />
     </StripeElementsWrapper>
   );
