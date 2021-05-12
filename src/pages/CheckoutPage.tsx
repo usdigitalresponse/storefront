@@ -777,7 +777,7 @@ export default function CheckoutPage() {
   const testCard = window.location.search.toLowerCase().indexOf('testcard') > -1;
 
   return config.stripeAPIKeyMain ? (
-    <StripeElementsWrapper type={testCard ? 'test' : 'donation'}>
+    <StripeElementsWrapper type={testCard ? 'test' : 'main'}>
       <CheckoutPageWithStripe />
     </StripeElementsWrapper>
   ) : (
