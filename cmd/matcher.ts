@@ -85,7 +85,7 @@ const main = async () => {
   console.dir({ seniorResult }, { depth: null });
   console.dir({ remainingResult }, { depth: null });
 
-  temporaryIventoryDump(fileDir, inventory, orderItems, pickup);
+  temporaryInventoryDump(fileDir, inventory, orderItems, pickup);
 
   return { orders, pickup, inventory, prioritySeniors, priority, seniors, remaining };
 };
@@ -704,7 +704,7 @@ function parseInventory(inventory: ParseResult): { [index: string]: any[] } {
   return byLocation;
 }
 
-function temporaryIventoryDump(fileDir: string, inventory: ParseResult, orderItems: ParseResult, pickup: ParseResult) {
+function temporaryInventoryDump(fileDir: string, inventory: ParseResult, orderItems: ParseResult, pickup: ParseResult) {
   const assignments: any[] = [];
   const summary: any[] = [];
   inventory.list.some((item: any) => {
