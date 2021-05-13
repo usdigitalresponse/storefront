@@ -335,16 +335,17 @@ function assign(
 ) {
   console.dir({ msg: 'Would assign', limitToAssign, of: population.length });
 
-  let assigned = 0;
-  let waitlisted = 0;
-  let attempts = 0;
   let stats = {
     assignments: { first: 0, second: 0, third: 0 },
     waitlist: { first: 0, second: 0, third: 0 },
     badLocationIDsSize: 0,
+    assigned: 0,
+    waitlisted: 0,
+    attempts: 0,
+    failedToMatch: 0
   };
-  while (assigned + waitlisted < limitToAssign && assigned + waitlisted < population.length - 1) {
-    if (attempts++ > 100000) {
+  while (stats.assigned + stats.waitlisted < limitToAssign && stats.assigned + stats.waitlisted < population.length) {
+    if (stats.attempts++ > 500000) {
       break;
     }
 
@@ -352,155 +353,175 @@ function assign(
     let applicant = population[rand];
     if (applicant) {
       //console.log("assigning", rand, population[rand].assigned)
-      if (!applicant.assigned) {
-        // check prefernces, check inventory, assign to specific location
-
-        if (!applicant.LocationIDs) {
-          console.log(
-            'no LocationIDs',
-            applicant['Order ID'],
-            applicant.LocationIDs,
-            applicant.selectedLocation,
-            applicant['Order Items'],
-          );
-
-          applicant.assigned = true;
-          assigned++;
-        }
-
-        if (applicant.LocationIDs) {
-          let matched = false;
-          let locationPreferences = applicant.LocationIDs.split('|');
-          if (locationPreferences.length !== 3 || (locationPreferences[1] || '') === '') {
-            console.error('Bad LocationIds size', locationPreferences);
-            stats.badLocationIDsSize++;
-
-            //console.error('TODO: simulate LocationIDs via Order Items ');
-          } else {
-            //console.log('trying assign', applicant['Order ID'], locationPreferences);
-            locationPreferences.some((location: string, idx: number) => {
-              let items = inventoryByLocation[location];
-              //console.log('trying assign', applicant['Order ID'], location, items.length);
-
-              if (items) {
-                items.some((item: any) => {
-                  //console.dir(item);
-                  if (item.Name.indexOf('DACL') === -1) {
-                    // if (item.assigned >= item.stockAmount)
-                    //   console.dir({
-                    //     msg: 'check stock',
-                    //     name: item['Linked Pickup Location'],
-                    //     stock: item['Stock Level'],
-                    //     assigned: item.assigned,
-                    //   });
-                    if (item.assigned < item.stockAmount) {
-                      matched = true;
-                      item.assigned++;
-                      item.orders.push(applicant['Order ID']);
-
-                      switch (idx) {
-                        case 0:
-                          stats.assignments.first++;
-                          applicant.choice = 'first';
-                          break;
-                        case 1:
-                          stats.assignments.second++;
-                          applicant.choice = 'second';
-                          // console.dir({
-                          //   msg: 'second choice',
-                          //   name: item.Name,
-                          //   assigned: item.assigned,
-                          //   OrderID: applicant['Order ID'],
-                          //   LocationIds: applicant.LocationIDs,
-                          // });
-                          break;
-                        case 2:
-                          stats.assignments.third++;
-                          applicant.choice = 'third';
-                          break;
-                      }
-                    }
-                    return true;
-                  }
-
-                  return false;
-                });
-              } else {
-                console.dir({ msg: 'no items assign', location, OrderID: applicant['Order ID'] });
-              }
-              //console.log('assign attempt', applicant['Order ID'], idx, matched);
-              return matched;
-            });
-
-            applicant.attempted = true;
-
-            if (!matched) {
-              console.log('trying waitlist', applicant['Order ID'], attempts, locationPreferences);
-              locationPreferences.some((location: string, idx: number) => {
-                if (location === '') {
-                  return false;
-                }
-                let items = inventoryByLocation[location];
-                if (items) {
-                  //console.dir({ location, items: items.length });
-                  items.forEach((item: any) => {
-                    //console.dir(item);
-                    if (item.Name.indexOf('DACL') === -1) {
-                      if (item.waitlisted < item.waitlistLevel) {
-                        matched = true;
-                        item.waitlisted++;
-                        item.waitlist.push(applicant['Order ID']);
-
-                        // console.dir({
-                        //   msg: 'waitlisted',
-                        //   name: item.Name,
-                        //   waitlisted: item.waitlisted,
-                        //   assigned: item.assigned,
-                        //   waitlist: item.waitlist,
-                        // });
-
-                        switch (idx) {
-                          case 0:
-                            stats.waitlist.first++;
-                            applicant.choice = 'first';
-
-                            break;
-                          case 1:
-                            stats.waitlist.second++;
-                            applicant.choice = 'second';
-
-                            break;
-                          case 2:
-                            stats.waitlist.third++;
-                            applicant.choice = 'third';
-
-                            break;
-                        }
-                      }
-                    }
-                  });
-                } else {
-                  console.dir({ msg: 'no items waitlist', location, OrderID: applicant['Order ID'] });
-                }
-
-                return matched;
-              });
-            }
-
-            applicant.assigned = matched;
-            if (matched) assigned++;
-          }
-        }
-      }
+      matchApplicant(applicant, inventoryByLocation, stats)
     } else {
       console.log('bad rand', rand, population.length);
     }
   }
-  let retval = { assigned, attempts, pop: population.length, stats };
+  let retval = { assigned: stats.assigned, attempts: stats.attempts, pop: population.length, stats };
   //console.dir({retval});
 
   return retval;
 }
+
+function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: any) {
+  if (!applicant.assigned) {
+    // check prefernces, check inventory, assign to specific location
+
+    if (!applicant.LocationIDs) {
+      console.log(
+        'no LocationIDs',
+        applicant['Order ID'],
+        applicant.LocationIDs,
+        applicant.selectedLocation,
+        applicant['Order Items'],
+      );
+
+      applicant.assigned = true;
+      stats.assigned++;
+    }
+
+    if (applicant.LocationIDs) {
+      let matched = false;
+      let locationPreferences = applicant.LocationIDs.split('|');
+      if (locationPreferences.length !== 3 || (locationPreferences[1] || '') === '') {
+        console.error('Bad LocationIds size', locationPreferences);
+        console.dir({ applicant })
+        stats.badLocationIDsSize++;
+
+        //console.error('TODO: simulate LocationIDs via Order Items ');
+      } else {
+        //console.log('trying assign', applicant['Order ID'], locationPreferences);
+        locationPreferences.some((location: string, idx: number) => {
+          let items = inventoryByLocation[location];
+          //console.log('trying assign', applicant['Order ID'], location, items.length);
+
+          if (items) {
+            items.some((item: any) => {
+              //console.dir(item);
+              if (item.Name.indexOf('DACL') === -1) {
+                // if (item.assigned >= item.stockAmount)
+                //   console.dir({
+                //     msg: 'check stock',
+                //     name: item['Linked Pickup Location'],
+                //     stock: item['Stock Level'],
+                //     assigned: item.assigned,
+                //   });
+                if (item.assigned < item.stockAmount) {
+                  matched = true;
+                  item.assigned++;
+                  item.orders.push(applicant['Order ID']);
+
+                  switch (idx) {
+                    case 0:
+                      stats.assignments.first++;
+                      applicant.choice = 'first';
+                      break;
+                    case 1:
+                      stats.assignments.second++;
+                      applicant.choice = 'second';
+                      // console.dir({
+                      //   msg: 'second choice',
+                      //   name: item.Name,
+                      //   assigned: item.assigned,
+                      //   OrderID: applicant['Order ID'],
+                      //   LocationIds: applicant.LocationIDs,
+                      // });
+                      break;
+                    case 2:
+                      stats.assignments.third++;
+                      applicant.choice = 'third';
+                      break;
+                  }
+                }
+                return true;
+              }
+
+              return false;
+            });
+          } else {
+            console.dir({ msg: 'no items assign', location, OrderID: applicant['Order ID'] });
+          }
+          //console.log('assign attempt', applicant['Order ID'], idx, matched);
+          return matched;
+        });
+
+        applicant.attempted = true;
+
+        if (!matched) {
+          //console.log('trying waitlist', applicant['Order ID'], attempts, locationPreferences);
+          locationPreferences.some((location: string, idx: number) => {
+            if (location === '') {
+              return false;
+            }
+            let items = inventoryByLocation[location];
+            if (items) {
+              //console.dir({ location, items: items.length });
+              items.forEach((item: any) => {
+                //console.dir(item);
+                if (item.Name.indexOf('DACL') === -1) {
+                  if (item.waitlisted < item.waitlistLevel) {
+                    matched = true;
+                    item.waitlisted++;
+                    item.waitlist.push(applicant['Order ID']);
+
+                    // console.dir({
+                    //   msg: 'waitlisted',
+                    //   name: item.Name,
+                    //   waitlisted: item.waitlisted,
+                    //   assigned: item.assigned,
+                    //   waitlist: item.waitlist,
+                    // });
+
+                    switch (idx) {
+                      case 0:
+                        stats.waitlist.first++;
+                        applicant.choice = 'first';
+
+                        break;
+                      case 1:
+                        stats.waitlist.second++;
+                        applicant.choice = 'second';
+
+                        break;
+                      case 2:
+                        stats.waitlist.third++;
+                        applicant.choice = 'third';
+
+                        break;
+                    }
+                  } else {
+                    //console.dir({ msg: 'adding Order to overwaitlist', order: applicant['Order ID']})
+                    item.overWaitlist[applicant['Order ID']] = applicant
+                  }
+                }
+              });
+            } else {
+              console.dir({ msg: 'no items waitlist', location, OrderID: applicant['Order ID'] });
+            }
+
+            return matched;
+          });
+        }
+
+        if( ! matched ) {
+          console.dir({msg: 'no match possible', applicant})
+        }
+        applicant.assigned = matched;
+        applicant.matchAttempts = applicant.matchAttempts || 0
+        applicant.matchAttempts++
+        if (matched) {
+          stats.assigned++;
+        } else {
+          if( applicant.matchAttempts === 1) {
+            stats.failedToMatch++
+          }
+        }
+      }
+    }
+  }
+}
+
 
 function householdsAndDupesCheck(orders: ParseResult) {
   const emails: { [index: string]: any } = {};
@@ -666,6 +687,8 @@ function parseInventory(inventory: ParseResult): { [index: string]: any[] } {
     item.waitlisted = 0;
     item.waitlist = [];
 
+    item.overWaitlist = {};
+
     item.stockAmount = parseInt(item['Stock Level']);
     if (item.stockAmount === 5000) {
       item.stockAmount = 50;
@@ -699,14 +722,18 @@ function temporaryIventoryDump(fileDir: string, inventory: ParseResult, orderIte
     //   });
     // });
 
-    // console.dir({ item });
-    // return true;
+    //   if( Object.keys(item.overWaitlist).length > 0 ) {
+    //  console.dir({ item });
+    //  return true;
+    //   }
     summary.push({
       Location: item['Stock Location'],
       Assigned: item.assigned,
       Waitlisted: item.waitlisted,
+      'Over Waitlist': Object.keys(item.overWaitlist).length,
       'Stock Limit': item.stockAmount,
       'Waitlist Limit': item.waitlistLevel,
+      'Location Airtable ID': item['Airtable ID (from Location)']
     });
   });
 
