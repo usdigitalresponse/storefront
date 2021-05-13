@@ -51,17 +51,17 @@ const main = async () => {
   const priority = filterApplicants(lotteryOrders, true, undefined, priorityZips);
   const seniors = filterApplicants(lotteryOrders, true, maxBirthYear, undefined);
 
-  let total = 2500;
+  let total = lotteryOrders.list.length;
 
   const priortySeniorResult = assign(
     prioritySeniors,
-    100,
+    prioritySeniors.length,
     inventoryByLocation,
     orderItems.byOrder,
     inventoryByLocation,
   );
-  const priorityResult = assign(priority, 75, inventoryByLocation, orderItems.byOrder, inventoryByLocation);
-  const seniorResult = assign(seniors, 50, inventoryByLocation, orderItems.byOrder, inventoryByLocation);
+  const priorityResult = assign(priority, priority.length, inventoryByLocation, orderItems.byOrder, inventoryByLocation);
+  const seniorResult = assign(seniors, seniors.length, inventoryByLocation, orderItems.byOrder, inventoryByLocation);
 
   const remaining = filterApplicants(lotteryOrders, false, undefined, undefined);
 
