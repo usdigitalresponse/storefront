@@ -42,7 +42,7 @@ const main = async () => {
   parseBirthDates(orders);
 
   let dupes = householdsAndDupesCheck(orders);
-  householdsAndDupesOutput(dupes, fileDir);
+  householdsAndDupesOutput(dupes, fileDir, orders);
 
   let lotteryOrders = filterLotteryOrders(orders, pickup);
 
@@ -505,7 +505,7 @@ function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: an
         }
 
         if( ! matched ) {
-          console.dir({msg: 'no match possible', applicant})
+          //console.dir({msg: 'no match possible', applicant})
         }
         applicant.assigned = matched;
         applicant.matchAttempts = applicant.matchAttempts || 0
@@ -521,7 +521,6 @@ function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: an
     }
   }
 }
-
 
 function householdsAndDupesCheck(orders: ParseResult) {
   const emails: { [index: string]: any } = {};
@@ -548,7 +547,7 @@ function householdsAndDupesCheck(orders: ParseResult) {
     }
     addresses[address].push(order);
 
-    const name = order.Name?.toLowerCase();
+    const name = order.Name?.trim().toLowerCase();
     if (name) {
       const parts = name.split(' ');
       if (parts.length > 0) {
@@ -574,59 +573,152 @@ function householdsAndDupesOutput(
     lastWords: { [index: string]: any };
   },
   fileDir: string,
+  orders: ParseResult
 ) {
   let dupeEmails: { email: string; count: number }[] = [];
   let dupePhones: { phone: string; count: number }[] = [];
   let dupeAddreses: { address: string; count: number }[] = [];
   let dupeLastWords: { lastWord: string; count: number }[] = [];
 
+
+  let dupeOrdersByEmails: { dupe: string; Name: string, BirthYear: string, Email: string, Phone: string, Street: string, Street2: string, Zip: string, OrderID: string, Duplicate: string, Household: string  }[] = [];
+  let dupeOrdersByPhones: { dupe: string; Name: string, BirthYear: string, Email: string, Phone: string, Street: string, Street2: string, Zip: string, OrderID: string, Duplicate: string, Household: string  }[] = [];
+  let dupeOrdersByAddresses: { dupe: string; Name: string, BirthYear: string, Email: string, Phone: string, Street: string, Street2: string, Zip: string, OrderID: string, Duplicate: string, Household: string  }[] = [];
+  let dupeOrdersByLastWords: { dupe: string; Name: string, BirthYear: string, Email: string, Phone: string, Street: string, Street2: string, Zip: string, OrderID: string, Duplicate: string, Household: string  }[] = [];
+
   Object.keys(list.emails).forEach((key) => {
-    let orders = list.emails[key];
-    if (orders.length > 1) {
-      dupeEmails.push({ email: key, count: orders.length });
+    let dupes = list.emails[key];
+    if (dupes.length > 1) {
+      dupeEmails.push({ email: key, count: dupes.length });
+
+      orders.list.some((order: any)=>{
+        if( order.Email === key) {
+          dupeOrdersByEmails.push({dupe: key,
+            Name: order.Name,
+            BirthYear: order['Birth Year'],
+            Email: order.Email,
+            Phone: order['Phone Number'],
+            Street: order.address_street1,
+            Street2: order.address_street2,
+            Zip: order.Zip,
+            OrderID: order['Order ID'],
+            Duplicate: order['Duplicate'],
+            Household: order['Household'],
+          })
+        }
+      })
     }
   });
 
   Object.keys(list.phones).forEach((key) => {
-    let orders = list.phones[key];
-    if (orders.length > 1) {
-      dupePhones.push({ phone: key, count: orders.length });
+    let dupes = list.phones[key];
+    if (dupes.length > 1) {
+      dupePhones.push({ phone: key, count: dupes.length });
+
+      orders.list.some((order: any) => {
+        if (order['Phone Number'] === key) {
+          dupeOrdersByPhones.push({
+            dupe: key,
+            Name: order.Name,
+            BirthYear: order['Birth Year'],
+            Email: order.Email,
+            Phone: order['Phone Number'],
+            Street: order.address_street1,
+            Street2: order.address_street2,
+            Zip: order.Zip,
+            OrderID: order['Order ID'],
+            Duplicate: order['Duplicate'],
+            Household: order['Household'],
+          })
+        }
+      })
     }
   });
 
   Object.keys(list.addresses).forEach((key) => {
-    let orders = list.addresses[key];
-    if (orders.length > 1) {
-      dupeAddreses.push({ address: key, count: orders.length });
+    let dupes = list.addresses[key];
+    if (dupes.length > 1) {
+      dupeAddreses.push({ address: key, count: dupes.length });
+
+      orders.list.some((order: any) => {
+        if (order['address_street1'] === key) {
+          dupeOrdersByAddresses.push({
+            dupe: key,
+            Name: order.Name,
+            BirthYear: order['Birth Year'],
+            Email: order.Email,
+            Phone: order['Phone Number'],
+            Street: order.address_street1,
+            Street2: order.address_street2,
+            Zip: order.Zip,
+            OrderID: order['Order ID'],
+            Duplicate: order['Duplicate'],
+            Household: order['Household'],
+          })
+        }
+      })
     }
   });
 
   Object.keys(list.lastWords).forEach((key) => {
-    let orders = list.lastWords[key];
-    if (orders.length > 1) {
-      dupeLastWords.push({ lastWord: key, count: orders.length });
+    let dupes = list.lastWords[key];
+    if (dupes.length > 1) {
+      dupeLastWords.push({ lastWord: key, count: dupes.length });
+
+      orders.list.some((order: any) => {
+        let parts = order.Name.trim().toLowerCase().split(" ")
+
+        if (parts[parts.length-1]=== key) {
+          dupeOrdersByLastWords.push({
+            dupe: key,
+            Name: order.Name,
+            BirthYear: order['Birth Year'],
+            Email: order.Email,
+            Phone: order['Phone Number'],
+            Street: order.address_street1,
+            Street2: order.address_street2,
+            Zip: order.Zip,
+            OrderID: order['Order ID'],
+            Duplicate: order['Duplicate'],
+            Household: order['Household'],
+          })
+        }
+      })
     }
   });
 
   let ws = fs.createWriteStream(path.join(fileDir, 'dupe-emails.csv'));
   csv.write(dupeEmails, { headers: true }).pipe(ws);
-
   console.log('wrote emails dupes');
+
+  ws = fs.createWriteStream(path.join(fileDir, 'dupe-emails-orders.csv'));
+  csv.write(dupeOrdersByEmails, { headers: true }).pipe(ws);
+  console.log('wrote emails dupes orders');
 
   ws = fs.createWriteStream(path.join(fileDir, 'dupe-phones.csv'));
   csv.write(dupePhones, { headers: true }).pipe(ws);
-
   console.log('wrote phones dupes');
+
+  ws = fs.createWriteStream(path.join(fileDir, 'dupe-phones-orders.csv'));
+  csv.write(dupeOrdersByPhones, { headers: true }).pipe(ws);
+  console.log('wrote phones dupes orders');
 
   ws = fs.createWriteStream(path.join(fileDir, 'dupe-addresses.csv'));
   csv.write(dupeAddreses, { headers: true }).pipe(ws);
-
   console.log('wrote addresses dupes');
+
+  ws = fs.createWriteStream(path.join(fileDir, 'dupe-Addresses-orders.csv'));
+  csv.write(dupeOrdersByAddresses, { headers: true }).pipe(ws);
+  console.log('wrote Addresses dupes orders');
 
   ws = fs.createWriteStream(path.join(fileDir, 'dupe-last-words.csv'));
   csv.write(dupeLastWords, { headers: true }).pipe(ws);
-
   console.log('wrote last-words dupes');
+
+  ws = fs.createWriteStream(path.join(fileDir, 'dupe-LastWords-orders.csv'));
+  csv.write(dupeOrdersByLastWords, { headers: true }).pipe(ws);
+  console.log('wrote LastWords dupes orders');
+
 }
 
 function filterLotteryOrders(orders: ParseResult, pickup: ParseResult): ParseResult {
