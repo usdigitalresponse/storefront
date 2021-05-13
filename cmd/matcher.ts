@@ -656,10 +656,14 @@ function filterLotteryOrders(orders: ParseResult, pickup: ParseResult): ParseRes
         }
       }
     } else {
-      lottery.list.push(order);
-      lottery.lookup[order['Airtable ID']] = order;
-      if (order['Order ID']) {
-        lottery.byOrder[order['Order ID']] = order;
+      if( order.Type !== 'Delivery' ) {
+        lottery.list.push(order);
+        lottery.lookup[order['Airtable ID']] = order;
+        if (order['Order ID']) {
+          lottery.byOrder[order['Order ID']] = order;
+        }
+      } else {
+        console.dir({msg: "skip delivery", type: order.Type})
       }
     }
   });
