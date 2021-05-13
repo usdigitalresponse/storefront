@@ -349,7 +349,7 @@ function assign(
       break;
     }
 
-    let rand = Math.floor(Math.random() * (population.length - 1));
+    let rand = Math.floor(Math.random() * (population.length));
     let applicant = population[rand];
     if (applicant) {
       //console.log("assigning", rand, population[rand].assigned)
@@ -358,6 +358,14 @@ function assign(
       console.log('bad rand', rand, population.length);
     }
   }
+
+  population.some((applicant) =>{
+    if (!applicant.assigned ) {
+      matchApplicant(applicant, inventoryByLocation, stats)
+      console.dir({ msg: 'catch all match', orderID: applicant['Order ID'], assigned: applicant.assigned, matchAttempts: applicant.matchAttempts })
+    }
+  })
+
   let retval = { assigned: stats.assigned, attempts: stats.attempts, pop: population.length, stats };
   //console.dir({retval});
 
@@ -749,13 +757,17 @@ function filterLotteryOrders(orders: ParseResult, pickup: ParseResult): ParseRes
       }
     } else {
       if( order.Type !== 'Delivery' ) {
-        lottery.list.push(order);
-        lottery.lookup[order['Airtable ID']] = order;
-        if (order['Order ID']) {
-          lottery.byOrder[order['Order ID']] = order;
+        if (order['Order Status'] !== 'Waitlist') {
+          lottery.list.push(order);
+          lottery.lookup[order['Airtable ID']] = order;
+          if (order['Order ID']) {
+            lottery.byOrder[order['Order ID']] = order;
+          }
+        } else {
+          console.dir({ msg: "skip waitlist", type: order.Type, status: order['Order Status'] })
         }
       } else {
-        console.dir({msg: "skip delivery", type: order.Type})
+        //console.dir({ msg: "skip delivery", type: order.Type, status: order['Order Status'] })
       }
     }
   });
