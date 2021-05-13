@@ -317,6 +317,8 @@ function filterApplicants(
     if (passes) {
       order.filtered = true;
       result.push(order);
+    } else {
+      order.matcherGroup = null
     }
 
     return false;
