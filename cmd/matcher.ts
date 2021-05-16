@@ -15,6 +15,12 @@ interface ParseResult {
   lookup: IdLookup;
   msTaken: number;
   byOrder: IdLookup;
+  byOrderItem: IdLookup;
+  tooYoung?: number;
+  duplicates?: number;
+  assignedPickupLocation?: number;
+  delivery?: number;
+  waitlist?: number;
 }
 
 const main = async () => {
@@ -45,6 +51,8 @@ const main = async () => {
   householdsAndDupesOutput(dupes, fileDir, orders);
 
   let lotteryOrders = filterLotteryOrders(orders, pickup);
+  let marketChampionOrders = ['6732', '5328', '6144', '5366', '5505'];
+  const marketChampions = filterApplicants(lotteryOrders, true, undefined, undefined, marketChampionOrders);
 
   const priorityZips = ['20001', '20003'];
   const prioritySeniors = filterApplicants(lotteryOrders, true, maxBirthYear, priorityZips);
@@ -53,15 +61,23 @@ const main = async () => {
 
   let total = lotteryOrders.list.length;
 
+  const marketChampionResult = assign(
+    marketChampions,
+    marketChampions.length,
+    inventoryByLocation,
+    orderItems,
+    inventoryByLocation,
+  );
+
   const priortySeniorResult = assign(
     prioritySeniors,
     prioritySeniors.length,
     inventoryByLocation,
-    orderItems.byOrder,
+    orderItems,
     inventoryByLocation,
   );
-  const priorityResult = assign(priority, priority.length, inventoryByLocation, orderItems.byOrder, inventoryByLocation);
-  const seniorResult = assign(seniors, seniors.length, inventoryByLocation, orderItems.byOrder, inventoryByLocation);
+  const priorityResult = assign(priority, priority.length, inventoryByLocation, orderItems, inventoryByLocation);
+  const seniorResult = assign(seniors, seniors.length, inventoryByLocation, orderItems, inventoryByLocation);
 
   const remaining = filterApplicants(lotteryOrders, false, undefined, undefined);
 
@@ -71,7 +87,7 @@ const main = async () => {
     lotteryOrders.list,
     total - totalAssigned,
     inventoryByLocation,
-    orderItems.byOrder,
+    orderItems,
     inventoryByLocation,
   );
 
@@ -80,6 +96,7 @@ const main = async () => {
   let orderItemsMatched = translateToOrderItems(lotteryOrders, inventory, orderItems);
 
   console.dir({ totalAssigned });
+  console.dir({ marketChampionResult }, { depth: null });
   console.dir({ priortySeniorResult }, { depth: null });
   console.dir({ priorityResult }, { depth: null });
   console.dir({ seniorResult }, { depth: null });
@@ -108,6 +125,7 @@ async function parse(fileDir: string, file: string): Promise<ParseResult> {
     let list: any[] = [];
     let lookup: IdLookup = {};
     let byOrder: IdLookup = {};
+    let byOrderItem: IdLookup = {};
 
     const fileName = path.join(fileDir, `${file}.csv`);
     console.dir({ file, fileName });
@@ -127,11 +145,17 @@ async function parse(fileDir: string, file: string): Promise<ParseResult> {
           }
           byOrder[row['Order']].push(row);
         }
+        if (row['Item ID']) {
+          if (byOrderItem[row['Item ID']] === undefined) {
+            byOrderItem[row['Item ID']] = [];
+          }
+          byOrderItem[row['Item ID']].push(row);
+        }
       })
       .on('end', () => {
         let msTaken = Date.now() - start;
         console.dir({ msg: `CSV file successfully processed`, file, msTaken });
-        resolve({ list, lookup, msTaken, byOrder });
+        resolve({ list, lookup, msTaken, byOrder, byOrderItem });
       });
   });
 
@@ -281,44 +305,56 @@ function filterApplicants(
   reconsiderPriorAssigned: boolean,
   maxBirthYear?: number,
   zipCodes?: string[],
+  ordersToMatch?: string[],
 ) {
   let result: any[] = [];
-  console.dir({ maxBirthYear, zipCodes });
+  console.dir({ msg: 'filtering applicants', maxBirthYear, zipCodes, ordersToMatch });
   orders.list.some((order) => {
-    if (maxBirthYear) {
-      order.matcherGroup = 'Senior';
-    }
-
-    if (zipCodes) {
-      order.matcherGroup = 'Priority';
-    }
-
-    if (maxBirthYear && zipCodes) {
-      order.matcherGroup = 'Senior Priority';
-    }
-
     let passes = false;
-    if (order.filtered && order.filtered !== reconsiderPriorAssigned) {
-      return false;
-    }
-    if (order.birthYear) {
+    if (ordersToMatch && ordersToMatch.includes(order['Order ID'])) {
+      order.matcherGroup = 'Order List';
       passes = true;
-      if (maxBirthYear !== undefined) {
-        let birthCheck = order.birthYear <= maxBirthYear;
-        passes = passes && birthCheck;
+    } else {
+      if (ordersToMatch) {
+        return false;
       }
     }
 
-    if (zipCodes) {
-      let zipCheck = zipCodes.includes(order.address_zip);
-      passes = passes && zipCheck;
+    if (!passes) {
+      if (maxBirthYear) {
+        order.matcherGroup = 'Senior';
+      }
+
+      if (zipCodes) {
+        order.matcherGroup = 'Priority';
+      }
+
+      if (maxBirthYear && zipCodes) {
+        order.matcherGroup = 'Senior Priority';
+      }
+
+      if (order.filtered && order.filtered !== reconsiderPriorAssigned) {
+        return false;
+      }
+      if (order.birthYear) {
+        passes = true;
+        if (maxBirthYear !== undefined) {
+          let birthCheck = order.birthYear <= maxBirthYear;
+          passes = passes && birthCheck;
+        }
+      }
+
+      if (zipCodes) {
+        let zipCheck = zipCodes.includes(order.address_zip);
+        passes = passes && zipCheck;
+      }
     }
 
     if (passes) {
       order.filtered = true;
       result.push(order);
     } else {
-      order.matcherGroup = null
+      order.matcherGroup = null;
     }
 
     return false;
@@ -330,7 +366,7 @@ function assign(
   population: any[],
   limitToAssign: number,
   inventory: IdLookup,
-  byOrder: IdLookup,
+  orderItems: ParseResult,
   inventoryByLocation: IdLookup,
 ) {
   console.dir({ msg: 'Would assign', limitToAssign, of: population.length });
@@ -342,29 +378,35 @@ function assign(
     assigned: 0,
     waitlisted: 0,
     attempts: 0,
-    failedToMatch: 0
+    failedToMatch: 0,
   };
   while (stats.assigned + stats.waitlisted < limitToAssign && stats.assigned + stats.waitlisted < population.length) {
     if (stats.attempts++ > 500000) {
       break;
     }
 
-    let rand = Math.floor(Math.random() * (population.length));
+    let rand = Math.floor(Math.random() * population.length);
     let applicant = population[rand];
     if (applicant) {
       //console.log("assigning", rand, population[rand].assigned)
-      matchApplicant(applicant, inventoryByLocation, stats)
+      matchApplicant(applicant, inventoryByLocation, stats, orderItems.byOrderItem);
     } else {
       console.log('bad rand', rand, population.length);
     }
   }
 
-  population.some((applicant) =>{
-    if (!applicant.assigned ) {
-      matchApplicant(applicant, inventoryByLocation, stats)
-      console.dir({ msg: 'catch all match', orderID: applicant['Order ID'], assigned: applicant.assigned, matchAttempts: applicant.matchAttempts })
+  population.some((applicant) => {
+    if (!applicant.assigned) {
+      matchApplicant(applicant, inventoryByLocation, stats, orderItems.byOrderItem);
+      console.dir({
+        msg: 'catch all match',
+        orderID: applicant['Order ID'],
+        assigned: applicant.assigned,
+        matchAttempts: applicant.matchAttempts,
+      });
     }
-  })
+    return false;
+  });
 
   let retval = { assigned: stats.assigned, attempts: stats.attempts, pop: population.length, stats };
   //console.dir({retval});
@@ -372,19 +414,41 @@ function assign(
   return retval;
 }
 
-function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: any) {
+function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: any, byOrderItem: IdLookup) {
   if (!applicant.assigned) {
     // check prefernces, check inventory, assign to specific location
 
     if (!applicant.LocationIDs) {
-      console.log(
-        'no LocationIDs',
-        applicant['Order ID'],
-        applicant.LocationIDs,
-        applicant.selectedLocation,
-        applicant['Order Items'],
-      );
+      let items = applicant['Order Items'].split(',');
+      let locationIDs: string[] = [];
+      items.some((itemID: string) => {
+        let item = byOrderItem[itemID][0];
+        if (item) {
+          let pickupAirtableId = item['Airtable ID (from Linked Pickup Location) (from Inventory)'];
+          //console.dir({ pickupAirtableId });
+          if (pickupAirtableId !== '') {
+            locationIDs.push(pickupAirtableId);
+          }
+        }
+        //console.dir({ item });
+        //return true;
+      });
 
+      if (locationIDs.length > 0) {
+        applicant.LocationIDs = locationIDs.join('|');
+      }
+
+      // console.log(
+      //   'no LocationIDs, faked from Order Items',
+      //   applicant['Order ID'],
+      //   applicant.LocationIDs,
+      //   applicant.selectedLocation,
+      //   applicant['Order Items'],
+      // );
+    }
+
+    if (!applicant.LocationIDs) {
+      console.log('faking assigned to let math work out');
       applicant.assigned = true;
       stats.assigned++;
     }
@@ -393,12 +457,12 @@ function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: an
       let matched = false;
       let locationPreferences = applicant.LocationIDs.split('|');
       if (locationPreferences.length !== 3 || (locationPreferences[1] || '') === '') {
-        console.error('Bad LocationIds size', locationPreferences);
-        console.dir({ applicant })
+        //console.error('Bad LocationIds size', applicant['Order ID'], locationPreferences);
+        //console.dir({ applicant });
         stats.badLocationIDsSize++;
+      }
 
-        //console.error('TODO: simulate LocationIDs via Order Items ');
-      } else {
+      if (locationPreferences.length > 0) {
         //console.log('trying assign', applicant['Order ID'], locationPreferences);
         locationPreferences.some((location: string, idx: number) => {
           let items = inventoryByLocation[location];
@@ -500,7 +564,7 @@ function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: an
                     }
                   } else {
                     //console.dir({ msg: 'adding Order to overwaitlist', order: applicant['Order ID']})
-                    item.overWaitlist[applicant['Order ID']] = applicant
+                    item.overWaitlist[applicant['Order ID']] = applicant;
                   }
                 }
               });
@@ -512,17 +576,17 @@ function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: an
           });
         }
 
-        if( ! matched ) {
+        if (!matched) {
           //console.dir({msg: 'no match possible', applicant})
         }
         applicant.assigned = matched;
-        applicant.matchAttempts = applicant.matchAttempts || 0
-        applicant.matchAttempts++
+        applicant.matchAttempts = applicant.matchAttempts || 0;
+        applicant.matchAttempts++;
         if (matched) {
           stats.assigned++;
         } else {
-          if( applicant.matchAttempts === 1) {
-            stats.failedToMatch++
+          if (applicant.matchAttempts === 1) {
+            stats.failedToMatch++;
           }
         }
       }
@@ -581,27 +645,75 @@ function householdsAndDupesOutput(
     lastWords: { [index: string]: any };
   },
   fileDir: string,
-  orders: ParseResult
+  orders: ParseResult,
 ) {
   let dupeEmails: { email: string; count: number }[] = [];
   let dupePhones: { phone: string; count: number }[] = [];
   let dupeAddreses: { address: string; count: number }[] = [];
   let dupeLastWords: { lastWord: string; count: number }[] = [];
 
-
-  let dupeOrdersByEmails: { dupe: string; Name: string, BirthYear: string, Email: string, Phone: string, Street: string, Street2: string, Zip: string, OrderID: string, Duplicate: string, Household: string  }[] = [];
-  let dupeOrdersByPhones: { dupe: string; Name: string, BirthYear: string, Email: string, Phone: string, Street: string, Street2: string, Zip: string, OrderID: string, Duplicate: string, Household: string  }[] = [];
-  let dupeOrdersByAddresses: { dupe: string; Name: string, BirthYear: string, Email: string, Phone: string, Street: string, Street2: string, Zip: string, OrderID: string, Duplicate: string, Household: string  }[] = [];
-  let dupeOrdersByLastWords: { dupe: string; Name: string, BirthYear: string, Email: string, Phone: string, Street: string, Street2: string, Zip: string, OrderID: string, Duplicate: string, Household: string  }[] = [];
+  let dupeOrdersByEmails: {
+    dupe: string;
+    Name: string;
+    BirthYear: string;
+    Email: string;
+    Phone: string;
+    Street: string;
+    Street2: string;
+    Zip: string;
+    OrderID: string;
+    Duplicate: string;
+    Household: string;
+  }[] = [];
+  let dupeOrdersByPhones: {
+    dupe: string;
+    Name: string;
+    BirthYear: string;
+    Email: string;
+    Phone: string;
+    Street: string;
+    Street2: string;
+    Zip: string;
+    OrderID: string;
+    Duplicate: string;
+    Household: string;
+  }[] = [];
+  let dupeOrdersByAddresses: {
+    dupe: string;
+    Name: string;
+    BirthYear: string;
+    Email: string;
+    Phone: string;
+    Street: string;
+    Street2: string;
+    Zip: string;
+    OrderID: string;
+    Duplicate: string;
+    Household: string;
+  }[] = [];
+  let dupeOrdersByLastWords: {
+    dupe: string;
+    Name: string;
+    BirthYear: string;
+    Email: string;
+    Phone: string;
+    Street: string;
+    Street2: string;
+    Zip: string;
+    OrderID: string;
+    Duplicate: string;
+    Household: string;
+  }[] = [];
 
   Object.keys(list.emails).forEach((key) => {
     let dupes = list.emails[key];
     if (dupes.length > 1) {
       dupeEmails.push({ email: key, count: dupes.length });
 
-      orders.list.some((order: any)=>{
-        if( order.Email === key) {
-          dupeOrdersByEmails.push({dupe: key,
+      orders.list.some((order: any) => {
+        if (order.Email === key) {
+          dupeOrdersByEmails.push({
+            dupe: key,
             Name: order.Name,
             BirthYear: order['Birth Year'],
             Email: order.Email,
@@ -612,9 +724,9 @@ function householdsAndDupesOutput(
             OrderID: order['Order ID'],
             Duplicate: order['Duplicate'],
             Household: order['Household'],
-          })
+          });
         }
-      })
+      });
     }
   });
 
@@ -637,9 +749,9 @@ function householdsAndDupesOutput(
             OrderID: order['Order ID'],
             Duplicate: order['Duplicate'],
             Household: order['Household'],
-          })
+          });
         }
-      })
+      });
     }
   });
 
@@ -662,9 +774,9 @@ function householdsAndDupesOutput(
             OrderID: order['Order ID'],
             Duplicate: order['Duplicate'],
             Household: order['Household'],
-          })
+          });
         }
-      })
+      });
     }
   });
 
@@ -674,9 +786,11 @@ function householdsAndDupesOutput(
       dupeLastWords.push({ lastWord: key, count: dupes.length });
 
       orders.list.some((order: any) => {
-        let parts = order.Name.trim().toLowerCase().split(" ")
+        let parts = order.Name.trim()
+          .toLowerCase()
+          .split(' ');
 
-        if (parts[parts.length-1]=== key) {
+        if (parts[parts.length - 1] === key) {
           dupeOrdersByLastWords.push({
             dupe: key,
             Name: order.Name,
@@ -689,9 +803,9 @@ function householdsAndDupesOutput(
             OrderID: order['Order ID'],
             Duplicate: order['Duplicate'],
             Household: order['Household'],
-          })
+          });
         }
-      })
+      });
     }
   });
 
@@ -726,11 +840,21 @@ function householdsAndDupesOutput(
   ws = fs.createWriteStream(path.join(fileDir, 'dupe-LastWords-orders.csv'));
   csv.write(dupeOrdersByLastWords, { headers: true }).pipe(ws);
   console.log('wrote LastWords dupes orders');
-
 }
 
 function filterLotteryOrders(orders: ParseResult, pickup: ParseResult): ParseResult {
-  let lottery: ParseResult = { list: [], lookup: {}, msTaken: -1, byOrder: {} };
+  let lottery: ParseResult = {
+    list: [],
+    lookup: {},
+    msTaken: -1,
+    byOrder: {},
+    byOrderItem: {},
+    tooYoung: 0,
+    duplicates: 0,
+    assignedPickupLocation: 0,
+    waitlist: 0,
+    delivery: 0,
+  };
 
   let start = Date.now();
   orders.list.some((order) => {
@@ -755,26 +879,66 @@ function filterLotteryOrders(orders: ParseResult, pickup: ParseResult): ParseRes
           );
         }
       }
+      lottery.assignedPickupLocation = (lottery.assignedPickupLocation || 0) + 1;
     } else {
-      if( order.Type !== 'Delivery' ) {
+      if (order.Type !== 'Delivery') {
         if (order['Order Status'] !== 'Waitlist') {
-          lottery.list.push(order);
-          lottery.lookup[order['Airtable ID']] = order;
-          if (order['Order ID']) {
-            lottery.byOrder[order['Order ID']] = order;
+          if (order.birthYear && order.birthYear >= 2006) {
+            console.dir({ msg: 'skipping too young', birthYear: order.birthYear, orderID: order['Order ID'] });
+            lottery.tooYoung = (lottery.tooYoung || 0) + 1;
+          } else {
+            if (order.Duplicate) {
+              lottery.duplicates = (lottery.duplicates || 0) + 1;
+            } else {
+              lottery.list.push(order);
+              lottery.lookup[order['Airtable ID']] = order;
+              if (order['Order ID']) {
+                lottery.byOrder[order['Order ID']] = order;
+              }
+            }
           }
         } else {
-          console.dir({ msg: "skip waitlist", type: order.Type, status: order['Order Status'] })
+          console.dir({ msg: 'skip waitlist', type: order.Type, status: order['Order Status'] });
+          lottery.waitlist = (lottery.waitlist || 0) + 1;
         }
       } else {
         //console.dir({ msg: "skip delivery", type: order.Type, status: order['Order Status'] })
+        lottery.delivery = (lottery.delivery || 0) + 1;
       }
     }
   });
 
   lottery.msTaken = Date.now() - start;
   console.dir({ orders: { count: orders.list.length } });
-  console.dir({ lottery: { count: lottery.list.length, msTaken: lottery.msTaken } });
+  console.dir({
+    lottery: {
+      count: lottery.list.length,
+      tooYoung: lottery.tooYoung,
+      duplicates: lottery.duplicates,
+      assignedPickup: lottery.assignedPickupLocation,
+      delivery: lottery.delivery,
+      waitlist: lottery.waitlist,
+    },
+  });
+  console.dir({
+    lottery: {
+      count: lottery.list.length,
+      totalSkipped:
+        (lottery.tooYoung || 0) +
+        (lottery.duplicates || 0) +
+        (lottery.assignedPickupLocation || 0) +
+        (lottery.delivery || 0) +
+        (lottery.waitlist || 0),
+      lotteryPlusSkipped:
+        lottery.list.length +
+        (lottery.tooYoung || 0) +
+        (lottery.duplicates || 0) +
+        (lottery.assignedPickupLocation || 0) +
+        (lottery.delivery || 0) +
+        (lottery.waitlist || 0),
+      originalTotal: orders.list.length,
+    },
+  });
 
   return lottery;
 }
@@ -834,14 +998,24 @@ function temporaryInventoryDump(fileDir: string, inventory: ParseResult, orderIt
     //  console.dir({ item });
     //  return true;
     //   }
+
+    let site = pickup.lookup[item['Airtable ID (from Linked Pickup Location)']];
+
+    if (!site) {
+      //console.dir(item);
+    }
+
     summary.push({
       Location: item['Stock Location'],
+      Community: site && site['Community Site'],
       Assigned: item.assigned,
       Waitlisted: item.waitlisted,
+      'Assignments Available': item.stockAmount - item.assigned,
+      'Waitlists Available': item.waitlistLevel - item.waitlisted,
       'Over Waitlist': Object.keys(item.overWaitlist).length,
       'Stock Limit': item.stockAmount,
       'Waitlist Limit': item.waitlistLevel,
-      'Location Airtable ID': item['Airtable ID (from Location)']
+      'Pickup Location Airtable ID': item['Airtable ID (from Linked Pickup Location)'],
     });
   });
 
