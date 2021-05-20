@@ -4,7 +4,7 @@ import path from 'path';
 import stripBomStream from 'strip-bom-stream';
 
 import * as csv from '@fast-csv/format';
-//const fastcsv = require('fast-csv');
+import { isDate } from 'node:util';
 
 interface IdLookup {
   [key: string]: any;
@@ -21,6 +21,7 @@ interface ParseResult {
   assignedPickupLocation?: number;
   delivery?: number;
   waitlist?: number;
+  households?: IdLookup;
 }
 
 const main = async () => {
@@ -67,7 +68,12 @@ const main = async () => {
     inventoryByLocation,
     orderItems,
     inventoryByLocation,
+    lotteryOrders,
   );
+
+  //console.dir({ marketChampions }, { depth: null });
+  //console.dir({ marketChampionResult });
+  //return { orders, pickup, inventory, prioritySeniors, priority, seniors, remaining: null };
 
   const priortySeniorResult = assign(
     prioritySeniors,
@@ -75,27 +81,55 @@ const main = async () => {
     inventoryByLocation,
     orderItems,
     inventoryByLocation,
+    lotteryOrders,
   );
-  const priorityResult = assign(priority, priority.length, inventoryByLocation, orderItems, inventoryByLocation);
-  const seniorResult = assign(seniors, seniors.length, inventoryByLocation, orderItems, inventoryByLocation);
-
-  const remaining = filterApplicants(lotteryOrders, false, undefined, undefined);
-
-  let totalAssigned = priortySeniorResult.assigned + priorityResult.assigned + seniorResult.assigned;
-
-  const remainingResult = assign(
-    lotteryOrders.list,
-    total - totalAssigned,
+  const priorityResult = assign(
+    priority,
+    priority.length,
     inventoryByLocation,
     orderItems,
     inventoryByLocation,
+    lotteryOrders,
+  );
+  const seniorResult = assign(
+    seniors,
+    seniors.length,
+    inventoryByLocation,
+    orderItems,
+    inventoryByLocation,
+    lotteryOrders,
   );
 
-  totalAssigned += remainingResult.assigned;
+  const remaining = filterApplicants(lotteryOrders, false, undefined, undefined);
+
+  let totalMatched =
+    marketChampionResult.stats.matched +
+    priortySeniorResult.stats.matched +
+    priorityResult.stats.matched +
+    seniorResult.stats.matched;
+  let totalHouseholdMatched =
+    marketChampionResult.stats.householdMatched +
+    priortySeniorResult.stats.householdMatched +
+    priorityResult.stats.householdMatched +
+    seniorResult.stats.householdMatched;
+
+  const remainingResult = assign(
+    lotteryOrders.list,
+    total - totalMatched,
+    inventoryByLocation,
+    orderItems,
+    inventoryByLocation,
+    lotteryOrders,
+  );
+
+  totalMatched += remainingResult.stats.matched;
+  totalHouseholdMatched += remainingResult.stats.householdMatched;
+
+  let grandTotalMatched = totalMatched + totalHouseholdMatched;
 
   let orderItemsMatched = translateToOrderItems(lotteryOrders, inventory, orderItems);
 
-  console.dir({ totalAssigned });
+  console.dir({ totalMatched, totalHouseholdMatched, grandTotalMatched });
   console.dir({ marketChampionResult }, { depth: null });
   console.dir({ priortySeniorResult }, { depth: null });
   console.dir({ priorityResult }, { depth: null });
@@ -364,23 +398,26 @@ function filterApplicants(
 
 function assign(
   population: any[],
-  limitToAssign: number,
+  limitToMatch: number,
   inventory: IdLookup,
   orderItems: ParseResult,
   inventoryByLocation: IdLookup,
+  lotteryOrders: ParseResult,
 ) {
-  console.dir({ msg: 'Would assign', limitToAssign, of: population.length });
+  console.dir({ msg: 'Attepmting to match', limitToMatch, of: population.length });
 
   let stats = {
     assignments: { first: 0, second: 0, third: 0 },
     waitlist: { first: 0, second: 0, third: 0 },
     badLocationIDsSize: 0,
+    matched: 0,
     assigned: 0,
     waitlisted: 0,
     attempts: 0,
     failedToMatch: 0,
+    householdMatched: 0,
   };
-  while (stats.assigned + stats.waitlisted < limitToAssign && stats.assigned + stats.waitlisted < population.length) {
+  while (stats.matched < limitToMatch && stats.matched < population.length) {
     if (stats.attempts++ > 500000) {
       break;
     }
@@ -389,7 +426,7 @@ function assign(
     let applicant = population[rand];
     if (applicant) {
       //console.log("assigning", rand, population[rand].assigned)
-      matchApplicant(applicant, inventoryByLocation, stats, orderItems.byOrderItem);
+      matchApplicant(applicant, inventoryByLocation, stats, orderItems.byOrderItem, lotteryOrders);
     } else {
       console.log('bad rand', rand, population.length);
     }
@@ -397,25 +434,39 @@ function assign(
 
   population.some((applicant) => {
     if (!applicant.assigned) {
-      matchApplicant(applicant, inventoryByLocation, stats, orderItems.byOrderItem);
-      console.dir({
-        msg: 'catch all match',
-        orderID: applicant['Order ID'],
-        assigned: applicant.assigned,
-        matchAttempts: applicant.matchAttempts,
-      });
+      matchApplicant(applicant, inventoryByLocation, stats, orderItems.byOrderItem, lotteryOrders);
+      if (!applicant.assigned)
+        console.dir({
+          msg: 'catch all match',
+          orderID: applicant['Order ID'],
+          assigned: applicant.assigned,
+          matchAttempts: applicant.matchAttempts,
+        });
     }
     return false;
   });
 
-  let retval = { assigned: stats.assigned, attempts: stats.attempts, pop: population.length, stats };
+  let retval = {
+    totalMatched: stats.matched + stats.householdMatched,
+    attempts: stats.attempts,
+    pop: population.length,
+    stats,
+  };
   //console.dir({retval});
 
   return retval;
 }
 
-function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: any, byOrderItem: IdLookup) {
+function matchApplicant(
+  applicant: any,
+  inventoryByLocation: IdLookup,
+  stats: any,
+  byOrderItem: IdLookup,
+  lotteryOrders: ParseResult,
+  household?: string,
+) {
   if (!applicant.assigned) {
+    applicant.householdMatch = household;
     // check prefernces, check inventory, assign to specific location
 
     if (!applicant.LocationIDs) {
@@ -463,6 +514,8 @@ function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: an
       }
 
       if (locationPreferences.length > 0) {
+        applicant.matchStatus = 'Neither';
+
         //console.log('trying assign', applicant['Order ID'], locationPreferences);
         locationPreferences.some((location: string, idx: number) => {
           let items = inventoryByLocation[location];
@@ -480,6 +533,7 @@ function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: an
                 //     assigned: item.assigned,
                 //   });
                 if (item.assigned < item.stockAmount) {
+                  stats.assigned++;
                   matched = true;
                   item.assigned++;
                   item.orders.push(applicant['Order ID']);
@@ -515,6 +569,10 @@ function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: an
             console.dir({ msg: 'no items assign', location, OrderID: applicant['Order ID'] });
           }
           //console.log('assign attempt', applicant['Order ID'], idx, matched);
+          if (matched) {
+            applicant.matchStatus = 'Assigned';
+          }
+
           return matched;
         });
 
@@ -533,6 +591,7 @@ function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: an
                 //console.dir(item);
                 if (item.Name.indexOf('DACL') === -1) {
                   if (item.waitlisted < item.waitlistLevel) {
+                    stats.waitlisted++;
                     matched = true;
                     item.waitlisted++;
                     item.waitlist.push(applicant['Order ID']);
@@ -572,6 +631,10 @@ function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: an
               console.dir({ msg: 'no items waitlist', location, OrderID: applicant['Order ID'] });
             }
 
+            if (matched) {
+              applicant.matchStatus = 'Waitlisted';
+            }
+
             return matched;
           });
         }
@@ -583,10 +646,54 @@ function matchApplicant(applicant: any, inventoryByLocation: IdLookup, stats: an
         applicant.matchAttempts = applicant.matchAttempts || 0;
         applicant.matchAttempts++;
         if (matched) {
-          stats.assigned++;
+          if (household) {
+            stats.householdMatched++;
+          } else {
+            stats.matched++;
+          }
         } else {
           if (applicant.matchAttempts === 1) {
             stats.failedToMatch++;
+          }
+        }
+
+        if (applicant.Household && !household) {
+          //console.dir({ apphousehold: applicant.Household, household });
+          if (lotteryOrders.households) {
+            let householdOrders = lotteryOrders.households[applicant.Household];
+            householdOrders.some((subApplicant: any) => {
+              if (!subApplicant.assigned) {
+                if (subApplicant['Order ID'] !== applicant['Order ID']) {
+                  //console.dir({ sub: subApplicant['Order ID'], subHouse: subApplicant.Household });
+                  matchApplicant(
+                    subApplicant,
+                    inventoryByLocation,
+                    stats,
+                    byOrderItem,
+                    lotteryOrders,
+                    subApplicant.Household,
+                  );
+
+                  if (!subApplicant.assigned) {
+                    console.dir({
+                      msg: 'Household match result',
+                      subOrder: subApplicant['Order ID'],
+                      assigned: subApplicant.assigned,
+                      matchStatus: subApplicant.matchStatus,
+                      choice: subApplicant.choice,
+                      matchAttempts: subApplicant.matchAttempts,
+                    });
+                  }
+                }
+              } else {
+                // console.dir({
+                //   msg: 'Household memeber already matched',
+                //   subOrder: subApplicant['Order ID'],
+                //   attempts: subApplicant.attempts,
+                //   household: subApplicant.Household,
+                // });
+              }
+            });
           }
         }
       }
@@ -854,6 +961,7 @@ function filterLotteryOrders(orders: ParseResult, pickup: ParseResult): ParseRes
     assignedPickupLocation: 0,
     waitlist: 0,
     delivery: 0,
+    households: {},
   };
 
   let start = Date.now();
@@ -894,6 +1002,15 @@ function filterLotteryOrders(orders: ParseResult, pickup: ParseResult): ParseRes
               lottery.lookup[order['Airtable ID']] = order;
               if (order['Order ID']) {
                 lottery.byOrder[order['Order ID']] = order;
+              }
+
+              if (order.Household) {
+                if (lottery.households && !lottery.households[order.Household]) {
+                  lottery.households[order.Household] = [];
+                }
+                if (lottery.households) {
+                  lottery.households[order.Household].push(order);
+                }
               }
             }
           }
@@ -975,6 +1092,7 @@ function parseInventory(inventory: ParseResult): { [index: string]: any[] } {
 function temporaryInventoryDump(fileDir: string, inventory: ParseResult, orderItems: ParseResult, pickup: ParseResult) {
   const assignments: any[] = [];
   const summary: any[] = [];
+  const ids: any[] = [];
   inventory.list.some((item: any) => {
     // item.orders.forEach((order: string) => {
     //   assignments.push({
@@ -1021,15 +1139,16 @@ function temporaryInventoryDump(fileDir: string, inventory: ParseResult, orderIt
 
   orderItems.list.some((item) => {
     let toPush: any = {};
-    if (item.Assigned && item.Assigned !== 'checked') {
+
+    if (item.Assigned === 1) {
       toPush.Status = 'Assigned';
     }
-    if (item.Waitlisted && item.Waitlisted !== 'checked') {
+    if (item.Waitlisted === 1) {
       toPush.Status = 'Waitlisted';
     }
 
     if (toPush.Status) {
-      //console.dir({ item });
+      //console.dir({ hasStatus: item });
       toPush.Location = item['Inventory Item Linked Pickup Location'];
       toPush.OrderID = item.Order;
 
@@ -1054,14 +1173,47 @@ function temporaryInventoryDump(fileDir: string, inventory: ParseResult, orderIt
       assignments.push(toPush);
 
       //return true;
+    } else {
+      let pickupID = item['Airtable ID (from Linked Pickup Location) (from Inventory)'];
+      let pickupSite = pickup.lookup[pickupID];
+      if (pickupSite) {
+        pickupSite.idCount = pickupSite.idCount || 0;
+        //console.dir({ msg: 'No push Status', item, pickupSite });
+        if (pickupSite['Community Site'] === 'checked') {
+          let prefix = pickupSite['CustomerID Prefix'];
+          if (item['Order Type'] === 'Delivery') {
+            prefix = 'DELIVER';
+          }
+          let orderNum = pickupSite.idCount++ + 1;
+          let idVal = {
+            'Customer ID': `${prefix}${orderNum.toString().padStart(3, '0')}`,
+            'Airtable ID': item['Airtable ID'],
+          };
+          //console.dir({ idVal });
+
+          //return true;
+          ids.push(idVal);
+        } else {
+          //console.log({ noStatus: item });
+        }
+      } else {
+        if (pickupID.indexOf(',') > -1) {
+          //console.dir({ msg: 'multiple pickup sites', pickupID, orderID: item['Order'] });
+        } else {
+          console.dir({ msg: 'no pickup site', item });
+        }
+      }
     }
   });
 
-  let ws = fs.createWriteStream(path.join(fileDir, 'assignments-test.csv'));
+  let ws = fs.createWriteStream(path.join(fileDir, 'assignments-items.csv'));
   csv.write(assignments, { headers: true }).pipe(ws);
 
   ws = fs.createWriteStream(path.join(fileDir, 'assignments-summary.csv'));
   csv.write(summary, { headers: true }).pipe(ws);
+
+  ws = fs.createWriteStream(path.join(fileDir, 'assignments-ids.csv'));
+  csv.write(ids, { headers: true }).pipe(ws);
 }
 
 function translateToOrderItems(lotteryOrders: ParseResult, inventory: ParseResult, orderItems: ParseResult) {
