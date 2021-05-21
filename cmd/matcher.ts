@@ -4,7 +4,6 @@ import path from 'path';
 import stripBomStream from 'strip-bom-stream';
 
 import * as csv from '@fast-csv/format';
-import { isDate } from 'node:util';
 
 interface IdLookup {
   [key: string]: any;
@@ -61,6 +60,7 @@ const main = async () => {
   const seniors = filterApplicants(lotteryOrders, true, maxBirthYear, undefined);
 
   let total = lotteryOrders.list.length;
+  const orderItemsToCreate: any[] = [];
 
   const marketChampionResult = assign(
     marketChampions,
@@ -69,6 +69,7 @@ const main = async () => {
     orderItems,
     inventoryByLocation,
     lotteryOrders,
+    orderItemsToCreate,
   );
 
   //console.dir({ marketChampions }, { depth: null });
@@ -82,6 +83,7 @@ const main = async () => {
     orderItems,
     inventoryByLocation,
     lotteryOrders,
+    orderItemsToCreate,
   );
   const priorityResult = assign(
     priority,
@@ -90,6 +92,7 @@ const main = async () => {
     orderItems,
     inventoryByLocation,
     lotteryOrders,
+    orderItemsToCreate,
   );
   const seniorResult = assign(
     seniors,
@@ -98,6 +101,7 @@ const main = async () => {
     orderItems,
     inventoryByLocation,
     lotteryOrders,
+    orderItemsToCreate,
   );
 
   const remaining = filterApplicants(lotteryOrders, false, undefined, undefined);
@@ -120,6 +124,7 @@ const main = async () => {
     orderItems,
     inventoryByLocation,
     lotteryOrders,
+    orderItemsToCreate,
   );
 
   totalMatched += remainingResult.stats.matched;
@@ -136,7 +141,7 @@ const main = async () => {
   console.dir({ seniorResult }, { depth: null });
   console.dir({ remainingResult }, { depth: null });
 
-  temporaryInventoryDump(fileDir, inventory, orderItems, pickup);
+  writeCSVs(fileDir, inventory, orderItems, pickup, orderItemsToCreate, lotteryOrders.byOrder);
 
   return { orders, pickup, inventory, prioritySeniors, priority, seniors, remaining };
 };
@@ -290,7 +295,7 @@ function parseBirthDates(orders: ParseResult) {
         .replace(/\s/g, '')
         .trim();
       if (input.length === 4) {
-        if (parseInt(input) !== NaN) {
+        if (!isNaN(parseInt(input))) {
           order.birthYear = input;
           return false;
         }
@@ -323,7 +328,7 @@ function parseBirthDates(orders: ParseResult) {
       }
 
       if (input.length === 8) {
-        if (parseInt(input) !== NaN) {
+        if (!isNaN(parseInt(input))) {
           order.birthYear = input.substring(4);
           console.log('year', order.birthYear);
           return false;
@@ -403,6 +408,7 @@ function assign(
   orderItems: ParseResult,
   inventoryByLocation: IdLookup,
   lotteryOrders: ParseResult,
+  orderItemsToCreate: any[],
 ) {
   console.dir({ msg: 'Attepmting to match', limitToMatch, of: population.length });
 
@@ -426,7 +432,7 @@ function assign(
     let applicant = population[rand];
     if (applicant) {
       //console.log("assigning", rand, population[rand].assigned)
-      matchApplicant(applicant, inventoryByLocation, stats, orderItems.byOrderItem, lotteryOrders);
+      matchApplicant(applicant, inventoryByLocation, stats, orderItems.byOrderItem, lotteryOrders, orderItemsToCreate);
     } else {
       console.log('bad rand', rand, population.length);
     }
@@ -434,7 +440,7 @@ function assign(
 
   population.some((applicant) => {
     if (!applicant.assigned) {
-      matchApplicant(applicant, inventoryByLocation, stats, orderItems.byOrderItem, lotteryOrders);
+      matchApplicant(applicant, inventoryByLocation, stats, orderItems.byOrderItem, lotteryOrders, orderItemsToCreate);
       if (!applicant.assigned)
         console.dir({
           msg: 'catch all match',
@@ -463,9 +469,12 @@ function matchApplicant(
   stats: any,
   byOrderItem: IdLookup,
   lotteryOrders: ParseResult,
+  orderItemsToCreate: any[],
   household?: string,
+  matchItem?: any,
 ) {
   if (!applicant.assigned) {
+    applicant.matchStatus = 'Tried';
     applicant.householdMatch = household;
     // check prefernces, check inventory, assign to specific location
 
@@ -504,6 +513,7 @@ function matchApplicant(
       stats.assigned++;
     }
 
+    let assignedItem: any, waitlistedItem: any;
     if (applicant.LocationIDs) {
       let matched = false;
       let locationPreferences = applicant.LocationIDs.split('|');
@@ -518,7 +528,12 @@ function matchApplicant(
 
         //console.log('trying assign', applicant['Order ID'], locationPreferences);
         locationPreferences.some((location: string, idx: number) => {
-          let items = inventoryByLocation[location];
+          let items;
+          if (matchItem) {
+            items = [matchItem];
+          } else {
+            items = inventoryByLocation[location];
+          }
           //console.log('trying assign', applicant['Order ID'], location, items.length);
 
           if (items) {
@@ -533,6 +548,7 @@ function matchApplicant(
                 //     assigned: item.assigned,
                 //   });
                 if (item.assigned < item.stockAmount) {
+                  assignedItem = item;
                   stats.assigned++;
                   matched = true;
                   item.assigned++;
@@ -591,6 +607,7 @@ function matchApplicant(
                 //console.dir(item);
                 if (item.Name.indexOf('DACL') === -1) {
                   if (item.waitlisted < item.waitlistLevel) {
+                    waitlistedItem = item;
                     stats.waitlisted++;
                     matched = true;
                     item.waitlisted++;
@@ -640,7 +657,9 @@ function matchApplicant(
         }
 
         if (!matched) {
-          //console.dir({msg: 'no match possible', applicant})
+          if (matchItem) {
+            console.dir({ msg: 'no match possible', applicant, matchItem });
+          }
         }
         applicant.assigned = matched;
         applicant.matchAttempts = applicant.matchAttempts || 0;
@@ -648,6 +667,10 @@ function matchApplicant(
         if (matched) {
           if (household) {
             stats.householdMatched++;
+            if (matchItem) {
+              applicant.householdRedirect = matchItem['Airtable ID'];
+              orderItemsToCreate.push({ applicant, matchItem });
+            }
           } else {
             stats.matched++;
           }
@@ -664,19 +687,23 @@ function matchApplicant(
             householdOrders.some((subApplicant: any) => {
               if (!subApplicant.assigned) {
                 if (subApplicant['Order ID'] !== applicant['Order ID']) {
+                  subApplicant.matchStatus = 'Household';
                   //console.dir({ sub: subApplicant['Order ID'], subHouse: subApplicant.Household });
+                  console.dir({ msg: 'calling to match household', assignedItem, waitlistedItem });
                   matchApplicant(
                     subApplicant,
                     inventoryByLocation,
                     stats,
                     byOrderItem,
                     lotteryOrders,
+                    orderItemsToCreate,
                     subApplicant.Household,
+                    assignedItem || waitlistedItem,
                   );
 
                   if (!subApplicant.assigned) {
                     console.dir({
-                      msg: 'Household match result',
+                      msg: 'Household match failed',
                       subOrder: subApplicant['Order ID'],
                       assigned: subApplicant.assigned,
                       matchStatus: subApplicant.matchStatus,
@@ -1089,7 +1116,14 @@ function parseInventory(inventory: ParseResult): { [index: string]: any[] } {
   return byLocation;
 }
 
-function temporaryInventoryDump(fileDir: string, inventory: ParseResult, orderItems: ParseResult, pickup: ParseResult) {
+function writeCSVs(
+  fileDir: string,
+  inventory: ParseResult,
+  orderItems: ParseResult,
+  pickup: ParseResult,
+  orderItemsToCreate: any[],
+  byOrder: IdLookup,
+) {
   const assignments: any[] = [];
   const summary: any[] = [];
   const ids: any[] = [];
@@ -1169,6 +1203,8 @@ function temporaryInventoryDump(fileDir: string, inventory: ParseResult, orderIt
       toPush.CustomerID = (pickupSite['CustomerID Prefix'] || pickupSite.Name).trim() + item.siteIndex;
 
       toPush.OrderItemAirtableID = item['Airtable ID'];
+      toPush.HouseholdRedirect = item.householdRedirect;
+      toPush.Household = item.household;
 
       assignments.push(toPush);
 
@@ -1206,7 +1242,49 @@ function temporaryInventoryDump(fileDir: string, inventory: ParseResult, orderIt
     }
   });
 
-  let ws = fs.createWriteStream(path.join(fileDir, 'assignments-items.csv'));
+  let creates: any[] = [];
+  orderItemsToCreate.some((entry) => {
+    let create: { OrderID?: string; ItemID: string; CustomerID?: string; Status?: string } = {
+      ItemID: entry.matchItem['Airtable ID'],
+      Status: entry.applicant.matchStatus,
+    };
+
+    let pickupID = entry.matchItem['Airtable ID (from Linked Pickup Location)'];
+
+    let orderID = entry.applicant['Order ID'];
+    let order = byOrder[orderID];
+    //console.dir({ orderID, order });
+    let orderAirtable = order['Airtable ID'];
+
+    create.OrderID = orderAirtable;
+
+    let pickupSite = pickup.lookup[pickupID];
+    if (pickupSite) {
+      //console.log('found site');
+      pickupSite.idCount = pickupSite.idCount || 400;
+      //console.dir({ msg: 'No push Status', item, pickupSite });
+      let prefix = pickupSite['CustomerID Prefix'];
+      let orderNum = pickupSite.idCount++ + 1;
+
+      create.CustomerID = `${prefix}${orderNum.toString().padStart(3, '0')}`;
+      //console.dir({ idVal });
+
+      //return true;
+    } else {
+      if (pickupID?.indexOf(',') > -1) {
+        //console.dir({ msg: 'multiple pickup sites', pickupID, orderID: item['Order'] });
+      } else {
+        //console.dir({ msg: 'no pickup site', pickupID, item: entry.matchItem });
+      }
+    }
+
+    creates.push(create);
+  });
+
+  let ws = fs.createWriteStream(path.join(fileDir, 'create-items.csv'));
+  csv.write(creates, { headers: true }).pipe(ws);
+
+  ws = fs.createWriteStream(path.join(fileDir, 'assignments-items.csv'));
   csv.write(assignments, { headers: true }).pipe(ws);
 
   ws = fs.createWriteStream(path.join(fileDir, 'assignments-summary.csv'));
