@@ -55,7 +55,7 @@
     "react-dom": "^16.14.0",
     "react-hook-form": "^5.7.2",
     "react-markdown": "^5.0.0",
-    "react-redux": "^7.2.3",
+    "react-redux": "^7.2.4",
     "react-scripts": "4.0.3",
     "redoodle": "^2.6.0",
     "redux": "^4.1.0",
