@@ -1261,12 +1261,13 @@ function writeCSVs(
     let pickupSite = pickup.lookup[pickupID];
     if (pickupSite) {
       //console.log('found site');
-      pickupSite.idCount = pickupSite.idCount || 400;
+      pickupSite.idCount = pickupSite.idCount || 0;
       //console.dir({ msg: 'No push Status', item, pickupSite });
       let prefix = pickupSite['CustomerID Prefix'];
       let orderNum = pickupSite.idCount++ + 1;
+      let customerIdx = orderNum + (create.Status === 'Assigned' ? 400 : 600);
 
-      create.CustomerID = `${prefix}${orderNum.toString().padStart(3, '0')}`;
+      create.CustomerID = `${prefix}${customerIdx.toString().padStart(3, '0')}`;
       //console.dir({ idVal });
 
       //return true;

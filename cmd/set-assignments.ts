@@ -170,7 +170,7 @@ async function toAirtable(
     console.log(Date.now(), 'done waiting');
   });
 
-  process.exit(-1);
+  //process.exit(-1);
 
   return result;
 }

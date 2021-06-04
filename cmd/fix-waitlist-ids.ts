@@ -4,6 +4,8 @@ import fs from 'fs';
 import path from 'path';
 import stripBomStream from 'strip-bom-stream';
 
+import * as csv from '@fast-csv/format';
+
 interface ParseResult {
   list: any[];
   msTaken: number;
@@ -19,11 +21,11 @@ const main = async () => {
     msParsing: -1,
     msProcess: -1,
   };
-  const items = await parse(fileDir, 'create-items');
+  const ids = await parse(fileDir, 'assignments-ids');
   results.msParsing = Date.now() - results.start;
 
   let start = Date.now();
-  await processOrderItems(items);
+  await processIDs(ids);
   results.msProcess = Date.now() - start;
 
   return { results };
@@ -41,42 +43,46 @@ const main = async () => {
 
 export {};
 
-async function processOrderItems(items: ParseResult) {
+async function processIDs(ids: ParseResult) {
   let records: any[] = [];
   let promises: any[] = [];
   let options = { headers: { Authorization: `Bearer ${process.env.AIRTABLEKEY}` } };
 
-  for (let id of items.list) {
-    let record: {
-      fields: {
-        'Customer ID': string;
-        Assigned?: boolean;
-        Waitlisted?: boolean;
-        Inventory?: string[];
-        Order: string[];
-        Quantity: number;
-      };
-    } = {
-      fields: { 'Customer ID': id['CustomerID'], Order: [id.OrderID], Quantity: 1 },
-    };
-    let original = { 'Airtable ID': id.ItemID };
-    //let original = await fromAirtable('Order Items', id.ItemID, options);
-
-    console.dir({ original });
-
-    record.fields.Inventory = [original['Airtable ID']];
-
-    switch (id.Status) {
-      case 'Assigned':
-        record.fields.Assigned = true;
-        break;
-      case 'Waitlisted':
-        record.fields.Waitlisted = true;
-        break;
-      default:
-        console.error('No matching status', id.Status);
-        process.exit(-1);
+  for (let id of ids.list) {
+    /*curl -v -X PATCH https://api.airtable.com/v0/appjW6vdBT5HsLaC6/Order%20Items \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  --data '{
+  "records": [
+    {
+      "id": "recBIx2PyteTbxtHM",
+      "fields": {
+        "Order": [
+          "recUN2gDD0vXHeAd9"
+        ],
+        "Quantity": 1,
+        "Inventory": [
+          "rec8MBPICUTVNXym2"
+        ]
+      }
+    },
+    {
+      "id": "rec89NKebdhMltMKg",
+      "fields": {
+        "Order": [
+          "recdOTjVDrUDSILyc"
+        ],
+        "Quantity": 1,
+        "Inventory": [
+          "rec8MBPICUTVNXym2"
+        ]
+      }
     }
+  ]
+}'
+    */
+
+    let record = { id: id['Airtable ID'], fields: { 'Customer ID': id['Customer ID'] } };
     records.push(record);
     let values = { records };
 
@@ -85,6 +91,10 @@ async function processOrderItems(items: ParseResult) {
       if (res.status === 200) {
         records = [];
       }
+    }
+
+    if (id['Airtable ID'] === 'recIzrRHY9t6am9Ab') {
+      //return true;
     }
   }
 
@@ -102,56 +112,13 @@ async function processOrderItems(items: ParseResult) {
   return allDone;
 }
 
-async function fromAirtable(
-  table: string,
-  id: string,
-  options: { headers: { Authorization: string } },
-  retry = 0,
-): Promise<any> {
-  console.dir({ table, id, retry }, { depth: null });
-
-  //let res = Promise.resolve({ status: 422 });
-  let p = await fromAirtable(table, id, options, ++retry);
-  let result = await p;
-
-  //console.dir({ result });
-
-  if (result.status !== 200) {
-    console.dir({ msg: 'bad status', result });
-    if (result.status === 429) {
-      if (retry === 0) {
-        console.log(Date.now(), 'waiting 5+ seconds after 429 then retrying');
-        let wait = await new Promise((r) => setTimeout(r, 5500)).then(() => {
-          console.log(Date.now(), 'done waiting');
-        });
-        result = await fromAirtable(table, id, options, ++retry);
-      } else {
-        console.dir({ msg: 'Retry also hit 429' });
-        process.exit(-1);
-      }
-    } else {
-      console.dir({ msg: 'Response was not 200 or 429', status: result.status });
-      process.exit(-1);
-    }
-  }
-
-  console.log(Date.now(), 'waiting');
-  let wait = await new Promise((r) => setTimeout(r, 250)).then(() => {
-    console.log(Date.now(), 'done waiting');
-  });
-
-  return result.data;
-}
-
 async function toAirtable(
   values: { records: any[] },
   options: { headers: { Authorization: string } },
   retry = 0,
 ): Promise<any> {
-  console.dir({ values }, { depth: null });
-
-  //let res = Promise.resolve({ status: 422 });
-  let res = axios.post('https://api.airtable.com/v0/appjW6vdBT5HsLaC6/Order%20Items', values, options);
+  let res = Promise.resolve({ status: 429 });
+  //let res = axios.patch('https://api.airtable.com/v0/appjW6vdBT5HsLaC6/Order%20Items', values, options);
   let p = res
     .then((res) => {
       console.dir({ status: res.status });
@@ -159,7 +126,6 @@ async function toAirtable(
     })
     .catch((err) => {
       console.dir({ err });
-      console.dir({ respBody: err.response.data });
       return { status: -1, err };
     });
 
@@ -190,8 +156,6 @@ async function toAirtable(
   let wait = await new Promise((r) => setTimeout(r, 250)).then(() => {
     console.log(Date.now(), 'done waiting');
   });
-
-  //process.exit(-1);
 
   return result;
 }
