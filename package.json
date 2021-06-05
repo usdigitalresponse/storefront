@@ -42,7 +42,7 @@
     "eslint-plugin-react-hooks": "^2.3.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
     "immutability-helper": "^3.1.1",
-    "interweave": "^12.7.1",
+    "interweave": "^12.7.2",
     "markdown-it": "^11.0.1",
     "moment": "^2.29.1",
     "netlify-lambda": "^1.6.3",
