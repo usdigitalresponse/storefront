@@ -28,7 +28,7 @@
     "@types/slug": "^0.9.1",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
-    "airtable": "0.11",
+    "airtable": "0.8",
     "classnames": "^2.3.0",
     "cleave.js": "^1.6.0",
     "encoding": "^0.1.13",
