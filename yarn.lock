@@ -12689,10 +12689,10 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-redoodle@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.npmjs.org/redoodle/-/redoodle-2.6.0.tgz"
-  integrity sha512-XjBQ2jCFX+GhwmW2lthZ2Neq3dzQm5+C/2CbcD6GRkiyJ7/EnBCIg2Q1mKustF1mEJCDuuQNck1NsoUE7l+UKA==
+redoodle@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/redoodle/-/redoodle-2.6.1.tgz#1909356c7863aee06b6a8ccfcc9b864d6fa2e699"
+  integrity sha512-6K3wLx+sr0h/vvkUWYilw1CnyccgqWrvOxDDt9lSR0PxEEzSLykwM25b6v4w3mLwMUKAyxxLDEmxkRh0hq+L8Q==
   dependencies:
     tslib "^1.8.1"
 
