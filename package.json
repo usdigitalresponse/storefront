@@ -65,7 +65,7 @@
     "slug": "^4.0.4",
     "stripe": "^8.150.0",
     "typeface-inter": "^3.18.1",
-    "typescript": "~3.9.8"
+    "typescript": "~3.9.10"
   },
   "resolutions": {
     "lodash": "^4.17.19",
