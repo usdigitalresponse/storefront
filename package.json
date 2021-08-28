@@ -63,7 +63,7 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "slug": "^4.0.4",
-    "stripe": "^8.160.0",
+    "stripe": "^8.168.0",
     "typeface-inter": "^3.18.1",
     "typescript": "~3.9.10"
   },

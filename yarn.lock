@@ -13986,10 +13986,10 @@ strip-json-comments@^3.1.0, strip-json-comments@^3.1.1:
   resolved "https://registry.npmjs.org/strip-json-comments/-/strip-json-comments-3.1.1.tgz"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
 
-stripe@^8.160.0:
-  version "8.164.0"
-  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.164.0.tgz#34c8d965e88e88ba167de6ac29ac42ee15931a33"
-  integrity sha512-gTc90jq3s0za5s/4ZNBSM6Ve3qiPTegaexEdx8hbHlqrffByh/zwlqNXIjuYZCRsySd8tpjoGl1zzF5XHl3X5w==
+stripe@^8.168.0:
+  version "8.171.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.171.0.tgz#9c52d2e3928c7ebf708ce1f9eb2d3cc2f682f8bf"
+  integrity sha512-SriWXEVukmnrE40BoRe18Zsw9zftpnDlZlgxhZd6qJqP/RwN59op5YoW2mA0LE6Grxn8FH8RB9CXVxCAHNTk8w==
   dependencies:
     "@types/node" ">=8.1.0"
     qs "^6.6.0"
