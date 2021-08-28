@@ -17,7 +17,7 @@
     "@types/classnames": "^2.3.0",
     "@types/cleave.js": "^1.4.5",
     "@types/jest": "^24.0.0",
-    "@types/node": "^12.20.14",
+    "@types/node": "^12.20.19",
     "@types/numeral": "^0.0.30",
     "@types/pluralize": "^0.0.29",
     "@types/qs": "^6.9.7",
