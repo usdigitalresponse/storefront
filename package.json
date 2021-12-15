@@ -56,7 +56,7 @@
     "react-hook-form": "^5.7.2",
     "react-markdown": "^5.0.0",
     "react-redux": "^7.2.4",
-    "react-scripts": "4.0.3",
+    "react-scripts": "5.0.0",
     "redoodle": "^2.6.1",
     "redux": "^4.1.0",
     "redux-persist": "^6.0.0",
