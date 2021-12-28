@@ -46,7 +46,7 @@
     "markdown-it": "^11.0.1",
     "moment": "^2.29.1",
     "netlify-lambda": "^1.6.3",
-    "node-sass": "^6.0.1",
+    "node-sass": "^7.0.1",
     "numeral": "^2.0.6",
     "pluralize": "^8.0.0",
     "prettier": "^1.19.1",
