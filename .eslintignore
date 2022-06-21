@@ -1,2 +1,7 @@
-**/node_modules/*
-src/api/**/*
+*
+
+# TODO these have been disabled as part of a hotfix. see:
+# https://github.com/usdigitalresponse/storefront/issues/219
+# ideally at some point, resolve linting errors and revert to these ignore paths
+# **/node_modules/*
+# src/api/**/*
